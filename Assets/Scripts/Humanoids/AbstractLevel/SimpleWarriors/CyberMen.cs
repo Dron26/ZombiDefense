@@ -1,0 +1,6 @@
+﻿namespace Humanoids.AbstractLevel.SimpleWarriors
+{
+    public abstract class CyberMen : Humanoid
+    {
+    }
+}
