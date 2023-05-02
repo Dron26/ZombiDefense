@@ -17,6 +17,7 @@ using UI.BuyAndMerge.Raid;
 using UI.Fraction;
 using UI.Resurse;
 using UI.SceneSetArmy;
+using UI.SettingsPanel;
 using UI.Unit;
 using UI.WarningWindow;
 using Unity.VisualScripting;

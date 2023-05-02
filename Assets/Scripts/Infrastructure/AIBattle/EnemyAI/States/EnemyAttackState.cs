@@ -10,8 +10,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
     {
         private readonly WaitForSeconds _waitForSeconds = new (1f);
         
-        private Humanoid _opponentHumanoid;
-        private Enemy _opponentEnemy;
+        private Humanoid _humanoid;
 
         private float _currentRange;
         private bool _isAttack;
@@ -44,11 +43,8 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         public void InitHumanoid(Humanoid targetHumanoid)
         {
             
-            _opponentHumanoid = targetHumanoid;
+            _humanoid = targetHumanoid;
         }
-
-        public void InitEnemy(Enemy targetEnemy) =>
-            _opponentEnemy = targetEnemy;
 
         private IEnumerator Attack()
         {
@@ -65,25 +61,25 @@ namespace Infrastructure.AIBattle.EnemyAI.States
                 
                 if (TryGetComponent(out Enemy enemy))
                 {
-                    if (_opponentHumanoid == null)
+                    if (_humanoid == null)
                         StopCoroutine(_coroutine);
 
-                    if (_opponentHumanoid != null && _opponentHumanoid.IsLife() == false)
+                    if (_humanoid != null && _humanoid.IsLife() == false)
                     {
                         _animator.SetBool(_hashAnimator.IsShoot, false);
-                        _opponentHumanoid.gameObject.SetActive(false);
+                        _humanoid.gameObject.SetActive(false);
                         StateMachine.EnterBehavior<EnemySearchTargetState>();
                     }
 
-                    if(_opponentHumanoid!=null){
+                    if(_humanoid!=null){
                         
-                        _currentRange = Vector3.Distance(transform.position, _opponentHumanoid.transform.position);
+                        _currentRange = Vector3.Distance(transform.position, _humanoid.transform.position);
 
                         if (_currentRange <= enemy.GetRangeAttack())
                         {
                             _fxController.OnAttackFX();
-                            transform.DOLookAt(_opponentHumanoid.transform.position, .1f);
-                            _opponentHumanoid.ApplyDamage(enemy.GetDamage());
+                            transform.DOLookAt(_humanoid.transform.position, .1f);
+                            _humanoid.ApplyDamage(enemy.GetDamage());
                         }
 
                         if (_currentRange >= enemy.GetRangeAttack())
@@ -93,41 +89,6 @@ namespace Infrastructure.AIBattle.EnemyAI.States
                             StateMachine.EnterBehavior<EnemyMovementState>();
                         }}
                     
-
-                    yield return _waitForSeconds;
-                }
-
-                if (TryGetComponent(out Humanoid humanoid))
-                {
-                    if (_opponentEnemy == null)
-                        StopCoroutine(_coroutine);
-
-                    if (_opponentEnemy != null && _opponentEnemy.IsLife() == false)
-                    {
-                        _animator.SetBool(_hashAnimator.IsShoot, false);
-                        _opponentEnemy.gameObject.SetActive(false);
-                        StateMachine.EnterBehavior<EnemySearchTargetState>();
-                    }
-
-                    if (_opponentEnemy != null)
-                    {
-                        _currentRange = Vector3.Distance(transform.position, _opponentEnemy.transform.position);
-
-                        if (_currentRange <= humanoid.GetRangeAttack())
-                        {
-                            _fxController.OnAttackFX();
-                            transform.DOLookAt(_opponentEnemy.transform.position, .1f);
-                            _opponentEnemy.ApplyDamage(humanoid.GetDamage());
-                        }
-                    }
-                    
-
-                    if (_currentRange >= humanoid.GetRangeAttack())
-                    {
-                        _animator.SetBool(_hashAnimator.IsShoot, false);
-                        _isAttack = false;
-                        StateMachine.EnterBehavior<EnemyMovementState>();
-                    }
 
                     yield return _waitForSeconds;
                 }

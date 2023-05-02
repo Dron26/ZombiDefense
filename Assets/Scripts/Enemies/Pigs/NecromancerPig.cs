@@ -42,6 +42,16 @@ namespace Enemies.Pigs
             _health -= Mathf.Clamp(getDamage, _minHealth, _maxHealth);
         }
 
+        public override int GetPrice()
+        {
+            throw new System.NotImplementedException();
+        }
+        
+        public override void SetAttacments()
+        {
+            throw new System.NotImplementedException();
+        }
+        
         public override float GetRangeAttack() =>
             _rangeAttack;
 

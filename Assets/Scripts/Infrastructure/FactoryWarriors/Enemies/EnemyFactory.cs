@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Enemies.AbstractEntity;
+using Humanoids.AbstractLevel;
 using UnityEngine;
 
 namespace Infrastructure.FactoryWarriors.Enemies
@@ -7,7 +8,8 @@ namespace Infrastructure.FactoryWarriors.Enemies
     public class EnemyFactory : MonoBehaviour
     {
         [SerializeField] private List<EnemyData> enemiesData;
-        public Enemy CreateEnemy( Enemy enemy,Transform spawnPoint)
+        private static readonly List<Humanoid> _humanoids = new();
+        public Enemy Create( Enemy enemy,Transform spawnPoint)
         {
             enemy.LoadPrefab();
             GameObject newEnemy = Instantiate(enemy.GetPrefab(), spawnPoint.position, Quaternion.identity, transform);
@@ -18,7 +20,7 @@ namespace Infrastructure.FactoryWarriors.Enemies
             }
             else
             {
-                Debug.LogError($"Prefab {enemy.GetPrefab().name} doesn't have a component of type Enemy.");
+                Debug.LogError($"PrefabCharacter {enemy.GetPrefab().name} doesn't have a component of type Enemys.");
                 Destroy(enemy);
                 return null;
             }
@@ -46,6 +48,15 @@ namespace Infrastructure.FactoryWarriors.Enemies
                 return null;
             }
         }
+        public void SetHumanoidData(List<Humanoid> humanoid)
+        {
+            foreach (Humanoid tempHumanoid in humanoid)
+            {
+                _humanoids.Add(tempHumanoid);
+            }
+        }
+        public List<Humanoid> GetAllHumanoids =>
+            _humanoids;
     }
     
 }

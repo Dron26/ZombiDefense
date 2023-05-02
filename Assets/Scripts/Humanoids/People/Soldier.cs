@@ -1,5 +1,6 @@
 ﻿using Humanoids.AbstractLevel.SimpleWarriors;
 using Infrastructure.AIBattle;
+using Infrastructure.Weapon;
 using UnityEngine;
 
 namespace Humanoids.People
@@ -10,7 +11,6 @@ namespace Humanoids.People
         private const int Price = 1;
         private const int Damage = 15;
         
-        private const float RangeAttack = 10f;
 
         private readonly float _minHealth = 0f;
         private readonly float _maxHealth = 10f;
@@ -18,7 +18,6 @@ namespace Humanoids.People
         private bool _isLife = true;
 
         private float _health = 10f;
-        private int _totalReceivedDamage;
 
         private HashAnimator _hashAnimator;
         private Animator _animator;
@@ -30,9 +29,22 @@ namespace Humanoids.People
             _hashAnimator = GetComponent<HashAnimator>();
             _fxController = GetComponent<FXController>();
         }
-        
-        public override float GetRangeAttack() =>
-            RangeAttack;
+
+        // protected void void SetAttacments()
+        // {
+        //     WeaponController weaponController = GetComponent<WeaponController>();
+        //     weaponController.Initialize(Weapons);
+        //     
+        //     foreach (GameObject items in humanoidData.PrefabCharacterItems)
+        //     {
+        //         GameObject item = Instantiate(items, transform.position, Quaternion.identity);
+        //     }
+        // }
+
+        public override float GetHealth()
+        {
+            return _health;
+        }
 
         public override bool IsLife() => 
             _isLife;
@@ -43,11 +55,7 @@ namespace Humanoids.People
         public override int GetPrice() =>
             Price;
 
-        public override int GetDamage()
-        {
-            _totalReceivedDamage += Damage;
-            return Damage;
-        }
+       
 
         public override void ApplyDamage(int getDamage)
         {
@@ -65,11 +73,5 @@ namespace Humanoids.People
         
         public override int GetDamageDone() => 
             (int)Mathf.Round(_maxHealth - _health);
-
-        public override int DamageReceived() =>
-            _totalReceivedDamage;
-
-        public override int TotalPoints() => 
-            _totalReceivedDamage + (int)Mathf.Round(_maxHealth - _health);
     }
 }

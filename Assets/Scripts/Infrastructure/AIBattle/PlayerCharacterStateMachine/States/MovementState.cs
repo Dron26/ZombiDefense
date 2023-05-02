@@ -1,5 +1,6 @@
 ﻿using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
+using Infrastructure.Weapon;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -18,9 +19,11 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         
         private Animator _animator;
         private HashAnimator _hashAnimator;
-
+        private WeaponController _weaponController;
+        
         private void Start()
         {
+            _weaponController= GetComponent<WeaponController>();
             _move = 0f;
             _animator = GetComponent<Animator>();
             _hashAnimator = GetComponent<HashAnimator>();
@@ -29,7 +32,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
                 _stoppingDistance = enemy.GetRangeAttack();
             
             if (TryGetComponent(out Humanoid humanoid)) 
-                _stoppingDistance = humanoid.GetRangeAttack();
+                _stoppingDistance = _weaponController.GetRangeAttack();
             agent = GetComponent<NavMeshAgent>();
         }
 

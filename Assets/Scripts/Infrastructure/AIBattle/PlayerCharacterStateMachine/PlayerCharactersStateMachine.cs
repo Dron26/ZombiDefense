@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using Humanoids.AbstractLevel;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Infrastructure.FactoryWarriors.Humanoids;
+using Infrastructure.Location;
+using UnityEditor;
 using UnityEngine;
 
 namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
@@ -13,13 +17,20 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
     [RequireComponent(typeof(SearchTargetState))]
     [RequireComponent(typeof(MovementState))]
     [RequireComponent(typeof(AttackState))]
+    
     public class PlayerCharactersStateMachine : MonoCache
     {
         private Dictionary<Type, ISwitcherState> _allBehaviors;
         private ISwitcherState _currentBehavior;
+        private SceneInitializer _sceneInitializer;
+        private HumanoidFactory _humanoidFactory;
 
-        private void Start()
+        private void Awake()
         {
+            _sceneInitializer=FindObjectOfType<SceneInitializer>();
+            _sceneInitializer.SetInfoCompleted += ChangeState;
+            _humanoidFactory=_sceneInitializer.GetHumanoidFactory();
+            
             _allBehaviors = new Dictionary<Type, ISwitcherState>
             {
                 [typeof(SearchTargetState)] = GetComponent<SearchTargetState>(),
@@ -29,12 +40,16 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
 
             foreach (var behavior in _allBehaviors)
             {
-                behavior.Value.Init(this);
+                behavior.Value.Init(this,_humanoidFactory);
                 behavior.Value.ExitBehavior();
             }
-            
+        }
+
+        private void ChangeState()
+        {
             _currentBehavior = _allBehaviors[typeof(SearchTargetState)];
             EnterBehavior<SearchTargetState>();
+           
         }
 
         public void EnterBehavior<TState>() where TState : ISwitcherState
@@ -43,6 +58,12 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
             _currentBehavior.ExitBehavior();
             behavior.EnterBehavior();
             _currentBehavior = behavior;
+        }
+        
+        
+        private void OnDisable()
+        {
+            _sceneInitializer.SetInfoCompleted -= ChangeState;
         }
     }
 }

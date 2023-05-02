@@ -25,7 +25,17 @@ namespace Enemies.Aliens
             _hashAnimator = GetComponent<HashAnimator>();
             _fxController = GetComponent<FXController>();
         }
+
+        public override int GetPrice()
+        {
+            throw new System.NotImplementedException();
+        }
         
+        public override void SetAttacments()
+        {
+            throw new System.NotImplementedException();
+        }
+
         public override void ApplyDamage(int getDamage)
         {
             if (_health <= 0)
@@ -39,6 +49,8 @@ namespace Enemies.Aliens
             _animator.SetTrigger(_hashAnimator.IsHit);
             _health -= Mathf.Clamp(getDamage, _minHealth, _maxHealth);
         }
+
+       
 
         public override int GetLevel()
         {

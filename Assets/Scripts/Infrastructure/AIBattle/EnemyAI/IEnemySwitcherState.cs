@@ -4,6 +4,6 @@ namespace Infrastructure.AIBattle.EnemyAI
     {
         public void EnterBehavior();
         public void ExitBehavior();
-        public void Init(EnemyStateMachineWarriors enemyStateMachineWarriors);
+        public void Init(EnemyStateMachine enemyStateMachine);
     }
 }

@@ -1,0 +1,104 @@
+﻿using System.Collections.Generic;
+using Enemies.AbstractEntity;
+using Humanoids.AbstractLevel;
+using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
+using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Infrastructure.Location;
+using Infrastructure.Weapon;
+using Service.GeneralFactory;
+using Service.SaveLoadService;
+using UnityEngine;
+
+namespace Infrastructure.FactoryWarriors.Humanoids
+{ 
+    enum Level
+    {
+        Soldier = 1,
+        Archer = 2,
+        Knight = 3,
+        King = 4,
+        
+        CyberSoldier = 5,
+        CyberArcher = 6,
+        CyberKnight = 7,
+        CyberKing = 8,
+        
+        CrazyTractor = 9,
+        CyberZombie = 10,
+        GunGrandmother = 11,
+        Virus = 12
+    }
+    
+    public class HumanoidFactory : MonoCache, IServiceFactory
+    {
+        [SerializeField] private List<HumanoidData> humanoidsData;
+        private static readonly List<Humanoid> _humanoids = new();
+        private static readonly List<Enemy> _enemies = new();
+        [SerializeField] private  List<WorkPointGroup> _workPoints;
+        
+        public void Create(Vector3 spawnPoint, GameObject humanoid)
+        {
+            GameObject newHumanoid = humanoid;
+            Humanoid humanoidComponent = newHumanoid.GetComponent<Humanoid>();
+            humanoidComponent.Load += SetWeapons;
+            humanoidComponent.LoadPrefab();
+            
+        }
+
+        private void SetWeapons(Humanoid humanoid )
+        { 
+            Instantiate(humanoid.GetPrefabCharacter(), transform.position, Quaternion.identity, transform);
+            _humanoids.Add(humanoid);
+             
+            if (humanoid == null)
+            {
+                Debug.LogError($"PrefabCharacter {humanoid.GetPrefabCharacter().name} doesn't have a component of type Enemys.");
+                Destroy(humanoid);
+            }
+            
+            WeaponController weaponController = humanoid.GetComponent<WeaponController>();
+            weaponController.Initialize();
+            
+        }
+
+        public HumanoidData GetRandomHumanoidData(int level)
+        {
+            var humanoidDatas = new List<HumanoidData>();
+            foreach (var enemy in humanoidsData)
+            {
+                if (enemy.Level == level)
+                {
+                    humanoidDatas.Add(enemy);
+                }
+            }
+    
+            if (humanoidDatas.Count > 0)
+            {
+                var index = Random.Range(0, humanoidDatas.Count);
+                return humanoidDatas[index];
+            }
+            else
+            {
+                Debug.LogError($"No enemies found with level {level}.");
+                return null;
+            }
+        }
+
+        public void SetEnemyData(List<Enemy> enemies)
+        {
+            foreach (var enemy in enemies)
+            {
+                _enemies.Add(enemy);
+            }
+        }
+
+        public List<Humanoid> GetAllHumanoids()
+        {
+            return _humanoids; 
+        }
+
+        public List<Enemy> GetAllEnemies => 
+            _enemies;
+
+    }
+}

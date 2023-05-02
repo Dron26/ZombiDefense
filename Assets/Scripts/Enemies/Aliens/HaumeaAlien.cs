@@ -54,5 +54,15 @@ namespace Enemies.Aliens
 
         public override bool IsLife() => 
             _isLife;
+        
+        public override int GetPrice()
+        {
+            throw new System.NotImplementedException();
+        }
+        
+        public override void SetAttacments()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

@@ -2,16 +2,32 @@ using System.Collections.Generic;
 using Enemies.AbstractEntity;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.FactoryWarriors.Enemies;
+using Unity.VisualScripting;
 
 namespace Infrastructure.WaveManagment
 {
     public class WaveQueue:MonoCache
     {
         private Queue<Enemy> _enemiesToSpawn = new Queue<Enemy>();
-
-        public void Enqueue(Enemy enemyData)
+        public int Level=>_level;
+        private int _level;
+        public void Enqueue(Enemy enemy)
         {
-            _enemiesToSpawn.Enqueue(enemyData);
+            _enemiesToSpawn.Enqueue(enemy);
+        }
+
+        public void Initialize()
+        { 
+            int _level=_enemiesToSpawn.Peek().Level;
+            
+            foreach (Enemy enemy in _enemiesToSpawn)
+            {
+                if (_level!=enemy.Level)
+                {
+                    print("In Queue other object");
+                }
+            }
+            
         }
 
         public Enemy Dequeue()

@@ -7,20 +7,17 @@ using UnityEngine;
 
 namespace Infrastructure.AIBattle.EnemyAI.States
 {
-    [RequireComponent(typeof(MovementState))]
-    [RequireComponent(typeof(AttackState))]
     public class EnemySearchTargetState : EnemyState
     {
-        private MovementState _movementState;
-        private AttackState _attackState;
+        private EnemyMovementState _movementState;
+        private EnemyAttackState _attackState;
 
-       // private Enemy _targetEnemy;
         private Humanoid _targetHumanoid;
 
         private void Start()
         {
-            _movementState = GetComponent<MovementState>();
-            _attackState = GetComponent<AttackState>();
+            _movementState = GetComponent<EnemyMovementState>();
+            _attackState = GetComponent<EnemyAttackState>();
         }
 
         protected override void UpdateCustom()
@@ -33,22 +30,26 @@ namespace Infrastructure.AIBattle.EnemyAI.States
 
         private void Search()
         {
-                //_targetHumanoid = GetTargetHumanoid();
-                _targetHumanoid = FindObjectOfType<Humanoid>();
+                _targetHumanoid = GetTargetHumanoid();
+                if (_targetHumanoid!=null)
+                {
+                    _targetHumanoid = FindObjectOfType<Humanoid>();
                     _movementState.InitHumanoid(_targetHumanoid);
                     _attackState.InitHumanoid(_targetHumanoid);
                     StateMachine.EnterBehavior<EnemyMovementState>();
+                }
+            
         }
 
-        // private Humanoid GetTargetHumanoid()
-        // {
-        //     List<Humanoid> aliveHumanoids = Factory.GetAllHumanoids.Where(humanoid =>
-        //         humanoid.IsLife()).ToList();
-        //
-        //     if (aliveHumanoids.Count > 0)
-        //         return aliveHumanoids[Random.Range(0, aliveHumanoids.Count)];
-        //
-        //     return null;
-        // }
+        private Humanoid GetTargetHumanoid()
+        {
+            List<Humanoid> aliveHumanoids = Factory.GetAllHumanoids.Where(humanoid =>
+                humanoid.IsLife()).ToList();
+        
+            if (aliveHumanoids.Count > 0)
+                return aliveHumanoids[Random.Range(0, aliveHumanoids.Count)];
+        
+            return null;
+        }
     }
 }

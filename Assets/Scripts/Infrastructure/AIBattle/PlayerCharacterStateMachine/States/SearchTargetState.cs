@@ -1,75 +1,143 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
+using Infrastructure.Weapon;
+using Unity.Collections;
+using Unity.Jobs;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 {
-    [RequireComponent(typeof(MovementState))]
-    [RequireComponent(typeof(AttackState))]
     public class SearchTargetState : State
     {
         private MovementState _movementState;
         private AttackState _attackState;
 
         private Enemy _targetEnemy;
-        private Humanoid _targetHumanoid;
+
+        // Add a field to hold the array of enemy transforms.
+        private Transform[] _enemyTransforms;
 
         private void Start()
         {
             _movementState = GetComponent<MovementState>();
             _attackState = GetComponent<AttackState>();
+            // Get an array of enemy transforms.
+            _enemyTransforms = HumanoidFactory.GetAllEnemies
+                .Select(enemy => enemy.transform)
+                .ToArray();
         }
 
         protected override void UpdateCustom()
         {
             if (isActiveAndEnabled == false)
                 return;
-            
+
             Search();
         }
 
         private void Search()
         {
-            // if (TryGetComponent(out Humanoid _))
-            // {
-            //     _targetEnemy = GetTargetEnemy();
-            //     _movementState.InitEnemy(_targetEnemy);
-            //     _attackState.InitEnemy(_targetEnemy);
-            //     PlayerCharactersStateMachine.EnterBehavior<MovementState>();
-            // }
-
-            if (TryGetComponent(out Enemy _))
+            if (TryGetComponent(out Humanoid _))
             {
-                //_targetHumanoid = GetTargetHumanoid();
-                _targetHumanoid = FindObjectOfType<Humanoid>();
-                    _movementState.InitHumanoid(_targetHumanoid);
-                    _attackState.InitHumanoid(_targetHumanoid);
-                    PlayerCharactersStateMachine.EnterBehavior<MovementState>();
+                // Call the method to get the index of the closest enemy.
+                int closestEnemyIndex = GetClosestEnemyIndex(transform.position);
+
+                // If the closest enemy index is valid, use that enemy.
+                if (closestEnemyIndex != -1)
+                {
+                    _targetEnemy = HumanoidFactory.GetAllEnemies[closestEnemyIndex];
+                    _attackState.InitEnemy(_targetEnemy);
+                    PlayerCharactersStateMachine.EnterBehavior<AttackState>();
+                }
             }
         }
 
-        private Humanoid GetTargetHumanoid()
+        private int GetClosestEnemyIndex(Vector3 soldierPosition)
         {
-            List<Humanoid> aliveHumanoids = Factory.GetAllHumanoids.Where(humanoid => 
-                humanoid.IsLife()).ToList();
+            // Create a NativeArray of EnemyPositionData and fill it with the data we need.
+            NativeArray<EnemyPositionData> enemyPositionDataArray = new NativeArray<EnemyPositionData>(_enemyTransforms.Length, Allocator.TempJob);
+        
+            for (int i = 0; i < _enemyTransforms.Length; i++)
+            {
+                enemyPositionDataArray[i] = new EnemyPositionData
+                {
+                    soldierPosition = soldierPosition,
+                    enemyPosition = _enemyTransforms[i].position
+                };
+            }
 
-            if (aliveHumanoids.Count > 0)
-                return aliveHumanoids[Random.Range(0, aliveHumanoids.Count)];
+            // Create a JobHandle and schedule the job.
+            JobHandle jobHandle = new GetClosestEnemyJob
+            {
+                enemyPositionDataArray = enemyPositionDataArray
+            }.Schedule(_enemyTransforms.Length, 10);
 
-            return null;
+            // Wait for the job to complete.
+            jobHandle.Complete();
+
+            // Find the index of the closest enemy from the results of the job.
+            int closestEnemyIndex = -1;
+            float closestEnemyDistance = float.MaxValue;
+            for (int i = 0; i < _enemyTransforms.Length; i++)
+            {
+                float distance = math.distance(soldierPosition, enemyPositionDataArray[i].enemyPosition);
+                if (distance < closestEnemyDistance)
+                {
+                    closestEnemyDistance = distance;
+                    closestEnemyIndex = i;
+                }
+            }
+
+            // Dispose of the NativeArray.
+            enemyPositionDataArray.Dispose();
+
+            return closestEnemyIndex;
         }
 
-        private Enemy GetTargetEnemy()
+        // Define a struct to hold the data needed by the job.
+        private struct EnemyPositionData
         {
-            List<Enemy> aliveEnemies = Factory.GetAllEnemies.Where(enemy => 
-                enemy.IsLife()).ToList();
+            public Vector3 soldierPosition;
+            public Vector3 enemyPosition;
+        }
 
-            if (aliveEnemies.Count > 0)
-                return aliveEnemies[Random.Range(0, aliveEnemies.Count)];
+        // Define the job that will be run in parallel by the Job System.
+        private struct GetClosestEnemyJob : IJobParallelFor
+        {
+            [ReadOnly] public NativeArray<EnemyPositionData> enemyPositionDataArray;
+            // Add a field to hold the array of results.
+            private NativeArray<EnemyDistanceData> resultArray;
 
-            return null;
+            // Define a struct to hold the results of the job.
+            private struct EnemyDistanceData
+            {
+                public int enemyIndex;
+                public float distance;
+            }
+        
+            public void Execute(int index)
+            {
+                EnemyPositionData enemyPositionData = enemyPositionDataArray[index];
+                float distance = math.distance(enemyPositionData.soldierPosition, enemyPositionData.enemyPosition);
+
+                SetResultArraySize(enemyPositionDataArray.Length);
+            
+                // Store the result in the corresponding element of the result array.
+                resultArray[index] = new EnemyDistanceData
+                {
+                    enemyIndex = index,
+                    distance = distance
+                };
+            }
+        
+        
+            // Add a method to set the size of the result array.
+            public void SetResultArraySize(int size)
+            {
+                resultArray = new NativeArray<EnemyDistanceData>(size, Allocator.TempJob);
+            }
         }
     }
 }

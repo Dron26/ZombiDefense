@@ -2,6 +2,7 @@
 using System.Linq;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.FactoryWarriors;
+using Infrastructure.FactoryWarriors.Humanoids;
 using Infrastructure.States;
 using Observer;
 using Service.SaveLoadService;
@@ -55,9 +56,9 @@ namespace UI.HUD.LuckySpin
             _resultBattle.text = result;
         }
 
-        public void CalculateBonus(Factory factory)
+        public void CalculateBonus(HumanoidFactory humanoidFactory)
         {
-            _databaseStatistics.SetDataBase(factory);
+            _databaseStatistics.SetDataBase(humanoidFactory);
 
             foreach (var memberBattle in _databaseStatistics.GetMembersBattle())
             {
@@ -68,10 +69,9 @@ namespace UI.HUD.LuckySpin
                     GetFraction(memberBattle.Key),
                     GetNameMember(memberBattle.Key),
                     GetLevelMember(memberBattle.Key),
-                    GetCountSurvival(factory, memberBattle.Key),
+                    GetCountSurvival(humanoidFactory, memberBattle.Key),
                     GetCountGetDamage(memberBattle),
-                    CountTakeDamage(memberBattle),
-                    GetTotalPointsMember(memberBattle));
+                    CountTakeDamage(memberBattle));
             }
 
             ViewTotal();
@@ -85,13 +85,6 @@ namespace UI.HUD.LuckySpin
             
             _totalMoneyView.text = $"TOTAL MONEY: {_databaseStatistics.TotalMoney.ToString()}";
             _totalPointView.text = $"TOTAL POINTS: {_databaseStatistics.TotalPoints.ToString()}";
-        }
-
-        private string GetTotalPointsMember(KeyValuePair<int, InfoMemberBattle> memberBattle)
-        {
-            print("Нужно пробрасывать переменные для полученных очков, для локализации");
-            
-            return memberBattle.Value.TotalPoints.ToString();
         }
 
         private string CountTakeDamage(KeyValuePair<int, InfoMemberBattle> memberBattle)
@@ -108,13 +101,12 @@ namespace UI.HUD.LuckySpin
             return $"Get damage: {memberBattle.Value.DamageReceived.ToString()}";
         }
 
-        private string GetCountSurvival(Factory factory, int level)
+        private string GetCountSurvival(HumanoidFactory humanoidFactory, int level)
         {
             int countHumanoids = 0;
             int countSurvivals = 0;
             
-            foreach (var humanoid in factory.GetAllHumanoids
-                         .Where(humanoid => humanoid.GetLevel() == level))
+            foreach (var humanoid in humanoidFactory.GetAllHumanoids().Where(humanoid => humanoid.GetLevel() == level))
             {
                 countHumanoids++;
 

@@ -1,12 +1,13 @@
 ﻿using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.FactoryWarriors;
+using Infrastructure.FactoryWarriors.Humanoids;
 
 namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 {
     public abstract class State : MonoCache, ISwitcherState
     {
         protected PlayerCharactersStateMachine PlayerCharactersStateMachine;
-        protected Factory Factory;
+        protected HumanoidFactory HumanoidFactory;
 
         public void EnterBehavior() =>
             enabled = true;
@@ -14,10 +15,10 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         public void ExitBehavior() =>
             enabled = false;
 
-        public void Init(PlayerCharactersStateMachine playerCharactersStateMachine) =>
+        public void Init(PlayerCharactersStateMachine playerCharactersStateMachine, HumanoidFactory humanoidFactory)
+        {
             PlayerCharactersStateMachine = playerCharactersStateMachine;
-
-        public void InitFactory(Factory factory) => 
-            Factory = factory;
+            HumanoidFactory = humanoidFactory;
+        }
     }
 }

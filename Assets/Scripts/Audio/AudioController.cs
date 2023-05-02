@@ -1,22 +1,22 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Service.SaveLoadService;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
-using System.Collections;
-using Infrastructure.BaseMonoCache.Code.MonoCache;
 
 namespace Audio
 {
     public class AudioController : MonoCache
     {
-         private SaveLoad _saveLoad;
-         private AudioSettingsParameters _audioParametrs;
+        private SaveLoad _saveLoad;
+        private AudioSettingsParameters _audioParametrs;
         
-         private AudioMixer _mixerSound;
-         private AudioMixer _mixerMusic;
+        private AudioMixer _mixerSound;
+        private AudioMixer _mixerMusic;
         public float _maxVolume = 100.0f;  
         public float _minVolume = -80.0f;  
         
@@ -213,13 +213,13 @@ namespace Audio
         }
 
     }
-}
 
-[Serializable]
-public class AudioSettingsParameters
-{
-    public bool SoundEnabled=true;
-    public bool MusicEnabled=true;
-    public float CurrentVolumeSound = 1f;
-    public float CurrentVolumeMusic = 1f;
+    [Serializable]
+    public class AudioSettingsParameters
+    {
+        public bool SoundEnabled=true;
+        public bool MusicEnabled=true;
+        public float CurrentVolumeSound = 1f;
+        public float CurrentVolumeMusic = 1f;
+    }
 }

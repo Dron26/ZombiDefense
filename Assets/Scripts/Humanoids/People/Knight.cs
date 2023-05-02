@@ -18,7 +18,6 @@ namespace Humanoids.People
         private bool _isLife = true;
         
         private float _health = 40f;
-        private int _totalReceivedDamage;
 
         private HashAnimator _hashAnimator;
         private Animator _animator;
@@ -31,9 +30,6 @@ namespace Humanoids.People
             _fxController = GetComponent<FXController>();
         }
         
-        public override float GetRangeAttack() =>
-            RangeAttack;
-
         public override bool IsLife() => 
             _isLife;
 
@@ -43,11 +39,6 @@ namespace Humanoids.People
         public override int GetPrice() =>
             Price;
 
-        public override int GetDamage()
-        {
-            _totalReceivedDamage += Damage;
-            return Damage;
-        }
 
         public override void ApplyDamage(int getDamage)
         {
@@ -63,13 +54,12 @@ namespace Humanoids.People
             _health -= Mathf.Clamp(getDamage, _minHealth, _maxHealth);
         }
         
+        public override float GetHealth()
+        {
+            return _health;
+        }
+        
         public override int GetDamageDone() => 
             (int)Mathf.Round(_maxHealth - _health);
-
-        public override int DamageReceived() =>
-            _totalReceivedDamage;
-
-        public override int TotalPoints() => 
-            _totalReceivedDamage + (int)Mathf.Round(_maxHealth - _health);
     }
 }
