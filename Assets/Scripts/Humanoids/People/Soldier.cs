@@ -1,6 +1,5 @@
 ﻿using Humanoids.AbstractLevel.SimpleWarriors;
 using Infrastructure.AIBattle;
-using Infrastructure.Weapon;
 using UnityEngine;
 
 namespace Humanoids.People
@@ -9,7 +8,7 @@ namespace Humanoids.People
     {
         private const int Level = 1;
         private const int Price = 1;
-        private const int Damage = 15;
+        private const int Damage = 20;
         
 
         private readonly float _minHealth = 0f;
@@ -33,7 +32,7 @@ namespace Humanoids.People
         // protected void void SetAttacments()
         // {
         //     WeaponController weaponController = GetComponent<WeaponController>();
-        //     weaponController.Initialize(Weapons);
+        //     weaponController.Initialize(SmallArms);
         //     
         //     foreach (GameObject items in humanoidData.PrefabCharacterItems)
         //     {
@@ -62,12 +61,13 @@ namespace Humanoids.People
             if (_health <= 0)
             {
                 _animator.SetTrigger(_hashAnimator.Die);
-                _fxController.OnDieFX();
+            //    _fxController.OnDieFX();
                 _isLife = false;
+                Die();
             }
             
             _fxController.OnHitFX();
-            _animator.SetTrigger(_hashAnimator.IsHit);
+           // _animator.SetTrigger(_hashAnimator.IsHit);
             _health -= Mathf.Clamp(getDamage, _minHealth, _maxHealth);
         }
         

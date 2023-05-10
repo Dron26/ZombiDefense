@@ -3,13 +3,14 @@ using Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.FactoryWarriors;
 using Infrastructure.FactoryWarriors.Enemies;
+using Infrastructure.Location;
 
 namespace Infrastructure.AIBattle.EnemyAI.States
 {
     public abstract class EnemyState : MonoCache, IEnemySwitcherState
     {
         protected EnemyStateMachine StateMachine;
-        protected EnemyFactory Factory;
+        protected PlayerCharacterInitializer PlayerCharacterInitializer;
 
         public void EnterBehavior() =>
             enabled = true;
@@ -17,11 +18,10 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         public void ExitBehavior() =>
             enabled = false;
 
-        public void Init(EnemyStateMachine enemyStateMachine) => 
+        public void Init(EnemyStateMachine enemyStateMachine, PlayerCharacterInitializer playerCharacterInitializer)
+        {
             StateMachine = enemyStateMachine;
-
-        public void InitFactory(EnemyFactory factory) => 
-            Factory = factory;
-        
+            PlayerCharacterInitializer = playerCharacterInitializer;
+        }
     }
 }

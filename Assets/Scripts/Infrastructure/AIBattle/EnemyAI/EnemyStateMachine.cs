@@ -15,42 +15,38 @@ namespace Infrastructure.AIBattle.EnemyAI{
     [RequireComponent(typeof(EnemySearchTargetState))]
     [RequireComponent(typeof(EnemyMovementState))]
     [RequireComponent(typeof(EnemyAttackState))]
+    [RequireComponent(typeof(EnemyDieState))]
     public class EnemyStateMachine : MonoCache
     {
         private Dictionary<Type, IEnemySwitcherState> _allBehaviors;
         private IEnemySwitcherState _currentBehavior;
         private SceneInitializer _sceneInitializer;
-        private EnemyFactory _enemyFactory;
+        
+        private PlayerCharacterInitializer _characterInitializer;
 
 
         private void Awake()
         {
-            _sceneInitializer=FindObjectOfType<SceneInitializer>();            
-            _sceneInitializer.SetInfoCompleted += ChangeState;
-            _enemyFactory=_sceneInitializer.GetEnemyFactory();
+            _sceneInitializer=FindObjectOfType<SceneInitializer>();   
+            _characterInitializer=_sceneInitializer.GetPlayerCharacterInitializer();
             
             _allBehaviors = new Dictionary<Type, IEnemySwitcherState>
             {
                 [typeof(EnemySearchTargetState)] = GetComponent<EnemySearchTargetState>(),
                 [typeof(EnemyMovementState)] = GetComponent<EnemyMovementState>(),
                 [typeof(EnemyAttackState)] = GetComponent<EnemyAttackState>(),
+                [typeof(EnemyDieState)] = GetComponent<EnemyDieState>(),
             };
 
             foreach (var behavior in _allBehaviors)
             {
-                behavior.Value.Init(this);
+                behavior.Value.Init(this, _characterInitializer);
                 behavior.Value.ExitBehavior();
             }
 
         }
-
-        private void Start()
-        {
-           
-            
-        }
         
-        private void ChangeState()
+        private void Start()
         {
             _currentBehavior = _allBehaviors[typeof(EnemySearchTargetState)];
             EnterBehavior<EnemySearchTargetState>();
@@ -66,7 +62,6 @@ namespace Infrastructure.AIBattle.EnemyAI{
         
         private void OnDisable()
         {
-            _sceneInitializer.SetInfoCompleted -= ChangeState;
         }
     }
 }

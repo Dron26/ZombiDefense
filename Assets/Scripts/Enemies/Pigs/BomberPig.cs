@@ -12,7 +12,7 @@ namespace Enemies.Pigs
         private readonly float _rangeAttack = 1.2f;
         private readonly int _damage = 15;
         
-        private float _health = 70f;
+        private float _health ;
         private bool _isLife = true;
 
         private Animator _animator;
@@ -48,9 +48,14 @@ namespace Enemies.Pigs
         
         public override void SetAttacments()
         {
+            _health = _maxHealth;
+        }
+
+        public override void Initialize()
+        {
             throw new System.NotImplementedException();
         }
-        
+
         public override float GetRangeAttack() =>
             _rangeAttack;
 

@@ -3,7 +3,8 @@ using Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.FactoryWarriors;
 using Infrastructure.FactoryWarriors.Humanoids;
-using Infrastructure.Weapon;
+using Infrastructure.Location;
+using Infrastructure.WeaponManagment;
 using Service.SaveLoadService;
 using TMPro;
 using UnityEngine;
@@ -24,11 +25,11 @@ namespace Observer
         public Dictionary<int, InfoMemberBattle> GetMembersBattle() =>
             _membersBattles;
         
-        public void SetDataBase(HumanoidFactory humanoidFactory)
+        public void SetDataBase(PlayerCharacterInitializer playerCharacterInitializer)
         {
             Init();
 
-            foreach (Humanoid humanoid in humanoidFactory.GetAllHumanoids())
+            foreach (Humanoid humanoid in playerCharacterInitializer.GetAllHumanoids())
             {
                 _weaponController = humanoid.GetComponent<WeaponController>();
                 

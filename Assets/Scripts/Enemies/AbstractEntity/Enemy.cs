@@ -1,11 +1,16 @@
-﻿using Infrastructure.AIBattle;
+﻿using System.Collections;
+using System.Collections.Generic;
+using Infrastructure.AIBattle;
 using Infrastructure.AIBattle.EnemyAI;
+using Infrastructure.AIBattle.EnemyAI.States;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine;
 using Infrastructure.AssetManagement;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.FactoryWarriors.Enemies;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Events;
+using UnityEngine.PlayerLoop;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace Enemies.AbstractEntity
@@ -17,8 +22,6 @@ namespace Enemies.AbstractEntity
         
         public int MinLevelForHumanoid => enemyData.MinLevelForHumanoid;
         protected EnemyData enemyData;
-        public delegate void EnemyDeathHandler(Enemy enemy);
-        public event EnemyDeathHandler OnEnemyDeath;
         public float MaxHealth => enemyData.MaxHealth;
         public float RangeAttack => enemyData.RangeAttack;
         public int Damage => enemyData.Damage;
@@ -30,17 +33,20 @@ namespace Enemies.AbstractEntity
         public abstract float GetHealth();
         public abstract bool IsLife();
         public abstract int GetPrice();
+
+        public Vector3 StartPosition;
         
         public abstract void ApplyDamage(int getDamage);
 
         public abstract void SetAttacments();
         
         public float GetRadiusSearch() => 25f;
+        public UnityAction<Enemy> Load;
         
         protected virtual void Die()
         {
-            OnEnemyDeath?.Invoke(this);
-            // ...
+            EnemyStateMachine stateMachine = GetComponent<EnemyStateMachine>();
+            stateMachine.EnterBehavior<EnemyDieState>();
         }
         
         public void LoadPrefab()
@@ -48,7 +54,6 @@ namespace Enemies.AbstractEntity
             if (enemyDataReference.Asset != null)
             {
                 enemyData = (Infrastructure.FactoryWarriors.Enemies.EnemyData)enemyDataReference.Asset;
-                Debug.Log($"EnemyData loaded: {enemyData}");
                 return;
             }
 
@@ -57,7 +62,8 @@ namespace Enemies.AbstractEntity
                 if (handle.Status == AsyncOperationStatus.Succeeded)
                 {
                     enemyData = (Infrastructure.FactoryWarriors.Enemies.EnemyData)handle.Result;
-                    Debug.Log($"EnemyData loaded: {enemyData}");
+                    Initialize();
+                    Load?.Invoke(this);
                 }
                 else
                 {
@@ -65,5 +71,7 @@ namespace Enemies.AbstractEntity
                 }
             };
         }
+
+        public abstract void Initialize();
     }
 }

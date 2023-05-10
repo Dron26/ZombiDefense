@@ -19,12 +19,13 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         private HashAnimator _hashAnimator;
         private Coroutine _coroutine;
         private FXController _fxController;
-        
+        private Enemy _enemy;
         private void Start()
         {
             _animator = GetComponent<Animator>();
             _hashAnimator = GetComponent<HashAnimator>();
             _fxController = GetComponent<FXController>();
+            _enemy=GetComponent<Enemy>();
         }
 
         protected override void UpdateCustom()
@@ -57,37 +58,32 @@ namespace Infrastructure.AIBattle.EnemyAI.States
                     transform.position =
                         new Vector3(ourPosition.x, ourPosition.y + 1.5f, ourPosition.z);
                 
-                _animator.SetBool(_hashAnimator.IsShoot, true);
                 
-                if (TryGetComponent(out Enemy enemy))
-                {
                     if (_humanoid == null)
                         StopCoroutine(_coroutine);
-
-                    if (_humanoid != null && _humanoid.IsLife() == false)
+                    else if ( _humanoid.IsLife() == false)
                     {
-                        _animator.SetBool(_hashAnimator.IsShoot, false);
                         _humanoid.gameObject.SetActive(false);
                         StateMachine.EnterBehavior<EnemySearchTargetState>();
+                        break;
                     }
 
-                    if(_humanoid!=null){
-                        
+                    if(_humanoid!=null)
+                    {
                         _currentRange = Vector3.Distance(transform.position, _humanoid.transform.position);
 
-                        if (_currentRange <= enemy.GetRangeAttack())
+                        if (_currentRange <= _enemy.GetRangeAttack())
                         {
-                            _fxController.OnAttackFX();
+                            _animator.SetTrigger(_hashAnimator.Attack);
                             transform.DOLookAt(_humanoid.transform.position, .1f);
-                            _humanoid.ApplyDamage(enemy.GetDamage());
+                            _humanoid.ApplyDamage(_enemy.GetDamage());
                         }
 
-                        if (_currentRange >= enemy.GetRangeAttack())
+                        if (_currentRange >= _enemy.GetRangeAttack())
                         {
-                            _animator.SetBool(_hashAnimator.IsShoot, false);
                             _isAttack = false;
                             StateMachine.EnterBehavior<EnemyMovementState>();
-                        }}
+                        }
                     
 
                     yield return _waitForSeconds;

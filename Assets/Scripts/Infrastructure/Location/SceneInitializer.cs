@@ -14,44 +14,29 @@ namespace Infrastructure.Location
     public class SceneInitializer:MonoCache
     {
         [SerializeField] private WaveManager _waveManager;
-        [SerializeField] private WorkPointGroup WorkPoint;
-        [SerializeField] List<GameObject> humanoids ;
-        [SerializeField] private HumanoidFactory _humanoidFactory;
+        [SerializeField] private PlayerCharacterInitializer _playerCharacterInitializer;
         public UnityAction SetInfoCompleted;
+        private AudioSource _audioSource;
         private void Start()
         {
+            _audioSource = GetComponent<AudioSource>();
             _waveManager.SpawningCompleted += SetInfo;
-            
-            CharacterInitialize();
+            _playerCharacterInitializer.AreOverHumanoids+=StopSpawning;
+            _playerCharacterInitializer.CharacterInitialize(_audioSource);
             _waveManager.Initialize();
-            _humanoidFactory.SetEnemyData (_waveManager.GetEnemyGroup());
-            _waveManager.SetHumanoidData(_humanoidFactory.GetAllHumanoids());
-            SetInfoCompleted?.Invoke();
+            _waveManager.SetHumanoidData(_playerCharacterInitializer.GetAllHumanoids());
         }
         
-        public void CharacterInitialize()
+        public WaveSpawner GetWaveSpawner() => _waveManager.GetWaveSpawner();
+        public PlayerCharacterInitializer GetPlayerCharacterInitializer() => _playerCharacterInitializer;
+
+        private void StopSpawning()
         {
-            List<Vector3> positions = new List<Vector3>();
-
-
-            foreach (GameObject position in WorkPoint.WorkPoints)
-            {
-                positions.Add(position.transform.position);
-            }
-            
-            _humanoidFactory.Create(positions[0],humanoids[0]);
-            
-            // for (int i = 0; i < humanoids.Count; i++)
-            // {
-            //     _humanoidFactory.Create(positions[i],humanoids[i]);
-            // }
+            _waveManager.StopSpawn();
         }
-
-        public HumanoidFactory GetHumanoidFactory() => _humanoidFactory;
-        public EnemyFactory GetEnemyFactory() => _waveManager.GetWEnemyFactory();
         private void SetInfo()
         {
-            
+            SetInfoCompleted?.Invoke();
         }
     }
 }

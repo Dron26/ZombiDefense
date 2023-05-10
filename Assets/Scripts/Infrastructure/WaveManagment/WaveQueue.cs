@@ -9,8 +9,10 @@ namespace Infrastructure.WaveManagment
     public class WaveQueue:MonoCache
     {
         private Queue<Enemy> _enemiesToSpawn = new Queue<Enemy>();
+        public int  Count=>_enemiesToSpawn.Count;
         public int Level=>_level;
         private int _level;
+        
         public void Enqueue(Enemy enemy)
         {
             _enemiesToSpawn.Enqueue(enemy);

@@ -1,6 +1,6 @@
 ﻿using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
-using Infrastructure.Weapon;
+using Infrastructure.WeaponManagment;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -55,7 +55,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
            if (_opponentHumanoid != null && _opponentHumanoid.IsLife() == false
                || _opponentEnemy != null && _opponentEnemy.IsLife() == false)
            {
-               //_animator.SetBool(_hashAnimator.IsRun, false);
+               //_animator.SetBool(_hashAnimator.Run, false);
                PlayerCharactersStateMachine.EnterBehavior<SearchTargetState>();
            }
            
@@ -77,14 +77,14 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
            
            if (_opponentHumanoid == null)
            {
-               _animator.SetBool(_hashAnimator.IsRun, false);
+               _animator.SetBool(_hashAnimator.Run, false);
               // Movement(ourPosition, opponentPosition);
            }
        }
 
        private void Movement(Vector3 ourPosition, Vector3 opponentPosition)
        {
-           _animator.SetBool(_hashAnimator.IsRun, true);
+           _animator.SetBool(_hashAnimator.Run, true);
            // if (transform.position.y < -3.5)
            //     transform.position =
            //         new Vector3(ourPosition.x, ourPosition.y + 1.5f, ourPosition.z);

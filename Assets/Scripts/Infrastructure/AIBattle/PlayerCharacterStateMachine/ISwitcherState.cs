@@ -1,4 +1,5 @@
-﻿using Infrastructure.FactoryWarriors.Humanoids;
+﻿using Infrastructure.FactoryWarriors.Enemies;
+using Infrastructure.WaveManagment;
 
 namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
 {
@@ -6,6 +7,6 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
     {
         public void EnterBehavior();
         public void ExitBehavior();
-        public void Init(PlayerCharactersStateMachine playerCharactersStateMachine,HumanoidFactory humanoidFactory);
+        public void Init(PlayerCharactersStateMachine playerCharactersStateMachine,WaveSpawner waveSpawner);
     }
 }

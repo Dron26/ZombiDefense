@@ -9,18 +9,23 @@ namespace Infrastructure.FactoryWarriors.Enemies
     {
         [SerializeField] private List<EnemyData> enemiesData;
         private static readonly List<Humanoid> _humanoids = new();
-        public Enemy Create( Enemy enemy,Transform spawnPoint)
+        private static readonly List<Enemy> _enemies = new();
+        public Enemy Create( GameObject enemy)
         {
-            enemy.LoadPrefab();
-            GameObject newEnemy = Instantiate(enemy.GetPrefab(), spawnPoint.position, Quaternion.identity, transform);
-            var enemyComponent = enemy.GetComponent<Enemy>();
+            
+            GameObject newEnemy = Instantiate(enemy,transform);
+            newEnemy.gameObject.SetActive(false);
+            Enemy enemyComponent = newEnemy.GetComponent<Enemy>();
+            enemyComponent.LoadPrefab();
+            _enemies.Add(enemyComponent);
+            
             if (enemyComponent != null)
             {
                 return enemyComponent;
             }
             else
             {
-                Debug.LogError($"PrefabCharacter {enemy.GetPrefab().name} doesn't have a component of type Enemys.");
+                Debug.LogError($"PrefabCharacter {enemyComponent.GetPrefab().name} doesn't have a component of type Enemys.");
                 Destroy(enemy);
                 return null;
             }
@@ -57,6 +62,11 @@ namespace Infrastructure.FactoryWarriors.Enemies
         }
         public List<Humanoid> GetAllHumanoids =>
             _humanoids;
+
+        public List<Enemy> GetAllEnemies => 
+            _enemies;
+
+        
     }
     
 }

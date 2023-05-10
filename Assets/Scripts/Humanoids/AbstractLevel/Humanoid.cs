@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using Enemies.AbstractEntity;
 using Infrastructure.AIBattle;
+using Infrastructure.AIBattle.EnemyAI.States;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.FactoryWarriors.Enemies;
 using Infrastructure.FactoryWarriors.Humanoids;
-using Infrastructure.Weapon;
+using Infrastructure.WeaponManagment;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
@@ -22,13 +23,9 @@ namespace Humanoids.AbstractLevel
         
         protected HumanoidData humanoidData;
         protected WeaponData weaponData;
-        public delegate void HumanoidDeathHandler(Humanoid humanoid);
-        public event HumanoidDeathHandler OnHumanoidDeath;
+
         public float MaxHealth => humanoidData.MaxHealth;
         public int Level => humanoidData.Level; 
-        public  GameObject GetPrefabCharacter()=>humanoidData.PrefabCharacter;
-        //public  GameObject GetPrefabWeapon()=>weaponData.WeaponPrefab;
-        public  List<GameObject> PrefabCharacterItems=>humanoidData.PrefabCharacterItems;
         public UnityAction<Humanoid> Load;
 
         public WeaponData GetWeaponData() =>weaponData;
@@ -40,6 +37,7 @@ namespace Humanoids.AbstractLevel
         
         public abstract int GetDamageDone();
 
+        public Vector3 StartPosition;
         public void InitPosition(Vector3 newPosition) =>
             transform.position = newPosition;
         
@@ -85,7 +83,7 @@ namespace Humanoids.AbstractLevel
                 if (handle.Status == AsyncOperationStatus.Succeeded)
                 {
                     weaponData =(WeaponData)handle.Result;
-                    Debug.Log($"CharacterData loaded: {weaponData}");
+                    Debug.Log($"weaponData loaded: {weaponData}");
                     
                 }
                 else
@@ -95,10 +93,15 @@ namespace Humanoids.AbstractLevel
             };
         }
 
+        public void Setparametrs( )
+        {
+            
+        }
+
         protected virtual void Die()
         {
-            OnHumanoidDeath?.Invoke(this);
-            // ...
+            PlayerCharactersStateMachine stateMachine = GetComponent<PlayerCharactersStateMachine>();
+            stateMachine.EnterBehavior<DieState>();
         }
     }
 }

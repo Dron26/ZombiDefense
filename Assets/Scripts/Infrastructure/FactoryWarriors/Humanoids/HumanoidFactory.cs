@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
+using Infrastructure.AIBattle;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
-using Infrastructure.Weapon;
+using Infrastructure.WeaponManagment;
 using Service.GeneralFactory;
 using Service.SaveLoadService;
 using UnityEngine;
@@ -32,38 +33,35 @@ namespace Infrastructure.FactoryWarriors.Humanoids
     public class HumanoidFactory : MonoCache, IServiceFactory
     {
         [SerializeField] private List<HumanoidData> humanoidsData;
-        private static readonly List<Humanoid> _humanoids = new();
-        private static readonly List<Enemy> _enemies = new();
+        private static readonly List<Humanoid> _inactiveHumanoids = new();
         [SerializeField] private  List<WorkPointGroup> _workPoints;
+        private AudioSource _audioSource;
         
-        public void Create(Vector3 spawnPoint, GameObject humanoid)
+        
+        public Humanoid Create(WorkPoint workPoint, GameObject humanoid)
         {
-            GameObject newHumanoid = humanoid;
+            GameObject newHumanoid = Instantiate(humanoid, workPoint.transform.position, Quaternion.identity);
+            newHumanoid.transform.parent=workPoint.transform;
             Humanoid humanoidComponent = newHumanoid.GetComponent<Humanoid>();
             humanoidComponent.Load += SetWeapons;
             humanoidComponent.LoadPrefab();
             
+            return humanoidComponent;
         }
 
         private void SetWeapons(Humanoid humanoid )
-        { 
-            Instantiate(humanoid.GetPrefabCharacter(), transform.position, Quaternion.identity, transform);
-            _humanoids.Add(humanoid);
-             
-            if (humanoid == null)
-            {
-                Debug.LogError($"PrefabCharacter {humanoid.GetPrefabCharacter().name} doesn't have a component of type Enemys.");
-                Destroy(humanoid);
-            }
-            
+        {
             WeaponController weaponController = humanoid.GetComponent<WeaponController>();
             weaponController.Initialize();
-            
+            FXController fxController = humanoid.GetComponent<FXController>();
+            fxController.SetAudioSource(_audioSource);
+            fxController.Initialize(weaponController);
         }
 
         public HumanoidData GetRandomHumanoidData(int level)
         {
             var humanoidDatas = new List<HumanoidData>();
+            
             foreach (var enemy in humanoidsData)
             {
                 if (enemy.Level == level)
@@ -84,21 +82,11 @@ namespace Infrastructure.FactoryWarriors.Humanoids
             }
         }
 
-        public void SetEnemyData(List<Enemy> enemies)
+        //при убийстве персонажа игрока, нужно обновлять список доступных персонажей. как вариант отдавать не через фабрику список  ну или на фабрике подписываться и перекидывать в лист дохлых а энеми будут искать новых таргетов.
+
+        public void Initialize(AudioSource audioSource)
         {
-            foreach (var enemy in enemies)
-            {
-                _enemies.Add(enemy);
-            }
+            _audioSource=audioSource;
         }
-
-        public List<Humanoid> GetAllHumanoids()
-        {
-            return _humanoids; 
-        }
-
-        public List<Enemy> GetAllEnemies => 
-            _enemies;
-
     }
 }

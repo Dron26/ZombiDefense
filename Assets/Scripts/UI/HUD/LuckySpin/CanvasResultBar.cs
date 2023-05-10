@@ -3,6 +3,7 @@ using System.Linq;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.FactoryWarriors;
 using Infrastructure.FactoryWarriors.Humanoids;
+using Infrastructure.Location;
 using Infrastructure.States;
 using Observer;
 using Service.SaveLoadService;
@@ -56,9 +57,9 @@ namespace UI.HUD.LuckySpin
             _resultBattle.text = result;
         }
 
-        public void CalculateBonus(HumanoidFactory humanoidFactory)
+        public void CalculateBonus(PlayerCharacterInitializer playerCharacterInitializer)
         {
-            _databaseStatistics.SetDataBase(humanoidFactory);
+            _databaseStatistics.SetDataBase(playerCharacterInitializer);
 
             foreach (var memberBattle in _databaseStatistics.GetMembersBattle())
             {
@@ -69,7 +70,7 @@ namespace UI.HUD.LuckySpin
                     GetFraction(memberBattle.Key),
                     GetNameMember(memberBattle.Key),
                     GetLevelMember(memberBattle.Key),
-                    GetCountSurvival(humanoidFactory, memberBattle.Key),
+                    GetCountSurvival(playerCharacterInitializer, memberBattle.Key),
                     GetCountGetDamage(memberBattle),
                     CountTakeDamage(memberBattle));
             }
@@ -101,12 +102,12 @@ namespace UI.HUD.LuckySpin
             return $"Get damage: {memberBattle.Value.DamageReceived.ToString()}";
         }
 
-        private string GetCountSurvival(HumanoidFactory humanoidFactory, int level)
+        private string GetCountSurvival(PlayerCharacterInitializer playerCharacterInitializer, int level)
         {
             int countHumanoids = 0;
             int countSurvivals = 0;
             
-            foreach (var humanoid in humanoidFactory.GetAllHumanoids().Where(humanoid => humanoid.GetLevel() == level))
+            foreach (var humanoid in playerCharacterInitializer.GetAllHumanoids().Where(humanoid => humanoid.GetLevel() == level))
             {
                 countHumanoids++;
 

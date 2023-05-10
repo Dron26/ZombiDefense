@@ -6,7 +6,7 @@ namespace Infrastructure.FactoryWarriors.Enemies
     [CreateAssetMenu(fileName = "New Enemys Data", menuName = "Enemies/Enemys Data")]
     public class EnemyData : ScriptableObject
     {
-        [SerializeField] private float maxHealth = 60f;
+        [SerializeField] private float maxHealth = 40f;
         [SerializeField] private float rangeAttack = 1.2f;
         [SerializeField] private int damage = 15;
         [SerializeField] private GameObject _prefabCharacter;

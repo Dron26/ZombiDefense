@@ -1,3 +1,5 @@
+using System;
+using DG.Tweening;
 using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
 using UnityEngine;
@@ -13,25 +15,24 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         private NavMeshAgent agent;
         private float _stoppingDistance;
         private float _distance;
-        
         private Animator _animator;
         private HashAnimator _hashAnimator;
-
-        private void Start()
+        private Enemy _enemy;
+        private void Awake()
         {
             _animator = GetComponent<Animator>();
             _hashAnimator = GetComponent<HashAnimator>();
             agent = GetComponent<NavMeshAgent>();
+            _enemy = GetComponent<Enemy>();
+        }
 
-            if (TryGetComponent(out Enemy enemy)) 
-                _stoppingDistance = enemy.GetRangeAttack();
+        private void Start()
+        {
+            _stoppingDistance = _enemy.GetRangeAttack();
         }
 
         protected override void FixedUpdateCustom()
         {
-            if (isActiveAndEnabled == false)
-                return;
-
             Move();
         }
 
@@ -48,24 +49,34 @@ namespace Infrastructure.AIBattle.EnemyAI.States
                if ( _humanoid.IsLife())
                {
                    humanoidPosition = _humanoid.transform.position;
-                   agent.SetDestination(humanoidPosition);
-                   Movement(ourPosition, humanoidPosition);
+                   if (agent.isOnNavMesh)
+                   {
+                       agent.SetDestination(humanoidPosition);
+                       Movement(ourPosition, humanoidPosition);
+                   }
                }
                else
                {
-                   _animator.SetBool(_hashAnimator.IsRun, false);
-                   StateMachine.EnterBehavior<EnemySearchTargetState>();
+                   ChangeState();
                }
            }
-
-           print(gameObject.name);
-           print("EnemyMovementState  Take Null humanoid");
+           else
+           {
+               ChangeState();
+           }
+           
        }
 
 
+       private void ChangeState()
+       {
+           _animator.SetBool(_hashAnimator.Walk, false);
+           StateMachine.EnterBehavior<EnemySearchTargetState>();
+       }
+
        private void Movement(Vector3 ourPosition, Vector3 opponentPosition)
        {
-           _animator.SetBool(_hashAnimator.IsRun, true);
+           _animator.SetBool(_hashAnimator.Walk, true);
            
            // if (transform.position.y < -3.5)
            //     transform.position =
@@ -77,8 +88,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
           // transform.position = new Vector3(MovementAxis(ourPosition.x, opponentPosition.x), 
           //     MovementAxis(ourPosition.y, opponentPosition.y), 
           //     MovementAxis(ourPosition.z, opponentPosition.z));
-
-         //  transform.DOLookAt(opponentPosition, .05f);
+          //transform.DOLookAt(opponentPosition, .05f);
            
            TryNextState(ourPosition, opponentPosition);
        }

@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
-using Infrastructure.Weapon;
+using Infrastructure.WeaponManagment;
 using Unity.Collections;
 using Unity.Jobs;
 using Unity.Mathematics;
@@ -13,52 +15,150 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
     {
         private MovementState _movementState;
         private AttackState _attackState;
-
-        private Enemy _targetEnemy;
-
-        // Add a field to hold the array of enemy transforms.
+        private Enemy _enemy;
+        private WeaponController _weaponController;
         private Transform[] _enemyTransforms;
+        private bool _isSearhing;
+        
+        
+        private Coroutine currentTurnCoroutine;
+        
+        private bool _isTurning;
+        public float maxTurnTime = 1f; // максимальное время поворота
+        public float _maxTurnAngle = 180.0f; // максимальный угол, при котором персонаж поворачивается
+        private float minTurnTime = 0.5f; // минимальное время поворота
+        public float _minTurnAngle = 10f; // минимальный угол, при котором персонаж поворачивается
+        private float _turnTime = 0.3f;
+        private float minDistanceToEnemy = 2.0f; // минимальное расстояние до врага, при котором персонаж перестает поворачиваться
 
-        private void Start()
+        private void Awake()
         {
+            _weaponController = GetComponent<WeaponController>();
             _movementState = GetComponent<MovementState>();
             _attackState = GetComponent<AttackState>();
             // Get an array of enemy transforms.
-            _enemyTransforms = HumanoidFactory.GetAllEnemies
-                .Select(enemy => enemy.transform)
-                .ToArray();
         }
 
         protected override void UpdateCustom()
         {
-            if (isActiveAndEnabled == false)
+            if ( gameObject.activeSelf== false)
                 return;
 
-            Search();
+            if (_isSearhing==false) StartCoroutine(Search());
         }
 
-        private void Search()
+        private IEnumerator Search()
         {
-            if (TryGetComponent(out Humanoid _))
-            {
-                // Call the method to get the index of the closest enemy.
+            _isSearhing = true;
+            
+            _enemyTransforms = WaveSpawner.GetEnemyInWaveQueue()
+                .Select(enemy => enemy.transform)
+                .ToArray();
+            
                 int closestEnemyIndex = GetClosestEnemyIndex(transform.position);
-
-                // If the closest enemy index is valid, use that enemy.
+                
                 if (closestEnemyIndex != -1)
                 {
-                    _targetEnemy = HumanoidFactory.GetAllEnemies[closestEnemyIndex];
-                    _attackState.InitEnemy(_targetEnemy);
-                    PlayerCharactersStateMachine.EnterBehavior<AttackState>();
+                    _enemy = WaveSpawner.GetEnemyInWaveQueue()[closestEnemyIndex];
+                    
+                    
+                    float _currentRange = Vector3.Distance(transform.position, _enemy.transform.position);
+                    float rangeAttack = _weaponController.GetRangeAttack();
+                    
+                    if (_currentRange <= rangeAttack&_isTurning!=true)
+                    {
+                        LookEnemyPosition(_enemy.transform);
+                    }
                 }
+
+                yield return null;
+                _isSearhing = false;
+        }
+        
+        // private void LookEnemyPosition(Transform enemyTransform)
+        // {
+        //     // Поворачиваем персонажа в сторону врага
+        //     _isTurning = true;
+        //     
+        //     transform.DOLookAt(enemyTransform.position, _turnTime).OnComplete(() =>
+        //     {
+        //         _isTurning = false;
+        //     });
+        // }
+        
+        private void ChangeState()
+        {
+            _isTurning = false;
+            _attackState.InitEnemy(_enemy);
+            PlayerCharactersStateMachine.EnterBehavior<AttackState>();
+        }
+        
+        
+        
+        private void LookEnemyPosition(Transform enemyTransform)
+        {
+            _turnTime = 0;
+
+            if (currentTurnCoroutine != null)
+            {
+                StopCoroutine(currentTurnCoroutine);
             }
+
+            Vector3 direction = enemyTransform.position - transform.position;
+            float distance = direction.magnitude;
+
+            if (distance <= minDistanceToEnemy)
+            {
+                ChangeState();
+                return;
+            }
+
+            float angle = Vector3.Angle(direction, transform.forward);
+
+            _turnTime = Mathf.Lerp(minTurnTime, maxTurnTime, (angle - _minTurnAngle) / (_maxTurnAngle - _minTurnAngle));
+            _turnTime = Mathf.Min(_turnTime, maxTurnTime);
+            
+            if (Vector3.Dot(direction.normalized, transform.forward) < 0)
+            {
+                // Враг находится за спиной персонажа
+                currentTurnCoroutine = StartCoroutine(TurnTowardsEnemy(enemyTransform, _turnTime, true));
+                return;
+            }
+            
+            if (angle < _minTurnAngle)
+            {
+                ChangeState();
+                return;
+            }
+
+            currentTurnCoroutine = StartCoroutine(TurnTowardsEnemy(enemyTransform, _turnTime, false));
         }
 
+        private IEnumerator TurnTowardsEnemy(Transform enemyTransform, float turnTime, bool shouldShoot)
+        {
+            _isTurning = true;
+            Quaternion targetRotation = Quaternion.LookRotation(enemyTransform.position - transform.position);
+            float t = 0.0f;
+            Quaternion startRotation = transform.rotation;
+
+            while (t < turnTime)
+            {
+                t += Time.deltaTime;
+                float normalizedTime = t / turnTime;
+                transform.rotation = Quaternion.Lerp(startRotation, targetRotation, normalizedTime);
+                yield return null;
+            }
+
+            transform.rotation = targetRotation;
+            ChangeState();
+        }
+
+
+        
         private int GetClosestEnemyIndex(Vector3 soldierPosition)
         {
-            // Create a NativeArray of EnemyPositionData and fill it with the data we need.
             NativeArray<EnemyPositionData> enemyPositionDataArray = new NativeArray<EnemyPositionData>(_enemyTransforms.Length, Allocator.TempJob);
-        
+
             for (int i = 0; i < _enemyTransforms.Length; i++)
             {
                 enemyPositionDataArray[i] = new EnemyPositionData
@@ -68,13 +168,16 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
                 };
             }
 
-            // Create a JobHandle and schedule the job.
-            JobHandle jobHandle = new GetClosestEnemyJob
+            // Create a job and set the size of the result array.
+            var job = new GetClosestEnemyJob
             {
                 enemyPositionDataArray = enemyPositionDataArray
-            }.Schedule(_enemyTransforms.Length, 10);
+            };
+            
+            job.SetResultArraySize(_enemyTransforms.Length);
 
-            // Wait for the job to complete.
+            // Schedule the job and wait for it to complete.
+            var jobHandle = job.Schedule(_enemyTransforms.Length, 100);
             jobHandle.Complete();
 
             // Find the index of the closest enemy from the results of the job.
@@ -82,58 +185,49 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
             float closestEnemyDistance = float.MaxValue;
             for (int i = 0; i < _enemyTransforms.Length; i++)
             {
-                float distance = math.distance(soldierPosition, enemyPositionDataArray[i].enemyPosition);
+                float distance = job.resultArray[i].distance;
                 if (distance < closestEnemyDistance)
                 {
                     closestEnemyDistance = distance;
-                    closestEnemyIndex = i;
+                    closestEnemyIndex = job.resultArray[i].enemyIndex;
                 }
             }
 
-            // Dispose of the NativeArray.
             enemyPositionDataArray.Dispose();
+            job.resultArray.Dispose();
 
             return closestEnemyIndex;
         }
-
-        // Define a struct to hold the data needed by the job.
+        
         private struct EnemyPositionData
         {
             public Vector3 soldierPosition;
             public Vector3 enemyPosition;
         }
-
-        // Define the job that will be run in parallel by the Job System.
+        
         private struct GetClosestEnemyJob : IJobParallelFor
         {
             [ReadOnly] public NativeArray<EnemyPositionData> enemyPositionDataArray;
-            // Add a field to hold the array of results.
-            private NativeArray<EnemyDistanceData> resultArray;
+            public NativeArray<EnemyDistanceData> resultArray;
 
-            // Define a struct to hold the results of the job.
-            private struct EnemyDistanceData
+            public struct EnemyDistanceData
             {
                 public int enemyIndex;
                 public float distance;
             }
-        
+
             public void Execute(int index)
             {
                 EnemyPositionData enemyPositionData = enemyPositionDataArray[index];
                 float distance = math.distance(enemyPositionData.soldierPosition, enemyPositionData.enemyPosition);
 
-                SetResultArraySize(enemyPositionDataArray.Length);
-            
-                // Store the result in the corresponding element of the result array.
                 resultArray[index] = new EnemyDistanceData
                 {
                     enemyIndex = index,
                     distance = distance
                 };
             }
-        
-        
-            // Add a method to set the size of the result array.
+
             public void SetResultArraySize(int size)
             {
                 resultArray = new NativeArray<EnemyDistanceData>(size, Allocator.TempJob);

@@ -1,31 +1,31 @@
 ﻿using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Infrastructure.WeaponManagment;
 using UnityEngine;
 
 namespace Infrastructure.AIBattle
 {
     public class FXController : MonoCache
     {
-        [SerializeField] private ParticleSystem _particleAttack;
         [SerializeField] private ParticleSystem _particleHit;
+        [SerializeField] private ParticleSystem _particleGunshotSingle;
+        [SerializeField] private ParticleSystem _particleEjectSingle;
         [SerializeField] private ParticleSystem _particleDie;
-
-        [SerializeField] private AudioSource _audioAttack;
-        [SerializeField] private AudioSource _audioDie;
-
-        protected override void OnEnabled()
-        {
-            _particleAttack.Stop();
-            _particleHit.Stop();
-            _particleDie.Stop();
-            
-            _audioAttack.Stop();
-            _audioDie.Stop();
-        }
+         private AudioClip _shoot;
+         private AudioClip _reload;
+        private AudioSource _audioSource;
+        
+        private Weapon _weapon;
+        
 
         public void OnAttackFX()
         {
-            _particleAttack.Play();
-            _audioAttack.Play();
+            _audioSource.PlayOneShot(_shoot);
+            _particleGunshotSingle.Play();
+        }
+        public void OnAttackFXStop()
+        {
+            _particleGunshotSingle.Stop();
+            _particleEjectSingle.Stop();
         }
         
         public void OnHitFX() => 
@@ -33,8 +33,30 @@ namespace Infrastructure.AIBattle
 
         public void OnDieFX()
         {
-            _particleDie.Play();
-            _audioDie.Play();
+            //_particleDie.Play();
+           // _audioDie.Play();
+        }
+
+        public void OnReloadFX()
+        {
+            _audioSource.PlayOneShot(_reload);
+        }
+
+        public void Initialize(WeaponController weaponController)
+        {
+            _weapon =weaponController.GetActiveWeapon();
+            _shoot=_weapon.Shoot;
+            _reload=_weapon.Reload;
+            
+           // _particleHit=_weapon.
+            //_particleEjectSingle.Stop();
+            //_audioAttack.Stop();
+           // _audioDie.Stop();
+        }
+
+        public void SetAudioSource(AudioSource audioSource)
+        {
+            _audioSource=audioSource;
         }
     }
 }

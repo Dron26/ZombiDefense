@@ -51,7 +51,12 @@ namespace Enemies.Aliens
         {
             throw new System.NotImplementedException();
         }
-        
+
+        public override void Initialize()
+        {
+            throw new System.NotImplementedException();
+        }
+
         public override float GetRangeAttack() =>
             _rangeAttack;
 

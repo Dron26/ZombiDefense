@@ -1,13 +1,14 @@
 ﻿using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.FactoryWarriors;
+using Infrastructure.FactoryWarriors.Enemies;
 using Infrastructure.FactoryWarriors.Humanoids;
+using Infrastructure.WaveManagment;
 
 namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 {
     public abstract class State : MonoCache, ISwitcherState
     {
         protected PlayerCharactersStateMachine PlayerCharactersStateMachine;
-        protected HumanoidFactory HumanoidFactory;
+        protected WaveSpawner WaveSpawner;
 
         public void EnterBehavior() =>
             enabled = true;
@@ -15,10 +16,10 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         public void ExitBehavior() =>
             enabled = false;
 
-        public void Init(PlayerCharactersStateMachine playerCharactersStateMachine, HumanoidFactory humanoidFactory)
+        public void Init(PlayerCharactersStateMachine playerCharactersStateMachine, WaveSpawner waveSpawner )
         {
             PlayerCharactersStateMachine = playerCharactersStateMachine;
-            HumanoidFactory = humanoidFactory;
+            WaveSpawner = waveSpawner;
         }
     }
 }

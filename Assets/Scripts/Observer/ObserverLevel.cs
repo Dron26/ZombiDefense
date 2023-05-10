@@ -6,6 +6,7 @@ using Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.FactoryWarriors;
 using Infrastructure.FactoryWarriors.Humanoids;
+using Infrastructure.Location;
 using UI.HUD.LuckySpin;
 using UnityEngine;
 
@@ -13,7 +14,7 @@ namespace Observer
 {
     public class ObserverLevel : MonoCache
     {
-        [SerializeField] private HumanoidFactory _humanoidFactory;
+        [SerializeField] private PlayerCharacterInitializer _playerCharacterInitializer;
         [SerializeField] private CanvasResultBar _canvasResult;
 
         private const int WaitTime = 200;
@@ -53,7 +54,7 @@ namespace Observer
 
         private void ShowResult()
         {
-            _canvasResult.CalculateBonus(_humanoidFactory);
+            _canvasResult.CalculateBonus(_playerCharacterInitializer);
             _canvasResult.gameObject.SetActive(true);
         }
     }

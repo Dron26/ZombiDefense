@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
+using Infrastructure.AIBattle.EnemyAI.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.FactoryWarriors.Enemies;
 using Unity.VisualScripting;
@@ -14,128 +15,152 @@ using GameObject = UnityEngine.GameObject;
 namespace Infrastructure.WaveManagment
 {
     public class WaveSpawner : MonoCache
-        {
-            [SerializeField] private WaveManager _waveManager;
-            [SerializeField] private EnemyFactory _enemyFactory;
-            [SerializeField] private List<SpawnPoint> _spawnPoints;
-            private List<Enemy> _enemys = new();
-            private List<Enemy> _currentEnemys = new();
-             private List<int> enemyCounts= new();
-            private List<WaveQueue> _groupWaveQueue = new();
-            private WaveQueue _waveQueue = new WaveQueue();
-            private IEnumerator _spawnCoroutine;
-            public UnityAction SpawningCompleted;
-            
-            
-            public void Initialize(WaveData waveData)
-            {
-                CreateWaveQueue(waveData);
-            }
-            
-            private void CreateWaveQueue(WaveData waveData)
-            {
-                KeyValuePair<List<Enemy>, List<int>> pair = waveData.GetParticipatingEnemy().FirstOrDefault();
-                
-                foreach ( Enemy enemy in pair.Key)
-                {
-                    _enemys.Add(enemy);
-                }
-                
-                foreach ( int  count in pair.Value)
-                {
-                    enemyCounts.Add(count);
-                }
+    {
+        [SerializeField] private WaveManager _waveManager;
+        [SerializeField] private EnemyFactory _enemyFactory;
+        private List<SpawnPoint> _spawnPoints = new();
+        private List<Enemy> _enemys = new();
+        private List<Enemy> _activeEnemys = new();
+        private List<Enemy> _inactiveEnemys = new();
+        private List<int> enemyCounts = new();
+        private List<WaveQueue> _groupWaveQueue = new();
+        private WaveQueue _waveQueue = new();
+        private IEnumerator _spawnCoroutine;
+        public UnityAction SpawningCompleted;
+        private int _totalNumber;
 
-                for (int i = 0; i < _enemys.Count; i++)
+        public void Initialize(WaveData waveData)
+        {
+            CreateWaveQueue(waveData);
+            InitializeSpawnPoint();
+            FillQueue();
+        }
+
+        private void CreateWaveQueue(WaveData waveData)
+        {
+            KeyValuePair<List<Enemy>, List<int>> pair = waveData.GetParticipatingEnemy().FirstOrDefault();
+
+            WaveQueue waveQueue = new WaveQueue();
+            _groupWaveQueue.Add(waveQueue);
+            _enemys.Add(pair.Key[0]);
+
+            for (int i = 1; i < pair.Key.Count; i++)
+            {
+                if (pair.Key[i].Level != pair.Key[i - 1].Level)
                 {
-                    WaveQueue waveQueue = new WaveQueue();
+                    _enemys.Add(pair.Key[i]);
+                    waveQueue = new WaveQueue();
                     _groupWaveQueue.Add(waveQueue);
                 }
             }
-
-            public void StartSpawn()
-            {
-                if (_spawnCoroutine != null)
-                    StopCoroutine(_spawnCoroutine);
             
-                _spawnCoroutine = FillQueueCoroutine();
-                StartCoroutine(_spawnCoroutine);
-
-                InitializeSpawnPoint();
-            }
-
-            public void StopSpawn()
+            foreach (int count in pair.Value)
             {
-                if (_spawnCoroutine != null)
-                    StopCoroutine(_spawnCoroutine);
+                enemyCounts.Add(count);
+                _totalNumber += count;
             }
+        }
+        
+        private void InitializeSpawnPoint()
+        {
+            int i = 0;
+            foreach (SpawnPoint point in transform.GetComponentsInChildren<SpawnPoint>())
+            {
+                point.Initialize(i, 0);
+                _spawnPoints.Add(point);
+                i++;
+            }
+        }
 
-            private IEnumerator FillQueueCoroutine()
+        public void StopSpawn()
+        {
+            foreach ( SpawnPoint spawnPoint in _spawnPoints)
+            {
+                spawnPoint.StopSpawn();
+            }
+            
+            if (_spawnCoroutine != null)
+                StopCoroutine(_spawnCoroutine);
+        }
+
+        private void FillQueue()
+        {
+            foreach (WaveQueue waveQueue in _groupWaveQueue)
             {
                 for (int i = 0; i < _enemys.Count; i++)
                 {
-                    var spawnPoint = GetRandomSpawnPoint();// добавить точки спавна
-                    for (int j = 0; j < enemyCounts.Count; j++)
+                    for (int j = 0; j < enemyCounts[i]; j++)
                     {
-                        Enemy newEnemy= _enemyFactory.Create(_enemys[i],spawnPoint);
-                        
-                        _groupWaveQueue[i].Enqueue(newEnemy);
-                        newEnemy.OnEnemyDeath += OnEnemyDeath;
-                        _currentEnemys.Add(newEnemy);
-                        yield return null;
+                        for (int k = 0; k <= _spawnPoints.Count; k++)
+                        {
+                            Enemy newEnemy = _enemyFactory.Create(_enemys[i].gameObject);
+
+                            if (newEnemy != null)
+                            {
+                                newEnemy.Load += OnEnemyLoaded;
+                                EnemyDieState enemyDieState = newEnemy.GetComponent<EnemyDieState>();
+                                enemyDieState.OnDeath += OnDeath;
+                                waveQueue.Enqueue(newEnemy);
+                            }
+                        }
                     }
                 }
-
-                SpawningCompleted.Invoke();
             }
-            
-           
-            private Transform GetRandomSpawnPoint()
-            {
-                Transform index = _spawnPoints[0].gameObject.transform;
-               return index;
-            }
-
-            private void OnEnemyDeath(Enemy enemy)
-            {
-                enemy.OnEnemyDeath -= OnEnemyDeath;
-                _waveQueue.Enqueue(enemy);
-            }
-
-
-            
-            private void OnStartSpawn()
-            {
-
-                int nemberQueue = 0;
-                
-                for (int i = 0; i < _spawnPoints.Count; i++)
-                {
-                    _groupWaveQueue[i].Dequeue().gameObject.transform.position = _spawnPoints[i].transform.position;
-                }
-                
-            }
-
-            private void InitializeSpawnPoint()
-            {
-                for (int i = 0; i < _spawnPoints.Count; i++)
-                {
-                    _spawnPoints[i].Initialize(i,0);
-                }
-            }
-
-            public List<Enemy> GetEnemyInWaveQueue( )
-            {
-                return _currentEnemys;
-            }
-
-
-            public void SetHumanoidData(List<Humanoid> humanoid)
-            {
-                _enemyFactory.SetHumanoidData(humanoid);
-            }
-
-            public EnemyFactory GetEnemyFactory() => _enemyFactory;
         }
 
+        private void OnEnemyLoaded(Enemy enemy)
+        {
+            _activeEnemys.Add(enemy);
+
+            if (_activeEnemys.Count == _totalNumber)
+            {
+                SpawningCompleted?.Invoke();
+                OnStartSpawn();
+            }
+        }
+
+        private void OnDeath(Enemy enemy)
+        {
+            _waveQueue.Enqueue(enemy);
+            _inactiveEnemys.Add(enemy);
+            _activeEnemys.Remove(enemy);
+        }
+
+        private void OnStartSpawn()
+        {
+            int nemberQueue = 0;
+
+            foreach (WaveQueue waveQueue in _groupWaveQueue)
+            {
+                foreach (SpawnPoint spawnPoint in _spawnPoints)
+                {
+                    spawnPoint.SetQueue(waveQueue);
+                }
+            }
+        }
+
+       
+
+        public List<Enemy> GetEnemyInWaveQueue()
+        {
+            return _activeEnemys;
+        }
+
+
+        public void SetHumanoidData(List<Humanoid> humanoid)
+        {
+            _enemyFactory.SetHumanoidData(humanoid);
+        }
+
+        public EnemyFactory GetEnemyFactory() => _enemyFactory;
+
+        private void OnDisable()
+        {
+            foreach (Enemy enemy in _activeEnemys)
+            {
+                EnemyDieState enemyDieState = enemy.GetComponent<EnemyDieState>();
+                enemyDieState.OnDeath -= OnDeath;
+            }
+        }
+    }
 }

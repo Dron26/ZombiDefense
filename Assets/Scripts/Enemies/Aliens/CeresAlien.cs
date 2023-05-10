@@ -33,19 +33,28 @@ namespace Enemies.Aliens
 
         public override void ApplyDamage(int getDamage)
         {
-            if (_health <= 0)
+            if (_health >= 0)
+            {
+                _fxController.OnHitFX();
+                _animator.SetTrigger(_hashAnimator.IsHit);
+                _health -= Mathf.Clamp(getDamage, _minHealth, _maxHealth);
+               
+            }
+            
+            if(_health <= 0)
             {
                 _animator.SetTrigger(_hashAnimator.Die);
                 _fxController.OnDieFX();
                 _isLife = false;
             }
-            
-            _fxController.OnHitFX();
-            _animator.SetTrigger(_hashAnimator.IsHit);
-            _health -= Mathf.Clamp(getDamage, _minHealth, _maxHealth);
         }
 
         public override void SetAttacments()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override void Initialize()
         {
             throw new System.NotImplementedException();
         }
