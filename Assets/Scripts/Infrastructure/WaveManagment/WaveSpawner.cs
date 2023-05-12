@@ -46,12 +46,9 @@ namespace Infrastructure.WaveManagment
 
             for (int i = 1; i < pair.Key.Count; i++)
             {
-                if (pair.Key[i].Level != pair.Key[i - 1].Level)
-                {
                     _enemys.Add(pair.Key[i]);
                     waveQueue = new WaveQueue();
                     _groupWaveQueue.Add(waveQueue);
-                }
             }
             
             foreach (int count in pair.Value)
@@ -89,7 +86,8 @@ namespace Infrastructure.WaveManagment
             {
                 for (int i = 0; i < _enemys.Count; i++)
                 {
-                    for (int j = 0; j < enemyCounts[i]; j++)
+                    int j = 0;
+                    for (; j < enemyCounts[i]; j++)
                     {
                         for (int k = 0; k <= _spawnPoints.Count; k++)
                         {
@@ -100,6 +98,7 @@ namespace Infrastructure.WaveManagment
                                 newEnemy.Load += OnEnemyLoaded;
                                 EnemyDieState enemyDieState = newEnemy.GetComponent<EnemyDieState>();
                                 enemyDieState.OnDeath += OnDeath;
+                                newEnemy.gameObject.layer = LayerMask.NameToLayer("Enemy");
                                 waveQueue.Enqueue(newEnemy);
                             }
                         }
@@ -144,12 +143,6 @@ namespace Infrastructure.WaveManagment
         public List<Enemy> GetEnemyInWaveQueue()
         {
             return _activeEnemys;
-        }
-
-
-        public void SetHumanoidData(List<Humanoid> humanoid)
-        {
-            _enemyFactory.SetHumanoidData(humanoid);
         }
 
         public EnemyFactory GetEnemyFactory() => _enemyFactory;

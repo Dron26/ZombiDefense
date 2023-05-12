@@ -38,6 +38,8 @@ namespace Humanoids.AbstractLevel
         public abstract int GetDamageDone();
 
         public Vector3 StartPosition;
+        public Sprite sprite;
+
         public void InitPosition(Vector3 newPosition) =>
             transform.position = newPosition;
         

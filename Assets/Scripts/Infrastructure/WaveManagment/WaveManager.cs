@@ -79,11 +79,6 @@ namespace Infrastructure.WaveManagment
             isWaitingForNextWave = false;
         }
 
-        public void SetHumanoidData(List<Humanoid> humanoid)
-        {
-            _waveSpawner.SetHumanoidData(humanoid);
-        }
-
         public WaveSpawner GetWaveSpawner() => _waveSpawner;
 
         public void StopSpawn()

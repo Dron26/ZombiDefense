@@ -1,4 +1,5 @@
-﻿using Enemies.AbstractEntity;
+﻿using System.Collections.Generic;
+using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
 using Infrastructure.WeaponManagment;
 using UnityEngine;
@@ -12,28 +13,26 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 
         private Humanoid _opponentHumanoid;
         private Enemy _opponentEnemy;
-        private NavMeshAgent agent;
+        private  NavMeshAgent _agent;
         private float _stoppingDistance;
         private float _distance;
         private float _move;
-        
+        private bool isStopped = false;
         private Animator _animator;
-        private HashAnimator _hashAnimator;
+        private AnimController _animController;
         private WeaponController _weaponController;
-        
         private void Start()
         {
             _weaponController= GetComponent<WeaponController>();
             _move = 0f;
             _animator = GetComponent<Animator>();
-            _hashAnimator = GetComponent<HashAnimator>();
-
+            _animController = GetComponent<AnimController>();
             if (TryGetComponent(out Enemy enemy)) 
                 _stoppingDistance = enemy.GetRangeAttack();
             
             if (TryGetComponent(out Humanoid humanoid)) 
                 _stoppingDistance = _weaponController.GetRangeAttack();
-            agent = GetComponent<NavMeshAgent>();
+            _agent = GetComponent<NavMeshAgent>();
         }
 
        protected override void FixedUpdateCustom()
@@ -55,7 +54,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
            if (_opponentHumanoid != null && _opponentHumanoid.IsLife() == false
                || _opponentEnemy != null && _opponentEnemy.IsLife() == false)
            {
-               //_animator.SetBool(_hashAnimator.Run, false);
+               //_animator.SetBool(_animController.Run, false);
                PlayerCharactersStateMachine.EnterBehavior<SearchTargetState>();
            }
            
@@ -71,20 +70,20 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
            if (_opponentHumanoid != null && _opponentHumanoid.IsLife())
            {
                opponentPosition = _opponentHumanoid.transform.position;
-               agent.SetDestination(opponentPosition);
+               _agent.SetDestination(opponentPosition);
                 Movement(ourPosition, opponentPosition);
            }
            
            if (_opponentHumanoid == null)
            {
-               _animator.SetBool(_hashAnimator.Run, false);
+               _animator.SetBool(_animController.Run, false);
               // Movement(ourPosition, opponentPosition);
            }
        }
 
        private void Movement(Vector3 ourPosition, Vector3 opponentPosition)
        {
-           _animator.SetBool(_hashAnimator.Run, true);
+           _animator.SetBool(_animController.Run, true);
            // if (transform.position.y < -3.5)
            //     transform.position =
            //         new Vector3(ourPosition.x, ourPosition.y + 1.5f, ourPosition.z);
@@ -113,5 +112,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 
        private float MovementAxis(float ourPosition, float targetPosition) => 
             Mathf.MoveTowards(ourPosition, targetPosition, _rateStepUnit);
+       
+       
     }
 }

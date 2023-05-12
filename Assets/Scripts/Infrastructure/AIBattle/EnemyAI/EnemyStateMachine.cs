@@ -11,7 +11,7 @@ namespace Infrastructure.AIBattle.EnemyAI{
     [RequireComponent(typeof(FXController))]
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(Animator))]
-    [RequireComponent(typeof(HashAnimator))]
+    [RequireComponent(typeof(AnimController))]
     [RequireComponent(typeof(EnemySearchTargetState))]
     [RequireComponent(typeof(EnemyMovementState))]
     [RequireComponent(typeof(EnemyAttackState))]
@@ -21,7 +21,7 @@ namespace Infrastructure.AIBattle.EnemyAI{
         private Dictionary<Type, IEnemySwitcherState> _allBehaviors;
         private IEnemySwitcherState _currentBehavior;
         private SceneInitializer _sceneInitializer;
-        
+        private AnimController _animController;
         private PlayerCharacterInitializer _characterInitializer;
 
 
@@ -29,7 +29,7 @@ namespace Infrastructure.AIBattle.EnemyAI{
         {
             _sceneInitializer=FindObjectOfType<SceneInitializer>();   
             _characterInitializer=_sceneInitializer.GetPlayerCharacterInitializer();
-            
+            _animController = GetComponent<AnimController>();
             _allBehaviors = new Dictionary<Type, IEnemySwitcherState>
             {
                 [typeof(EnemySearchTargetState)] = GetComponent<EnemySearchTargetState>(),
@@ -50,6 +50,7 @@ namespace Infrastructure.AIBattle.EnemyAI{
         {
             _currentBehavior = _allBehaviors[typeof(EnemySearchTargetState)];
             EnterBehavior<EnemySearchTargetState>();
+            _animController.Initialize();
         }
 
         public void EnterBehavior<TState>() where TState : IEnemySwitcherState

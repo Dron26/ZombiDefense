@@ -28,8 +28,7 @@ namespace Infrastructure.WeaponManagment
         private Weapon _weaponSniperRifle;
         private Weapon _weaponHeavyMachineGun;
         private Weapon _weaponGranade;
-        
-        private HashAnimator _hashAnimator;
+        private AnimController _animController;
         private Animator _animator;
         //private  Weapon _weaponGranade;
         private int _numberSmallArms = 0;
@@ -56,7 +55,7 @@ namespace Infrastructure.WeaponManagment
              _humanoid=GetComponent<Humanoid>();
             _weaponData = _humanoid.GetWeaponData();
             
-            _hashAnimator=GetComponent<HashAnimator>();
+            _animController=GetComponent<AnimController>();
             _animator=GetComponent<Animator>();
 
             SetWeapons();
@@ -141,8 +140,8 @@ namespace Infrastructure.WeaponManagment
             _weaponName = _smallArms.WeaponName;
             _damage = _smallArms.Damage;
             _maxAmmo = _smallArms.MaxAmmo;
-            _fireRate = _weaponAnimInfo[_hashAnimator.IsShoot];
-            _reloadTime = _weaponAnimInfo[_hashAnimator.Reload];
+            _fireRate = _weaponAnimInfo[_animController.IsShoot];
+            _reloadTime = _weaponAnimInfo[_animController.Reload];
             _range = _smallArms.Range;
         }
 
@@ -154,11 +153,7 @@ namespace Infrastructure.WeaponManagment
         
         public float GetSpread()
         {
-            float baseSpread = 10f;
-
-            int maxPellets = 8;
-
-            float spread = baseSpread * (float) _ammoCount / (float) maxPellets;
+            float spread = 8;
 
             return spread;
         }
@@ -183,24 +178,10 @@ namespace Infrastructure.WeaponManagment
 
         private void SetAnimInfo()
         {
-            List<int>animHashNames = new();
-            animHashNames.Add(_hashAnimator.IsShoot);
-            animHashNames.Add(_hashAnimator.Reload);
-            
-         AnimatorController animatorController = _animator.runtimeAnimatorController as AnimatorController;
-
-         foreach (int name in animHashNames)
-         {
-             string animName = animatorController.parameters.FirstOrDefault(p => p.nameHash == name)?.name;
-             AnimationClip clip = animatorController.animationClips.FirstOrDefault(x => x.name == animName); 
-             float animationLength = clip.length;
-             _weaponAnimInfo.Add(name, animationLength);
-         }
-        }
-
-        public Dictionary<int, float> GetAnimInfo()
-        {
-            return _weaponAnimInfo;
+            foreach (KeyValuePair<int, float> info in _animController.GetAnimInfo())
+            {
+                _weaponAnimInfo.Add(info.Key, info.Value);
+            }
         }
     }
 

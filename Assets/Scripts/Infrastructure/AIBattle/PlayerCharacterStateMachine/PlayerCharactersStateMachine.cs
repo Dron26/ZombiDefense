@@ -16,7 +16,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
     [RequireComponent(typeof(FXController))]
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(Animator))]
-    [RequireComponent(typeof(HashAnimator))]
+    [RequireComponent(typeof(AnimController))]
     [RequireComponent(typeof(SearchTargetState))]
     [RequireComponent(typeof(MovementState))]
     [RequireComponent(typeof(AttackState))]

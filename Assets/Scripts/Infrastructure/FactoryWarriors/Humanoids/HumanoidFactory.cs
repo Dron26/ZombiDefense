@@ -9,6 +9,7 @@ using Infrastructure.WeaponManagment;
 using Service.GeneralFactory;
 using Service.SaveLoadService;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Infrastructure.FactoryWarriors.Humanoids
 { 
@@ -32,58 +33,38 @@ namespace Infrastructure.FactoryWarriors.Humanoids
     
     public class HumanoidFactory : MonoCache, IServiceFactory
     {
-        [SerializeField] private List<HumanoidData> humanoidsData;
-        private static readonly List<Humanoid> _inactiveHumanoids = new();
-        [SerializeField] private  List<WorkPointGroup> _workPoints;
         private AudioSource _audioSource;
+        public UnityAction<Humanoid> CreatedHumanoid; 
         
-        
-        public Humanoid Create(WorkPoint workPoint, GameObject humanoid)
+        public void Create(GameObject humanoid)
         {
-            GameObject newHumanoid = Instantiate(humanoid, workPoint.transform.position, Quaternion.identity);
-            newHumanoid.transform.parent=workPoint.transform;
+            GameObject newHumanoid = Instantiate(humanoid, transform);
+            newHumanoid.gameObject.SetActive(false);
             Humanoid humanoidComponent = newHumanoid.GetComponent<Humanoid>();
-            humanoidComponent.Load += SetWeapons;
+            humanoidComponent.Load += SetComponent;
             humanoidComponent.LoadPrefab();
             
-            return humanoidComponent;
+            if (humanoidComponent == null)
+            {
+                Debug.LogError($"PrefabCharacter {humanoidComponent.name} doesn't have a component of type Enemys.");
+                Destroy(humanoidComponent);
+            }
         }
 
-        private void SetWeapons(Humanoid humanoid )
+        private void SetComponent(Humanoid humanoid )
         {
+            AnimController animController = humanoid.GetComponent<AnimController>();
+            animController.Initialize();
             WeaponController weaponController = humanoid.GetComponent<WeaponController>();
             weaponController.Initialize();
             FXController fxController = humanoid.GetComponent<FXController>();
             fxController.SetAudioSource(_audioSource);
             fxController.Initialize(weaponController);
+            CreatedHumanoid?.Invoke(humanoid);
         }
-
-        public HumanoidData GetRandomHumanoidData(int level)
-        {
-            var humanoidDatas = new List<HumanoidData>();
+       
             
-            foreach (var enemy in humanoidsData)
-            {
-                if (enemy.Level == level)
-                {
-                    humanoidDatas.Add(enemy);
-                }
-            }
-    
-            if (humanoidDatas.Count > 0)
-            {
-                var index = Random.Range(0, humanoidDatas.Count);
-                return humanoidDatas[index];
-            }
-            else
-            {
-                Debug.LogError($"No enemies found with level {level}.");
-                return null;
-            }
-        }
-
-        //при убийстве персонажа игрока, нужно обновлять список доступных персонажей. как вариант отдавать не через фабрику список  ну или на фабрике подписываться и перекидывать в лист дохлых а энеми будут искать новых таргетов.
-
+        
         public void Initialize(AudioSource audioSource)
         {
             _audioSource=audioSource;

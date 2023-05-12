@@ -17,14 +17,14 @@ namespace Infrastructure.Location
         [SerializeField] private PlayerCharacterInitializer _playerCharacterInitializer;
         public UnityAction SetInfoCompleted;
         private AudioSource _audioSource;
+       
         private void Start()
         {
             _audioSource = GetComponent<AudioSource>();
             _waveManager.SpawningCompleted += SetInfo;
             _playerCharacterInitializer.AreOverHumanoids+=StopSpawning;
-            _playerCharacterInitializer.CharacterInitialize(_audioSource);
+            _playerCharacterInitializer.Initialize(_audioSource);
             _waveManager.Initialize();
-            _waveManager.SetHumanoidData(_playerCharacterInitializer.GetAllHumanoids());
         }
         
         public WaveSpawner GetWaveSpawner() => _waveManager.GetWaveSpawner();

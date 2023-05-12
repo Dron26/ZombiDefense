@@ -10,6 +10,8 @@ namespace Infrastructure.AIBattle
         [SerializeField] private ParticleSystem _particleGunshotSingle;
         [SerializeField] private ParticleSystem _particleEjectSingle;
         [SerializeField] private ParticleSystem _particleDie;
+        [SerializeField] private ParticleSystem _particleTankDie;
+        [SerializeField] private ParticleSystem _particleTankDie1;
          private AudioClip _shoot;
          private AudioClip _reload;
         private AudioSource _audioSource;
@@ -22,6 +24,17 @@ namespace Infrastructure.AIBattle
             _audioSource.PlayOneShot(_shoot);
             _particleGunshotSingle.Play();
         }
+        
+        public void OnTankDeathFX()
+        {
+            ParticleSystem particleTankDie = Instantiate(_particleTankDie, transform.position, Quaternion.identity);
+            ParticleSystem particleTankDie1 = Instantiate(_particleTankDie1, transform.position, Quaternion.identity);
+            
+            particleTankDie.Play();
+            particleTankDie1.Play();
+        }
+        
+        
         public void OnAttackFXStop()
         {
             _particleGunshotSingle.Stop();

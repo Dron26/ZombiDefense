@@ -19,14 +19,14 @@ namespace Humanoids.People
         
         private float _health = 80f;
 
-        private HashAnimator _hashAnimator;
+        private AnimController _animController;
         private Animator _animator;
         private FXController _fxController;
 
         private void Start()
         {
             _animator = GetComponent<Animator>();
-            _hashAnimator = GetComponent<HashAnimator>();
+            _animController = GetComponent<AnimController>();
             _fxController = GetComponent<FXController>();
         }
 
@@ -43,13 +43,13 @@ namespace Humanoids.People
         {
             if (_health <= 0)
             {
-                _animator.SetTrigger(_hashAnimator.Die);
+                _animator.SetTrigger(_animController.Die);
                 _fxController.OnDieFX();
                 _isLife = false;
             }
             
             _fxController.OnHitFX();
-            _animator.SetTrigger(_hashAnimator.IsHit);
+            _animator.SetTrigger(_animController.IsHit);
             _health -= Mathf.Clamp(getDamage, _minHealth, _maxHealth);
         }
         

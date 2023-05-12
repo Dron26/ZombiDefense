@@ -7,24 +7,25 @@ using Infrastructure.FactoryWarriors.Enemies;
 using Infrastructure.FactoryWarriors.Humanoids;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 namespace Infrastructure.Location
 {
     public class PlayerCharacterInitializer : MonoCache
     {
-        [SerializeField] private List<GameObject> humanoids;
         [SerializeField] private WorkPointGroup _workPointsGroup;
         [SerializeField] private HumanoidFactory _humanoidFactory;
         private List<WorkPoint> _workPoints = new ();
+        private List<Button> _workPointButtons = new ();
         private static readonly List<Humanoid> _activeHumanoids = new();
         private static readonly List<Humanoid> _inactiveHumanoids = new();
         public UnityAction AreOverHumanoids;
-        
-        public void CharacterInitialize(AudioSource audioSource)
+        public UnityAction<WorkPoint> OnClickWorkpoint;
+        public void Initialize(AudioSource audioSource)
         {
             _humanoidFactory.Initialize(audioSource);
+            _humanoidFactory.CreatedHumanoid += FillCharacterGroup;
             FillWorkPoints();
-            SetHumanoidToGroup(audioSource);
         }
 
         private void FillWorkPoints()
@@ -32,22 +33,35 @@ namespace Infrastructure.Location
             foreach (WorkPoint workPoint in _workPointsGroup.WorkPoints)
             {
                 _workPoints.Add(workPoint);
+                workPoint.OnClick=OnClickWorkpoint;
             }
+        } 
+        
+        
+        private void FillCharacterGroup(Humanoid humanoid)
+        {
+            _activeHumanoids.Add(humanoid);
+            DieState dieState = humanoid.GetComponent<DieState>();
+            dieState.OnDeath += OnDeath;
+        }
+
+        private void CreateHumanoid(GameObject humanoid )
+        {
+                _humanoidFactory.Create(humanoid);
         }
         
-        private void SetHumanoidToGroup(AudioSource audioSource)
+        public void SetCreatHumanoid(GameObject humanoid)
         {
-            for (int i = 0; i < humanoids.Count; i++)
+            if (humanoid != null&&humanoid.GetComponent<Humanoid>())
             {
-                int index = _activeHumanoids.Count;
-                _activeHumanoids.Add(_humanoidFactory.Create(_workPoints[i], humanoids[i]));
-                _activeHumanoids[index].StartPosition = _workPoints[i].transform.position;
-                DieState dieState = _activeHumanoids[index].GetComponent<DieState>();
-                dieState.OnDeath += OnDeath;
+                _humanoidFactory.Create(humanoid);
+            }
+            else
+            {
+                print("SetCreatHumanoid error");
             }
         }
 
-        public HumanoidFactory GetHumanoidFactory() => _humanoidFactory;
         public List<Humanoid> GetAllHumanoids() => _activeHumanoids;
 
         private void CheckRemaningHumanoids()
@@ -73,5 +87,12 @@ namespace Infrastructure.Location
                 dieState.OnDeath -= OnDeath;
             }
         }
+
+        public List<WorkPoint> GetWorkPointGroup() => new List<WorkPoint>(_workPoints);
+
+        public HumanoidFactory GetFactory() => _humanoidFactory;
+        //public Humanoid GetAvailableHumanoid() => 
+        
+        public List<Button> GetWorkPointButtons=>new List<Button>(_workPointButtons);
     }
 }

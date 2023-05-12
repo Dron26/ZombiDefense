@@ -16,14 +16,14 @@ namespace Enemies.Aliens
         private float _health ;
         private bool _isLife = true;
         private Animator _animator;
-        private HashAnimator _hashAnimator;
+        private AnimController _animController;
         private FXController _fxController;
 
         private void Awake()
         {   
             
             _animator = GetComponent<Animator>();
-            _hashAnimator = GetComponent<HashAnimator>();
+            _animController = GetComponent<AnimController>();
             _fxController = GetComponent<FXController>();
         }
 
@@ -42,20 +42,26 @@ namespace Enemies.Aliens
             _health = _maxHealth;
         }
 
-        public override void ApplyDamage(int getDamage)
+        public override void ApplyDamage(float getDamage)
         {
             
             if (_health >= 0)
             {
+                if (Level== 4&&getDamage>30)
+                {
+                    _animator.SetBool(_animController.Walk, false);
+                    _animator.SetTrigger(_animController.IsHit);
+                }
+                
                 _fxController.OnHitFX();
-              //  _animator.SetTrigger(_hashAnimator.IsHit);
+              //  _animator.SetTrigger(_animController.IsHit);
                 _health -= Mathf.Clamp(getDamage, _minHealth, _maxHealth);
                
             }
             
             if(_health <= 0)
             {
-                _animator.SetTrigger(_hashAnimator.Die);
+                _animator.SetTrigger(_animController.Die);
                 _fxController.OnDieFX();
                 _isLife = false;
                 Die();
@@ -63,13 +69,13 @@ namespace Enemies.Aliens
             
             // if (_health > 0)
             // {
-            //     //_animator.SetTrigger(_hashAnimator.IsHit);
+            //     //_animator.SetTrigger(_animController.IsHit);
             //     _fxController.OnHitFX();
             //     _health -= Mathf.Clamp(getDamage, _minHealth, _maxHealth);
             // }
             // else
             // {
-            //     _animator.SetTrigger(_hashAnimator.Die);
+            //     _animator.SetTrigger(_animController.Die);
             // //    _fxController.OnDieFX();
             //     _isLife = false;
             //     

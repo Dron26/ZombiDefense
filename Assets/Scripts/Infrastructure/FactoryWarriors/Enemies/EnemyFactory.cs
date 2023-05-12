@@ -30,43 +30,5 @@ namespace Infrastructure.FactoryWarriors.Enemies
                 return null;
             }
         }
-    
-        public EnemyData GetRandomEnemyData(int level)
-        {
-            var enemiesWithLevel = new List<EnemyData>();
-            foreach (var enemy in enemiesData)
-            {
-                if (enemy.Level == level)
-                {
-                    enemiesWithLevel.Add(enemy);
-                }
-            }
-    
-            if (enemiesWithLevel.Count > 0)
-            {
-                var index = Random.Range(0, enemiesWithLevel.Count);
-                return enemiesWithLevel[index];
-            }
-            else
-            {
-                Debug.LogError($"No enemies found with level {level}.");
-                return null;
-            }
-        }
-        public void SetHumanoidData(List<Humanoid> humanoid)
-        {
-            foreach (Humanoid tempHumanoid in humanoid)
-            {
-                _humanoids.Add(tempHumanoid);
-            }
-        }
-        public List<Humanoid> GetAllHumanoids =>
-            _humanoids;
-
-        public List<Enemy> GetAllEnemies => 
-            _enemies;
-
-        
     }
-    
 }

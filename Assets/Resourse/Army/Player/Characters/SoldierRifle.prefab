@@ -1943,7 +1943,7 @@ Animator:
   m_GameObject: {fileID: 4144454903581261743}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 5e409839abc2274449bac2a9ac892eb9, type: 2}
+  m_Controller: {fileID: 9100000, guid: deb2099fa5603e546a59521557b59241, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
@@ -1997,6 +1997,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b114f6ec71744e0b82dabc30c37d2499, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _walkAnimationClips: []
+  _screamAnimationClips: []
 --- !u!114 &1857929741469280915
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2087,6 +2089,7 @@ MonoBehaviour:
   _smallArmsType: 2
   _granadeGameObject: {fileID: 0}
   _garnadeType: 4
+  IsShotgun: 0
 --- !u!136 &6875060696029305425
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -4223,6 +4226,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1561582855767934388}
     m_Modifications:
+    - target: {fileID: 5144626568740487025, guid: f2017e89e22cbf042bf64a4e793a740c, type: 3}
+      propertyPath: m_RootOrder
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6807178332615324074, guid: f2017e89e22cbf042bf64a4e793a740c, type: 3}
+      propertyPath: m_RootOrder
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 6964414802564903453, guid: f2017e89e22cbf042bf64a4e793a740c, type: 3}
       propertyPath: m_Name
       value: SM_Wep_Rifle_Assault_01
