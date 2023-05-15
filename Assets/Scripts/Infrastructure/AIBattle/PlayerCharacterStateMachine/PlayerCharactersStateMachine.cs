@@ -8,6 +8,7 @@ using Infrastructure.FactoryWarriors.Enemies;
 using Infrastructure.FactoryWarriors.Humanoids;
 using Infrastructure.Location;
 using Infrastructure.WaveManagment;
+using Observer;
 using UnityEditor;
 using UnityEngine;
 
@@ -22,17 +23,24 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
     [RequireComponent(typeof(AttackState))]
     [RequireComponent(typeof(DieState))]
     
-    public class PlayerCharactersStateMachine : MonoCache
+    public class PlayerCharactersStateMachine : MonoCache,IObserverByHumanoid
     {
         private Dictionary<Type, ISwitcherState> _allBehaviors;
         private ISwitcherState _currentBehavior;
         private SceneInitializer _sceneInitializer;
         private WaveSpawner _waveSpawner;
-
+        private Humanoid _humanoid;
+        private WorkPoint _point;
         private void Awake()
         {
+            
+            if (TryGetComponent(out Humanoid humanoid))
+            {
+                _humanoid=humanoid;
+                _humanoid.AddObserver(this);
+            }
+            
             _sceneInitializer=FindObjectOfType<SceneInitializer>();
-            _sceneInitializer.SetInfoCompleted += ChangeState;
             _waveSpawner=_sceneInitializer.GetWaveSpawner();
             
             _allBehaviors = new Dictionary<Type, ISwitcherState>
@@ -50,13 +58,6 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
             }
         }
 
-        private void ChangeState()
-        {
-            _currentBehavior = _allBehaviors[typeof(SearchTargetState)];
-            EnterBehavior<SearchTargetState>();
-           
-        }
-
         public void EnterBehavior<TState>() where TState : ISwitcherState
         {
             var behavior = _allBehaviors[typeof(TState)];
@@ -64,11 +65,21 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
             behavior.EnterBehavior();
             _currentBehavior = behavior;
         }
-        
-        
-        private void OnDisable()
+
+        public void SetMovePoint(WorkPoint point) => 
+            EnterBehavior<MovementState>();
+
+
+        private void OnDisable() =>
+            _humanoid.RemoveObserver(this);
+
+        public void NotifyFromHumanoid(object data)
         {
-            _sceneInitializer.SetInfoCompleted -= ChangeState;
+            _currentBehavior = _allBehaviors[typeof(SearchTargetState)];
+           EnterBehavior<SearchTargetState>();
         }
+
+        public WorkPoint GetPoint() =>
+            _point;
     }
 }

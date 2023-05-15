@@ -1,13 +1,9 @@
-﻿using System.Collections.Generic;
-using Enemies.AbstractEntity;
+﻿using System.Threading.Tasks;
+using Audio;
+using Cysharp.Threading.Tasks;
 using Humanoids.AbstractLevel;
-using Infrastructure.AIBattle;
-using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.Location;
-using Infrastructure.WeaponManagment;
 using Service.GeneralFactory;
-using Service.SaveLoadService;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -33,41 +29,31 @@ namespace Infrastructure.FactoryWarriors.Humanoids
     
     public class HumanoidFactory : MonoCache, IServiceFactory
     {
-        private AudioSource _audioSource;
+        private AudioController _audioController;
         public UnityAction<Humanoid> CreatedHumanoid; 
         
-        public void Create(GameObject humanoid)
+        
+        
+        public async Task Create(GameObject prefab )
         {
-            GameObject newHumanoid = Instantiate(humanoid, transform);
-            newHumanoid.gameObject.SetActive(false);
-            Humanoid humanoidComponent = newHumanoid.GetComponent<Humanoid>();
-            humanoidComponent.Load += SetComponent;
-            humanoidComponent.LoadPrefab();
             
-            if (humanoidComponent == null)
-            {
-                Debug.LogError($"PrefabCharacter {humanoidComponent.name} doesn't have a component of type Enemys.");
-                Destroy(humanoidComponent);
-            }
+            
+            GameObject newHumanoid = Instantiate(prefab, transform);
+            Humanoid humanoidComponent = newHumanoid.GetComponent<Humanoid>();
+            humanoidComponent.SetAudioController(_audioController);
+            humanoidComponent.OnDataLoad = Created;
+            await UniTask.SwitchToMainThread();
+            await humanoidComponent.LoadPrefab();
         }
 
-        private void SetComponent(Humanoid humanoid )
+        private void Created( Humanoid humanoidComponent)
         {
-            AnimController animController = humanoid.GetComponent<AnimController>();
-            animController.Initialize();
-            WeaponController weaponController = humanoid.GetComponent<WeaponController>();
-            weaponController.Initialize();
-            FXController fxController = humanoid.GetComponent<FXController>();
-            fxController.SetAudioSource(_audioSource);
-            fxController.Initialize(weaponController);
-            CreatedHumanoid?.Invoke(humanoid);
+            CreatedHumanoid?.Invoke(humanoidComponent);
         }
-       
-            
         
-        public void Initialize(AudioSource audioSource)
+        public void Initialize( AudioController audioController)
         {
-            _audioSource=audioSource;
+            _audioController=audioController;
         }
     }
 }

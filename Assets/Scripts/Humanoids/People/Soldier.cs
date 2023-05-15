@@ -1,10 +1,10 @@
-﻿using Humanoids.AbstractLevel.SimpleWarriors;
+﻿using Humanoids.AbstractLevel;
 using Infrastructure.AIBattle;
 using UnityEngine;
 
 namespace Humanoids.People
 {
-    public class Soldier : PeopleMen
+    public class Soldier : Humanoid
     {
         private const int Level = 1;
         private const int Price = 1;
@@ -28,17 +28,6 @@ namespace Humanoids.People
             _animController = GetComponent<AnimController>();
             _fxController = GetComponent<FXController>();
         }
-
-        // protected void void SetAttacments()
-        // {
-        //     WeaponController weaponController = GetComponent<WeaponController>();
-        //     weaponController.Initialize(SmallArms);
-        //     
-        //     foreach (GameObject items in humanoidData.PrefabCharacterItems)
-        //     {
-        //         GameObject item = Instantiate(items, transform.position, Quaternion.identity);
-        //     }
-        // }
 
         public override float GetHealth()
         {

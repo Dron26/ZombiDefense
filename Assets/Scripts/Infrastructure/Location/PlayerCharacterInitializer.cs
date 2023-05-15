@@ -1,7 +1,11 @@
+using System;
 using System.Collections.Generic;
+using Audio;
 using Humanoids.AbstractLevel;
 using Infrastructure.AIBattle;
 using Infrastructure.AIBattle.EnemyAI.States;
+using Infrastructure.AIBattle.PlayerCharacterStateMachine;
+using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.FactoryWarriors.Enemies;
 using Infrastructure.FactoryWarriors.Humanoids;
@@ -16,45 +20,63 @@ namespace Infrastructure.Location
         [SerializeField] private WorkPointGroup _workPointsGroup;
         [SerializeField] private HumanoidFactory _humanoidFactory;
         private List<WorkPoint> _workPoints = new ();
-        private List<Button> _workPointButtons = new ();
         private static readonly List<Humanoid> _activeHumanoids = new();
         private static readonly List<Humanoid> _inactiveHumanoids = new();
         public UnityAction AreOverHumanoids;
-        public UnityAction<WorkPoint> OnClickWorkpoint;
-        public void Initialize(AudioSource audioSource)
+        public UnityAction CreatedHumanoid;
+        private Humanoid _selectedHumanoid;
+        public bool IsHumanoidSelected => isHumanoidSelected;
+        private bool isHumanoidSelected=false;
+        
+        public int CoutnCreated => _coutnCreated;
+        private int _coutnCreated;
+        public int CoutnOrdered => _countOrdered;
+        
+        private int _countOrdered;
+
+        public void Initialize(AudioController audioController)
         {
-            _humanoidFactory.Initialize(audioSource);
+            _humanoidFactory.Initialize(audioController);
             _humanoidFactory.CreatedHumanoid += FillCharacterGroup;
             FillWorkPoints();
         }
+        
 
         private void FillWorkPoints()
         {
-            foreach (WorkPoint workPoint in _workPointsGroup.WorkPoints)
+            foreach (WorkPoint workPoint in _workPointsGroup.GetWorkPoints())
             {
                 _workPoints.Add(workPoint);
-                workPoint.OnClick=OnClickWorkpoint;
             }
-        } 
-        
-        
-        private void FillCharacterGroup(Humanoid humanoid)
-        {
-            _activeHumanoids.Add(humanoid);
-            DieState dieState = humanoid.GetComponent<DieState>();
-            dieState.OnDeath += OnDeath;
         }
 
-        private void CreateHumanoid(GameObject humanoid )
+        private void FillCharacterGroup(Humanoid humanoid)
         {
-                _humanoidFactory.Create(humanoid);
+            _coutnCreated++;
+            _activeHumanoids.Add(humanoid);
+            humanoid.OnHumanoidSelected += OnHumanoidSelected;
+            DieState dieState = humanoid.GetComponent<DieState>();
+            dieState.OnDeath += OnDeath;
+            CreatedHumanoid?.Invoke();
+        }
+
+        private void OnHumanoidSelected(Humanoid humanoid)
+        {
+            _selectedHumanoid=humanoid;
+            isHumanoidSelected = true;
+        }
+
+        private  void CreateHumanoid(GameObject humanoid)
+        { 
+            _humanoidFactory.Create(humanoid);
         }
         
         public void SetCreatHumanoid(GameObject humanoid)
         {
             if (humanoid != null&&humanoid.GetComponent<Humanoid>())
             {
-                _humanoidFactory.Create(humanoid);
+                _countOrdered++;
+                CreateHumanoid(humanoid);
             }
             else
             {
@@ -87,12 +109,16 @@ namespace Infrastructure.Location
                 dieState.OnDeath -= OnDeath;
             }
         }
-
-        public List<WorkPoint> GetWorkPointGroup() => new List<WorkPoint>(_workPoints);
+        
 
         public HumanoidFactory GetFactory() => _humanoidFactory;
         //public Humanoid GetAvailableHumanoid() => 
-        
-        public List<Button> GetWorkPointButtons=>new List<Button>(_workPointButtons);
+
+        public WorkPointGroup GetWorkPointGroup() => _workPointsGroup;
+
+        public Humanoid GetSelectedCharacter()
+        {
+           return _selectedHumanoid;
+        }
     }
 }

@@ -163,23 +163,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
             _animator.SetBool(_animController.IsShoot,false);
             PlayerCharactersStateMachine.EnterBehavior<SearchTargetState>();
         }
-        
-        // private void ApplyDamageToEnemiesInRange()
-        // {
-        //     Collider[] hitColliders = Physics.OverlapSphere(transform.position, _weaponController.GetSpread(),LayerMask.GetMask("Enemy"));
-        //    
-        //     foreach (Collider hitCollider in hitColliders)
-        //     {
-        //         if (hitCollider.TryGetComponent(out Enemy enemy))
-        //         {
-        //             if ( enemy.IsLife())
-        //             {
-        //                 enemy.ApplyDamage(_weaponController.GetDamage());
-        //             }
-        //         }
-        //     }
-        // }
-        
+
         private void ApplyDamageToEnemiesInRange()
         {
             Collider[] hitColliders = Physics.OverlapSphere(transform.position, _maxRadius, LayerMask.GetMask("Enemy"));

@@ -1407,6 +1407,8 @@ MonoBehaviour:
   _particleGunshotSingle: {fileID: 3426243457998394024}
   _particleEjectSingle: {fileID: 5007082638857109521}
   _particleDie: {fileID: 1822072883235681023}
+  _particleTankDie: {fileID: 0}
+  _particleTankDie1: {fileID: 0}
 --- !u!114 &5763427100804377074
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1445,6 +1447,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3b7ebfb923a4f99b3832c48cde099d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _ammoCount: 0
 --- !u!114 &5763427100804377085
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1540,6 +1543,7 @@ MonoBehaviour:
     m_SubObjectType: 
     m_EditorAssetChanged: 0
   StartPosition: {x: 0, y: 0, z: 0}
+  sprite: {fileID: 21300000, guid: b944c63612ae9407cbd657cf70397e9b, type: 3}
 --- !u!114 &5763427100804377083
 MonoBehaviour:
   m_ObjectHideFlags: 0

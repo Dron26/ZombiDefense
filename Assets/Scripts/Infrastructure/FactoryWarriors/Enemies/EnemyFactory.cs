@@ -7,8 +7,6 @@ namespace Infrastructure.FactoryWarriors.Enemies
 {
     public class EnemyFactory : MonoBehaviour
     {
-        [SerializeField] private List<EnemyData> enemiesData;
-        private static readonly List<Humanoid> _humanoids = new();
         private static readonly List<Enemy> _enemies = new();
         public Enemy Create( GameObject enemy)
         {

@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using DG.Tweening;
 using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
+using Infrastructure.Location;
 using Infrastructure.WeaponManagment;
 using UnityEngine;
 using UnityEngine.AI;
@@ -11,9 +14,9 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
     {
         private readonly float _rateStepUnit = .01f;
 
-        private Humanoid _opponentHumanoid;
+        private WorkPoint _point;
         private Enemy _opponentEnemy;
-        private  NavMeshAgent _agent;
+        private NavMeshAgent _agent;
         private float _stoppingDistance;
         private float _distance;
         private float _move;
@@ -21,98 +24,74 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         private Animator _animator;
         private AnimController _animController;
         private WeaponController _weaponController;
-        private void Start()
+
+        private void Awake()
         {
-            _weaponController= GetComponent<WeaponController>();
-            _move = 0f;
+            _weaponController = GetComponent<WeaponController>();
             _animator = GetComponent<Animator>();
             _animController = GetComponent<AnimController>();
-            if (TryGetComponent(out Enemy enemy)) 
-                _stoppingDistance = enemy.GetRangeAttack();
-            
-            if (TryGetComponent(out Humanoid humanoid)) 
-                _stoppingDistance = _weaponController.GetRangeAttack();
+            _stoppingDistance = _weaponController.GetRangeAttack();
             _agent = GetComponent<NavMeshAgent>();
+            _move = 0f;
         }
 
-       protected override void FixedUpdateCustom()
-       {
-           if (isActiveAndEnabled == false)
-               return;
-           
-                     Move();
-       }
 
-       public void InitHumanoid(Humanoid targetHumanoid) => 
-            _opponentHumanoid = targetHumanoid;
+        protected override void FixedUpdateCustom()
+        {
+            if (isActiveAndEnabled == false)
+                return;
 
-       public void InitEnemy(Enemy targetEnemy) =>
-            _opponentEnemy = targetEnemy;
+            Move();
+        }
 
-       private void Move()
-       {
-           if (_opponentHumanoid != null && _opponentHumanoid.IsLife() == false
-               || _opponentEnemy != null && _opponentEnemy.IsLife() == false)
-           {
-               //_animator.SetBool(_animController.Run, false);
-               PlayerCharactersStateMachine.EnterBehavior<SearchTargetState>();
-           }
-           
-           if (_opponentHumanoid != null && _opponentEnemy != null)
-           {_move = 0.2f;
-              
-               PlayerCharactersStateMachine.EnterBehavior<SearchTargetState>();
-           }
-           
-           Vector3 ourPosition = transform.position;
-           Vector3 opponentPosition;
-           
-           if (_opponentHumanoid != null && _opponentHumanoid.IsLife())
-           {
-               opponentPosition = _opponentHumanoid.transform.position;
-               _agent.SetDestination(opponentPosition);
+        private void Move()
+        {
+            _point = PlayerCharactersStateMachine.GetPoint();
+            
+            if (_point!=null)
+            {
+                Vector3 ourPosition = transform.position;
+                Vector3 opponentPosition;
+
+                opponentPosition = _point.transform.position;
+                _agent.SetDestination(opponentPosition);
                 Movement(ourPosition, opponentPosition);
-           }
-           
-           if (_opponentHumanoid == null)
-           {
-               _animator.SetBool(_animController.Run, false);
-              // Movement(ourPosition, opponentPosition);
-           }
-       }
+            }
+            else
+            {
+               print("Invalid point");
+            }
+        }
 
-       private void Movement(Vector3 ourPosition, Vector3 opponentPosition)
-       {
-           _animator.SetBool(_animController.Run, true);
-           // if (transform.position.y < -3.5)
-           //     transform.position =
-           //         new Vector3(ourPosition.x, ourPosition.y + 1.5f, ourPosition.z);
+        private void Movement(Vector3 ourPosition, Vector3 pointPosition)
+        {
+            _animator.SetBool(_animController.Run, true);
 
-           // if (transform.rotation.x != 0) 
-           //     transform.Rotate(0, ourPosition.y, ourPosition.z);
-          //  
-          // transform.position = new Vector3(MovementAxis(ourPosition.x, opponentPosition.x), 
-          //     MovementAxis(ourPosition.y, opponentPosition.y), 
-          //     MovementAxis(ourPosition.z, opponentPosition.z));
+            //  if (transform.position.y < -3.5)
+            //      transform.position =
+            //          new Vector3(ourPosition.x, ourPosition.y + 1.5f, ourPosition.z);
+            //
+            //  if (transform.rotation.x != 0) 
+            //      transform.Rotate(0, ourPosition.y, ourPosition.z);
+            //  
+            transform.position = new Vector3(MovementAxis(ourPosition.x, pointPosition.x),
+                MovementAxis(ourPosition.y, pointPosition.y),
+                MovementAxis(ourPosition.z, pointPosition.z));
 
-         //  transform.DOLookAt(opponentPosition, .05f);
-           
-           TryNextState(ourPosition, opponentPosition);
-       }
+            transform.DOLookAt(pointPosition, .05f);
 
-       private void TryNextState(Vector3 ourPosition, Vector3 opponentPosition)
-       {
-           _distance = Vector3.Distance(ourPosition, opponentPosition);
+            TryNextState(ourPosition, pointPosition);
+        }
 
-           if (_stoppingDistance >= _distance)
-           {
-               PlayerCharactersStateMachine.EnterBehavior<AttackState>();
-           }
-       }
+        private void TryNextState(Vector3 ourPosition, Vector3 pointPosition)
+        {
+            if (ourPosition == pointPosition)
+            {
+                PlayerCharactersStateMachine.EnterBehavior<SearchTargetState>();
+            }
+        }
 
-       private float MovementAxis(float ourPosition, float targetPosition) => 
+        private float MovementAxis(float ourPosition, float targetPosition) =>
             Mathf.MoveTowards(ourPosition, targetPosition, _rateStepUnit);
-       
-       
     }
 }

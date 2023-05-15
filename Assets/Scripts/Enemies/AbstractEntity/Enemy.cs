@@ -7,6 +7,7 @@ using Infrastructure.AIBattle.PlayerCharacterStateMachine;
 using Infrastructure.AssetManagement;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.FactoryWarriors.Enemies;
+using Observer;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.AI;
@@ -17,8 +18,9 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 namespace Enemies.AbstractEntity
 {
     [RequireComponent(typeof(EnemyStateMachine))]
-    public abstract class Enemy : MonoCache
+    public abstract class Enemy : MonoCache,IObservableHumanoid
     {
+        private List<IObserverByHumanoid> observers = new List<IObserverByHumanoid>();
         [SerializeField] private AssetReferenceT<EnemyData> enemyDataReference;
         private List<SkinGroup> _skinGroups = new();
         public int MinLevelForHumanoid => enemyData.MinLevelForHumanoid;
@@ -101,6 +103,24 @@ namespace Enemies.AbstractEntity
             else
             {
                 _agent.speed = Random.Range(minSpeed, maxSpeed);
+            }
+        }
+
+        public void AddObserver(IObserverByHumanoid observerByHumanoid)
+        {
+            observers.Add(observerByHumanoid);
+        }
+
+        public void RemoveObserver(IObserverByHumanoid observerByHumanoid)
+        {
+            observers.Remove(observerByHumanoid);
+        }
+
+        public void NotifyObservers(object data)
+        {
+            foreach (var observer in observers)
+            {
+                observer.NotifyFromHumanoid(data);
             }
         }
     }

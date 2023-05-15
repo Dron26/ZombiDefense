@@ -1,64 +1,86 @@
 using System.Collections.Generic;
 using Humanoids.AbstractLevel;
+using Infrastructure.AIBattle.PlayerCharacterStateMachine;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.FactoryWarriors.Humanoids;
 using Infrastructure.Location;
-using UnityEditor;
+using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace UI.SceneBattle.Store
 {
-    public class StoreOnPlay:MonoCache
+    public class StoreOnPlay : MonoCache
     {
-        private Panel _storePanel;
+        [SerializeField] private Panel _storePanel;
         private Button _showButton;
         private Button _closeButton;
         private WorkPoint _selectedWorkPoint;
-        private Image _dimImage;
-        private  List<Humanoid> _characters = new();
-       private List<WorkPoint> _points ;
-       private PlayerCharacterInitializer _characterInitializer;
-       
-        private void Initialize(PlayerCharacterInitializer initializer)
+        [SerializeField] private Image _dimImage;
+        private List<Humanoid> _characters = new();
+        private List<WorkPoint> _points;
+        private SceneInitializer _sceneInitializer;
+        private PlayerCharacterInitializer _characterInitializer;
+        [SerializeField] private Button _buttonSelectionPanel;
+       private MovePointController _movePointController;
+        
+       public void Initialize(SceneInitializer initializer)
         {
-            _characterInitializer=initializer;
-            initializer.OnClickWorkpoint += SetPointInfo;
-            _storePanel=GetComponentInChildren<Panel>();
-            _storePanel.Initialize( _characterInitializer);
-            _dimImage=_storePanel.GetComponentInChildren<Image>();
-            InitializeButton();
-            ClosePanel();
+            _sceneInitializer = initializer;
+            SetCharacterInitializer();
         }
 
+        private void SetCharacterInitializer()
+        {
+            _characterInitializer = _sceneInitializer.GetPlayerCharacterInitializer();
+            //_characterInitializer.OnClickWorkpoint += CheckPointInfo;
+            _characters = _sceneInitializer.GetAvaibelCharacters();
+            _storePanel.Initialize(_characterInitializer, this);
+            InitializeButton();
+            _storePanel.gameObject.SetActive(false);
+            
+            _movePointController=_sceneInitializer.GetMovePointController();
+            //_movePointController.OnClickWorkpoint += OnClickWorkpoint;
+            //_movePointController.OnSelectedNewPoint+=OnSelectedNewPoint;
+            //_movePointController.OnUnSelectedPoint+=OnUnSelectedPoint;
+        }
 
         private void InitializeButton()
         {
-            _closeButton=_dimImage.GetComponent<Button>();
+            _closeButton = _dimImage.GetComponent<Button>();
             _closeButton.onClick.AddListener(ClosePanel);
         }
 
-        private void SetPointInfo(WorkPoint workPoint)
+        private void CheckPointInfo(WorkPoint workPoint)
         {
-            print(workPoint.transform.position);
+            _selectedWorkPoint=workPoint;
+            _buttonSelectionPanel.gameObject.SetActive(true);
         }
 
         private void ShowPanel()
-        { 
+        {
             _storePanel.gameObject.SetActive(true);
             _storePanel.ShowAvaibleCharacters();
         }
 
         private void ClosePanel()
         {
+            // _selectedWorkPoint.SetState(false);
             _storePanel.gameObject.SetActive(false);
         }
 
-        public List<Humanoid>  GetAvaibleCharacters()
+        public List<Humanoid> GetAvaibleCharacters()
         {
             return _characters;
         }
 
-       
+        public Panel GetBuyedPanel()
+        {
+            return _storePanel;
+        }
 
+        public void SetButton()
+        {
+            _buttonSelectionPanel.gameObject.SetActive(true);
+        }
     }
 }

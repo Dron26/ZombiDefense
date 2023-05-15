@@ -5,6 +5,7 @@ using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.FactoryWarriors.Enemies;
 using Infrastructure.Location;
+using Observer;
 using UnityEngine;
 
 namespace Infrastructure.AIBattle.EnemyAI{
@@ -21,7 +22,6 @@ namespace Infrastructure.AIBattle.EnemyAI{
         private Dictionary<Type, IEnemySwitcherState> _allBehaviors;
         private IEnemySwitcherState _currentBehavior;
         private SceneInitializer _sceneInitializer;
-        private AnimController _animController;
         private PlayerCharacterInitializer _characterInitializer;
 
 
@@ -29,7 +29,6 @@ namespace Infrastructure.AIBattle.EnemyAI{
         {
             _sceneInitializer=FindObjectOfType<SceneInitializer>();   
             _characterInitializer=_sceneInitializer.GetPlayerCharacterInitializer();
-            _animController = GetComponent<AnimController>();
             _allBehaviors = new Dictionary<Type, IEnemySwitcherState>
             {
                 [typeof(EnemySearchTargetState)] = GetComponent<EnemySearchTargetState>(),
@@ -50,7 +49,6 @@ namespace Infrastructure.AIBattle.EnemyAI{
         {
             _currentBehavior = _allBehaviors[typeof(EnemySearchTargetState)];
             EnterBehavior<EnemySearchTargetState>();
-            _animController.Initialize();
         }
 
         public void EnterBehavior<TState>() where TState : IEnemySwitcherState

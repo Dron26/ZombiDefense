@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
-using Enemies.AbstractEntity;
-using Infrastructure.AIBattle;
+using System.Threading.Tasks;
+using Audio;
 using Infrastructure.AIBattle.EnemyAI.States;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.FactoryWarriors.Enemies;
 using Infrastructure.FactoryWarriors.Humanoids;
 using Infrastructure.WeaponManagment;
+using Observer;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
@@ -16,55 +16,52 @@ namespace Humanoids.AbstractLevel
 {
     [RequireComponent(typeof(WeaponController))]
     [RequireComponent(typeof(PlayerCharactersStateMachine))]
-    public abstract class Humanoid : MonoCache
+    public abstract class Humanoid : MonoCache, IObservableHumanoid
     {
         [SerializeField] private AssetReferenceT<HumanoidData> humanoidDataReference;
         [SerializeField] private AssetReferenceT<WeaponData> weaponDataReference;
+        public Vector3 StartPosition;
         
+        private AudioController _audioController;
+        private List<IObserverByHumanoid> observers = new List<IObserverByHumanoid>();
+        
+        public UnityAction<Humanoid> OnDataLoad;
+        public UnityAction<Humanoid> OnHumanoidSelected;
+        
+        public Sprite sprite;
+
         protected HumanoidData humanoidData;
         protected WeaponData weaponData;
-
+        public bool IsSelected => _isSelected;
         public float MaxHealth => humanoidData.MaxHealth;
-        public int Level => humanoidData.Level; 
-        public UnityAction<Humanoid> Load;
-
-        public WeaponData GetWeaponData() =>weaponData;
-
+        public int Level => humanoidData.Level;
         public abstract int GetLevel();
         public abstract float GetHealth();
         public abstract bool IsLife();
         public abstract int GetPrice();
-        
         public abstract int GetDamageDone();
 
-        public Vector3 StartPosition;
-        public Sprite sprite;
+        private bool _isSelected;
 
-        public void InitPosition(Vector3 newPosition) =>
-            transform.position = newPosition;
-        
+        public WeaponData GetWeaponData() => weaponData;
         public abstract void ApplyDamage(int getDamage);
 
-        public void  SetAttacments()
+
+        public Task LoadPrefab()
         {
-           
-        }
-        
-        public void LoadPrefab()
-        {
+            var tcs = new TaskCompletionSource<bool>();
+
             if (humanoidDataReference.Asset != null)
             {
                 humanoidData = (HumanoidData)humanoidDataReference.Asset;
                 Debug.Log($"HumanoidData loaded: {humanoidData}");
-                return;
             }
+
             if (weaponDataReference.Asset != null)
             {
                 weaponData = (WeaponData)weaponDataReference.Asset;
                 Debug.Log($"HumanoidData loaded: {weaponData}");
-                return;
             }
-            
 
             humanoidDataReference.LoadAssetAsync().Completed += handle =>
             {
@@ -72,38 +69,78 @@ namespace Humanoids.AbstractLevel
                 {
                     humanoidData = (HumanoidData)handle.Result;
                     Debug.Log($"HumanoidData loaded: {humanoidData}");
-                    Load?.Invoke(this);
+                    tcs.TrySetResult(true);
+                    NotifyObservers(this);
+                    OnDataLoad?.Invoke(this);
                 }
                 else
                 {
                     Debug.LogError($"Failed to load HumanoidData: {handle.OperationException}");
+                    tcs.TrySetException(handle.OperationException);
                 }
             };
-            
+
             weaponDataReference.LoadAssetAsync().Completed += handle =>
             {
                 if (handle.Status == AsyncOperationStatus.Succeeded)
                 {
-                    weaponData =(WeaponData)handle.Result;
+                    weaponData = (WeaponData)handle.Result;
                     Debug.Log($"weaponData loaded: {weaponData}");
-                    
+                    tcs.TrySetResult(true);
                 }
                 else
                 {
                     Debug.LogError($"Failed to load enemy data: {handle.OperationException}");
+                    tcs.TrySetException(handle.OperationException);
                 }
             };
-        }
 
-        public void Setparametrs( )
-        {
-            
+            return tcs.Task;
         }
 
         protected virtual void Die()
         {
             PlayerCharactersStateMachine stateMachine = GetComponent<PlayerCharactersStateMachine>();
             stateMachine.EnterBehavior<DieState>();
+        }
+
+        public void AddObserver(IObserverByHumanoid observerByHumanoid)
+        {
+            observers.Add(observerByHumanoid);
+            int c = observers.Count;
+        }
+
+        public void RemoveObserver(IObserverByHumanoid observerByHumanoid)
+        {
+            observers.Remove(observerByHumanoid);
+        }
+
+        public void NotifyObservers(object data)
+        {
+            foreach (var observer in observers)
+            {
+                observer.NotifyFromHumanoid(data);
+            }
+        }
+
+        public void SetAudioController(AudioController audioController)
+        {
+            _audioController = audioController;
+        }
+
+        public AudioController GetAudioController()
+        {
+            return _audioController;
+        }
+
+        public void SetSelected(bool isSelected)
+        {
+            _isSelected = isSelected;
+            OnHumanoidSelected?.Invoke(this);
+        }
+
+        public void SetPontInfo()
+        {
         }
     }
 }

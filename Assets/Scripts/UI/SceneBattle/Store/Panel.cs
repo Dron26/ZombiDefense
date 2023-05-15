@@ -4,47 +4,46 @@ using Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace UI.SceneBattle.Store
 {
-    class Panel : MonoCache
+   public class Panel : MonoCache
     {
-        private Image _characterImagePrefab;
+       [SerializeField] private Image _characterImagePrefab;
         private float _circleRadius = 100f;
-        private List<Sprite> _characterSprites;
-        private List<Humanoid> _availableCharacters;
+        [SerializeField] private List<Sprite> _characterSprites;
+        [SerializeField] private List<Humanoid> _availableCharacters;
         private Dictionary<Button, Humanoid> _buttonCharacterMap;
-        private GameObject _confirmationDialog;
-        public float characterDisplayTime = 1f;
-        private List<Image> characterImages;
+        [SerializeField] private GameObject _confirmationDialog;
+        [SerializeField] public float characterDisplayTime = 1f;
+        [SerializeField] private List<Image> characterImages;
         private int currentIndex = 0;
+        
+        public UnityAction BuyCharacter;
 
 
         private PlayerCharacterInitializer _characterInitializer;
 
         public void ShowAvaibleCharacters()
         {
-            throw new System.NotImplementedException();
+            ShowCharacters();
         }
 
-        private void Awake()
+        public void Initialize( PlayerCharacterInitializer initializer,StoreOnPlay store)
         {
             characterImages = new List<Image>();
             _buttonCharacterMap = new Dictionary<Button, Humanoid>();
-        }
-
-        public void Initialize(List<Humanoid> availableCharacters, PlayerCharacterInitializer initializer)
-        {
             _characterInitializer = initializer;
-            _availableCharacters = availableCharacters;
+            _availableCharacters = store.GetAvaibleCharacters();
             characterImages.Clear();
             _buttonCharacterMap.Clear();
             currentIndex = 0;
 
             // Find sprites for each character type
             _characterSprites = new List<Sprite>();
-            foreach (Humanoid humanoid in availableCharacters)
+            foreach (Humanoid humanoid in _availableCharacters)
             {
                 if (!_characterSprites.Contains(humanoid.sprite))
                 {
@@ -75,14 +74,14 @@ namespace UI.SceneBattle.Store
             }
 
             // Add button click listeners
-            foreach (Humanoid humanoid in availableCharacters)
+            foreach (Humanoid humanoid in _availableCharacters)
             {
                 foreach (Image image in characterImages)
                 {
                     if (image.sprite == humanoid.sprite)
                     {
                         Button button = image.GetComponent<Button>();
-                        button.onClick.AddListener(() => ShowConfirmationDialog(humanoid));
+                        button.onClick.AddListener(() => ShowConfirmationDialog( humanoid));
                         _buttonCharacterMap.Add(button, humanoid);
                         break;
                     }
@@ -93,14 +92,14 @@ namespace UI.SceneBattle.Store
         public void ShowConfirmationDialog(Humanoid humanoid)
         {
             _confirmationDialog.SetActive(true);
-            Text message = _confirmationDialog.GetComponentInChildren<Text>();
-            message.text = "Do you want to buy " + humanoid.name + "?";
-            Button confirmButton = _confirmationDialog.transform.Find("ConfirmButton").GetComponent<Button>();
-            Button cancelButton = _confirmationDialog.transform.Find("CancelButton").GetComponent<Button>();
-            confirmButton.onClick.RemoveAllListeners();
-            confirmButton.onClick.AddListener(() => BuyCharacter(humanoid));
-            cancelButton.onClick.RemoveAllListeners();
-            cancelButton.onClick.AddListener(CloseConfirmationDialog);
+            // Text message = _confirmationDialog.GetComponentInChildren<Text>();
+            // message.text = "Do you want to buy " + humanoid.name + "?";
+            // Button confirmButton = _confirmationDialog.transform.Find("ConfirmButton").GetComponent<Button>();
+            // Button cancelButton = _confirmationDialog.transform.Find("CancelButton").GetComponent<Button>();
+            // confirmButton.onClick.RemoveAllListeners();
+            // confirmButton.onClick.AddListener(() => BuyCharacter());
+            // cancelButton.onClick.RemoveAllListeners();
+            // cancelButton.onClick.AddListener(CloseConfirmationDialog);
         }
 
         public void CloseConfirmationDialog()
@@ -108,10 +107,10 @@ namespace UI.SceneBattle.Store
             _confirmationDialog.SetActive(false);
         }
 
-        public void BuyCharacter(Humanoid humanoid)
-        {
-            print("TODO: Implement buying the character");
-        }
+        // public void BuyCharacter(Humanoid humanoid)
+        // {
+        //     print("TODO: Implement buying the character");
+        // }
 
         public void ShowCharacters()
         {
@@ -141,7 +140,7 @@ namespace UI.SceneBattle.Store
 
         private void Start()
         {
-            ShowCharacters();
+            
         }
     }
 }

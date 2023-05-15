@@ -1,15 +1,17 @@
 using System.Collections.Generic;
 using System.Linq;
+using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
 using Infrastructure.AIBattle;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Observer;
 using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace Infrastructure.WeaponManagment
 {
-    public class WeaponController : MonoCache, IWeapon
+    public class WeaponController : MonoCache, IWeapon, IObserverByHumanoid,IObservableWeapon
     {
         private WeaponData _weaponData;
         private GameObject _weaponPrefab;
@@ -22,6 +24,7 @@ namespace Infrastructure.WeaponManagment
          [SerializeField]private GameObject _granadeGameObject;
          [SerializeField] private Type _garnadeType;
          
+         private List<IObserverByWeaponController> observers = new List<IObserverByWeaponController>();
         private Weapon _weapon;
         private Weapon _weaponPistol;
         private Weapon _weaponRifle;
@@ -50,20 +53,19 @@ namespace Infrastructure.WeaponManagment
         public UnityAction ChangeWeapon;
         public float ReloadTime => _reloadTime;
         public bool IsShotgun;
-        public void Initialize()
+        
+        private void Awake()
         {
-             _humanoid=GetComponent<Humanoid>();
-            _weaponData = _humanoid.GetWeaponData();
-            
-            _animController=GetComponent<AnimController>();
-            _animator=GetComponent<Animator>();
-
-            SetWeapons();
-            SetAnimInfo();
-            SetWeaponParametrs();
-            SetSmallArmsPrefab();
-            ChangeWeapon?.Invoke();
+            if (TryGetComponent(out Humanoid humanoid))
+            {
+                humanoid.AddObserver(this);
+            }
+            else if (TryGetComponent(out Enemy enemy))
+            {
+                enemy.AddObserver(this);
+            }
         }
+        
         
         public void SetSmallArmsPrefab()
         {
@@ -130,9 +132,6 @@ namespace Infrastructure.WeaponManagment
                 print("Send null granads in Prefab");
             }
             
-            
-            
-            
         }
 
         private void SetWeaponParametrs()
@@ -183,14 +182,57 @@ namespace Infrastructure.WeaponManagment
                 _weaponAnimInfo.Add(info.Key, info.Value);
             }
         }
+
+        public void NotifyFromHumanoid(object data)
+        {
+            _humanoid=GetComponent<Humanoid>();
+            _weaponData = _humanoid.GetWeaponData();
+            
+            _animController=GetComponent<AnimController>();
+            _animator=GetComponent<Animator>();
+
+            SetWeapons();
+            SetAnimInfo();
+            SetWeaponParametrs();
+            SetSmallArmsPrefab();
+            ChangeWeapon?.Invoke();
+            
+            NotifyObserverWeaponController(_smallArms);
+        }
+        
+        private void OnDisable()
+        {
+            if (TryGetComponent(out Humanoid humanoid))
+            {
+                humanoid.RemoveObserver(this);
+            }
+            else if (TryGetComponent(out Enemy enemy))
+            {
+                enemy.RemoveObserver(this);
+            }
+        }
+
+        public void AddObserver(IObserverByWeaponController observerByWeapon)
+        {
+            observers.Add(observerByWeapon);
+            int c= observers.Count;
+        }
+
+        public void RemoveObserver(IObserverByWeaponController observerByWeapon)
+        {
+            observers.Remove(observerByWeapon);
+        }
+
+        public void NotifyObserverWeaponController(Weapon weapon)
+        {
+            foreach (var observer in observers)
+            {
+                observer.NotifyFromWeaponController(weapon);
+            }
+        }
+
     }
 
-    interface IWeapon
-    {
-         abstract int GetDamage();
-         abstract float GetRangeAttack();
-    }
-    
-//    Sniper Vector3(0.0289999992,-0.0839999989,0.0170000009)Vector3(347.422821,89.5062866,89.6258698)
+    //    Sniper Vector3(0.0289999992,-0.0839999989,0.0170000009)Vector3(347.422821,89.5062866,89.6258698)
 //    shotgun Vector3(0.0179999992,-0.0500000007,-0.0189999994)Vector3(348.677673,89.4979019,89.6276169)
 }

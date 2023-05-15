@@ -19,8 +19,9 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         private WeaponController _weaponController;
         private Transform[] _enemyTransforms;
         private bool _isSearhing;
+        private AnimController _animController;
         
-        
+        private Animator _animator;
         private Coroutine currentTurnCoroutine;
         
         private bool _isTurning;
@@ -36,21 +37,22 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
             _weaponController = GetComponent<WeaponController>();
             _movementState = GetComponent<MovementState>();
             _attackState = GetComponent<AttackState>();
-            // Get an array of enemy transforms.
+            _animController = GetComponent<AnimController>();
+            _animator = GetComponent<Animator>();
         }
 
         protected override void UpdateCustom()
         {
             if ( gameObject.activeSelf== false)
                 return;
-
+            
             if (_isSearhing==false) StartCoroutine(Search());
         }
 
         private IEnumerator Search()
         {
             _isSearhing = true;
-            
+
             _enemyTransforms = WaveSpawner.GetEnemyInWaveQueue()
                 .Select(enemy => enemy.transform)
                 .ToArray();
@@ -75,25 +77,12 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
                 _isSearhing = false;
         }
         
-        // private void LookEnemyPosition(Transform enemyTransform)
-        // {
-        //     // Поворачиваем персонажа в сторону врага
-        //     _isTurning = true;
-        //     
-        //     transform.DOLookAt(enemyTransform.position, _turnTime).OnComplete(() =>
-        //     {
-        //         _isTurning = false;
-        //     });
-        // }
-        
         private void ChangeState()
         {
             _isTurning = false;
             _attackState.InitEnemy(_enemy);
             PlayerCharactersStateMachine.EnterBehavior<AttackState>();
         }
-        
-        
         
         private void LookEnemyPosition(Transform enemyTransform)
         {
@@ -152,8 +141,6 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
             transform.rotation = targetRotation;
             ChangeState();
         }
-
-
         
         private int GetClosestEnemyIndex(Vector3 soldierPosition)
         {

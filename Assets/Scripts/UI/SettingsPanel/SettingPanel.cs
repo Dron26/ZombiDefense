@@ -33,9 +33,10 @@ namespace UI.SettingsPanel
         private float _currentVolumeSound ;
         private float _currentVolumeMusic ;
         private bool vibrationEnabled = false;
+        
         public void Initialize(AudioController audioController,SaveLoad saveLoad)
         {
-        
+            _settingPanel.SetActive(!_isActive);
             _audioController = audioController;
             _saveLoad = saveLoad;
 
@@ -46,6 +47,7 @@ namespace UI.SettingsPanel
             buttonSound.onClick.AddListener(SetSound);
             buttonMusic.onClick.AddListener(SetNusic);
             ChangeStatePanel();
+            
         }
     
     
@@ -66,8 +68,7 @@ namespace UI.SettingsPanel
             _settingPanel.SetActive(_isActive);
         
         }
-    
-    
+        
         public void SetSound()
         {
             _audioController.ToggleSound();

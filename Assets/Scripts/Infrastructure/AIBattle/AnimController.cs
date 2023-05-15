@@ -1,15 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Observer;
 using UnityEditor.Animations;
 using UnityEngine;
 
 namespace Infrastructure.AIBattle
 {
-    public class AnimController : MonoCache
+    public class AnimController : MonoCache,IObserverByHumanoid
     {
+        public readonly int Idle = Animator.StringToHash("Idle");
         public readonly int Run = Animator.StringToHash("Run");
         public readonly int Walk = Animator.StringToHash("Walk");
         public readonly int IsСrawl = Animator.StringToHash("IsСrawl");
@@ -27,14 +30,17 @@ namespace Infrastructure.AIBattle
         private AnimatorOverrideController animatorOverrideController;
         private int weaponIndex;
         private Dictionary<int, float> _animInfo=new();
-        
-        public void Initialize()
+
+        private void Awake()
         {
-            _animator = GetComponent<Animator>();
-            weaponIndex = 0;
-           
-            
-            SetAnimInfo();
+            if (TryGetComponent(out Humanoid humanoid))
+            {
+                humanoid.AddObserver(this);
+            }
+            else if (TryGetComponent(out Enemy enemy))
+            {
+                enemy.AddObserver(this);
+            }
         }
 
         public void SetRandomAnimation()
@@ -101,5 +107,24 @@ namespace Infrastructure.AIBattle
             return _animInfo;
         }
 
+        public void NotifyFromHumanoid(object data)
+        {
+            _animator = GetComponent<Animator>();
+            weaponIndex = 0;
+            
+            SetAnimInfo();
+        }
+
+        private void OnDisable()
+        {
+            if (TryGetComponent(out Humanoid humanoid))
+            {
+                humanoid.RemoveObserver(this);
+            }
+            else if (TryGetComponent(out Enemy enemy))
+            {
+                enemy.RemoveObserver(this);
+            }
+        }
     }
 }

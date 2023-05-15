@@ -34,7 +34,7 @@ namespace Audio
 
         [SerializeField] private List< AudioClip> _backgroundMusics; 
         [SerializeField] private List< AudioClip> _soundButtons; 
-        [SerializeField]private AudioSource _musicSource;
+        [SerializeField] private AudioSource _musicSource;
         [SerializeField] private AudioSource _soundSource;
         
         public Slider soundSlider;
@@ -212,6 +212,16 @@ namespace Audio
             }
         }
 
+        public AudioSource GetSoundSource()
+        {
+            return _soundSource;
+        }
+        
+        public AudioSource GetMusicSource()
+        {
+            return _musicSource;
+        }
+        
     }
 
     [Serializable]
