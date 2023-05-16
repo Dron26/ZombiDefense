@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Audio;
+using Humanoids.AbstractLevel;
+using Infrastructure.Location;
 using UnityEngine;
 
 namespace Service.SaveLoadService
@@ -14,12 +16,16 @@ namespace Service.SaveLoadService
         public AudioSettingsParameters AudioParametrs;
         public List<MergeSceneData> MergeSceneDatas=new();
         public List<GameObject> Slots=new();
-        
+        public Humanoid SelectedHumanoid;
         public List<int> _levelHumanoid=new();
         public List<int> _amountHumanoids=new();
-        
+        public   List<Humanoid> ActiveHumanoids = new();
+        public   List<Humanoid> InactiveHumanoids = new();
+        public List<Humanoid> AvaibelCharacters;
         public bool _isFirstStart=true;
         public bool _isBattleStart=false;
+        private WorkPoint SelectedPoint;
+        
         public int CountSpins { get; private set; }
         
         public void AddHumanoidAndCount( List<int> levels,List<int> amount)
@@ -110,5 +116,43 @@ namespace Service.SaveLoadService
 
         public bool ReadIsStartBattle()=> 
             _isBattleStart;
+
+        public WorkPoint ChangeSelectedPoint(WorkPoint point) => SelectedPoint = point;
+        public WorkPoint ReadSelectedPoint() => SelectedPoint;
+        
+        public Humanoid  ChangeSelectedHumanoid(Humanoid humanoid) => SelectedHumanoid = humanoid;
+
+        public Humanoid  ReadSelectedHumanoid() => SelectedHumanoid;
+
+
+        public void ChangeActiveHumanoid(List<Humanoid> activeHumanoids)
+        {
+            ActiveHumanoids=new List<Humanoid>(activeHumanoids);
+        }
+        
+        public List<Humanoid> ReadActiveHumanoid( )
+        {
+            return   new List<Humanoid>( ActiveHumanoids);
+        }
+        
+        public void ChangeInactiveHumanoid(List<Humanoid> inactiveHumanoids)
+        {
+            InactiveHumanoids=new List<Humanoid>(inactiveHumanoids);
+        }
+        
+        public List<Humanoid> ReadInactiveHumanoid( )
+        {
+            return  new List<Humanoid>( InactiveHumanoids);
+        }
+
+        public void ChangeAvailableCharacters(List<Humanoid> avaibelCharacters)
+        {
+            AvaibelCharacters = new List<Humanoid>(avaibelCharacters);
+        }
+
+        public List<Humanoid> ReadAvailableCharacters()
+        {
+            return  new List<Humanoid>( AvaibelCharacters);
+        }
     }
 }

@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
 using Audio;
+using Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Infrastructure.Location;
 using Newtonsoft.Json;
+using Service.SaveLoadService;
 using UnityEngine;
 
 namespace Service.SaveLoadService
@@ -141,5 +144,35 @@ namespace Service.SaveLoadService
             _dataBase = new DataBase();
             SetStartParametrs();
         }
+
+        public void SetSelectedPOoint(WorkPoint point) => 
+            _dataBase.ChangeSelectedPoint(point);
+
+        public WorkPoint GetSelectedPOoint()=>
+            _dataBase.ReadSelectedPoint();
+        
+        public void SetSelectedHumanoid(Humanoid humanoid) => 
+            _dataBase.ChangeSelectedHumanoid(humanoid);
+
+        public Humanoid GetSelectedHumanoid()=>
+            _dataBase.ReadSelectedHumanoid();
+
+        public void SetActiveHumanoids(List<Humanoid> activeHumanoids) => 
+            _dataBase.ChangeActiveHumanoid( activeHumanoids);
+
+        public List<Humanoid> GetActiveHumanoids( ) => 
+            _dataBase.ReadActiveHumanoid();
+
+        public void SetInactiveHumanoids(List<Humanoid> inactiveHumanoids) => 
+            _dataBase.ChangeInactiveHumanoid( inactiveHumanoids);
+
+        public List<Humanoid> GetInactiveHumanoids( ) => 
+            _dataBase.ReadInactiveHumanoid();
+        
+        public void SetAvailableCharacters(List<Humanoid> avaibelCharacters) => 
+            _dataBase.ChangeAvailableCharacters( avaibelCharacters);
+
+        public List <Humanoid> GetAvailableCharacters( ) => 
+            _dataBase.ReadAvailableCharacters();
     }
 }

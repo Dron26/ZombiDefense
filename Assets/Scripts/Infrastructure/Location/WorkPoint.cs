@@ -58,7 +58,7 @@ namespace Infrastructure.Location
            
         }
 
-        private void SetBusy(bool isBusy)
+        public void SetBusy(bool isBusy)
         {
             _isBusy = isBusy;
         }

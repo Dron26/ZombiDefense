@@ -26,7 +26,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
 
             _enemy=GetComponent<Enemy>();
             
-            if (_enemy.Level == 4)
+            if (_enemy.Level == 2)
             {
                 FXController _fxController = GetComponent<FXController>();
                 _fxController.OnTankDeathFX();
@@ -40,12 +40,12 @@ namespace Infrastructure.AIBattle.EnemyAI.States
             _enemy.GetComponent<Collider>().enabled = false;
             _enemy.GetComponent<NavMeshAgent>().enabled = false;
             
-            yield return  new WaitForSeconds(4f);
+            yield return  new WaitForSeconds(2f);
 
             
             
             StartCoroutine(Fall());
-            yield return  new WaitForSeconds(6f);
+            yield return  new WaitForSeconds(2f);
             _enemy.gameObject.SetActive(false);
             _enemy.gameObject.transform.position = _enemy.StartPosition;
             
@@ -55,7 +55,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         {
             while (isActiveAndEnabled!=false)
             {
-                float newPosition=_enemy.transform.position.y-0.0001f;
+                float newPosition=_enemy.transform.position.y-0.008f;
                 _enemy.transform.position=new Vector3(_enemy.transform.position.x,newPosition,_enemy.transform.position.z);
                 yield return null;
             }

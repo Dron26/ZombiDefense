@@ -15,6 +15,8 @@ namespace Infrastructure.Location
 {
     public class SceneInitializer:MonoCache
     {
+        private SaveLoad _saveLoad;
+        
         [SerializeField] private WaveManager _waveManager;
         [SerializeField] private PlayerCharacterInitializer _playerCharacterInitializer;
         [SerializeField] private StoreOnPlay _storeOnPlay;
@@ -22,28 +24,28 @@ namespace Infrastructure.Location
         [SerializeField] private List<Humanoid> _avaibelCharacters;
         [SerializeField] private MovePointController _movePointController;
         int ordered = 1;
-            // [SerializeField] private GameObject humanoid1;
-       // [SerializeField] private GameObject humanoid2;
-       // [SerializeField] private GameObject humanoid3;
+        [SerializeField] private Humanoid humanoid1;
+        //[SerializeField] private GameObject humanoid2;
+      //  [SerializeField] private GameObject humanoid3;
         public UnityAction SetInfoCompleted;
-        private SaveLoad _saveLoad;
         
         private void Start()
         {
             _saveLoad = GetComponent<SaveLoad>();
+            _saveLoad.SetAvailableCharacters(_avaibelCharacters);
             _playerCharacterInitializer.AreOverHumanoids+=StopSpawning;
             _playerCharacterInitializer.CreatedHumanoid+= SetInfo;
             _audioController.Initialize(_saveLoad);
-            _playerCharacterInitializer.Initialize(_audioController);
-            
-           // _playerCharacterInitializer.SetCreatHumanoid(humanoid1);
-           // _playerCharacterInitializer.SetCreatHumanoid(humanoid2);
-           // _playerCharacterInitializer.SetCreatHumanoid(humanoid3);
+            _playerCharacterInitializer.Initialize(_audioController,this,_saveLoad);
+
+            //  _playerCharacterInitializer.SetCreatHumanoid(humanoid1);
+         //   _playerCharacterInitializer.SetCreatHumanoid(humanoid2);
+          //  _playerCharacterInitializer.SetCreatHumanoid(humanoid3);
             
             
            _waveManager.Initialize();
-           _movePointController.Initialize(this);
-           _storeOnPlay.Initialize(this);
+           _movePointController.Initialize(this,_saveLoad);
+           _storeOnPlay.Initialize(this,_saveLoad);
         }
         
         public WaveSpawner GetWaveSpawner() => _waveManager.GetWaveSpawner();
@@ -63,12 +65,13 @@ namespace Infrastructure.Location
             }
         }
 
-        public List<Humanoid> GetAvaibelCharacters()
-        {
-            return _avaibelCharacters;
-        }
+        // public List<Humanoid> GetAvaibelCharacters()
+        // {
+        //     return _avaibelCharacters;
+        // }
        
         public StoreOnPlay GetStoreOnPlay() => _storeOnPlay;
         public MovePointController GetMovePointController() => _movePointController;
+        public SaveLoad GetSaveLoad() => _saveLoad;
     }
 }

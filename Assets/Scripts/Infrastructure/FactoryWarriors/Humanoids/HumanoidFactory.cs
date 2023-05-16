@@ -34,10 +34,8 @@ namespace Infrastructure.FactoryWarriors.Humanoids
         
         
         
-        public async Task Create(GameObject prefab )
+        public async Task Create(GameObject prefab, Transform transform )
         {
-            
-            
             GameObject newHumanoid = Instantiate(prefab, transform);
             Humanoid humanoidComponent = newHumanoid.GetComponent<Humanoid>();
             humanoidComponent.SetAudioController(_audioController);

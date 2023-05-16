@@ -3,6 +3,7 @@ using Humanoids.AbstractLevel;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
+using Service.SaveLoadService;
 using UI.SceneBattle.Store;
 using UnityEngine;
 using UnityEngine.Events;
@@ -20,6 +21,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
         private List<WorkPoint> _workPoints = new();
         private WorkPoint _previousPoint;
         private WorkPoint _selectedPoint;
+        public WorkPoint SelectedPoint=>_selectedPoint;
         public WorkPoint MovePoint;
         private Humanoid _selectedHumanoid;
         public UnityAction<WorkPoint> OnClickWorkpoint;
@@ -31,11 +33,14 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
         public List<Button> GetWorkPointButtons => new List<Button>(_workPointButtons);
         [SerializeField] private WorkPoint _startPoint;
         private StoreOnPlay _storeOnPlay;
-        public void Initialize(SceneInitializer sceneInitializer)
+        private SaveLoad _saveLoad;
+        
+        public void Initialize(SceneInitializer sceneInitializer, SaveLoad saveLoad)
         {
+            _saveLoad=saveLoad;
             _sceneInitializer = sceneInitializer;
             _characterInitializer = sceneInitializer.GetPlayerCharacterInitializer();
-            _activeHumanoids = _characterInitializer.GetAllHumanoids();
+            _activeHumanoids = _saveLoad.GetActiveHumanoids();
             _workPointGroup = _characterInitializer.GetWorkPointGroup();
 
             FillWorkPoints();
@@ -57,31 +62,41 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
             _selectedPoint = workPoint;
             _previousPoint = workPoint;
             _selectedPoint.SetSelected(true);
+            _saveLoad.SetSelectedPOoint(_selectedPoint);
         }
 
         private void OnSelectedPoint(WorkPoint workPoint)
         {
-            isHumanoidSelected = _characterInitializer.IsHumanoidSelected;
-            
+            isHumanoidSelected = _saveLoad.GetSelectedHumanoid();
+
             if (_previousPoint != workPoint)
             {
                 _previousPoint.SetSelected(false);
                 _selectedPoint = workPoint;
-                _selectedPoint.SetSelected(true);
                 
+                _saveLoad.SetSelectedPOoint(_selectedPoint);
+                _selectedPoint.SetSelected(true);
                 if (!workPoint.IsBusy && isHumanoidSelected&& isPointToMoveTaked==false)
                 {
                     isPointToMoveTaked = true;
                     MovePoint = workPoint;
                     
-                    _storeOnPlay.SetButton();
                 }
+                    
+                _storeOnPlay.SetButtonState(true);
             }
-            else if (_previousPoint == workPoint && !workPoint.IsBusy && isPointToMoveTaked)
+            else if (_previousPoint == workPoint && workPoint.IsBusy==false && isPointToMoveTaked==true)
             {
-                Humanoid humanoid = _characterInitializer.GetSelectedCharacter();
-                PlayerCharactersStateMachine stateMachine = humanoid.GetComponent<PlayerCharactersStateMachine>();
+
+                _selectedHumanoid=_saveLoad.GetSelectedHumanoid();
+               // Humanoid humanoid = _characterInitializer.GetSelectedCharacter();
+                PlayerCharactersStateMachine stateMachine = _selectedHumanoid.GetComponent<PlayerCharactersStateMachine>();
                 stateMachine.EnterBehavior<MovementState>();
+            }
+            else if (_previousPoint == workPoint && workPoint.IsBusy)
+            {
+                _storeOnPlay.SetButtonState(false);
+                _storeOnPlay.SetPanelInfoState(true);
             }
 
             _previousPoint = _selectedPoint;

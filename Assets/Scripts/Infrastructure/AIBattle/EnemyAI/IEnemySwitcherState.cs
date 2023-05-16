@@ -1,5 +1,6 @@
 using Infrastructure.FactoryWarriors.Enemies;
 using Infrastructure.Location;
+using Service.SaveLoadService;
 
 namespace Infrastructure.AIBattle.EnemyAI
 {
@@ -7,6 +8,6 @@ namespace Infrastructure.AIBattle.EnemyAI
     {
         public void EnterBehavior();
         public void ExitBehavior();
-        public void Init(EnemyStateMachine enemyStateMachine, PlayerCharacterInitializer playerCharacterInitializer);
+        public void Init(EnemyStateMachine enemyStateMachine, SaveLoad saveLoad);
     }
 }

@@ -21,7 +21,7 @@ namespace UI.SceneBattle.Store
         [SerializeField] private List<Image> characterImages;
         private int currentIndex = 0;
         
-        public UnityAction BuyCharacter;
+        public UnityAction<Humanoid> BuyCharacter;
 
 
         private PlayerCharacterInitializer _characterInitializer;
@@ -94,12 +94,12 @@ namespace UI.SceneBattle.Store
             _confirmationDialog.SetActive(true);
             // Text message = _confirmationDialog.GetComponentInChildren<Text>();
             // message.text = "Do you want to buy " + humanoid.name + "?";
-            // Button confirmButton = _confirmationDialog.transform.Find("ConfirmButton").GetComponent<Button>();
-            // Button cancelButton = _confirmationDialog.transform.Find("CancelButton").GetComponent<Button>();
-            // confirmButton.onClick.RemoveAllListeners();
-            // confirmButton.onClick.AddListener(() => BuyCharacter());
-            // cancelButton.onClick.RemoveAllListeners();
-            // cancelButton.onClick.AddListener(CloseConfirmationDialog);
+             Button confirmButton = _confirmationDialog.transform.Find("ConfirmButton").GetComponent<Button>();
+             Button cancelButton = _confirmationDialog.transform.Find("CancelButton").GetComponent<Button>();
+             confirmButton.onClick.RemoveAllListeners();
+             confirmButton.onClick.AddListener(() => BuyCharacters(humanoid));
+             cancelButton.onClick.RemoveAllListeners();
+             cancelButton.onClick.AddListener(CloseConfirmationDialog);
         }
 
         public void CloseConfirmationDialog()
@@ -107,10 +107,11 @@ namespace UI.SceneBattle.Store
             _confirmationDialog.SetActive(false);
         }
 
-        // public void BuyCharacter(Humanoid humanoid)
-        // {
-        //     print("TODO: Implement buying the character");
-        // }
+         public void BuyCharacters(Humanoid humanoid)
+         {
+             BuyCharacter?.Invoke(humanoid);
+             CloseConfirmationDialog();
+         }
 
         public void ShowCharacters()
         {

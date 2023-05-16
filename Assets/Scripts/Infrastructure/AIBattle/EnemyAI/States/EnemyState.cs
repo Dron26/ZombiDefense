@@ -4,13 +4,14 @@ using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.FactoryWarriors;
 using Infrastructure.FactoryWarriors.Enemies;
 using Infrastructure.Location;
+using Service.SaveLoadService;
 
 namespace Infrastructure.AIBattle.EnemyAI.States
 {
     public abstract class EnemyState : MonoCache, IEnemySwitcherState
     {
         protected EnemyStateMachine StateMachine;
-        protected PlayerCharacterInitializer PlayerCharacterInitializer;
+        protected SaveLoad SaveLoad;
 
         public void EnterBehavior() =>
             enabled = true;
@@ -18,10 +19,10 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         public void ExitBehavior() =>
             enabled = false;
 
-        public void Init(EnemyStateMachine enemyStateMachine, PlayerCharacterInitializer playerCharacterInitializer)
+        public void Init(EnemyStateMachine enemyStateMachine, SaveLoad saveLoad)
         {
             StateMachine = enemyStateMachine;
-            PlayerCharacterInitializer = playerCharacterInitializer;
+            SaveLoad = saveLoad;
         }
     }
 }

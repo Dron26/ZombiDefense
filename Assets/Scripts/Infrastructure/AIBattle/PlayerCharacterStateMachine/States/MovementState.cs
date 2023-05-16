@@ -15,10 +15,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         private readonly float _rateStepUnit = .01f;
 
         private WorkPoint _point;
-        private Enemy _opponentEnemy;
         private NavMeshAgent _agent;
-        private float _stoppingDistance;
-        private float _distance;
         private float _move;
         private bool isStopped = false;
         private Animator _animator;
@@ -30,7 +27,6 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
             _weaponController = GetComponent<WeaponController>();
             _animator = GetComponent<Animator>();
             _animController = GetComponent<AnimController>();
-            _stoppingDistance = _weaponController.GetRangeAttack();
             _agent = GetComponent<NavMeshAgent>();
             _move = 0f;
         }

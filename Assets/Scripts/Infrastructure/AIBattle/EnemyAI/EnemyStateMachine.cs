@@ -6,6 +6,7 @@ using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.FactoryWarriors.Enemies;
 using Infrastructure.Location;
 using Observer;
+using Service.SaveLoadService;
 using UnityEngine;
 
 namespace Infrastructure.AIBattle.EnemyAI{
@@ -22,13 +23,13 @@ namespace Infrastructure.AIBattle.EnemyAI{
         private Dictionary<Type, IEnemySwitcherState> _allBehaviors;
         private IEnemySwitcherState _currentBehavior;
         private SceneInitializer _sceneInitializer;
-        private PlayerCharacterInitializer _characterInitializer;
+        private SaveLoad _saveLoad;
 
 
         private void Awake()
         {
             _sceneInitializer=FindObjectOfType<SceneInitializer>();   
-            _characterInitializer=_sceneInitializer.GetPlayerCharacterInitializer();
+            _saveLoad=_sceneInitializer.GetSaveLoad();
             _allBehaviors = new Dictionary<Type, IEnemySwitcherState>
             {
                 [typeof(EnemySearchTargetState)] = GetComponent<EnemySearchTargetState>(),
@@ -39,7 +40,7 @@ namespace Infrastructure.AIBattle.EnemyAI{
 
             foreach (var behavior in _allBehaviors)
             {
-                behavior.Value.Init(this, _characterInitializer);
+                behavior.Value.Init(this, _saveLoad);
                 behavior.Value.ExitBehavior();
             }
 

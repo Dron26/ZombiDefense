@@ -30,6 +30,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
             _animController = GetComponent<AnimController>();
             agent = GetComponent<NavMeshAgent>();
             _enemy = GetComponent<Enemy>();
+            agent.speed = 1;
         }
 
         private void Start()
@@ -97,6 +98,11 @@ namespace Infrastructure.AIBattle.EnemyAI.States
 
        private void Move()
        {
+           if ( agent.speed ==0f)
+           {
+               agent.speed = 1f;
+           }
+           
            if (_humanoid != null)
            {
                Vector3 ourPosition = transform.position;
@@ -105,8 +111,10 @@ namespace Infrastructure.AIBattle.EnemyAI.States
                if ( _humanoid.IsLife())
                {
                    humanoidPosition = _humanoid.transform.position;
+                   
                    if (agent.isOnNavMesh)
                    {
+                       print(agent.speed);
                        agent.SetDestination(humanoidPosition);
                        Movement(ourPosition, humanoidPosition);
                    }

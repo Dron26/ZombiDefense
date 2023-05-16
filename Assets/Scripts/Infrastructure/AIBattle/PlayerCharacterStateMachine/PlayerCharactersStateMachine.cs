@@ -67,7 +67,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
         }
 
         public void SetMovePoint(WorkPoint point) => 
-            EnterBehavior<MovementState>();
+            _point = point;
 
 
         private void OnDisable() =>

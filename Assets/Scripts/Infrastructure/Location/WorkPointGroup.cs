@@ -30,7 +30,7 @@ namespace Infrastructure.Location
             }
         }
 
-        private void OnSelected(WorkPoint workpoint)
+        public void OnSelected(WorkPoint workpoint)
         {
             OnSelectedPoint?.Invoke(workpoint);
         }
@@ -44,5 +44,7 @@ namespace Infrastructure.Location
         {
             _workPoints[number].UpLevel(persentUp[_workPoints[number].Level + 1]);
         }
+        
+        
     }
 }

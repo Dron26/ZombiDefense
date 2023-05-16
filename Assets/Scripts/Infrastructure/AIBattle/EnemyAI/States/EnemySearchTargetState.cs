@@ -37,7 +37,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         private IEnumerator Search()
         {
             _isSearhing = true;
-            _humanoidTransforms = PlayerCharacterInitializer.GetAllHumanoids()
+            _humanoidTransforms = SaveLoad.GetActiveHumanoids()
                 .Select(humanoid => humanoid.transform)
                 .ToArray();
             
@@ -47,7 +47,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
                 
             if (closestIndex != -1)
             {
-                _targetHumanoid = PlayerCharacterInitializer.GetAllHumanoids()[closestIndex];
+                _targetHumanoid = SaveLoad.GetActiveHumanoids()[closestIndex];
                 _movementState.InitHumanoid(_targetHumanoid);
                 _attackState.InitHumanoid(_targetHumanoid);
                 
