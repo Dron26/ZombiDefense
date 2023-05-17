@@ -6,6 +6,7 @@ using Humanoids.AbstractLevel;
 using Infrastructure.AIBattle.EnemyAI.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.FactoryWarriors.Enemies;
+using Service.SaveLoadService;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
@@ -28,9 +29,15 @@ namespace Infrastructure.WaveManagment
         private IEnumerator _spawnCoroutine;
         public UnityAction SpawningCompleted;
         private int _totalNumber;
-
+        private SaveLoad _saveLoad;
+        
         public void Initialize(WaveData waveData)
         {
+            if (_saveLoad==null)
+            {
+                _saveLoad=_waveManager.GetSaveLoad();
+            }
+            
             CreateWaveQueue(waveData);
             InitializeSpawnPoint();
             FillQueue();
@@ -114,8 +121,10 @@ namespace Infrastructure.WaveManagment
             if (_activeEnemys.Count == _totalNumber)
             {
                 SpawningCompleted?.Invoke();
-                OnStartSpawn();
+                    //OnStartSpawn();
             }
+            
+            _saveLoad.SetActiveEnemy(_activeEnemys);
         }
 
         private void OnDeath(Enemy enemy)
@@ -123,9 +132,10 @@ namespace Infrastructure.WaveManagment
             _waveQueue.Enqueue(enemy);
             _inactiveEnemys.Add(enemy);
             _activeEnemys.Remove(enemy);
+            SetLocalParametrs();
         }
 
-        private void OnStartSpawn()
+        public void OnStartSpawn()
         {
             int nemberQueue = 0;
 
@@ -145,8 +155,6 @@ namespace Infrastructure.WaveManagment
             return _activeEnemys;
         }
 
-        public EnemyFactory GetEnemyFactory() => _enemyFactory;
-
         private void OnDisable()
         {
             foreach (Enemy enemy in _activeEnemys)
@@ -154,6 +162,12 @@ namespace Infrastructure.WaveManagment
                 EnemyDieState enemyDieState = enemy.GetComponent<EnemyDieState>();
                 enemyDieState.OnDeath -= OnDeath;
             }
+        }
+        
+        private void SetLocalParametrs()
+        {
+            _saveLoad.SetActiveEnemy(_activeEnemys);
+            _saveLoad.SetInactiveEnemy(_inactiveEnemys);
         }
     }
 }

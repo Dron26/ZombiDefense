@@ -9,6 +9,7 @@ using Infrastructure.FactoryWarriors.Humanoids;
 using Infrastructure.Location;
 using Infrastructure.WaveManagment;
 using Observer;
+using Service.SaveLoadService;
 using UnityEditor;
 using UnityEngine;
 
@@ -28,7 +29,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
         private Dictionary<Type, ISwitcherState> _allBehaviors;
         private ISwitcherState _currentBehavior;
         private SceneInitializer _sceneInitializer;
-        private WaveSpawner _waveSpawner;
+        private SaveLoad _saveLoad;
         private Humanoid _humanoid;
         private WorkPoint _point;
         private void Awake()
@@ -41,7 +42,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
             }
             
             _sceneInitializer=FindObjectOfType<SceneInitializer>();
-            _waveSpawner=_sceneInitializer.GetWaveSpawner();
+            _saveLoad=_sceneInitializer.GetSaveLoad();
             
             _allBehaviors = new Dictionary<Type, ISwitcherState>
             {
@@ -53,7 +54,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
 
             foreach (var behavior in _allBehaviors)
             {
-                behavior.Value.Init(this,_waveSpawner);
+                behavior.Value.Init(this,_saveLoad);
                 behavior.Value.ExitBehavior();
             }
         }

@@ -17,8 +17,8 @@ namespace Infrastructure.Location
     {
         private SaveLoad _saveLoad;
         
-        [SerializeField] private WaveManager _waveManager;
         [SerializeField] private PlayerCharacterInitializer _playerCharacterInitializer;
+        [SerializeField] private EnemyCharacterInitializer _enemyCharacterInitializer;
         [SerializeField] private StoreOnPlay _storeOnPlay;
         [SerializeField] private AudioController _audioController;
         [SerializeField] private List<Humanoid> _avaibelCharacters;
@@ -33,7 +33,6 @@ namespace Infrastructure.Location
         {
             _saveLoad = GetComponent<SaveLoad>();
             _saveLoad.SetAvailableCharacters(_avaibelCharacters);
-            _playerCharacterInitializer.AreOverHumanoids+=StopSpawning;
             _playerCharacterInitializer.CreatedHumanoid+= SetInfo;
             _audioController.Initialize(_saveLoad);
             _playerCharacterInitializer.Initialize(_audioController,this,_saveLoad);
@@ -41,20 +40,16 @@ namespace Infrastructure.Location
             //  _playerCharacterInitializer.SetCreatHumanoid(humanoid1);
          //   _playerCharacterInitializer.SetCreatHumanoid(humanoid2);
           //  _playerCharacterInitializer.SetCreatHumanoid(humanoid3);
-            
-            
-           _waveManager.Initialize();
+
+          _enemyCharacterInitializer.Initialize(_saveLoad);
+            _playerCharacterInitializer.AreOverHumanoids+=_enemyCharacterInitializer.StopSpawning;
            _movePointController.Initialize(this,_saveLoad);
            _storeOnPlay.Initialize(this,_saveLoad);
         }
         
-        public WaveSpawner GetWaveSpawner() => _waveManager.GetWaveSpawner();
         public PlayerCharacterInitializer GetPlayerCharacterInitializer() => _playerCharacterInitializer;
 
-        private void StopSpawning()
-        {
-            _waveManager.StopSpawn();
-        }
+       
         private void  SetInfo()
         {
             int countCreated = _playerCharacterInitializer.CoutnCreated;

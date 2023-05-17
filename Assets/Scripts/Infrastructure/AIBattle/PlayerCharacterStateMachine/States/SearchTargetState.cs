@@ -53,7 +53,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         {
             _isSearhing = true;
 
-            _enemyTransforms = WaveSpawner.GetEnemyInWaveQueue()
+            _enemyTransforms = SaveLoad.GetActiveEnemy()
                 .Select(enemy => enemy.transform)
                 .ToArray();
             
@@ -61,7 +61,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
                 
                 if (closestEnemyIndex != -1)
                 {
-                    _enemy = WaveSpawner.GetEnemyInWaveQueue()[closestEnemyIndex];
+                    _enemy = SaveLoad.GetActiveEnemy()[closestEnemyIndex];
                     
                     
                     float _currentRange = Vector3.Distance(transform.position, _enemy.transform.position);

@@ -27,7 +27,6 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         private FXController _fxController;
         private Humanoid _humanoid;
         private WeaponController _weaponController;
-        private LayerMask _enemyLayerMask;
         private bool _isAttacked;
 
         private bool _isShotgun;

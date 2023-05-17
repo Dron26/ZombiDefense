@@ -1,5 +1,6 @@
 ﻿using Infrastructure.FactoryWarriors.Enemies;
 using Infrastructure.WaveManagment;
+using Service.SaveLoadService;
 
 namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
 {
@@ -7,6 +8,6 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
     {
         public void EnterBehavior();
         public void ExitBehavior();
-        public void Init(PlayerCharactersStateMachine playerCharactersStateMachine,WaveSpawner waveSpawner);
+        public void Init(PlayerCharactersStateMachine playerCharactersStateMachine,SaveLoad saveLoad);
     }
 }

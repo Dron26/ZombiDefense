@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Audio;
+using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
@@ -174,5 +175,17 @@ namespace Service.SaveLoadService
 
         public List <Humanoid> GetAvailableCharacters( ) => 
             _dataBase.ReadAvailableCharacters();
+        
+        public void SetActiveEnemy(List<Enemy> activeEnemy) => 
+            _dataBase.ChangeActiveEnemy( activeEnemy);
+
+        public List<Enemy> GetActiveEnemy( ) => 
+            _dataBase.ReadActiveEnemy();
+
+        public void SetInactiveEnemy(List<Enemy> inactiveEnemy) => 
+            _dataBase.ChangeInactiveEnemy( inactiveEnemy);
+
+        public List<Enemy> GetInactiveEnemy( ) => 
+            _dataBase.ReadInactiveEnemy();
     }
 }

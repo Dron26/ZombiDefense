@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks.Triggers;
 using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
 using Infrastructure.FactoryWarriors.Enemies;
+using Service.SaveLoadService;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -23,9 +24,11 @@ namespace Infrastructure.WaveManagment
         public int CurrentWaveIndex => currentWaveIndex;
         public int TotalWaves => _waveDatas.Count;
         public UnityAction SpawningCompleted;
+        private SaveLoad _saveLoad;
         
-        public void Initialize()
+        public void Initialize(SaveLoad saveLoad)
         {
+            _saveLoad=saveLoad;
             InitializeWaveData();
             _waveSpawner.SpawningCompleted += OnWaveSpawningCompleted;
             StartCoroutine(SpawnWaves());
@@ -84,6 +87,16 @@ namespace Infrastructure.WaveManagment
         public void StopSpawn()
         {
             _waveSpawner.StopSpawn();
+        }
+
+        public void StartSpawn()
+        {
+            _waveSpawner.OnStartSpawn();
+        }
+
+        public SaveLoad GetSaveLoad()
+        {
+            return _saveLoad;
         }
     }
 }
