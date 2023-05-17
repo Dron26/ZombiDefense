@@ -114,7 +114,6 @@ namespace Infrastructure.AIBattle.EnemyAI.States
                    
                    if (agent.isOnNavMesh)
                    {
-                       print(agent.speed);
                        agent.SetDestination(humanoidPosition);
                        Movement(ourPosition, humanoidPosition);
                    }

@@ -13,8 +13,8 @@ namespace Infrastructure.WaveManagment
     {
         [SerializeField] private List<Enemy> _enemys;
         [SerializeField] private List<int> enemyCounts;
-        private List<Enemy> _participatingEnemy;
-        private int countEnemyData;
+        [SerializeField] private  List<float> _delayTimes;
+        public List<float> DelayTimes=>_delayTimes;
         public List<Enemy> Enemys => _enemys;
         public List<int> EnemyCounts => enemyCounts;
         Dictionary<List<Enemy>,List<int>> _info=new Dictionary<List<Enemy>, List<int>>();

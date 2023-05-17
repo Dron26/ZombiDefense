@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Enemies.AbstractEntity;
+using Infrastructure.AIBattle.EnemyAI.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using UnityEngine;
 using UnityEngine.AI;
@@ -21,6 +22,10 @@ namespace Infrastructure.WaveManagment
         public List<WaveQueue> _groupWaveQueue = new();
         private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         private bool isStopSpawn;
+        
+        private List<Enemy> _activeEnemys = new();
+        private List<Enemy> _inactiveEnemys = new();
+
         public void Initialize(int number, int priority)
         {
             _number = number;
@@ -30,12 +35,15 @@ namespace Infrastructure.WaveManagment
             _stepTime = _stepDelayTime;
         }
 
+        
+        
         public void SetQueue(WaveQueue queue)
         {
             _groupWaveQueue.Add(queue);
             isStopSpawn = false;
-            StartSpawn();
         }
+
+        
 
         private async Task StartSpawn()
         {
@@ -50,16 +58,23 @@ namespace Infrastructure.WaveManagment
                 {
                     if (isStopSpawn)
                         break;
-
                     Enemy enemy = queue.Dequeue();
-                    enemy.gameObject.transform.position = transform.position;
                     enemy.gameObject.transform.parent = transform;
                     enemy.StartPosition=transform.position;
-                    enemy.gameObject.SetActive(true);
+                    Activated(enemy);
+                    
                     float randomDelayTime = Random.Range(0.57f, 5.33f);
                     await Task.Delay(TimeSpan.FromSeconds(delayTime + randomDelayTime), _cancellationTokenSource.Token);
                 }
             }
+        }
+
+        private void Activated( Enemy enemy)
+        {
+            enemy.gameObject.transform.position = transform.position;
+            enemy.GetComponent<EnemyDieState>().OnDeath += OnEnemyDeath;
+            enemy.gameObject.SetActive(true);
+            _activeEnemys.Add(enemy);
         }
 
         public void StopSpawn()
@@ -67,6 +82,11 @@ namespace Infrastructure.WaveManagment
             isStopSpawn = true;
             _cancellationTokenSource.Cancel();
             _cancellationTokenSource = new CancellationTokenSource();
+        }
+
+        public void OnEnemyDeath(Enemy enemy)
+        {
+            Activated(enemy);
         }
     }
 }

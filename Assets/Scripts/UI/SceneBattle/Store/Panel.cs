@@ -81,7 +81,7 @@ namespace UI.SceneBattle.Store
                     if (image.sprite == humanoid.sprite)
                     {
                         Button button = image.GetComponent<Button>();
-                        button.onClick.AddListener(() => ShowConfirmationDialog( humanoid));
+                        button.onClick.AddListener(() => BuyCharacters(humanoid));
                         _buttonCharacterMap.Add(button, humanoid);
                         break;
                     }
@@ -89,18 +89,18 @@ namespace UI.SceneBattle.Store
             }
         }
 
-        public void ShowConfirmationDialog(Humanoid humanoid)
-        {
-            _confirmationDialog.SetActive(true);
-            // Text message = _confirmationDialog.GetComponentInChildren<Text>();
-            // message.text = "Do you want to buy " + humanoid.name + "?";
-             Button confirmButton = _confirmationDialog.transform.Find("ConfirmButton").GetComponent<Button>();
-             Button cancelButton = _confirmationDialog.transform.Find("CancelButton").GetComponent<Button>();
-             confirmButton.onClick.RemoveAllListeners();
-             confirmButton.onClick.AddListener(() => BuyCharacters(humanoid));
-             cancelButton.onClick.RemoveAllListeners();
-             cancelButton.onClick.AddListener(CloseConfirmationDialog);
-        }
+        // public void ShowConfirmationDialog(Humanoid humanoid)
+        // {
+        //     _confirmationDialog.SetActive(true);
+        //     // Text message = _confirmationDialog.GetComponentInChildren<Text>();
+        //     // message.text = "Do you want to buy " + humanoid.name + "?";
+        //      Button confirmButton = _confirmationDialog.transform.Find("ConfirmButton").GetComponent<Button>();
+        //      Button cancelButton = _confirmationDialog.transform.Find("CancelButton").GetComponent<Button>();
+        //      confirmButton.onClick.RemoveAllListeners();
+        //      confirmButton.onClick.AddListener(() => BuyCharacters(humanoid));
+        //      cancelButton.onClick.RemoveAllListeners();
+        //      cancelButton.onClick.AddListener(CloseConfirmationDialog);
+        // }
 
         public void CloseConfirmationDialog()
         {

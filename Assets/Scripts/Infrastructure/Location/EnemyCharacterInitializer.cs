@@ -9,25 +9,33 @@ namespace Infrastructure.Location
     public  class EnemyCharacterInitializer:MonoCache
     {
         [SerializeField] private WaveManager _waveManager;
-        [SerializeField] private Button _ButtonStartSpawning;
+        
+        private  PlayerCharacterInitializer _playerCharacterInitializer;
         private SaveLoad _saveLoad;
 
-        public void Initialize(SaveLoad saveLoad)
+        public void Initialize(SaveLoad saveLoad,SceneInitializer sceneInitializer)
         {
+            _playerCharacterInitializer=sceneInitializer.GetPlayerCharacterInitializer();
+            
             _saveLoad = saveLoad;
             _waveManager.Initialize(saveLoad);
         }
+
+       
 
         public WaveSpawner GetWaveSpawner() => _waveManager.GetWaveSpawner();
 
 
         public void StartSpawning()
         {
+            print("StartingSpawning");
+            
             _waveManager.StartSpawn(); 
         }
         
         public void StopSpawning()
         {
+            print("StopSpawning");
             _waveManager.StopSpawn();
         }
         

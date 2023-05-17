@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
 using Infrastructure.AIBattle.EnemyAI.States;
@@ -19,6 +21,10 @@ namespace Infrastructure.WaveManagment
     {
         [SerializeField] private WaveManager _waveManager;
         [SerializeField] private EnemyFactory _enemyFactory;
+        [SerializeField] private GameObject _createdEnemy;
+        [SerializeField] private GameObject _spawnPointGroup;
+        public List<float> DelayTimes => _waveData.DelayTimes;
+
         private List<SpawnPoint> _spawnPoints = new();
         private List<Enemy> _enemys = new();
         private List<Enemy> _activeEnemys = new();
@@ -30,6 +36,10 @@ namespace Infrastructure.WaveManagment
         public UnityAction SpawningCompleted;
         private int _totalNumber;
         private SaveLoad _saveLoad;
+        private WaveData _waveData;
+        private float _cycleTimer;
+        private float _cycleDuration;
+        
         
         public void Initialize(WaveData waveData)
         {
@@ -45,9 +55,11 @@ namespace Infrastructure.WaveManagment
 
         private void CreateWaveQueue(WaveData waveData)
         {
+            _waveData=waveData;
             KeyValuePair<List<Enemy>, List<int>> pair = waveData.GetParticipatingEnemy().FirstOrDefault();
 
             WaveQueue waveQueue = new WaveQueue();
+            waveQueue.SetTime(waveData.DelayTimes[0]);
             _groupWaveQueue.Add(waveQueue);
             _enemys.Add(pair.Key[0]);
 
@@ -55,6 +67,7 @@ namespace Infrastructure.WaveManagment
             {
                     _enemys.Add(pair.Key[i]);
                     waveQueue = new WaveQueue();
+                    waveQueue.SetTime(waveData.DelayTimes[i]);
                     _groupWaveQueue.Add(waveQueue);
             }
             
@@ -68,7 +81,7 @@ namespace Infrastructure.WaveManagment
         private void InitializeSpawnPoint()
         {
             int i = 0;
-            foreach (SpawnPoint point in transform.GetComponentsInChildren<SpawnPoint>())
+            foreach (SpawnPoint point in _spawnPointGroup.transform.GetComponentsInChildren<SpawnPoint>())
             {
                 point.Initialize(i, 0);
                 _spawnPoints.Add(point);
@@ -106,6 +119,7 @@ namespace Infrastructure.WaveManagment
                                 EnemyDieState enemyDieState = newEnemy.GetComponent<EnemyDieState>();
                                 enemyDieState.OnDeath += OnDeath;
                                 newEnemy.gameObject.layer = LayerMask.NameToLayer("Enemy");
+                                newEnemy.transform.parent = _createdEnemy.transform;
                                 waveQueue.Enqueue(newEnemy);
                             }
                         }
@@ -135,6 +149,7 @@ namespace Infrastructure.WaveManagment
             SetLocalParametrs();
         }
 
+       
         public void OnStartSpawn()
         {
             int nemberQueue = 0;
@@ -148,8 +163,32 @@ namespace Infrastructure.WaveManagment
             }
         }
 
-       
-
+        public async Task StartTimer()
+        {
+            // Перед началом спауна очередей запускаем таймер
+            _cycleDuration = CalculateCycleDuration(); // Рассчитываем длительность цикла спауна
+    
+            await Task.Delay(TimeSpan.FromSeconds(_cycleDuration)); // Асинхронная задержка на длительность цикла
+    
+            // Таймер завершился, вызываем событие завершения спауна
+            SpawningCompleted?.Invoke();
+        }
+        
+        private float CalculateCycleDuration()
+        {
+            // Рассчитываем общую длительность цикла спауна на основе задержек каждой очереди
+            float cycleDuration = 0;
+    
+            foreach (WaveQueue waveQueue in _groupWaveQueue)
+            {
+                float queueDelay = waveQueue.DelayTime; // Получаем задержку для текущей очереди
+                cycleDuration += queueDelay; // Добавляем задержку к общей длительности цикла
+            }
+    
+            return cycleDuration;
+        }
+        
+        
         public List<Enemy> GetEnemyInWaveQueue()
         {
             return _activeEnemys;

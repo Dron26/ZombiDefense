@@ -84,6 +84,7 @@ namespace Infrastructure.Location
         public void SetCreatHumanoid( Humanoid humanoid)
         {
             Transform transform = _movePointController.SelectedPoint.transform;
+           
             if (humanoid != null&&humanoid.GetComponent<Humanoid>())
             {
                 _countOrdered++;

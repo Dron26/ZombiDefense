@@ -10,6 +10,7 @@ namespace Infrastructure.WaveManagment
     {
         private Queue<Enemy> _enemiesToSpawn = new Queue<Enemy>();
         public int  Count=>_enemiesToSpawn.Count;
+        public float DelayTime;
         public int Level=>_level;
         private int _level;
         
@@ -18,18 +19,9 @@ namespace Infrastructure.WaveManagment
             _enemiesToSpawn.Enqueue(enemy);
         }
 
-        public void Initialize()
-        { 
-            int _level=_enemiesToSpawn.Peek().Level;
-            
-            foreach (Enemy enemy in _enemiesToSpawn)
-            {
-                if (_level!=enemy.Level)
-                {
-                    print("In Queue other object");
-                }
-            }
-            
+        public void SetTime(float delayTime)
+        {
+            DelayTime = delayTime;
         }
 
         public Enemy Dequeue()

@@ -21,7 +21,8 @@ namespace Humanoids.AbstractLevel
         [SerializeField] private AssetReferenceT<HumanoidData> humanoidDataReference;
         [SerializeField] private AssetReferenceT<WeaponData> weaponDataReference;
         public Vector3 StartPosition;
-        
+        private int _countLoaded = 0;
+        private int _maxCountLoaded = 2;
         private AudioController _audioController;
         private List<IObserverByHumanoid> observers = new List<IObserverByHumanoid>();
         
@@ -71,7 +72,6 @@ namespace Humanoids.AbstractLevel
                     Debug.Log($"HumanoidData loaded: {humanoidData}");
                     tcs.TrySetResult(true);
                     NotifyObservers(this);
-                    OnDataLoad?.Invoke(this);
                 }
                 else
                 {
@@ -87,6 +87,7 @@ namespace Humanoids.AbstractLevel
                     weaponData = (WeaponData)handle.Result;
                     Debug.Log($"weaponData loaded: {weaponData}");
                     tcs.TrySetResult(true);
+                    NotifyObservers(this);
                 }
                 else
                 {
@@ -117,9 +118,16 @@ namespace Humanoids.AbstractLevel
 
         public void NotifyObservers(object data)
         {
-            foreach (var observer in observers)
+                _countLoaded++;
+                
+            if (_countLoaded==_maxCountLoaded)
             {
-                observer.NotifyFromHumanoid(data);
+                foreach (var observer in observers)
+                {
+                    
+                    OnDataLoad?.Invoke(this);
+                    observer.NotifyFromHumanoid(data);
+                }
             }
         }
 

@@ -21,24 +21,17 @@ namespace Infrastructure.WeaponManagment
         
          [SerializeField]private GameObject _smallArmsGameObject;
         [SerializeField] private Type _smallArmsType;
-         [SerializeField]private GameObject _granadeGameObject;
-         [SerializeField] private Type _garnadeType;
+       //  [SerializeField]private GameObject _granadeGameObject;
+             //  [SerializeField] private Type _garnadeType;
          
          private List<IObserverByWeaponController> observers = new List<IObserverByWeaponController>();
-        private Weapon _weapon;
-        private Weapon _weaponPistol;
-        private Weapon _weaponRifle;
-        private Weapon _weaponSniperRifle;
-        private Weapon _weaponHeavyMachineGun;
-        private Weapon _weaponGranade;
-        private AnimController _animController;
+         private AnimController _animController;
         private Animator _animator;
         //private  Weapon _weaponGranade;
         private int _numberSmallArms = 0;
         private int _numberGranade = 4;
         private Humanoid _humanoid;
         private float _fireTimer = 0f;
-        private int _ammoCount;
         private int _totalReceivedDamage;
         private Dictionary<int, float> _weaponAnimInfo=new();
 
@@ -73,11 +66,11 @@ namespace Infrastructure.WeaponManagment
             
         }
         
-        public void SetGranadePrefab()
-        {
-            _granadeGameObject.SetActive(true);
-            
-        }
+        // public void SetGranadePrefab()
+        // {
+        //     _granadeGameObject.SetActive(true);
+        //     
+        // }
         
         public WeaponData GetWeaponData()
         {
@@ -97,7 +90,7 @@ namespace Infrastructure.WeaponManagment
         private void SetWeapons()
         { 
             List<Weapon> smallArms=_weaponData.SmallArms();
-            List<Weapon> granads=_weaponData.Granads();
+         //   List<Weapon> granads=_weaponData.Granads();
 
             if (smallArms!=null)
             {
@@ -116,21 +109,21 @@ namespace Infrastructure.WeaponManagment
                 print("Send null smallArms in Prefab");
             }
            
-            if (granads != null)
-            {
-                for (int i = 0; i < granads.Count; i++)
-                {
-                    if (granads[i]!=null)
-                    {
-                        _granade=granads[i];
-                    }
-                }
-            }
-            else
-            {
-                granads=new ();
-                print("Send null granads in Prefab");
-            }
+            // if (granads != null)
+            // {
+            //     for (int i = 0; i < granads.Count; i++)
+            //     {
+            //         if (granads[i]!=null)
+            //         {
+            //             _granade=granads[i];
+            //         }
+            //     }
+            // }
+            // else
+            // {
+            //     granads=new ();
+            //     print("Send null granads in Prefab");
+            // }
             
         }
 

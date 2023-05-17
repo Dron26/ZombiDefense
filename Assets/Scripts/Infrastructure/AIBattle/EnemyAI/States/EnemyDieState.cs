@@ -18,9 +18,10 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         private Enemy _enemy;
         private void Start()
         {
-            StartCoroutine(WaitAfterDie());
+            StartCoroutine(WaitBeforeDie());
+            
         }
-        private  IEnumerator WaitAfterDie()
+        private  IEnumerator WaitBeforeDie()
         {
             
 
@@ -48,9 +49,18 @@ namespace Infrastructure.AIBattle.EnemyAI.States
             yield return  new WaitForSeconds(2f);
             _enemy.gameObject.SetActive(false);
             _enemy.gameObject.transform.position = _enemy.StartPosition;
-            
-            yield break;
+
+            AfterDie();
         }
+        
+        private void AfterDie()
+        {
+            _enemy.GetComponent<Rigidbody>().useGravity=true;
+            _enemy.GetComponent<Collider>().enabled = true;
+            _enemy.GetComponent<NavMeshAgent>().enabled = true;
+        }
+        
+        
         private  IEnumerator Fall()
         {
             while (isActiveAndEnabled!=false)

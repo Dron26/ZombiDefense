@@ -23,10 +23,8 @@ namespace Infrastructure.Location
         [SerializeField] private AudioController _audioController;
         [SerializeField] private List<Humanoid> _avaibelCharacters;
         [SerializeField] private MovePointController _movePointController;
+        [SerializeField] private TimerDisplay _timerDisplay;
         int ordered = 1;
-        [SerializeField] private Humanoid humanoid1;
-        //[SerializeField] private GameObject humanoid2;
-      //  [SerializeField] private GameObject humanoid3;
         public UnityAction SetInfoCompleted;
         
         private void Start()
@@ -36,15 +34,11 @@ namespace Infrastructure.Location
             _playerCharacterInitializer.CreatedHumanoid+= SetInfo;
             _audioController.Initialize(_saveLoad);
             _playerCharacterInitializer.Initialize(_audioController,this,_saveLoad);
-
-            //  _playerCharacterInitializer.SetCreatHumanoid(humanoid1);
-         //   _playerCharacterInitializer.SetCreatHumanoid(humanoid2);
-          //  _playerCharacterInitializer.SetCreatHumanoid(humanoid3);
-
-          _enemyCharacterInitializer.Initialize(_saveLoad);
+            _enemyCharacterInitializer.Initialize(_saveLoad,this);
             _playerCharacterInitializer.AreOverHumanoids+=_enemyCharacterInitializer.StopSpawning;
            _movePointController.Initialize(this,_saveLoad);
            _storeOnPlay.Initialize(this,_saveLoad);
+           _timerDisplay.Initialize(_playerCharacterInitializer);
         }
         
         public PlayerCharacterInitializer GetPlayerCharacterInitializer() => _playerCharacterInitializer;
@@ -59,11 +53,6 @@ namespace Infrastructure.Location
                 SetInfoCompleted?.Invoke();
             }
         }
-
-        // public List<Humanoid> GetAvaibelCharacters()
-        // {
-        //     return _avaibelCharacters;
-        // }
        
         public StoreOnPlay GetStoreOnPlay() => _storeOnPlay;
         public MovePointController GetMovePointController() => _movePointController;
