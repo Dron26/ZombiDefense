@@ -1,33 +1,42 @@
 using UnityEngine;
-[RequireComponent(typeof(LineRenderer))]
-public class DrawCircle : MonoBehaviour
+
+namespace Infrastructure.WeaponManagment
 {
-    public LineRenderer lineRenderer;
-    [Range(6,60)]   //creates a slider - more than 60 is hard to notice
-    public int lineCount;       //more lines = smoother ring
-    public float radius;
-    public float width;
-
-    void Start()
+    [RequireComponent(typeof(LineRenderer))]
+    public class DrawRing : MonoBehaviour
     {
-        lineRenderer = GetComponent<LineRenderer>();
-        lineRenderer.loop = true;
-        Draw();
-    }
+        public float radius = 5.0f;
+        public int segments = 32;
+        public Color color = Color.yellow;
 
-    void Draw() //Only need to draw when something changes
-    {
-        lineRenderer.positionCount = lineCount;
-        lineRenderer.startWidth = width;
-        float theta = (2f * Mathf.PI) / lineCount;  //find radians per segment
-        float angle = 0;
-        for (int i = 0; i < lineCount; i++)
+        private LineRenderer lineRenderer;
+
+        private void Start()
         {
-            float x = radius * Mathf.Cos(angle);
-            float y = radius * Mathf.Sin(angle);
-            lineRenderer.SetPosition(i, new Vector3(x, 0, y));
-            //switch 0 and y for 2D games
-            angle += theta;
+            // Set up line renderer
+            lineRenderer = GetComponent<LineRenderer>();
+            lineRenderer.positionCount = segments + 1;
+            lineRenderer.useWorldSpace = false;
+            lineRenderer.startWidth = 0.1f;
+            lineRenderer.endWidth = 0.1f;
+
+            // color of line
+            lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+            lineRenderer.material.color = color;
+
+            // positions in the circle
+            Vector3[] positions = new Vector3[segments + 1];
+            float angle = 0f;
+            float angleStep = 2f * Mathf.PI / segments;
+
+            for (int i = 0; i < segments + 1; i++)
+            {
+                positions[i] = new Vector3(radius * Mathf.Cos(angle), 0f, radius * Mathf.Sin(angle));
+                angle += angleStep;
+            }
+
+            // set up positions to renderer
+            lineRenderer.SetPositions(positions);
         }
     }
 }

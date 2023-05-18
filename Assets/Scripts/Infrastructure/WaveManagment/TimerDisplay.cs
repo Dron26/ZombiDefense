@@ -33,7 +33,6 @@ public class TimerDisplay : MonoBehaviour
     private void OnCreatedHumanoid()
     {
         _buttonStartSpawning.interactable = true;
-       
     }
     
     private void OnSpawningCompleted()

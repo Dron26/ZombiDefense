@@ -85,7 +85,12 @@ namespace Infrastructure.AIBattle
             _weaponController=humanoid.GetComponent<WeaponController>();
             _weaponController.AddObserver(this);
         }
-        
+
+        public void NotifySelection(bool isSelected)
+        {
+            throw new NotImplementedException();
+        }
+
         private void OnDisable()
         {
             if (TryGetComponent(out Humanoid humanoid))

@@ -51,6 +51,8 @@ namespace Infrastructure.WaveManagment
             CreateWaveQueue(waveData);
             InitializeSpawnPoint();
             FillQueue();
+            StartTimer();
+            OnStartSpawn();
         }
 
         private void CreateWaveQueue(WaveData waveData)

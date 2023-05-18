@@ -21,6 +21,9 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         private Animator _animator;
         private AnimController _animController;
         private WeaponController _weaponController;
+        private float minDistance = 0.4f;
+        private bool reachedDestination = true;
+        private bool isSetDestination = false;
 
         private void Awake()
         {
@@ -28,66 +31,60 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
             _animator = GetComponent<Animator>();
             _animController = GetComponent<AnimController>();
             _agent = GetComponent<NavMeshAgent>();
+            _agent.stoppingDistance = 0f; // Задайте минимальную дистанцию остановки
             _move = 0f;
         }
 
 
         protected override void FixedUpdateCustom()
         {
-            if (isActiveAndEnabled == false)
+            if (!isActiveAndEnabled)
                 return;
 
-            Move();
+            if (reachedDestination)
+            {
+                if (!isSetDestination)
+                {
+                    Move();
+                }
+
+                CheckDistance();
+            }
         }
 
         private void Move()
         {
             _point = PlayerCharactersStateMachine.GetPoint();
-            
-            if (_point!=null)
-            {
-                Vector3 ourPosition = transform.position;
-                Vector3 opponentPosition;
 
-                opponentPosition = _point.transform.position;
+            if (_point != null)
+            {
+                Vector3 opponentPosition = _point.transform.position;
+                _animator.SetBool(_animController.Run, true);
                 _agent.SetDestination(opponentPosition);
-                Movement(ourPosition, opponentPosition);
+                isSetDestination = true;
             }
             else
             {
-               print("Invalid point");
+                print("Invalid point");
             }
         }
 
-        private void Movement(Vector3 ourPosition, Vector3 pointPosition)
+
+        private void CheckDistance()
         {
-            _animator.SetBool(_animController.Run, true);
+            if (_point == null)
+                return;
 
-            //  if (transform.position.y < -3.5)
-            //      transform.position =
-            //          new Vector3(ourPosition.x, ourPosition.y + 1.5f, ourPosition.z);
-            //
-            //  if (transform.rotation.x != 0) 
-            //      transform.Rotate(0, ourPosition.y, ourPosition.z);
-            //  
-            transform.position = new Vector3(MovementAxis(ourPosition.x, pointPosition.x),
-                MovementAxis(ourPosition.y, pointPosition.y),
-                MovementAxis(ourPosition.z, pointPosition.z));
-
-            transform.DOLookAt(pointPosition, .05f);
-
-            TryNextState(ourPosition, pointPosition);
-        }
-
-        private void TryNextState(Vector3 ourPosition, Vector3 pointPosition)
-        {
-            if (ourPosition == pointPosition)
+            float distance = Vector3.Distance(transform.position, _point.transform.position);
+            if (distance <= minDistance)
             {
+                _animator.SetBool(_animController.Run, false);
+                reachedDestination = true;
+                isSetDestination = false;
+                Humanoid humanoid =GetComponent<Humanoid>();
+                _point.SetHumanoid(humanoid);
                 PlayerCharactersStateMachine.EnterBehavior<SearchTargetState>();
             }
         }
-
-        private float MovementAxis(float ourPosition, float targetPosition) =>
-            Mathf.MoveTowards(ourPosition, targetPosition, _rateStepUnit);
     }
 }

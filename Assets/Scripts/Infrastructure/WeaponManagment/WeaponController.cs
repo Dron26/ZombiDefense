@@ -1,11 +1,9 @@
 using System.Collections.Generic;
-using System.Linq;
 using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
 using Infrastructure.AIBattle;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Observer;
-using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -21,11 +19,14 @@ namespace Infrastructure.WeaponManagment
         
          [SerializeField]private GameObject _smallArmsGameObject;
         [SerializeField] private Type _smallArmsType;
-       //  [SerializeField]private GameObject _granadeGameObject;
-             //  [SerializeField] private Type _garnadeType;
+        [SerializeField] private Sprite shootingRadiusSprite;
+
+        [SerializeField ]private ParticleSystem _ring;
+        //  [SerializeField]private GameObject _granadeGameObject;
+        //  [SerializeField] private Type _garnadeType;
          
-         private List<IObserverByWeaponController> observers = new List<IObserverByWeaponController>();
-         private AnimController _animController;
+        private List<IObserverByWeaponController> observers = new List<IObserverByWeaponController>();
+        private AnimController _animController;
         private Animator _animator;
         //private  Weapon _weaponGranade;
         private int _numberSmallArms = 0;
@@ -34,14 +35,13 @@ namespace Infrastructure.WeaponManagment
         private float _fireTimer = 0f;
         private int _totalReceivedDamage;
         private Dictionary<int, float> _weaponAnimInfo=new();
-
         private string _weaponName;
         private int _damage;
         private int _maxAmmo;
         private float _reloadTime;
         private float _fireRate;
         private float _range;
-
+    
 
         public UnityAction ChangeWeapon;
         public float ReloadTime => _reloadTime;
@@ -125,6 +125,8 @@ namespace Infrastructure.WeaponManagment
             //     print("Send null granads in Prefab");
             // }
             
+            
+            
         }
 
         private void SetWeaponParametrs()
@@ -135,6 +137,8 @@ namespace Infrastructure.WeaponManagment
             _fireRate = _weaponAnimInfo[_animController.IsShoot];
             _reloadTime = _weaponAnimInfo[_animController.Reload];
             _range = _smallArms.Range;
+            
+            _ring.gameObject.SetActive(true);
         }
 
         public int GetDamage()
@@ -189,10 +193,35 @@ namespace Infrastructure.WeaponManagment
             SetWeaponParametrs();
             SetSmallArmsPrefab();
             ChangeWeapon?.Invoke();
-            
+            SetShootingRadius();
             NotifyObserverWeaponController(_smallArms);
         }
-        
+
+        public void NotifySelection(bool isSelected)
+        {
+            if (isSelected)
+            {
+                _ring.Play();
+            }
+            else
+            {
+                _ring.Stop();
+            }
+        }
+
+        private void SetShootingRadius()
+        {
+            GameObject radiusObject = new GameObject("ShootingRadius");
+            radiusObject.SetActive(true);
+            radiusObject.transform.position = transform.position;
+            SpriteRenderer spriteRenderer = radiusObject.AddComponent<SpriteRenderer>();
+            spriteRenderer.sprite = shootingRadiusSprite;
+            spriteRenderer.color = new Color(1f, 1f, 1f, 0.5f);
+            radiusObject.transform.localScale = new Vector3(_range * 2f, _range * 2f, 1f);
+            radiusObject.SetActive(false);
+        }
+
+
         private void OnDisable()
         {
             if (TryGetComponent(out Humanoid humanoid))

@@ -13,7 +13,7 @@ namespace Infrastructure.AIBattle
     public class AnimController : MonoCache,IObserverByHumanoid
     {
         public readonly int Idle = Animator.StringToHash("Idle");
-        public readonly int Run = Animator.StringToHash("Run");
+        public readonly int Run = Animator.StringToHash("IsRun");
         public readonly int Walk = Animator.StringToHash("Walk");
         public readonly int IsСrawl = Animator.StringToHash("IsСrawl");
         public readonly int IsShoot = Animator.StringToHash("IsShoot");
@@ -113,6 +113,11 @@ namespace Infrastructure.AIBattle
             weaponIndex = 0;
             
             SetAnimInfo();
+        }
+
+        public void NotifySelection(bool isSelected)
+        {
+            
         }
 
         private void OnDisable()

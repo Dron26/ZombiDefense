@@ -40,6 +40,10 @@ namespace Infrastructure.FactoryWarriors.Humanoids
             Humanoid humanoidComponent = newHumanoid.GetComponent<Humanoid>();
             humanoidComponent.SetAudioController(_audioController);
             humanoidComponent.OnDataLoad = Created;
+            
+            float randomAngle = Random.Range(0f, 360f);
+            newHumanoid.transform.rotation = Quaternion.Euler(0f, randomAngle, 0f);
+           
             await UniTask.SwitchToMainThread();
             await humanoidComponent.LoadPrefab();
         }

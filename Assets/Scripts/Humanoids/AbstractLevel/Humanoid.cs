@@ -20,6 +20,7 @@ namespace Humanoids.AbstractLevel
     {
         [SerializeField] private AssetReferenceT<HumanoidData> humanoidDataReference;
         [SerializeField] private AssetReferenceT<WeaponData> weaponDataReference;
+       
         public Vector3 StartPosition;
         private int _countLoaded = 0;
         private int _maxCountLoaded = 2;
@@ -144,7 +145,6 @@ namespace Humanoids.AbstractLevel
         public void SetSelected(bool isSelected)
         {
             _isSelected = isSelected;
-            OnHumanoidSelected?.Invoke(this);
         }
 
         public void SetPontInfo()

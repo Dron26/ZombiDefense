@@ -43,6 +43,7 @@ namespace Infrastructure.Location
             _saveLoad = saveLoad;
             _humanoidFactory.CreatedHumanoid += FillCharacterGroup;
             _humanoidFactory.Initialize(audioController);
+            _workPointsGroup.Initialize(_saveLoad);
             FillWorkPoints();
             _storeOnPlay=sceneInitializer.GetStoreOnPlay();
             _storeOnPlay.BuyCharacter+=SetCreatHumanoid;
@@ -62,17 +63,10 @@ namespace Infrastructure.Location
         {
             _coutnCreated++;
             _activeHumanoids.Add(humanoid);
-            humanoid.OnHumanoidSelected += OnHumanoidSelected;
             DieState dieState = humanoid.GetComponent<DieState>();
             dieState.OnDeath += OnDeath;
             CreatedHumanoid?.Invoke();
             SetLocalParametrs();
-        }
-
-        private void OnHumanoidSelected(Humanoid humanoid)
-        {
-            _selectedHumanoid=humanoid;
-            _saveLoad.SetSelectedHumanoid(humanoid);
         }
 
         private  void CreateHumanoid(Humanoid humanoid, Transform transform)
@@ -84,7 +78,8 @@ namespace Infrastructure.Location
         public void SetCreatHumanoid( Humanoid humanoid)
         {
             Transform transform = _movePointController.SelectedPoint.transform;
-           
+            
+            
             if (humanoid != null&&humanoid.GetComponent<Humanoid>())
             {
                 _countOrdered++;
@@ -95,7 +90,7 @@ namespace Infrastructure.Location
                 print("SetCreatHumanoid error");
             }
             
-            _movePointController.SelectedPoint.SetBusy(true);
+            _movePointController.SelectedPoint.CheckState();
 
             _workPointsGroup.OnSelected(_movePointController.SelectedPoint);
         }

@@ -80,6 +80,11 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
            EnterBehavior<SearchTargetState>();
         }
 
+        public void NotifySelection(bool isSelected)
+        {
+            throw new NotImplementedException();
+        }
+
         public WorkPoint GetPoint() =>
             _point;
     }

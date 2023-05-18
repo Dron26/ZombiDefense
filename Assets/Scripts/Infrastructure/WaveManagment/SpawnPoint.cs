@@ -41,6 +41,8 @@ namespace Infrastructure.WaveManagment
         {
             _groupWaveQueue.Add(queue);
             isStopSpawn = false;
+
+            StartSpawn();
         }
 
         
