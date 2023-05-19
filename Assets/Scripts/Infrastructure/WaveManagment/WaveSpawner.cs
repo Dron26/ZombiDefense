@@ -132,8 +132,7 @@ namespace Infrastructure.WaveManagment
 
             if (_activeEnemys.Count == _totalNumber)
             {
-                SpawningCompleted?.Invoke();
-                    //OnStartSpawn();
+                OnStartSpawn();
             }
         }
 

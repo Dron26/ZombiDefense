@@ -77,7 +77,6 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
                     }
                 }
                 
-                print("Search");
                 yield return timeout;
             }
             
@@ -85,7 +84,6 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         
         private void ChangeState()
         {
-            print("ChangeState(AttackState)");
             _isTurning = false;
             if (_enemy.IsLife())
             {
@@ -97,7 +95,6 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         
         private void LookEnemyPosition(Transform enemyTransform)
         {
-            print("LookEnemyPosition(Transform enemyTransform)");
             _turnTime = 0;
 
             if (currentTurnCoroutine != null)
@@ -144,7 +141,6 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 
             while (t < turnTime)
             {
-                print("Search  TurnTowardsEnemy");
                 t += Time.deltaTime;
                 float normalizedTime = t / turnTime;
                 transform.rotation = Quaternion.Lerp(startRotation, targetRotation, normalizedTime);

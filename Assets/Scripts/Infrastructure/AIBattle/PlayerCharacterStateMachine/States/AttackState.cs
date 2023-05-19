@@ -73,54 +73,41 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 
         private async Task Attack()
         {
-            print("Task Attack()");
-            print(_enemy.name);
-            print(_enemy.IsLife().ToString());
-            
             while (isActiveAndEnabled && _enemy.IsLife())
             {
                 
-                print("Inwhile (isActiveAndEnabled && _enemy.IsLife())");
                 if (_ammoCount <= 0 && _isReloading == false)
                 {
-                    print("Inwhile (_ammoCount <= 0 && _isReloading == false");
-                    print(" Reload();");
                     Reload();
                 }
 
                 if (_isAttacking == false & _isReloading == false)
                 {
-                    print(" if (_isAttacking == false & _isReloading == false)");
                     _currentRange = Vector3.Distance(transform.position, _enemy.transform.position);
                     float rangeAttack = _weaponController.GetRangeAttack();
 
                     if (_currentRange <= rangeAttack & _ammoCount > 0) 
                     {
-                        print(" if (_currentRange <= rangeAttack & _ammoCount > 0) ");
                         Fire();
                         _isAttacking = true;
                         return;
                         // _fxController.OnAttackFX();
                     }
                 }
-                print(" break; ");
                 break;
             }
 
-            print("if (_isAttacking != false) return;");
             if (_isAttacking != false) return;
         }
 
 
         public void Fire()
         {
-            print("Fire");
             _animator.SetBool(_animController.IsShoot,true);
         }
 
         private async Task Reload()
         {
-            print("Reload");
             _isReloading = true;
             
             
@@ -144,7 +131,6 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 
         public async Task FinishAnimationAttackPlay()
         {
-            print("FinishAnimationAttackPlay()");
             _ammoCount--;
 
             if (_isShotgun)
@@ -153,19 +139,17 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
                 _enemy.ApplyDamage(_damage);
 
             if (!_enemy.IsLife())
-            { print("FinishAnimationAttackPlay() if (!_enemy.IsLife());");
+            { 
                 if (_isShotgun)
                 {
                     await Task.Delay(TimeSpan.FromSeconds(_fireRate));
                 }
 
-                print("FinishAnimationAttackPlay()ChangeState();");
                 ChangeState();
             }
 
             if (_ammoCount<=0&_isReloading==false)
             {
-                print("FinishAnimationAttackPlay()Reload();;");
                 Reload();
             }
             
@@ -175,7 +159,6 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         private void ChangeState()
         {
 
-            print("ChangeState()");
             _isAttacking = false;
             _animator.SetBool(_animController.IsShoot,false);
             PlayerCharactersStateMachine.EnterBehavior<SearchTargetState>();
@@ -202,8 +185,6 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
                                 break;
                             }
                         }
-
-                        print(_weaponController.GetDamage() * damagePercent);
                         
                         enemy.ApplyDamage(_weaponController.GetDamage() * damagePercent); // применяем урон
                     }

@@ -37,7 +37,7 @@ namespace Infrastructure.WaveManagment
         {
             yield return new WaitForSeconds(TimeBetweenWaves);
 
-            while (currentWaveIndex < _waveDatas.Count)
+            while (currentWaveIndex <= _waveDatas.Count)
             {
                 if (!isSpawningWave && !isWaitingForNextWave && canStartNextWave) // Добавлено условие canStartNextWave
                 {
@@ -64,10 +64,10 @@ namespace Infrastructure.WaveManagment
             
             isSpawningWave = false;
             currentWaveIndex++;
-
+            Debug.Log(currentWaveIndex);
             if (currentWaveIndex >= _waveDatas.Count)
             {
-                Debug.Log("All waves completed!");
+                Debug.Log("All in Queue completed!");
             }
             else
             {
