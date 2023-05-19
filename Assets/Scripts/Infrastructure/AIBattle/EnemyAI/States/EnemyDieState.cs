@@ -13,17 +13,22 @@ namespace Infrastructure.AIBattle.EnemyAI.States
 {
     public class EnemyDieState : EnemyState
     {
-        public delegate void EnemyDeathHandler(Enemy enemy);
-        public event EnemyDeathHandler OnDeath;
+        public delegate void EnemyRevivalHandler(Enemy enemy);
+        public event EnemyRevivalHandler OnRevival;
         private Enemy _enemy;
-        private void Start()
+        private bool _isDeath;
+        private void FixedUpdate()
         {
-            StartCoroutine(WaitBeforeDie());
-            
+            if (!_isDeath)
+            {
+                StopCoroutine(WaitBeforeDie());
+                StartCoroutine(WaitBeforeDie());
+            }
         }
+        
         private  IEnumerator WaitBeforeDie()
         {
-            
+            _isDeath=true;
 
             _enemy=GetComponent<Enemy>();
             
@@ -35,21 +40,19 @@ namespace Infrastructure.AIBattle.EnemyAI.States
                 _enemy.gameObject.SetActive(false);
                 _enemy.gameObject.transform.position = _enemy.StartPosition;
             }
-            OnDeath?.Invoke(_enemy);
             
             _enemy.GetComponent<Rigidbody>().useGravity=false;
             _enemy.GetComponent<Collider>().enabled = false;
             _enemy.GetComponent<NavMeshAgent>().enabled = false;
             
             yield return  new WaitForSeconds(2f);
-
-            
             
             StartCoroutine(Fall());
             yield return  new WaitForSeconds(2f);
             _enemy.gameObject.SetActive(false);
             _enemy.gameObject.transform.position = _enemy.StartPosition;
 
+            
             AfterDie();
         }
         
@@ -58,6 +61,10 @@ namespace Infrastructure.AIBattle.EnemyAI.States
             _enemy.GetComponent<Rigidbody>().useGravity=true;
             _enemy.GetComponent<Collider>().enabled = true;
             _enemy.GetComponent<NavMeshAgent>().enabled = true;
+            
+            OnRevival?.Invoke(_enemy);
+            StateMachine.EnterBehavior<EnemySearchTargetState>();
+            _isDeath=false;
         }
         
         

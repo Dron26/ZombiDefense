@@ -24,7 +24,7 @@ public class TimerDisplay : MonoBehaviour
         _timerButton.gameObject.SetActive(false);
         _timerText.gameObject.SetActive(false);
         
-        _waveManager.SpawningCompleted += OnSpawningCompleted;
+       // _waveManager.SpawningCompleted += OnSpawningCompleted;
         _buttonStartSpawning.onClick.AddListener(Spawn);
         _buttonStartSpawning.interactable = false;
     }

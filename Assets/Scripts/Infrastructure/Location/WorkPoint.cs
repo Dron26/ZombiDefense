@@ -54,7 +54,12 @@ namespace Infrastructure.Location
         public void SetSelected(bool isSelected)
         {
             _isSelected = isSelected;
-           
+            
+            if (_isBusy)
+            {
+                _humanoid.SetSelected(isSelected);
+            }
+            
             _selectedCircle.gameObject.SetActive(_isSelected);
         }
 

@@ -1,12 +1,14 @@
 ﻿using Enemies.AbstractEntity;
 using Infrastructure.AIBattle;
+using Infrastructure.AIBattle.EnemyAI.States;
 using Infrastructure.AssetManagement;
+using Service.SaveLoadService;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace Enemies.Aliens
 {
-    public class ErisAlien : Alien
+    public class ErisAlien : Enemy
     {
         private  float _maxHealth  =>MaxHealth;
         private readonly float _minHealth = 0;
@@ -18,13 +20,21 @@ namespace Enemies.Aliens
         private Animator _animator;
         private AnimController _animController;
         private FXController _fxController;
-
+        private SaveLoad _saveLoad;
         private void Awake()
         {   
             
             _animator = GetComponent<Animator>();
             _animController = GetComponent<AnimController>();
             _fxController = GetComponent<FXController>();
+            
+            EnemyDieState enemyDieState=GetComponent<EnemyDieState>();
+            enemyDieState.OnRevival+=OnRevival;
+        }
+
+        private void OnRevival(Enemy enemy)
+        {
+            Initialize();
         }
 
         public override int GetPrice()
@@ -37,8 +47,15 @@ namespace Enemies.Aliens
             throw new System.NotImplementedException();
         }
 
+        public override void SetSaveLoad(SaveLoad saveLoad)
+        {
+            _saveLoad = saveLoad;
+        }
+
         public override void Initialize()
         {
+
+            _isLife = true;
             _health = _maxHealth;
         }
 
@@ -63,8 +80,9 @@ namespace Enemies.Aliens
             {
                 _animator.SetTrigger(_animController.Die);
                 _fxController.OnDieFX();
-                _isLife = false;
+                _saveLoad.SetInactiveEnemy(this);
                 Die();
+                _isLife = false;
              }
             
             // if (_health > 0)

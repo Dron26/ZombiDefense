@@ -17,17 +17,18 @@ namespace Service.SaveLoadService
         public AudioSettingsParameters AudioParametrs;
         public List<MergeSceneData> MergeSceneDatas = new();
         public List<GameObject> Slots = new();
-        public Humanoid SelectedHumanoid;
         public List<int> _levelHumanoid = new();
         public List<int> _amountHumanoids = new();
-        public List<Humanoid> ActiveHumanoids = new();
-        public List<Enemy> ActiveEnemy = new();
-        public List<Humanoid> InactiveHumanoids = new();
-        public List<Enemy> InactiveEnemy = new();
-        public List<Humanoid> AvaibelCharacters;
         public bool _isFirstStart = true;
         public bool _isBattleStart = false;
+        
+        private List<Humanoid> AvaibelCharacters;
         private WorkPoint SelectedPoint;
+        private Humanoid SelectedHumanoid;
+        private List<Humanoid> ActiveHumanoids = new();
+        private List<Enemy> ActiveEnemy = new();
+        private List<Humanoid> InactiveHumanoids = new();
+        private List<Enemy> InactiveEnemy = new();
 
         public int CountSpins { get; private set; }
 
@@ -151,14 +152,20 @@ namespace Service.SaveLoadService
         public List<Humanoid> ReadAvailableCharacters() =>
             new List<Humanoid>(AvaibelCharacters);
 
-        public void ChangeActiveEnemy(List<Enemy> activeEnemy) =>
-            ActiveEnemy = new List<Enemy>(activeEnemy);
+        public void ChangeActiveEnemy(Enemy activeEnemy)
+        {
+            InactiveEnemy.Remove(activeEnemy);
+            ActiveEnemy.Add(activeEnemy);
+        }
 
         public List<Enemy> ReadActiveEnemy() =>
             new List<Enemy>(ActiveEnemy);
 
-        public void ChangeInactiveEnemy(List<Enemy> inactiveEnemy) =>
-            InactiveEnemy = new List<Enemy>(inactiveEnemy);
+        public void ChangeInactiveEnemy(Enemy inactiveEnemy)
+        {
+            ActiveEnemy.Remove(inactiveEnemy);
+            InactiveEnemy.Add(inactiveEnemy);
+        }
 
         public List<Enemy> ReadInactiveEnemy() =>
             new List<Enemy>(InactiveEnemy);

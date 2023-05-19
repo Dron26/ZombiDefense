@@ -4,15 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Enemies.AbstractEntity;
-using Humanoids.AbstractLevel;
 using Infrastructure.AIBattle.EnemyAI.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.FactoryWarriors.Enemies;
 using Service.SaveLoadService;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.InputSystem;
 using GameObject = UnityEngine.GameObject;
 
 namespace Infrastructure.WaveManagment
@@ -37,7 +34,7 @@ namespace Infrastructure.WaveManagment
         private int _totalNumber;
         private SaveLoad _saveLoad;
         private WaveData _waveData;
-        private float _cycleTimer;
+        //private float _cycleTimer;
         private float _cycleDuration;
         
         
@@ -85,7 +82,7 @@ namespace Infrastructure.WaveManagment
             int i = 0;
             foreach (SpawnPoint point in _spawnPointGroup.transform.GetComponentsInChildren<SpawnPoint>())
             {
-                point.Initialize(i, 0);
+                point.Initialize(i, 0,_saveLoad);
                 _spawnPoints.Add(point);
                 i++;
             }
@@ -111,15 +108,14 @@ namespace Infrastructure.WaveManagment
                     int j = 0;
                     for (; j < enemyCounts[i]; j++)
                     {
-                        for (int k = 0; k <= _spawnPoints.Count; k++)
+                        for (int k = 0; k < _spawnPoints.Count; k++)
                         {
                             Enemy newEnemy = _enemyFactory.Create(_enemys[i].gameObject);
 
                             if (newEnemy != null)
                             {
                                 newEnemy.Load += OnEnemyLoaded;
-                                EnemyDieState enemyDieState = newEnemy.GetComponent<EnemyDieState>();
-                                enemyDieState.OnDeath += OnDeath;
+                                newEnemy.OnDeath += OnDeath;
                                 newEnemy.gameObject.layer = LayerMask.NameToLayer("Enemy");
                                 newEnemy.transform.parent = _createdEnemy.transform;
                                 waveQueue.Enqueue(newEnemy);
@@ -139,19 +135,13 @@ namespace Infrastructure.WaveManagment
                 SpawningCompleted?.Invoke();
                     //OnStartSpawn();
             }
-            
-            _saveLoad.SetActiveEnemy(_activeEnemys);
         }
 
         private void OnDeath(Enemy enemy)
         {
-            _waveQueue.Enqueue(enemy);
-            _inactiveEnemys.Add(enemy);
-            _activeEnemys.Remove(enemy);
-            SetLocalParametrs();
+             _waveQueue.Enqueue(enemy);
         }
-
-       
+        
         public void OnStartSpawn()
         {
             int nemberQueue = 0;
@@ -169,7 +159,8 @@ namespace Infrastructure.WaveManagment
         {
             // Перед началом спауна очередей запускаем таймер
             _cycleDuration = CalculateCycleDuration(); // Рассчитываем длительность цикла спауна
-    
+
+            print(_cycleDuration.ToString());
             await Task.Delay(TimeSpan.FromSeconds(_cycleDuration)); // Асинхронная задержка на длительность цикла
     
             // Таймер завершился, вызываем событие завершения спауна
@@ -190,7 +181,6 @@ namespace Infrastructure.WaveManagment
             return cycleDuration;
         }
         
-        
         public List<Enemy> GetEnemyInWaveQueue()
         {
             return _activeEnemys;
@@ -200,15 +190,14 @@ namespace Infrastructure.WaveManagment
         {
             foreach (Enemy enemy in _activeEnemys)
             {
-                EnemyDieState enemyDieState = enemy.GetComponent<EnemyDieState>();
-                enemyDieState.OnDeath -= OnDeath;
+                enemy.OnDeath -= OnDeath;
             }
         }
         
-        private void SetLocalParametrs()
-        {
-            _saveLoad.SetActiveEnemy(_activeEnemys);
-            _saveLoad.SetInactiveEnemy(_inactiveEnemys);
-        }
+        // private void SetLocalParametrs()
+        // {
+        //     _saveLoad.SetActiveEnemy(_activeEnemys);
+        //     _saveLoad.SetInactiveEnemy(_inactiveEnemys);
+        // }
     }
 }

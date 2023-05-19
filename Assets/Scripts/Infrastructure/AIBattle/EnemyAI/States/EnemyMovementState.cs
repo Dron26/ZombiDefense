@@ -24,6 +24,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         private Enemy _enemy;
         private bool _isStopping;
         private Dictionary<int, float> _animInfo=new();
+        private bool _isHumanoidInstalled = false;
         private void Awake()
         {
             _animator = GetComponent<Animator>();
@@ -42,9 +43,34 @@ namespace Infrastructure.AIBattle.EnemyAI.States
 
         protected override void FixedUpdateCustom()
         {
-            Move();
+            
+                Move();
         }
 
+        private void Move()
+        {
+            
+            Vector3 ourPosition = transform.position;
+                Vector3 humanoidPosition;
+               
+                if ( _humanoid.IsLife())
+                {
+                    humanoidPosition = _humanoid.transform.position;
+                   
+                    if (agent.isOnNavMesh&&!_isHumanoidInstalled)
+                    {
+                        agent.SetDestination(humanoidPosition);
+                        Movement(ourPosition, humanoidPosition);
+                        _isHumanoidInstalled = true;
+                    }
+                }
+                else
+                {
+                    ChangeState();
+                }
+        }
+
+        
         private async void StopRandomly()
         {
             int minTime = 6;
@@ -96,40 +122,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
        public void InitHumanoid(Humanoid targetHumanoid) => 
             _humanoid = targetHumanoid;
 
-       private void Move()
-       {
-           if ( agent.speed ==0f)
-           {
-               agent.speed = 1f;
-           }
-           
-           if (_humanoid != null)
-           {
-               Vector3 ourPosition = transform.position;
-               Vector3 humanoidPosition;
-               
-               if ( _humanoid.IsLife())
-               {
-                   humanoidPosition = _humanoid.transform.position;
-                   
-                   if (agent.isOnNavMesh)
-                   {
-                       agent.SetDestination(humanoidPosition);
-                       Movement(ourPosition, humanoidPosition);
-                   }
-               }
-               else
-               {
-                   ChangeState();
-               }
-           }
-           else
-           {
-               ChangeState();
-           }
-           
-       }
-
+      
 
        private void ChangeState()
        {
@@ -164,6 +157,11 @@ namespace Infrastructure.AIBattle.EnemyAI.States
            {
                StateMachine.EnterBehavior<EnemyAttackState>();
            }
+       }
+       
+       public void SetHumanoidInstalled(bool isHumanoidInstalled)
+       {
+           _isHumanoidInstalled = isHumanoidInstalled;
        }
        
        private void SetAnimInfo()

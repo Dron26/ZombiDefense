@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Enemies.AbstractEntity;
 using Infrastructure.AIBattle.EnemyAI.States;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
@@ -58,10 +59,6 @@ namespace Infrastructure.AIBattle.EnemyAI{
             _currentBehavior.ExitBehavior();
             behavior.EnterBehavior();
             _currentBehavior = behavior;
-        }
-        
-        private void OnDisable()
-        {
         }
     }
 }

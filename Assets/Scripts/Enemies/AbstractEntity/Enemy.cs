@@ -8,6 +8,7 @@ using Infrastructure.AssetManagement;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.FactoryWarriors.Enemies;
 using Observer;
+using Service.SaveLoadService;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.AI;
@@ -23,6 +24,12 @@ namespace Enemies.AbstractEntity
         private List<IObserverByHumanoid> observers = new List<IObserverByHumanoid>();
         [SerializeField] private AssetReferenceT<EnemyData> enemyDataReference;
         private List<SkinGroup> _skinGroups = new();
+        
+            
+        public delegate void EnemyDeathHandler(Enemy enemy);
+        public event EnemyDeathHandler OnDeath;
+        
+        
         public int MinLevelForHumanoid => enemyData.MinLevelForHumanoid;
         protected EnemyData enemyData;
         public float MaxHealth => enemyData.MaxHealth;
@@ -36,7 +43,7 @@ namespace Enemies.AbstractEntity
         public abstract float GetHealth();
         public abstract bool IsLife();
         public abstract int GetPrice();
-
+        
         private NavMeshAgent _agent;
         public Vector3 StartPosition;
 
@@ -49,8 +56,10 @@ namespace Enemies.AbstractEntity
 
         protected virtual void Die()
         {
+            OnDeath?.Invoke(this);
             EnemyStateMachine stateMachine = GetComponent<EnemyStateMachine>();
             stateMachine.EnterBehavior<EnemyDieState>();
+            
         }
 
         public void LoadPrefab()
@@ -78,6 +87,8 @@ namespace Enemies.AbstractEntity
             };
         }
 
+        public abstract void SetSaveLoad(SaveLoad saveLoad);
+        
 
         public abstract void Initialize();
 

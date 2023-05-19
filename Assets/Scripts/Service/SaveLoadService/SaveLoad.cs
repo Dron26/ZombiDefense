@@ -20,9 +20,6 @@ namespace Service.SaveLoadService
      
         private void Awake()
         {
-
-           
-            
             if (!PlayerPrefs.HasKey(Key))
             {
                 _dataBase = new DataBase();
@@ -176,13 +173,13 @@ namespace Service.SaveLoadService
         public List <Humanoid> GetAvailableCharacters( ) => 
             _dataBase.ReadAvailableCharacters();
         
-        public void SetActiveEnemy(List<Enemy> activeEnemy) => 
+        public void SetActiveEnemy(Enemy activeEnemy) => 
             _dataBase.ChangeActiveEnemy( activeEnemy);
 
         public List<Enemy> GetActiveEnemy( ) => 
             _dataBase.ReadActiveEnemy();
 
-        public void SetInactiveEnemy(List<Enemy> inactiveEnemy) => 
+        public void SetInactiveEnemy(Enemy inactiveEnemy) => 
             _dataBase.ChangeInactiveEnemy( inactiveEnemy);
 
         public List<Enemy> GetInactiveEnemy( ) => 

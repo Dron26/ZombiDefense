@@ -32,8 +32,11 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         private float _turnTime = 0.3f;
         private float minDistanceToEnemy = 2.0f; // минимальное расстояние до врага, при котором персонаж перестает поворачиваться
 
+        private float time = 1f;
+        private WaitForSeconds timeout;
         private void Awake()
         {
+            timeout = new WaitForSeconds(time);
             _weaponController = GetComponent<WeaponController>();
             _movementState = GetComponent<MovementState>();
             _attackState = GetComponent<AttackState>();
@@ -53,39 +56,48 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         {
             _isSearhing = true;
 
-            _enemyTransforms = SaveLoad.GetActiveEnemy()
-                .Select(enemy => enemy.transform)
-                .ToArray();
+            while (_isSearhing)
+            {
+                _enemyTransforms = SaveLoad.GetActiveEnemy()
+                    .Select(enemy => enemy.transform)
+                    .ToArray();
             
                 int closestEnemyIndex = GetClosestEnemyIndex(transform.position);
                 
                 if (closestEnemyIndex != -1)
                 {
                     _enemy = SaveLoad.GetActiveEnemy()[closestEnemyIndex];
-                    
-                    
+
                     float _currentRange = Vector3.Distance(transform.position, _enemy.transform.position);
                     float rangeAttack = _weaponController.GetRangeAttack();
                     
-                    if (_currentRange <= rangeAttack&_isTurning!=true)
+                    if (_currentRange <= rangeAttack && !_isTurning&&_enemy.IsLife())
                     {
                         LookEnemyPosition(_enemy.transform);
                     }
                 }
-
-                yield return null;
-                _isSearhing = false;
+                
+                print("Search");
+                yield return timeout;
+            }
+            
         }
         
         private void ChangeState()
         {
+            print("ChangeState(AttackState)");
             _isTurning = false;
-            _attackState.InitEnemy(_enemy);
-            PlayerCharactersStateMachine.EnterBehavior<AttackState>();
+            if (_enemy.IsLife())
+            {
+                _attackState.InitEnemy(_enemy);
+                _isSearhing = false;
+                PlayerCharactersStateMachine.EnterBehavior<AttackState>();
+            }
         }
         
         private void LookEnemyPosition(Transform enemyTransform)
         {
+            print("LookEnemyPosition(Transform enemyTransform)");
             _turnTime = 0;
 
             if (currentTurnCoroutine != null)
@@ -132,6 +144,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 
             while (t < turnTime)
             {
+                print("Search  TurnTowardsEnemy");
                 t += Time.deltaTime;
                 float normalizedTime = t / turnTime;
                 transform.rotation = Quaternion.Lerp(startRotation, targetRotation, normalizedTime);
@@ -142,10 +155,13 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
             ChangeState();
         }
         
+        
+        
+        
         private int GetClosestEnemyIndex(Vector3 soldierPosition)
         {
             NativeArray<EnemyPositionData> enemyPositionDataArray = new NativeArray<EnemyPositionData>(_enemyTransforms.Length, Allocator.TempJob);
-
+            
             for (int i = 0; i < _enemyTransforms.Length; i++)
             {
                 enemyPositionDataArray[i] = new EnemyPositionData
