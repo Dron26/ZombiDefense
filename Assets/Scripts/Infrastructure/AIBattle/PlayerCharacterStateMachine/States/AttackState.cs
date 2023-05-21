@@ -22,7 +22,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         private float _currentRange;
 
         private Animator _animator;
-        private AnimController _animController;
+        private PlayerCharacterAnimController _playerCharacterAnimController;
         private Coroutine _coroutine;
         private FXController _fxController;
         private Humanoid _humanoid;
@@ -53,7 +53,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         private void Awake()
         {
             _animator = GetComponent<Animator>();
-            _animController = GetComponent<AnimController>();
+            _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
             _fxController = GetComponent<FXController>();
             _humanoid = GetComponent<Humanoid>();
             _weaponController = GetComponent<WeaponController>();
@@ -103,7 +103,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 
         public void Fire()
         {
-            _animator.SetBool(_animController.IsShoot,true);
+            _animator.SetBool(_playerCharacterAnimController.IsShoot,true);
         }
 
         private async Task Reload()
@@ -114,8 +114,8 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
             if (!isShotgun)
             {
                 _isAttacking = false;
-                _animator.SetBool(_animController.IsShoot,false);
-                _animator.SetTrigger(_animController.Reload);
+                _animator.SetBool(_playerCharacterAnimController.IsShoot,false);
+                _animator.SetTrigger(_playerCharacterAnimController.Reload);
                 await Task.Delay(TimeSpan.FromSeconds(_reloadTime));
             }
             else
@@ -136,7 +136,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
             if (_isShotgun)
                 ApplyDamageToEnemiesInRange();
             else
-                _enemy.ApplyDamage(_damage);
+                _enemy.ApplyDamage(_damage, _weaponController.WeaponName);
 
             if (!_enemy.IsLife())
             { 
@@ -160,7 +160,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         {
 
             _isAttacking = false;
-            _animator.SetBool(_animController.IsShoot,false);
+            _animator.SetBool(_playerCharacterAnimController.IsShoot,false);
             PlayerCharactersStateMachine.EnterBehavior<SearchTargetState>();
         }
 
@@ -186,7 +186,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
                             }
                         }
                         
-                        enemy.ApplyDamage(_weaponController.GetDamage() * damagePercent); // применяем урон
+                        enemy.ApplyDamage(_weaponController.GetDamage() * damagePercent,_weaponController.WeaponName); // применяем урон
                     }
                 }
             }

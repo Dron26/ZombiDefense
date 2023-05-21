@@ -21,16 +21,15 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         {
             if (!_isDeath)
             {
-                StopCoroutine(WaitBeforeDie());
                 StartCoroutine(WaitBeforeDie());
             }
         }
         
         private  IEnumerator WaitBeforeDie()
         {
-            _isDeath=true;
-
             _enemy=GetComponent<Enemy>();
+            _enemy.GetComponent<NavMeshAgent>().enabled = false;
+            _isDeath=true;
             
             if (_enemy.Level == 2)
             {
@@ -45,7 +44,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
             _enemy.GetComponent<Collider>().enabled = false;
             _enemy.GetComponent<NavMeshAgent>().enabled = false;
             
-            yield return  new WaitForSeconds(2f);
+            yield return  new WaitForSeconds(4f);
             
             StartCoroutine(Fall());
             yield return  new WaitForSeconds(2f);
@@ -54,6 +53,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
 
             
             AfterDie();
+            yield break;
         }
         
         private void AfterDie()

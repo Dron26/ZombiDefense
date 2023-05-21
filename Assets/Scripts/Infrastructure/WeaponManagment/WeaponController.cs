@@ -26,7 +26,7 @@ namespace Infrastructure.WeaponManagment
         //  [SerializeField] private Type _garnadeType;
          
         private List<IObserverByWeaponController> observers = new List<IObserverByWeaponController>();
-        private AnimController _animController;
+        private PlayerCharacterAnimController _playerCharacterAnimController;
         private Animator _animator;
         //private  Weapon _weaponGranade;
         private int _numberSmallArms = 0;
@@ -46,7 +46,7 @@ namespace Infrastructure.WeaponManagment
         public UnityAction ChangeWeapon;
         public float ReloadTime => _reloadTime;
         public bool IsShotgun;
-        
+        public string WeaponName=>_weaponName;
         private void Awake()
         {
             if (TryGetComponent(out Humanoid humanoid))
@@ -134,8 +134,8 @@ namespace Infrastructure.WeaponManagment
             _weaponName = _smallArms.WeaponName;
             _damage = _smallArms.Damage;
             _maxAmmo = _smallArms.MaxAmmo;
-            _fireRate = _weaponAnimInfo[_animController.IsShoot];
-            _reloadTime = _weaponAnimInfo[_animController.Reload];
+            _fireRate = _weaponAnimInfo[_playerCharacterAnimController.IsShoot];
+            _reloadTime = _weaponAnimInfo[_playerCharacterAnimController.Reload];
             _range = _smallArms.Range;
             
             _ring.gameObject.SetActive(true);
@@ -174,7 +174,7 @@ namespace Infrastructure.WeaponManagment
 
         private void SetAnimInfo()
         {
-            foreach (KeyValuePair<int, float> info in _animController.GetAnimInfo())
+            foreach (KeyValuePair<int, float> info in _playerCharacterAnimController.GetAnimInfo())
             {
                 _weaponAnimInfo.Add(info.Key, info.Value);
             }
@@ -185,7 +185,7 @@ namespace Infrastructure.WeaponManagment
             _humanoid=GetComponent<Humanoid>();
             _weaponData = _humanoid.GetWeaponData();
             
-            _animController=GetComponent<AnimController>();
+            _playerCharacterAnimController=GetComponent<PlayerCharacterAnimController>();
             _animator=GetComponent<Animator>();
 
             SetWeapons();

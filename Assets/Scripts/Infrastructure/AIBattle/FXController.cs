@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Audio;
 using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
@@ -23,6 +24,7 @@ namespace Infrastructure.AIBattle
         private Weapon _weapon;
         private AudioController _audioController;
         private WeaponController _weaponController;
+
         private void Awake()
         {
             if (TryGetComponent(out Humanoid humanoid))

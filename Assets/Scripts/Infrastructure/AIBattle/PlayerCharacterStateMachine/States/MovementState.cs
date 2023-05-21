@@ -19,7 +19,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         private float _move;
         private bool isStopped = false;
         private Animator _animator;
-        private AnimController _animController;
+        private PlayerCharacterAnimController _playerCharacterAnimController;
         private WeaponController _weaponController;
         private float minDistance = 0.4f;
         private bool reachedDestination = true;
@@ -29,7 +29,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         {
             _weaponController = GetComponent<WeaponController>();
             _animator = GetComponent<Animator>();
-            _animController = GetComponent<AnimController>();
+            _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
             _agent = GetComponent<NavMeshAgent>();
             _agent.stoppingDistance = 0f; // Задайте минимальную дистанцию остановки
             _move = 0f;
@@ -59,7 +59,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
             if (_point != null)
             {
                 Vector3 opponentPosition = _point.transform.position;
-                _animator.SetBool(_animController.Run, true);
+                _animator.SetBool(_playerCharacterAnimController.Run, true);
                 _agent.SetDestination(opponentPosition);
                 isSetDestination = true;
             }
@@ -78,7 +78,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
             float distance = Vector3.Distance(transform.position, _point.transform.position);
             if (distance <= minDistance)
             {
-                _animator.SetBool(_animController.Run, false);
+                _animator.SetBool(_playerCharacterAnimController.Run, false);
                 reachedDestination = true;
                 isSetDestination = false;
                 Humanoid humanoid =GetComponent<Humanoid>();

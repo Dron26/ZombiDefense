@@ -16,14 +16,14 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         private bool _isAttack;
         
         private Animator _animator;
-        private AnimController _animController;
+        private PlayerCharacterAnimController _playerCharacterAnimController;
         private Coroutine _coroutine;
         private FXController _fxController;
         private Enemy _enemy;
         private void Start()
         {
             _animator = GetComponent<Animator>();
-            _animController = GetComponent<AnimController>();
+            _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
             _fxController = GetComponent<FXController>();
             _enemy=GetComponent<Enemy>();
         }
@@ -74,7 +74,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
 
                         if (_currentRange <= _enemy.GetRangeAttack())
                         {
-                            _animator.SetTrigger(_animController.Attack);
+                            _animator.SetTrigger(_playerCharacterAnimController.Attack);
                             transform.DOLookAt(_humanoid.transform.position, .1f);
                             _humanoid.ApplyDamage(_enemy.GetDamage());
                         }

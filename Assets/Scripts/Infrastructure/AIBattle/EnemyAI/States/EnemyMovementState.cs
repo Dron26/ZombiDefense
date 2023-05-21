@@ -20,7 +20,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         private float _distance;
         private float _stoppingTime;
         private Animator _animator;
-        private AnimController _animController;
+        private EnemyAnimController _enemyAnimController;
         private Enemy _enemy;
         private bool _isStopping;
         private Dictionary<int, float> _animInfo=new();
@@ -28,7 +28,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         private void Awake()
         {
             _animator = GetComponent<Animator>();
-            _animController = GetComponent<AnimController>();
+            _enemyAnimController = GetComponent<EnemyAnimController>();
             agent = GetComponent<NavMeshAgent>();
             _enemy = GetComponent<Enemy>();
             agent.speed = 1;
@@ -87,7 +87,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
                 {
                     _isStopping = true;
                     StopMovement();
-                    PlayScream();
+                   // PlayScream();
                     
                     await Task.Delay(TimeSpan.FromSeconds(_stoppingTime));
                     _isStopping = false;
@@ -96,16 +96,16 @@ namespace Infrastructure.AIBattle.EnemyAI.States
             }
         }
 
-        private void PlayScream()
-        {
-            AnimatorClipInfo[] currentClipInfo = _animator.GetCurrentAnimatorClipInfo(0);
-            AnimationClip currentClip = currentClipInfo.Length > 0 ? currentClipInfo[0].clip : null;
-            int randomIndex = Random.Range(0, _animController.GetScreamAnimationClips().Length);
-            AnimationClip newClip = _animController.GetScreamAnimationClips()[randomIndex];
-             _stoppingTime = newClip.length;
-            _animController.SetRandomAnimation();
-            _animator.CrossFade(newClip.name, 0.2f);
-        }
+        // private void PlayScream()
+        // {
+        //     AnimatorClipInfo[] currentClipInfo = _animator.GetCurrentAnimatorClipInfo(0);
+        //     AnimationClip currentClip = currentClipInfo.Length > 0 ? currentClipInfo[0].clip : null;
+        //     int randomIndex = Random.Range(0, _enemyAnimController.GetScreamAnimationClips().Length);
+        //     AnimationClip newClip = _enemyAnimController.GetScreamAnimationClips()[randomIndex];
+        //      _stoppingTime = newClip.length;
+        //      _enemyAnimController.SetRandomAnimation();
+        //     _animator.CrossFade(newClip.name, 0.2f);
+        // }
         
         private void StopMovement()
         {
@@ -126,13 +126,13 @@ namespace Infrastructure.AIBattle.EnemyAI.States
 
        private void ChangeState()
        {
-           _animator.SetBool(_animController.Walk, false);
+           _animator.SetBool(_enemyAnimController.Walk, false);
            StateMachine.EnterBehavior<EnemySearchTargetState>();
        }
 
        private void Movement(Vector3 ourPosition, Vector3 opponentPosition)
        {
-           _animator.SetBool(_animController.Walk, true);
+           _animator.SetBool(_enemyAnimController.Walk, true);
            
            // if (transform.position.y < -3.5)
            //     transform.position =
@@ -166,10 +166,10 @@ namespace Infrastructure.AIBattle.EnemyAI.States
        
        private void SetAnimInfo()
        {
-           foreach (KeyValuePair<int, float> info in _animController.GetAnimInfo())
+           foreach (KeyValuePair<int, float> info in _enemyAnimController.GetAnimInfo())
            {
                _animInfo.Add(info.Key, info.Value);
-               _stoppingTime = _animInfo[_animController.Walk];
+               _stoppingTime = _animInfo[_enemyAnimController.Walk];
            }
        }
     }

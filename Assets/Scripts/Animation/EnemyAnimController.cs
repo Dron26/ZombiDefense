@@ -1,0 +1,130 @@
+
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using Infrastructure.BaseMonoCache.Code.MonoCache;
+using UnityEngine;
+
+namespace Infrastructure.AIBattle
+{
+    public class EnemyAnimController : MonoCache
+    {
+        public readonly int Idle = Animator.StringToHash("Idle");
+        public readonly int Run = Animator.StringToHash("IsRun");
+        public readonly int Walk = Animator.StringToHash("Walk");
+        public readonly int IsСrawl = Animator.StringToHash("IsСrawl");
+        public readonly int IsShoot = Animator.StringToHash("IsShoot");
+        public readonly int Attack = Animator.StringToHash("Attack");
+        public readonly int IsHit = Animator.StringToHash("IsHit");
+        public readonly int Die = Animator.StringToHash("Die");
+        public readonly int Threw = Animator.StringToHash("Threw");
+
+        [SerializeField] private AnimationClip[] _walkClips;
+        [SerializeField] private AnimationClip[] _runClips;
+        [SerializeField] private AnimationClip[] _attackClips;
+        [SerializeField] private AnimationClip[] _throwClips;
+        [SerializeField] private AnimationClip[] _jumpClips;
+        [SerializeField] private AnimationClip[] _screamClips;
+        [SerializeField] private AnimationClip[] _deathClips;
+        [SerializeField] private AnimationClip[] _idleClips;
+        [SerializeField] private AnimationClip[] _takeDamageClips;
+
+        private Animator _animator;
+        private AnimatorOverrideController animatorOverrideController;
+        private int weaponIndex;
+        private Dictionary<int, float> _animInfo = new();
+        
+        
+        public void Awake( )
+        {
+            _animator = GetComponent<Animator>();
+            weaponIndex = 0;
+            SetAnimInfo();
+        }
+        // поставить смерть и падение под землю  по событию в анимации
+        public void SetRandomAnimation()
+        {
+            animatorOverrideController = new AnimatorOverrideController(_animator.runtimeAnimatorController);
+            _animator.runtimeAnimatorController = animatorOverrideController;
+
+            Dictionary<string, AnimationClip[]> animationClips = new Dictionary<string, AnimationClip[]>
+            {
+                { "Walk", _walkClips },
+                { "Run", _runClips },
+                { "Attack", _attackClips },
+                 { "TakeDamage", _takeDamageClips },
+                // { "Jump", _jumpClips },
+                //{ "Scream", _screamClips },
+                { "Death", _deathClips },
+                { "Idle", _idleClips }
+            };
+
+            foreach (var animationClip in animationClips)
+            {
+                int randomIndex = Random.Range(0, animationClip.Value.Length);
+                animatorOverrideController[animationClip.Key] = animationClip.Value[randomIndex];
+            }
+        }
+        
+        
+        
+        private void SetAnimInfo()
+        {
+            List<int> animHashNames = new();
+            animHashNames.Add(Walk);
+
+            UnityEditor.Animations.AnimatorController animatorController =
+                _animator.runtimeAnimatorController as UnityEditor.Animations.AnimatorController;
+
+            foreach (int name in animHashNames)
+            {
+                string animName = animatorController.parameters.FirstOrDefault(p => p.nameHash == name)?.name;
+                AnimationClip clip = animatorController.animationClips.FirstOrDefault(x => x.name == animName);
+                float animationLength = clip.length;
+                _animInfo.Add(name, animationLength);
+            }
+
+            SetRandomAnimation();
+        }
+
+        public AnimationClip[] GetWalkAnimationClips()
+        {
+            AnimationClip[] newClips = new AnimationClip[_walkClips.Length];
+
+            for (int i = 0; i < _walkClips.Length; i++)
+            {
+                newClips[i] = _walkClips[i];
+            }
+
+            return newClips;
+        }
+
+        // public AnimationClip[] GetScreamAnimationClips()
+        // {
+        //     AnimationClip[] newClips = new AnimationClip[_screamAnimationClips.Length];
+        //
+        //     for (int i = 0; i < _screamAnimationClips.Length; i++)
+        //     {
+        //         newClips[i] = _screamAnimationClips[i];
+        //     }
+        //
+        //     return newClips;
+        // }
+
+
+        public Dictionary<int, float> GetAnimInfo()
+        {
+            return _animInfo;
+        }
+
+        
+
+        public void NotifySelection(bool isSelected)
+        {
+        }
+
+        private void OnDisable()
+        {
+        }
+    }
+}

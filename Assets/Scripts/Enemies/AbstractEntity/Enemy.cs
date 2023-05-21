@@ -47,7 +47,7 @@ namespace Enemies.AbstractEntity
         private NavMeshAgent _agent;
         public Vector3 StartPosition;
 
-        public abstract void ApplyDamage(float getDamage);
+        public abstract void ApplyDamage(float getDamage,string weaponName);
 
         public abstract void SetAttacments();
 
@@ -103,10 +103,10 @@ namespace Enemies.AbstractEntity
 
         private void SetNavMeshSpeed()
         {
-            _agent = GetComponent<NavMeshAgent>();
+             _agent = GetComponent<NavMeshAgent>();
             float minSpeed = 0.6f;
             float maxSpeed = 1.2f;
-
+            
             if (Level == 4)
             {
                 _agent.speed = 0.6f;
@@ -115,6 +115,8 @@ namespace Enemies.AbstractEntity
             {
                 _agent.speed = Random.Range(minSpeed, maxSpeed);
             }
+          
+            
         }
 
         public void AddObserver(IObserverByHumanoid observerByHumanoid)
@@ -136,3 +138,4 @@ namespace Enemies.AbstractEntity
         }
     }
 }
+//Orc Walk -1

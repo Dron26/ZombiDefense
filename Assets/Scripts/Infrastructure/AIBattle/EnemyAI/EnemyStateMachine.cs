@@ -1,20 +1,16 @@
 using System;
 using System.Collections.Generic;
-using Enemies.AbstractEntity;
 using Infrastructure.AIBattle.EnemyAI.States;
-using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.FactoryWarriors.Enemies;
 using Infrastructure.Location;
-using Observer;
 using Service.SaveLoadService;
 using UnityEngine;
 
 namespace Infrastructure.AIBattle.EnemyAI{
-    [RequireComponent(typeof(FXController))]
+    [RequireComponent(typeof(EnemyFXController))]
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(Animator))]
-    [RequireComponent(typeof(AnimController))]
+    [RequireComponent(typeof(EnemyAnimController))]
     [RequireComponent(typeof(EnemySearchTargetState))]
     [RequireComponent(typeof(EnemyMovementState))]
     [RequireComponent(typeof(EnemyAttackState))]

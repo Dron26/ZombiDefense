@@ -18,14 +18,14 @@ namespace Humanoids.People
 
         private float _health = 10f;
 
-        private AnimController _animController;
+        private PlayerCharacterAnimController _playerCharacterAnimController;
         private Animator _animator;
         private FXController _fxController;
 
         private void Start()
         {
             _animator = GetComponent<Animator>();
-            _animController = GetComponent<AnimController>();
+            _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
             _fxController = GetComponent<FXController>();
         }
 
@@ -49,7 +49,7 @@ namespace Humanoids.People
         {
             if (_health <= 0)
             {
-                _animator.SetTrigger(_animController.Die);
+                _animator.SetTrigger(_playerCharacterAnimController.Die);
             //    _fxController.OnDieFX();
                 _isLife = false;
                 Die();

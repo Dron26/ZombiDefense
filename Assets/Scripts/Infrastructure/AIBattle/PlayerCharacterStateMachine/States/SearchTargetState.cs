@@ -19,7 +19,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         private WeaponController _weaponController;
         private Transform[] _enemyTransforms;
         private bool _isSearhing;
-        private AnimController _animController;
+        private PlayerCharacterAnimController _playerCharacterAnimController;
         
         private Animator _animator;
         private Coroutine currentTurnCoroutine;
@@ -40,7 +40,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
             _weaponController = GetComponent<WeaponController>();
             _movementState = GetComponent<MovementState>();
             _attackState = GetComponent<AttackState>();
-            _animController = GetComponent<AnimController>();
+            _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
             _animator = GetComponent<Animator>();
         }
 
