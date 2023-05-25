@@ -1,4 +1,5 @@
-﻿using Enemies.AbstractEntity;
+﻿using Animation;
+using Enemies.AbstractEntity;
 using Infrastructure.AIBattle;
 using Infrastructure.AIBattle.EnemyAI.States;
 using Infrastructure.AssetManagement;

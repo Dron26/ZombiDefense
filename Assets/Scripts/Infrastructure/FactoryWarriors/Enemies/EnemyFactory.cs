@@ -1,32 +1,32 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Audio;
+using Cysharp.Threading.Tasks;
 using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Infrastructure.FactoryWarriors.Enemies
 {
     public class EnemyFactory : MonoBehaviour
     {
-        private static readonly List<Enemy> _enemies = new();
-        public Enemy Create( GameObject enemy)
+        public UnityAction<Enemy> CreatedEnemy;
+        public async Task<GameObject> Create(GameObject enemy)
         {
-            
-            GameObject newEnemy = Instantiate(enemy,transform);
-            newEnemy.gameObject.SetActive(false);
+            GameObject newEnemy = Instantiate(enemy);
             Enemy enemyComponent = newEnemy.GetComponent<Enemy>();
-            enemyComponent.LoadPrefab();
-            _enemies.Add(enemyComponent);
+            enemyComponent.OnDataLoad = Created;
             
-            if (enemyComponent != null)
-            {
-                return enemyComponent;
-            }
-            else
-            {
-                Debug.LogError($"PrefabCharacter {enemyComponent.GetPrefab().name} doesn't have a component of type Enemys.");
-                Destroy(enemy);
-                return null;
-            }
+            await UniTask.SwitchToMainThread();
+            await enemyComponent.LoadPrefab();
+            
+            return newEnemy;
+        }
+
+        private void Created(Enemy enemyComponent)
+        {
+            CreatedEnemy?.Invoke(enemyComponent);
         }
     }
 }

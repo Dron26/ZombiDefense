@@ -30,17 +30,15 @@ namespace Infrastructure.FactoryWarriors.Humanoids
     public class HumanoidFactory : MonoCache, IServiceFactory
     {
         private AudioController _audioController;
-        public UnityAction<Humanoid> CreatedHumanoid; 
-        
-        
-        
+        public UnityAction<Humanoid> CreatedHumanoid;
+
         public async Task Create(GameObject prefab, Transform transform )
         {
             GameObject newHumanoid = Instantiate(prefab, transform);
             Humanoid humanoidComponent = newHumanoid.GetComponent<Humanoid>();
             humanoidComponent.SetAudioController(_audioController);
+            humanoidComponent.transform.localPosition = Vector3.zero;
             humanoidComponent.OnDataLoad = Created;
-            
             float randomAngle = Random.Range(0f, 360f);
             newHumanoid.transform.rotation = Quaternion.Euler(0f, randomAngle, 0f);
            

@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Infrastructure.AIBattle;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Audio;
 using Infrastructure.AIBattle.EnemyAI;
 using Infrastructure.AIBattle.EnemyAI.States;
-using Infrastructure.AIBattle.PlayerCharacterStateMachine;
-using Infrastructure.AssetManagement;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.FactoryWarriors.Enemies;
 using Observer;
@@ -13,23 +11,23 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.AI;
 using UnityEngine.Events;
-using UnityEngine.PlayerLoop;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace Enemies.AbstractEntity
 {
     [RequireComponent(typeof(EnemyStateMachine))]
-    public abstract class Enemy : MonoCache,IObservableHumanoid
+    public abstract class Enemy : MonoCache, IObservableHumanoid
     {
         private List<IObserverByHumanoid> observers = new List<IObserverByHumanoid>();
         [SerializeField] private AssetReferenceT<EnemyData> enemyDataReference;
         private List<SkinGroup> _skinGroups = new();
-        
-            
+
+        private AudioController _audioController;
         public delegate void EnemyDeathHandler(Enemy enemy);
+
         public event EnemyDeathHandler OnDeath;
-        
-        
+
+
         public int MinLevelForHumanoid => enemyData.MinLevelForHumanoid;
         protected EnemyData enemyData;
         public float MaxHealth => enemyData.MaxHealth;
@@ -43,31 +41,31 @@ namespace Enemies.AbstractEntity
         public abstract float GetHealth();
         public abstract bool IsLife();
         public abstract int GetPrice();
-        
+        public UnityAction<Enemy> OnDataLoad;
+
         private NavMeshAgent _agent;
         public Vector3 StartPosition;
 
-        public abstract void ApplyDamage(float getDamage,string weaponName);
+        public abstract void ApplyDamage(float getDamage, string weaponName);
 
         public abstract void SetAttacments();
 
         public float GetRadiusSearch() => 25f;
-        public UnityAction<Enemy> Load;
 
         protected virtual void Die()
         {
             OnDeath?.Invoke(this);
             EnemyStateMachine stateMachine = GetComponent<EnemyStateMachine>();
             stateMachine.EnterBehavior<EnemyDieState>();
-            
         }
 
-        public void LoadPrefab()
+        public Task LoadPrefab()
         {
+            var tcs = new TaskCompletionSource<bool>();
+
             if (enemyDataReference.Asset != null)
             {
-                enemyData = (Infrastructure.FactoryWarriors.Enemies.EnemyData)enemyDataReference.Asset;
-                return;
+                enemyData = (EnemyData)enemyDataReference.Asset;
             }
 
             enemyDataReference.LoadAssetAsync().Completed += handle =>
@@ -75,20 +73,24 @@ namespace Enemies.AbstractEntity
                 if (handle.Status == AsyncOperationStatus.Succeeded)
                 {
                     enemyData = (Infrastructure.FactoryWarriors.Enemies.EnemyData)handle.Result;
+                    tcs.TrySetResult(true);
                     Initialize();
                     SetSkin();
                     SetNavMeshSpeed();
-                    Load?.Invoke(this);
+                    OnDataLoad?.Invoke(this);
                 }
                 else
                 {
                     Debug.LogError($"Failed to load enemy data: {handle.OperationException}");
+                    tcs.TrySetException(handle.OperationException);
                 }
             };
+
+            return tcs.Task;
         }
 
         public abstract void SetSaveLoad(SaveLoad saveLoad);
-        
+
 
         public abstract void Initialize();
 
@@ -103,10 +105,10 @@ namespace Enemies.AbstractEntity
 
         private void SetNavMeshSpeed()
         {
-             _agent = GetComponent<NavMeshAgent>();
+            _agent = GetComponent<NavMeshAgent>();
             float minSpeed = 0.6f;
             float maxSpeed = 1.2f;
-            
+
             if (Level == 4)
             {
                 _agent.speed = 0.6f;
@@ -115,8 +117,6 @@ namespace Enemies.AbstractEntity
             {
                 _agent.speed = Random.Range(minSpeed, maxSpeed);
             }
-          
-            
         }
 
         public void AddObserver(IObserverByHumanoid observerByHumanoid)
@@ -136,6 +136,16 @@ namespace Enemies.AbstractEntity
                 observer.NotifyFromHumanoid(data);
             }
         }
+        
+        public void SetAudioController(AudioController audioController)
+        {
+            _audioController = audioController;
+        }
+        public AudioController GetAudioController()
+        {
+            return _audioController;
+        }
+        
+        
     }
 }
-//Orc Walk -1

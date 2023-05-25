@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using DG.Tweening;
 using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
 using Infrastructure.WeaponManagment;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.AI;
-using Random = UnityEngine.Random;
 
 namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 {
@@ -21,7 +15,6 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 
         private float _currentRange;
 
-        private Animator _animator;
         private PlayerCharacterAnimController _playerCharacterAnimController;
         private Coroutine _coroutine;
         private FXController _fxController;
@@ -33,11 +26,10 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         //private bool _isAttacked;
         private bool _isAttacking;
         private bool _isReloading;
-        private bool isShotgun;
         private Weapon _activeWeapon;
 
         private int _maxAmmo;
-        private float _reloadTime;
+            //  private float _reloadTime;
         private float _fireRate;
         private float _damage;
         private float _range;
@@ -52,7 +44,6 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 
         private void Awake()
         {
-            _animator = GetComponent<Animator>();
             _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
             _fxController = GetComponent<FXController>();
             _humanoid = GetComponent<Humanoid>();
@@ -103,31 +94,26 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 
         public void Fire()
         {
-            _animator.SetBool(_playerCharacterAnimController.IsShoot,true);
+            _playerCharacterAnimController.OnShoot(true);
         }
 
         private async Task Reload()
         {
             _isReloading = true;
+            _isAttacking = false;
             
-            
-            if (!isShotgun)
-            {
                 _isAttacking = false;
-                _animator.SetBool(_playerCharacterAnimController.IsShoot,false);
-                _animator.SetTrigger(_playerCharacterAnimController.Reload);
-                await Task.Delay(TimeSpan.FromSeconds(_reloadTime));
-            }
-            else
-            {
-                await Task.Delay(TimeSpan.FromSeconds(_fireRate));
-                _isAttacking = false;
-            }
+                _playerCharacterAnimController.OnShoot(false);
+                _playerCharacterAnimController.OnReload();
+        }
+
+        
+        private void ReloadEnd()
+        {
             
             _ammoCount = _maxAmmo;
             _isReloading = false;   
         }
-
 
         public async Task FinishAnimationAttackPlay()
         {
@@ -160,12 +146,15 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         {
 
             _isAttacking = false;
-            _animator.SetBool(_playerCharacterAnimController.IsShoot,false);
+            _playerCharacterAnimController.OnShoot(false);
             PlayerCharactersStateMachine.EnterBehavior<SearchTargetState>();
         }
 
         private void ApplyDamageToEnemiesInRange()
         {
+            float angle = _weaponController.GetSpreadAngle();
+            Vector3 attackDirection = _enemy.transform.position - transform.position;
+
             Collider[] hitColliders = Physics.OverlapSphere(transform.position, _maxRadius, LayerMask.GetMask("Enemy"));
 
             foreach (Collider hitCollider in hitColliders)
@@ -174,23 +163,31 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
                 {
                     if (enemy.IsLife())
                     {
-                        float distance = Vector3.Distance(transform.position, enemy.transform.position);
-                        float damagePercent = 0;
+                        Vector3 directionToEnemy = enemy.transform.position - transform.position;
+                        float angleToEnemy = Vector3.Angle(attackDirection, directionToEnemy);
 
-                        for (int i = 0; i < _radiusList.Length; i++)
+                        // Проверяем, находится ли враг внутри угла атаки
+                        if (angleToEnemy <= angle)
                         {
-                            if (distance >= _radiusList[i])
+                            float distance = Vector3.Distance(transform.position, enemy.transform.position);
+                            float damagePercent = 0;
+
+                            for (int i = 0; i < _radiusList.Length; i++)
                             {
-                                damagePercent = _damageList[i];
-                                break;
+                                if (distance <= _radiusList[i])
+                                {
+                                    damagePercent = _damageList[i];
+                                    break;
+                                }
                             }
+                    
+                            enemy.ApplyDamage(_weaponController.GetDamage() * damagePercent, _weaponController.WeaponName); // применяем урон
                         }
-                        
-                        enemy.ApplyDamage(_weaponController.GetDamage() * damagePercent,_weaponController.WeaponName); // применяем урон
                     }
                 }
             }
         }
+
         
 
         protected override void OnDisable()
@@ -214,10 +211,9 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
             _isShotgun=_activeWeapon.IsShotgun;
             _maxAmmo = _activeWeapon.MaxAmmo;
             _ammoCount = _maxAmmo;
-            _reloadTime = _weaponController.ReloadTime;
+          //  _reloadTime = _weaponController.ReloadTime;
             _fireRate = _activeWeapon.FireRate;
             _range = _activeWeapon.Range;
-            _isShotgun=_activeWeapon.IsShotgun;
             _damage = _weaponController.GetDamage();
 
             if (_isShotgun)
@@ -228,7 +224,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 
                 _radiusList = new[] { _firstRadius, _secondRadius, _thirdRadius };
                 
-                _damageList = new[] { _damage * 0.026f,1,1.3f };
+                _damageList = new[] { 1.3f ,1f,_damage * 0.026f};
                 _maxRadius = _radiusList[0];
             }
         }

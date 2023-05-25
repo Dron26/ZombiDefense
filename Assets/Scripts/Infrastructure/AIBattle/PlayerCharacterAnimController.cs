@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Observer;
-using UnityEditor.Animations;
 using UnityEngine;
 
 namespace Infrastructure.AIBattle
@@ -31,6 +28,7 @@ namespace Infrastructure.AIBattle
         private int weaponIndex;
         private Dictionary<int, float> _animInfo=new();
 
+        private RuntimeAnimatorController animatorController;
         private void Awake()
         {
             if (TryGetComponent(out Humanoid humanoid))
@@ -49,63 +47,73 @@ namespace Infrastructure.AIBattle
             int randomIndex = UnityEngine.Random.Range(0, _walkAnimationClips.Length);
             animatorOverrideController["Walk"] = _walkAnimationClips[randomIndex];
         }
+
+        public void OnShoot(bool satate)
+        {
+            _animator.SetBool(IsShoot,satate);
+        }
+
+        public void OnMove(bool satate)
+        {
+            _animator.SetBool(Run,satate);
+        }
         
+        public void OnReload()
+        {
+            _animator.SetTrigger(Reload);
+        }
         
-        
+        public void OnIdle()
+        {
+            OnShoot( false);
+            OnMove(false);
+        }
         
         
         private void SetAnimInfo()
         {
             List<int>animHashNames = new();
-            
-            if (TryGetComponent(out Enemy enemy))
-            {
-                animHashNames.Add(Walk);
-            }else
-            {
-                animHashNames.Add(IsShoot);
+
+            animHashNames.Add(IsShoot);
                 animHashNames.Add(Reload);
-            }
-            
-
-            UnityEditor.Animations.AnimatorController animatorController = _animator.runtimeAnimatorController as UnityEditor.Animations.AnimatorController;
-
+                
+            animatorController = _animator.runtimeAnimatorController;
 
             foreach (int name in animHashNames)
             {
-                string animName = animatorController.parameters.FirstOrDefault(p => p.nameHash == name)?.name;
-                AnimationClip clip = animatorController.animationClips.FirstOrDefault(x => x.name == animName); 
+                string animName = GetAnimatorParameterName(name);
+                AnimationClip clip = GetAnimationClip(animName);
                 float animationLength = clip.length;
                 _animInfo.Add(name, animationLength);
             }
         }
-
-        public AnimationClip[] GetWalkAnimationClips()
+        
+        private string GetAnimatorParameterName(int nameHash)
         {
-            
-            AnimationClip[] newClips = new AnimationClip[_walkAnimationClips.Length];
-
-            for (int i = 0; i < _walkAnimationClips.Length; i++)
+            foreach (var parameter in _animator.parameters)
             {
-                newClips[i] = _walkAnimationClips[i];
+                if (parameter.nameHash == nameHash)
+                {
+                    return parameter.name;
+                }
             }
-            return newClips;
+            return string.Empty;
         }
-        
-        public AnimationClip[] GetScreamAnimationClips()
+
+        private AnimationClip GetAnimationClip(string clipName)
         {
-            
-            AnimationClip[] newClips = new AnimationClip[_screamAnimationClips.Length];
-
-            for (int i = 0; i < _screamAnimationClips.Length; i++)
+            foreach (var clip in animatorController.animationClips)
             {
-                newClips[i] = _screamAnimationClips[i];
+                if (clip.name == clipName)
+                {
+                    return clip;
+                }
             }
-            return newClips;
+            return null;
         }
-        
-        
-        
+
+
+
         public Dictionary<int, float> GetAnimInfo()
         {
             return _animInfo;
@@ -135,5 +143,7 @@ namespace Infrastructure.AIBattle
                 enemy.RemoveObserver(this);
             }
         }
+
+       
     }
 }

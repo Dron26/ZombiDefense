@@ -31,37 +31,36 @@ namespace Infrastructure.AIBattle.EnemyAI.States
 
         protected override void UpdateCustom()
         { 
-            if (_isSearhing==false) StartCoroutine(Search());
+            if (_isSearhing==false) Search();
         }
         
-        private IEnumerator Search()
+        private void Search()
         {
-            _isSearhing = true;
-            _humanoidTransforms = SaveLoad.GetActiveHumanoids()
-                .Select(humanoid => humanoid.transform)
-                .ToArray();
+            agent.speed = 0;
+                _isSearhing = true;
+                _humanoidTransforms = SaveLoad.GetActiveHumanoids()
+                    .Where(humanoid => humanoid.IsMove == false)
+                    .Select(humanoid => humanoid.transform)
+                    .ToArray();
             
-            _enemy = GetComponent<Enemy>();
+                _enemy = GetComponent<Enemy>();
             
-            int closestIndex = GetClosestIndex(transform.position,_humanoidTransforms);
+                int closestIndex = GetClosestIndex(transform.position,_humanoidTransforms);
                 
-            if (closestIndex != -1)
-            {
-                _targetHumanoid = SaveLoad.GetActiveHumanoids()[closestIndex];
-                _movementState.InitHumanoid(_targetHumanoid);
-                _attackState.InitHumanoid(_targetHumanoid);
+                if (closestIndex != -1)
+                {
+                    _targetHumanoid = SaveLoad.GetActiveHumanoids()[closestIndex];
+                    _movementState.InitHumanoid(_targetHumanoid);
+                    _attackState.InitHumanoid(_targetHumanoid);
                 
-                EnemyMovementState _enemyMovement = GetComponent<EnemyMovementState>();
-                _enemyMovement.SetHumanoidInstalled(false);
+                    EnemyMovementState _enemyMovement = GetComponent<EnemyMovementState>();
+                    _enemyMovement.SetHumanoidInstalled(false);
+                    agent.speed = 1;
                     StateMachine.EnterBehavior<EnemyMovementState>();
-            }
-            else
-            {
-                agent.speed = 0;
-            }
-            
-            yield return new WaitForSeconds(1.5f);
-            _isSearhing = false;
+                    
+                }
+                
+                _isSearhing = false;
         }
         
          private int GetClosestIndex(Vector3 soldierPosition,Transform[] humanoidTransforms)

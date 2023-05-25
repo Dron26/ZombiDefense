@@ -44,18 +44,18 @@ namespace Infrastructure.WaveManagment
             _groupWaveQueue.Add(queue);
             isStopSpawn = false;
 
-            StartSpawn();
+            StartCoroutine(StartSpawn());
         }
         
-        private async Task StartSpawn()
+        private IEnumerator StartSpawn()
         {
             float delayTime = 5.0f; 
-            await Task.Delay(TimeSpan.FromSeconds(Random.Range(0.57f, 5.33f)));
-            
+            yield return new WaitForSeconds(Random.Range(0.57f, 5.33f));
+    
             foreach (WaveQueue queue in _groupWaveQueue)
             {
-                int count =queue.Count;
-                
+                int count = queue.Count;
+
                 for (int i = 0; i < count; i++)
                 {
                     if (isStopSpawn)
@@ -63,12 +63,12 @@ namespace Infrastructure.WaveManagment
                     Enemy enemy = queue.Dequeue();
                     enemy.gameObject.transform.parent = transform;
                     enemy.SetSaveLoad(_saveLoad);
-                    enemy.StartPosition=transform.position;
+                    enemy.StartPosition = transform.position;
                     enemy.GetComponent<EnemyDieState>().OnRevival += OnEnemyRevival;
                     Activated(enemy);
-                    
+
                     float randomDelayTime = Random.Range(0.57f, 5.33f);
-                    await Task.Delay(TimeSpan.FromSeconds(delayTime + randomDelayTime), _cancellationTokenSource.Token);
+                    yield return new WaitForSeconds(delayTime + randomDelayTime);
                 }
             }
         }

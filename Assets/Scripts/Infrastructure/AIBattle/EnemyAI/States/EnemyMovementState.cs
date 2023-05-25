@@ -1,7 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using DG.Tweening;
+using Animation;
 using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
 using UnityEngine;
@@ -15,7 +16,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         private readonly float _rateStepUnit = .01f;
 
         private Humanoid _humanoid;
-        private NavMeshAgent agent;
+        private NavMeshAgent _agent;
         private float _stoppingDistance;
         private float _distance;
         private float _stoppingTime;
@@ -25,51 +26,64 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         private bool _isStopping;
         private Dictionary<int, float> _animInfo=new();
         private bool _isHumanoidInstalled = false;
+        private float _trackingProbability = 0.5f;
+        private Vector3 _humanoidPosition ;
+        
         private void Awake()
         {
+            
             _animator = GetComponent<Animator>();
             _enemyAnimController = GetComponent<EnemyAnimController>();
-            agent = GetComponent<NavMeshAgent>();
+            _agent = GetComponent<NavMeshAgent>();
             _enemy = GetComponent<Enemy>();
-            agent.speed = 1;
+            _agent.speed = 1;
+           
         }
 
         private void Start()
         {
             _stoppingDistance = _enemy.GetRangeAttack();
+            _agent.stoppingDistance=_stoppingDistance;
             _isStopping = false;
            // StopRandomly();
+           SaveLoad.OnSetActiveHumanoid=OnSetActiveHumanoid;
+        }
+
+        private void OnSetActiveHumanoid()
+        {
+            ChangeState();
         }
 
         protected override void FixedUpdateCustom()
         {
-            
+            if (_isHumanoidInstalled==false)
+            {
                 Move();
+            }
         }
 
         private void Move()
         {
-            
-            Vector3 ourPosition = transform.position;
-                Vector3 humanoidPosition;
-               
-                if ( _humanoid.IsLife())
-                {
-                    humanoidPosition = _humanoid.transform.position;
-                   
-                    if (agent.isOnNavMesh&&!_isHumanoidInstalled)
+    
+            if (_humanoid != null && _humanoid.IsLife())
+            {
+                
+                
+                    if (!_isHumanoidInstalled&&_agent.isOnNavMesh)
                     {
-                        agent.SetDestination(humanoidPosition);
-                        Movement(ourPosition, humanoidPosition);
+                        _agent.SetDestination(_humanoidPosition);
                         _isHumanoidInstalled = true;
+                        Movement();
                     }
-                }
-                else
-                {
-                    ChangeState();
-                }
+                
+            }
+            else
+            {
+                ChangeState();
+            }
         }
-
+        
+        private bool ShouldTrackSoldier() {     return Random.value <= _trackingProbability; }
         
         private async void StopRandomly()
         {
@@ -109,53 +123,65 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         
         private void StopMovement()
         {
-            agent.isStopped = true;
+            _agent.isStopped = true;
             _animator.SetBool("Walk", false); 
         }
 
         private void ResumeMovement()
         {
-            agent.isStopped = false;
+            _agent.isStopped = false;
             _animator.SetBool("Walk", true); 
         }
         
-       public void InitHumanoid(Humanoid targetHumanoid) => 
-            _humanoid = targetHumanoid;
+       public void InitHumanoid(Humanoid targetHumanoid)
+       {
+           _humanoid = targetHumanoid;
+           _humanoidPosition = _humanoid.transform.position;
+           _humanoid.OnMove += OnTargetChangePoint;
+       }
 
-      
-
+       private void OnTargetChangePoint()
+       {
+           if (ShouldTrackSoldier())
+               StartCoroutine(CheckSoldierPosition());
+           else
+               ChangeState();
+       }
+       
        private void ChangeState()
        {
+           _agent.SetDestination(transform.position);
            _animator.SetBool(_enemyAnimController.Walk, false);
            StateMachine.EnterBehavior<EnemySearchTargetState>();
        }
 
-       private void Movement(Vector3 ourPosition, Vector3 opponentPosition)
+       private void Movement()
        {
            _animator.SetBool(_enemyAnimController.Walk, true);
            
-           // if (transform.position.y < -3.5)
-           //     transform.position =
-           //         new Vector3(ourPosition.x, ourPosition.y + 1.5f, ourPosition.z);
-
-           // if (transform.rotation.x != 0) 
-           //     transform.Rotate(0, ourPosition.y, ourPosition.z);
-          //  
-          // transform.position = new Vector3(MovementAxis(ourPosition.x, opponentPosition.x), 
-          //     MovementAxis(ourPosition.y, opponentPosition.y), 
-          //     MovementAxis(ourPosition.z, opponentPosition.z));
-          //transform.DOLookAt(opponentPosition, .05f);
-           
-           TryNextState(ourPosition, opponentPosition);
+           StartCoroutine(CheckDistance());;
        }
 
-       private void TryNextState(Vector3 ourPosition, Vector3 opponentPosition)
+       private IEnumerator CheckDistance()
        {
-           _distance = Vector3.Distance(ourPosition, opponentPosition);
-
-           if (_stoppingDistance >= _distance)
+           while (_isHumanoidInstalled)
            {
-               StateMachine.EnterBehavior<EnemyAttackState>();
+               _distance = Vector3.Distance(transform.position, _humanoid.transform.position);
+
+               if (_stoppingDistance >= _distance)
+               {
+                   _animator.SetBool(_enemyAnimController.Walk, false);
+                   StateMachine.EnterBehavior<EnemyAttackState>();
+               }
+
+               if (!_humanoid.IsLife())
+               {
+                   _animator.SetBool(_enemyAnimController.Walk, false);
+                   StateMachine.EnterBehavior<EnemySearchTargetState>();
+               }
+               
+           
+               yield return new WaitForSeconds(0.5f);
            }
        }
        
@@ -172,5 +198,17 @@ namespace Infrastructure.AIBattle.EnemyAI.States
                _stoppingTime = _animInfo[_enemyAnimController.Walk];
            }
        }
+       
+       
+       private IEnumerator CheckSoldierPosition()
+       {
+           while (isActiveAndEnabled && _humanoid != null && _humanoid.IsMove)
+           {
+               Vector3 soldierPosition = _humanoid.transform.position;
+               _agent.SetDestination(soldierPosition);
+               yield return new WaitForSeconds(1.5f);
+           }
+       }
+
     }
 }

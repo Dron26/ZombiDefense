@@ -45,7 +45,7 @@ namespace Infrastructure.WeaponManagment
 
         public UnityAction ChangeWeapon;
         public float ReloadTime => _reloadTime;
-        public bool IsShotgun;
+        public bool _isShotgun;
         public string WeaponName=>_weaponName;
         private void Awake()
         {
@@ -99,7 +99,7 @@ namespace Infrastructure.WeaponManagment
                     if (smallArms[i]!=null)
                     {
                         _smallArms=smallArms[i];
-                        IsShotgun=_smallArms.IsShotgun;
+                        _isShotgun=_smallArms.IsShotgun;
                     }
                 }
             }
@@ -253,6 +253,8 @@ namespace Infrastructure.WeaponManagment
             }
         }
 
+        public float GetSpreadAngle() => 
+            _smallArms.SpreadAngle;
     }
 
     //    Sniper Vector3(0.0289999992,-0.0839999989,0.0170000009)Vector3(347.422821,89.5062866,89.6258698)

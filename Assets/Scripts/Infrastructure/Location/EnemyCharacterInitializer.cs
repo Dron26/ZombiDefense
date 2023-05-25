@@ -18,7 +18,7 @@ namespace Infrastructure.Location
             _playerCharacterInitializer=sceneInitializer.GetPlayerCharacterInitializer();
             
             _saveLoad = saveLoad;
-            _waveManager.Initialize(saveLoad);
+            _waveManager.Initialize(saveLoad,sceneInitializer.GetAudioController());
         }
 
        

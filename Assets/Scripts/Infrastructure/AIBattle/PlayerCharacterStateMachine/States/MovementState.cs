@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using Enemies.AbstractEntity;
@@ -13,22 +14,22 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
     public class MovementState : State
     {
         private readonly float _rateStepUnit = .01f;
-
+        private readonly WaitForSeconds _waitForSeconds = new(0.3f);
         private WorkPoint _point;
         private NavMeshAgent _agent;
         private float _move;
         private bool isStopped = false;
-        private Animator _animator;
         private PlayerCharacterAnimController _playerCharacterAnimController;
         private WeaponController _weaponController;
-        private float minDistance = 0.4f;
+        private float minDistance = 0.3f;
         private bool reachedDestination = true;
         private bool isSetDestination = false;
-
+        private Humanoid _humanoid;
+        
         private void Awake()
         {
+            _humanoid=GetComponent<Humanoid>();
             _weaponController = GetComponent<WeaponController>();
-            _animator = GetComponent<Animator>();
             _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
             _agent = GetComponent<NavMeshAgent>();
             _agent.stoppingDistance = 0f; // Задайте минимальную дистанцию остановки
@@ -47,21 +48,20 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
                 {
                     Move();
                 }
-
-                CheckDistance();
             }
         }
 
         private void Move()
         {
-            _point = PlayerCharactersStateMachine.GetPoint();
-
             if (_point != null)
             {
-                Vector3 opponentPosition = _point.transform.position;
-                _animator.SetBool(_playerCharacterAnimController.Run, true);
-                _agent.SetDestination(opponentPosition);
+                Vector3 targetPosition = _point.transform.position;
+                _playerCharacterAnimController.OnShoot(false);
+                _playerCharacterAnimController.OnMove(true);
+                _agent.SetDestination(targetPosition);
+                _humanoid.IsMoving(true);
                 isSetDestination = true;
+                StartCoroutine(CheckDistance()) ;
             }
             else
             {
@@ -70,21 +70,36 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         }
 
 
-        private void CheckDistance()
+        private IEnumerator CheckDistance()
         {
+            reachedDestination = false;
             if (_point == null)
-                return;
+                yield return null;
 
-            float distance = Vector3.Distance(transform.position, _point.transform.position);
-            if (distance <= minDistance)
+            while (reachedDestination==false)
             {
-                _animator.SetBool(_playerCharacterAnimController.Run, false);
-                reachedDestination = true;
-                isSetDestination = false;
-                Humanoid humanoid =GetComponent<Humanoid>();
-                _point.SetHumanoid(humanoid);
-                PlayerCharactersStateMachine.EnterBehavior<SearchTargetState>();
+                float distance = Vector3.Distance(transform.position, _point.transform.position);
+            
+                if (distance <= minDistance)
+                {
+                    reachedDestination = true;
+                    isSetDestination = false;
+                    Humanoid humanoid =GetComponent<Humanoid>();
+                    _point.SetHumanoid(humanoid);
+                    _humanoid.IsMoving(false);
+                    _playerCharacterAnimController.OnMove(false);
+                    PlayerCharactersStateMachine.EnterBehavior<SearchTargetState>();
+                }
+                
+                yield return _waitForSeconds;
             }
+        }
+
+        public void SetNewPoint(WorkPoint newPoint)
+        {
+            _point = newPoint;
+            reachedDestination = true;
+            isSetDestination = false;
         }
     }
 }

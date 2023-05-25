@@ -41,7 +41,7 @@ namespace Infrastructure.Location
         public void Initialize(AudioController audioController, SceneInitializer sceneInitializer, SaveLoad saveLoad)
         {
             _saveLoad = saveLoad;
-            _humanoidFactory.CreatedHumanoid += FillCharacterGroup;
+            _humanoidFactory.CreatedHumanoid += OnCreatedHumanoid;
             _humanoidFactory.Initialize(audioController);
             _workPointsGroup.Initialize(_saveLoad);
             FillWorkPoints();
@@ -59,7 +59,7 @@ namespace Infrastructure.Location
             }
         }
 
-        private void FillCharacterGroup(Humanoid humanoid)
+        private void OnCreatedHumanoid(Humanoid humanoid)
         {
             _coutnCreated++;
             _activeHumanoids.Add(humanoid);

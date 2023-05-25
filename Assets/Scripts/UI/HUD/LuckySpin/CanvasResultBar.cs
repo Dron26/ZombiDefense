@@ -14,7 +14,7 @@ namespace UI.HUD.LuckySpin
 {
     public class CanvasResultBar : MonoCache
     {
-        [SerializeField] private Camera _camera;
+        [SerializeField] private UnityEngine.Camera _camera;
         [SerializeField] private DatabaseStatistics _databaseStatistics;
 
         [SerializeField] private CanvasLuckySpin _canvasLucky;

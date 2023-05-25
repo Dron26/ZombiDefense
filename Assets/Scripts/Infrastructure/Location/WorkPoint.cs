@@ -28,6 +28,7 @@ namespace Infrastructure.Location
         private Humanoid _humanoid;
         private bool _isBusy;
         private bool _isSelected = false;
+        private bool _isSelectedForMove = false;
         private Collider _collider;
         private int _level;
         private float _upPercent;
@@ -55,11 +56,6 @@ namespace Infrastructure.Location
         {
             _isSelected = isSelected;
             
-            if (_isBusy)
-            {
-                _humanoid.SetSelected(isSelected);
-            }
-            
             _selectedCircle.gameObject.SetActive(_isSelected);
         }
 
@@ -74,8 +70,11 @@ namespace Infrastructure.Location
                 _isBusy = true;
             }
             else
-            {
-                _isBusy = false;
+            
+            { if (_isSelectedForMove==false)
+                {
+                    _isBusy = false;
+                }
             }
         }
 
@@ -115,6 +114,11 @@ namespace Infrastructure.Location
         public void SetSaveLoad(SaveLoad saveLoad)
         {
             _saveLoad=saveLoad;
+        }
+
+        public void SelectedForMove(bool isSelected)
+        {
+            _isSelectedForMove=isSelected;
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Animation;
 using Infrastructure.AIBattle.EnemyAI.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;

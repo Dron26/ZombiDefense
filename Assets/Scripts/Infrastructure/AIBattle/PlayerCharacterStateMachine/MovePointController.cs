@@ -19,7 +19,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
         private SceneInitializer _sceneInitializer;
         private WorkPointGroup _workPointGroup;
         private List<WorkPoint> _workPoints = new();
-        private WorkPoint _previousPoint;
+        private WorkPoint _previousMovePoint;
         private WorkPoint _selectedPoint;
         public WorkPoint SelectedPoint=>_selectedPoint;
         public WorkPoint MovePoint;
@@ -60,49 +60,53 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
         private void OnSelectedStartPoint(WorkPoint workPoint)
         {
             _selectedPoint = workPoint;
-            _previousPoint = workPoint;
+            _previousMovePoint = workPoint;
           //  _selectedPoint.SetSelected(true);
             _saveLoad.SetSelectedPOoint(_selectedPoint);
         }
 
-        private void OnSelectedPoint(WorkPoint workPoint)
+        private void OnSelectedPoint(WorkPoint newPoint)
         {
             isHumanoidSelected = _saveLoad.GetSelectedHumanoid();
 
-            if (_selectedPoint != workPoint)
+            if (_selectedPoint != newPoint)
             {
                 isPointToMoveTaked = false;
-                _selectedPoint.SetSelected(false);
-                _selectedPoint = workPoint;
-                _saveLoad.SetSelectedPOoint(_selectedPoint);
-                
-               // _selectedPoint.SetSelected(true);
-                if (workPoint.IsBusy==false && isHumanoidSelected&& isPointToMoveTaked==false)
-                {
-                    isPointToMoveTaked = true;
-                    MovePoint = workPoint;
-                }
+                    _selectedPoint.SetSelected(false);
+                    _selectedPoint = newPoint;
+                    _saveLoad.SetSelectedPOoint(_selectedPoint);
+                    // _selectedPoint.SetSelected(true);
+                    if (newPoint.IsBusy==false && isHumanoidSelected&& isPointToMoveTaked==false)
+                    {
+                        isPointToMoveTaked = true;
+                        MovePoint = newPoint;
+                    }
 
-               // _storeOnPlay.SetButtonState(_selectedPoint.IsBusy == false);
             }
-            else if (workPoint.IsBusy==false && isPointToMoveTaked==true)
+            else if (newPoint.IsBusy==false && isPointToMoveTaked==true)
             {
+                _previousMovePoint.SetBusy(false);
+                newPoint.SetBusy(true);
+                newPoint.SelectedForMove(true);
+                _previousMovePoint = MovePoint;
                 _selectedHumanoid=_saveLoad.GetSelectedHumanoid();
                // Humanoid humanoid = _characterInitializer.GetSelectedCharacter();
-                PlayerCharactersStateMachine stateMachine = _selectedHumanoid.GetComponent<PlayerCharactersStateMachine>();
-                stateMachine.EnterBehavior<MovementState>();
-                stateMachine.SetMovePoint(MovePoint);
-                MovePoint.SetBusy(true);
+               PlayerCharactersStateMachine stateMachine =
+                   _selectedHumanoid.GetComponent<PlayerCharactersStateMachine>();
+               MovementState movementState =
+                   _selectedHumanoid.GetComponent<MovementState>(); 
+               movementState.SetNewPoint(newPoint);
+               
+               if (_selectedHumanoid.IsMove==false)
+                {
+                    stateMachine.EnterBehavior<MovementState>();
+                }
+               
                 isPointToMoveTaked = false;
-                _selectedPoint=MovePoint;
+                _selectedPoint=newPoint;
             }
             
             _storeOnPlay.SetButtonState(_selectedPoint.IsBusy == false);
-            //
-            // if (_previousPoint != workPoint && workPoint.IsBusy)
-            // {
-            //     OnUnSelectedPoint?.Invoke(workPoint);
-            // }
         }
     }
 }

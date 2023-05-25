@@ -57,5 +57,7 @@ namespace Infrastructure.Location
         public StoreOnPlay GetStoreOnPlay() => _storeOnPlay;
         public MovePointController GetMovePointController() => _movePointController;
         public SaveLoad GetSaveLoad() => _saveLoad;
+        public AudioController GetAudioController() => _audioController;
+        
     }
 }

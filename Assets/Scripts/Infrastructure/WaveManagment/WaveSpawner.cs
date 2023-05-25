@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Audio;
 using Enemies.AbstractEntity;
 using Infrastructure.AIBattle.EnemyAI.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
@@ -36,15 +37,21 @@ namespace Infrastructure.WaveManagment
         private WaveData _waveData;
         //private float _cycleTimer;
         private float _cycleDuration;
+        private AudioController _audioController;
         
-        
-        public void Initialize(WaveData waveData)
+        public void Initialize(AudioController audioController)
         {
+            _audioController=audioController;
+            
             if (_saveLoad==null)
             {
                 _saveLoad=_waveManager.GetSaveLoad();
             }
-            
+            _enemyFactory.CreatedEnemy += OnCreatedEnemy;
+        }
+
+        public void CreateWave(WaveData waveData)
+        {
             CreateWaveQueue(waveData);
             InitializeSpawnPoint();
             FillQueue();
@@ -99,7 +106,7 @@ namespace Infrastructure.WaveManagment
                 StopCoroutine(_spawnCoroutine);
         }
 
-        private void FillQueue()
+        private async void FillQueue()
         {
             foreach (WaveQueue waveQueue in _groupWaveQueue)
             {
@@ -110,24 +117,36 @@ namespace Infrastructure.WaveManagment
                     {
                         for (int k = 0; k < _spawnPoints.Count; k++)
                         {
-                            Enemy newEnemy = _enemyFactory.Create(_enemys[i].gameObject);
-
-                            if (newEnemy != null)
-                            {
-                                newEnemy.Load += OnEnemyLoaded;
-                                newEnemy.OnDeath += OnDeath;
-                                newEnemy.gameObject.layer = LayerMask.NameToLayer("Enemy");
-                                newEnemy.transform.parent = _createdEnemy.transform;
-                                waveQueue.Enqueue(newEnemy);
-                            }
+                            GameObject newEnemy = await CreateEnemyAsync(_enemys[i].gameObject);
+                            Enemy enemyComponent = newEnemy.GetComponent<Enemy>();
+                            waveQueue.Enqueue(enemyComponent);
                         }
                     }
                 }
             }
         }
 
-        private void OnEnemyLoaded(Enemy enemy)
+        private async Task<GameObject> CreateEnemyAsync(GameObject enemy)
         {
+            await Task.Run(() => CreateEnemy(enemy));
+            return await _enemyFactory.Create(enemy);
+        }
+
+
+        private  void CreateEnemy(GameObject enemy)
+        {
+             _enemyFactory.Create(enemy);
+        }
+
+
+        private void OnCreatedEnemy(Enemy enemy)
+        {
+            enemy.SetAudioController(_audioController);
+            enemy.gameObject.SetActive(false);
+            enemy.OnDataLoad += OnCreatedEnemy;
+            enemy.OnDeath += OnDeath;
+            enemy.gameObject.layer = LayerMask.NameToLayer("Enemy");
+            enemy.transform.parent = _createdEnemy.transform;
             _activeEnemys.Add(enemy);
 
             if (_activeEnemys.Count == _totalNumber)
@@ -159,7 +178,6 @@ namespace Infrastructure.WaveManagment
             // Перед началом спауна очередей запускаем таймер
             _cycleDuration = CalculateCycleDuration(); // Рассчитываем длительность цикла спауна
 
-            print(_cycleDuration.ToString());
             await Task.Delay(TimeSpan.FromSeconds(_cycleDuration)); // Асинхронная задержка на длительность цикла
     
             // Таймер завершился, вызываем событие завершения спауна

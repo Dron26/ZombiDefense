@@ -14,8 +14,11 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         public void EnterBehavior() =>
             enabled = true;
 
-        public void ExitBehavior() =>
+        public void ExitBehavior()
+        {
             enabled = false;
+            
+        }
 
         public void Init(PlayerCharactersStateMachine playerCharactersStateMachine, SaveLoad saveLoad  )
         {

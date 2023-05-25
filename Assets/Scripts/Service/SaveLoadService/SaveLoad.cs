@@ -7,6 +7,7 @@ using Infrastructure.Location;
 using Newtonsoft.Json;
 using Service.SaveLoadService;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Service.SaveLoadService
 {
@@ -15,7 +16,8 @@ namespace Service.SaveLoadService
         private const string Key = "Key";
         private DataBase _dataBase=new DataBase();
         private bool _isFirstStart=true;
-         
+        public UnityAction OnSetActiveHumanoid;
+
         public int ReadPointsDamage => _dataBase.ReadPointsDamage;
      
         private void Awake()
@@ -155,8 +157,11 @@ namespace Service.SaveLoadService
         public Humanoid GetSelectedHumanoid()=>
             _dataBase.ReadSelectedHumanoid();
 
-        public void SetActiveHumanoids(List<Humanoid> activeHumanoids) => 
-            _dataBase.ChangeActiveHumanoid( activeHumanoids);
+        public void SetActiveHumanoids(List<Humanoid> activeHumanoids)
+        {
+            _dataBase.ChangeActiveHumanoid(activeHumanoids);
+            OnSetActiveHumanoid?.Invoke();
+        }
 
         public List<Humanoid> GetActiveHumanoids( ) => 
             _dataBase.ReadActiveHumanoid();

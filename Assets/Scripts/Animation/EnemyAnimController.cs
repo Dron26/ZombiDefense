@@ -1,11 +1,8 @@
-
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using UnityEngine;
 
-namespace Infrastructure.AIBattle
+namespace Animation
 {
     public class EnemyAnimController : MonoCache
     {
@@ -14,7 +11,7 @@ namespace Infrastructure.AIBattle
         public readonly int Walk = Animator.StringToHash("Walk");
         public readonly int IsСrawl = Animator.StringToHash("IsСrawl");
         public readonly int IsShoot = Animator.StringToHash("IsShoot");
-        public readonly int Attack = Animator.StringToHash("Attack");
+        public readonly int IsAttack = Animator.StringToHash("IsAttack");
         public readonly int IsHit = Animator.StringToHash("IsHit");
         public readonly int Die = Animator.StringToHash("Die");
         public readonly int Threw = Animator.StringToHash("Threw");
@@ -33,7 +30,7 @@ namespace Infrastructure.AIBattle
         private AnimatorOverrideController animatorOverrideController;
         private int weaponIndex;
         private Dictionary<int, float> _animInfo = new();
-        
+        private RuntimeAnimatorController animatorController;
         
         public void Awake( )
         {
@@ -65,6 +62,13 @@ namespace Infrastructure.AIBattle
                 animatorOverrideController[animationClip.Key] = animationClip.Value[randomIndex];
             }
         }
+
+        public void OnAttack(bool isActive)
+        {
+            _animator.SetBool(IsAttack,isActive);
+        }
+        
+        
         
         
         
@@ -73,19 +77,43 @@ namespace Infrastructure.AIBattle
             List<int> animHashNames = new();
             animHashNames.Add(Walk);
 
-            UnityEditor.Animations.AnimatorController animatorController =
-                _animator.runtimeAnimatorController as UnityEditor.Animations.AnimatorController;
+            animatorController = _animator.runtimeAnimatorController;
 
             foreach (int name in animHashNames)
             {
-                string animName = animatorController.parameters.FirstOrDefault(p => p.nameHash == name)?.name;
-                AnimationClip clip = animatorController.animationClips.FirstOrDefault(x => x.name == animName);
+                string animName = GetAnimatorParameterName(name);
+                AnimationClip clip = GetAnimationClip(animName);
                 float animationLength = clip.length;
                 _animInfo.Add(name, animationLength);
             }
 
             SetRandomAnimation();
         }
+        
+        private string GetAnimatorParameterName(int nameHash)
+        {
+            foreach (var parameter in _animator.parameters)
+            {
+                if (parameter.nameHash == nameHash)
+                {
+                    return parameter.name;
+                }
+            }
+            return string.Empty;
+        }
+
+        private AnimationClip GetAnimationClip(string clipName)
+        {
+            foreach (var clip in animatorController.animationClips)
+            {
+                if (clip.name == clipName)
+                {
+                    return clip;
+                }
+            }
+            return null;
+        }
+
 
         public AnimationClip[] GetWalkAnimationClips()
         {
@@ -99,32 +127,9 @@ namespace Infrastructure.AIBattle
             return newClips;
         }
 
-        // public AnimationClip[] GetScreamAnimationClips()
-        // {
-        //     AnimationClip[] newClips = new AnimationClip[_screamAnimationClips.Length];
-        //
-        //     for (int i = 0; i < _screamAnimationClips.Length; i++)
-        //     {
-        //         newClips[i] = _screamAnimationClips[i];
-        //     }
-        //
-        //     return newClips;
-        // }
-
-
         public Dictionary<int, float> GetAnimInfo()
         {
             return _animInfo;
-        }
-
-        
-
-        public void NotifySelection(bool isSelected)
-        {
-        }
-
-        private void OnDisable()
-        {
         }
     }
 }

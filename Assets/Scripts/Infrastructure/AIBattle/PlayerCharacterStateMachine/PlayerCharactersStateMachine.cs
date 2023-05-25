@@ -31,7 +31,6 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
         private SceneInitializer _sceneInitializer;
         private SaveLoad _saveLoad;
         private Humanoid _humanoid;
-        private WorkPoint _point;
         private void Awake()
         {
             
@@ -67,10 +66,6 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
             _currentBehavior = behavior;
         }
 
-        public void SetMovePoint(WorkPoint point) => 
-            _point = point;
-
-
         private void OnDisable() =>
             _humanoid.RemoveObserver(this);
 
@@ -85,7 +80,5 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
             throw new NotImplementedException();
         }
 
-        public WorkPoint GetPoint() =>
-            _point;
     }
 }

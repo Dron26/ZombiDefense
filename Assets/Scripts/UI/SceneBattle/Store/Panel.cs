@@ -12,7 +12,7 @@ namespace UI.SceneBattle.Store
    public class Panel : MonoCache
     {
        [SerializeField] private Image _characterImagePrefab;
-        private float _circleRadius = 100f;
+        private float _circleRadius = 200f;
         [SerializeField] private List<Sprite> _characterSprites;
         [SerializeField] private List<Humanoid> _availableCharacters;
         private Dictionary<Button, Humanoid> _buttonCharacterMap;

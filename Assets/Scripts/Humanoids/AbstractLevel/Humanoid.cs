@@ -41,9 +41,12 @@ namespace Humanoids.AbstractLevel
         public abstract float GetHealth();
         public abstract bool IsLife();
         public abstract int GetPrice();
+        public bool IsMove=>_isMoving;
         public abstract int GetDamageDone();
-
+        public UnityAction OnMove;
+        public UnityAction OnLoadData;
         private bool _isSelected;
+        private bool _isMoving;
 
         public WeaponData GetWeaponData() => weaponData;
         public abstract void ApplyDamage(int getDamage);
@@ -73,6 +76,7 @@ namespace Humanoids.AbstractLevel
                     Debug.Log($"HumanoidData loaded: {humanoidData}");
                     tcs.TrySetResult(true);
                     NotifyObservers(this);
+                    OnLoadData?.Invoke();
                 }
                 else
                 {
@@ -149,6 +153,12 @@ namespace Humanoids.AbstractLevel
 
         public void SetPontInfo()
         {
+        }
+
+        public void IsMoving(bool isMoving)
+        {
+            _isMoving = isMoving;
+            OnMove?.Invoke();
         }
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Audio;
 using Enemies.AbstractEntity;
 using Service.SaveLoadService;
 using UnityEngine;
@@ -24,11 +25,11 @@ namespace Infrastructure.WaveManagment
         public int TotalWaves => _waveDatas.Count;
         public UnityAction SpawningCompleted;
         private SaveLoad _saveLoad;
-        
-        public void Initialize(SaveLoad saveLoad)
+        public void Initialize(SaveLoad saveLoad,AudioController audioController)
         {
             _saveLoad=saveLoad;
             InitializeWaveData();
+            _waveSpawner.Initialize(audioController);
             _waveSpawner.SpawningCompleted += OnWaveSpawningCompleted;
             StartCoroutine(SpawnWaves());
         }
@@ -42,7 +43,7 @@ namespace Infrastructure.WaveManagment
                 if (!isSpawningWave && !isWaitingForNextWave && canStartNextWave) // Добавлено условие canStartNextWave
                 {
                     isSpawningWave = true;
-                    _waveSpawner.Initialize(CurrentWave);
+                    _waveSpawner.CreateWave(CurrentWave);
                     canStartNextWave = false; // Сбрасываем флаг canStartNextWave
                 }
 

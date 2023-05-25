@@ -62,7 +62,7 @@ namespace UI.SceneBattle.Store
         {
             _closeButton = _dimImage.GetComponent<Button>();
             _closeButton.onClick.AddListener(ClosePanel);
-            
+            _buttonSelectionPanel.onClick.AddListener(SetPanelInfoState);
             _buttonRightPanel.onClick.AddListener(ChangeStateRightPanel);
         }
 
@@ -80,7 +80,7 @@ namespace UI.SceneBattle.Store
 
         private void ClosePanel()
         {
-            // _selectedWorkPoint.SetState(false);
+            _dimImage.gameObject.SetActive(false);
             _storePanel.gameObject.SetActive(false);
         }
 
@@ -99,11 +99,18 @@ namespace UI.SceneBattle.Store
             _buttonSelectionPanel.gameObject.SetActive(isActive);
         }
 
-        public void SetPanelInfoState(bool isActive)
+        public void SetPanelInfoState()
         {
-            _storePanelInfo.gameObject.SetActive( isActive);
-            _storePanelInfo.ShowInfo(); 
-            
+            if (_storePanel.gameObject.activeSelf)
+            {
+                _storePanel.gameObject.SetActive( false);
+                _dimImage.gameObject.SetActive( false);
+            }
+            else
+            {
+                _storePanel.gameObject.SetActive( true);
+                _dimImage.gameObject.SetActive( true);
+            }
         }
 
         private void ChangeStateRightPanel()

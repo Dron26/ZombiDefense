@@ -21,7 +21,6 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         private bool _isSearhing;
         private PlayerCharacterAnimController _playerCharacterAnimController;
         
-        private Animator _animator;
         private Coroutine currentTurnCoroutine;
         
         private bool _isTurning;
@@ -34,6 +33,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 
         private float time = 1f;
         private WaitForSeconds timeout;
+
         private void Awake()
         {
             timeout = new WaitForSeconds(time);
@@ -41,7 +41,6 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
             _movementState = GetComponent<MovementState>();
             _attackState = GetComponent<AttackState>();
             _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
-            _animator = GetComponent<Animator>();
         }
 
         protected override void UpdateCustom()
@@ -55,9 +54,12 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         private IEnumerator Search()
         {
             _isSearhing = true;
-
+            _playerCharacterAnimController.OnIdle();
+            
             while (_isSearhing)
             {
+               
+                
                 _enemyTransforms = SaveLoad.GetActiveEnemy()
                     .Select(enemy => enemy.transform)
                     .ToArray();

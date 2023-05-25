@@ -13,7 +13,7 @@ namespace Infrastructure.WeaponManagment
         [SerializeField] private float _fireRate;
         [SerializeField] private float _range;
         [SerializeField] private AudioClip _shoot;
-
+        [SerializeField] private float _spreadAngle;
         [SerializeField] private AudioClip _reload;
         
         public AudioClip Shoot => _shoot;
@@ -25,6 +25,8 @@ namespace Infrastructure.WeaponManagment
         public float FireRate => _fireRate;
         public float Range => _range;
         public bool IsShotgun => WeaponTypeEnum == Type.Shotgun;
+        
+        public float SpreadAngle=>_spreadAngle;
     }
     
     public enum Type

@@ -16,11 +16,10 @@ namespace Infrastructure.AIBattle
        
         [SerializeField] private List<ParticleSystem> _particlesHit;
         
-        [SerializeField] private List<ParticleSystem> _particlesHitRifle;
+        [SerializeField] private List<ParticleSystem> _particlesHitLite;
         [SerializeField] private List<ParticleSystem> _particlesHitSniperRifle;
         
         [SerializeField] private  List< List<ParticleSystem> >  _particlesGroup=new();
-        
         
         [SerializeField] private ParticleSystem _particleTankDie;
         [SerializeField] private ParticleSystem _particleTankDie1;
@@ -48,7 +47,7 @@ namespace Infrastructure.AIBattle
                 enemy.AddObserver(this);
             }
 
-            _particlesGroup.Add(_particlesHitRifle);
+            _particlesGroup.Add(_particlesHitLite);
             _particlesGroup.Add(_particlesHitSniperRifle);
             
             for (int i = 0; i < _weaponNames.Count; i++)
