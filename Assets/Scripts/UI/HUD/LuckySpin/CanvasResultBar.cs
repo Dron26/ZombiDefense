@@ -2,6 +2,8 @@
 using System.Linq;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.FactoryWarriors;
+using Infrastructure.FactoryWarriors.Humanoids;
+using Infrastructure.Location;
 using Infrastructure.States;
 using Observer;
 using Service.SaveLoadService;
@@ -12,7 +14,7 @@ namespace UI.HUD.LuckySpin
 {
     public class CanvasResultBar : MonoCache
     {
-        [SerializeField] private Camera _camera;
+        [SerializeField] private UnityEngine.Camera _camera;
         [SerializeField] private DatabaseStatistics _databaseStatistics;
 
         [SerializeField] private CanvasLuckySpin _canvasLucky;
@@ -55,9 +57,9 @@ namespace UI.HUD.LuckySpin
             _resultBattle.text = result;
         }
 
-        public void CalculateBonus(Factory factory)
+        public void CalculateBonus(PlayerCharacterInitializer playerCharacterInitializer)
         {
-            _databaseStatistics.SetDataBase(factory);
+            _databaseStatistics.SetDataBase(playerCharacterInitializer);
 
             foreach (var memberBattle in _databaseStatistics.GetMembersBattle())
             {
@@ -68,10 +70,9 @@ namespace UI.HUD.LuckySpin
                     GetFraction(memberBattle.Key),
                     GetNameMember(memberBattle.Key),
                     GetLevelMember(memberBattle.Key),
-                    GetCountSurvival(factory, memberBattle.Key),
+                    GetCountSurvival(playerCharacterInitializer, memberBattle.Key),
                     GetCountGetDamage(memberBattle),
-                    CountTakeDamage(memberBattle),
-                    GetTotalPointsMember(memberBattle));
+                    CountTakeDamage(memberBattle));
             }
 
             ViewTotal();
@@ -85,13 +86,6 @@ namespace UI.HUD.LuckySpin
             
             _totalMoneyView.text = $"TOTAL MONEY: {_databaseStatistics.TotalMoney.ToString()}";
             _totalPointView.text = $"TOTAL POINTS: {_databaseStatistics.TotalPoints.ToString()}";
-        }
-
-        private string GetTotalPointsMember(KeyValuePair<int, InfoMemberBattle> memberBattle)
-        {
-            print("Нужно пробрасывать переменные для полученных очков, для локализации");
-            
-            return memberBattle.Value.TotalPoints.ToString();
         }
 
         private string CountTakeDamage(KeyValuePair<int, InfoMemberBattle> memberBattle)
@@ -108,13 +102,12 @@ namespace UI.HUD.LuckySpin
             return $"Get damage: {memberBattle.Value.DamageReceived.ToString()}";
         }
 
-        private string GetCountSurvival(Factory factory, int level)
+        private string GetCountSurvival(PlayerCharacterInitializer playerCharacterInitializer, int level)
         {
             int countHumanoids = 0;
             int countSurvivals = 0;
             
-            foreach (var humanoid in factory.GetAllHumanoids
-                         .Where(humanoid => humanoid.GetLevel() == level))
+            foreach (var humanoid in playerCharacterInitializer.GetAllHumanoids().Where(humanoid => humanoid.GetLevel() == level))
             {
                 countHumanoids++;
 

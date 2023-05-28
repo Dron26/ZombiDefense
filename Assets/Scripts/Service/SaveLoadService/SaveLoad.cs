@@ -1,7 +1,12 @@
 ﻿using System.Collections.Generic;
+using Audio;
+using Enemies.AbstractEntity;
+using Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Infrastructure.Location;
 using Newtonsoft.Json;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Service.SaveLoadService
 {
@@ -10,14 +15,11 @@ namespace Service.SaveLoadService
         private const string Key = "Key";
         private DataBase _dataBase=new DataBase();
         private bool _isFirstStart=true;
-         
+        public UnityAction OnSetActiveHumanoid;
         public int ReadPointsDamage => _dataBase.ReadPointsDamage;
      
         private void Awake()
         {
-
-           
-            
             if (!PlayerPrefs.HasKey(Key))
             {
                 _dataBase = new DataBase();
@@ -140,5 +142,57 @@ namespace Service.SaveLoadService
             _dataBase = new DataBase();
             SetStartParametrs();
         }
+
+        public void SetSelectedPOoint(WorkPoint point) => 
+            _dataBase.ChangeSelectedPoint(point);
+
+        public WorkPoint GetSelectedPOoint()=>
+            _dataBase.ReadSelectedPoint();
+        
+        public void SetSelectedHumanoid(Humanoid humanoid)
+        {
+            if (GetSelectedHumanoid() != null)
+            {
+                GetSelectedHumanoid().SetSelected(false);
+            }
+            
+            _dataBase.ChangeSelectedHumanoid(humanoid);
+        }
+
+        public Humanoid GetSelectedHumanoid()=>
+            _dataBase.ReadSelectedHumanoid();
+
+        public void SetActiveHumanoids(List<Humanoid> activeHumanoids)
+        {
+            _dataBase.ChangeActiveHumanoid(activeHumanoids);
+            OnSetActiveHumanoid?.Invoke();
+        }
+
+        public List<Humanoid> GetActiveHumanoids( ) => 
+            _dataBase.ReadActiveHumanoid();
+
+        public void SetInactiveHumanoids(List<Humanoid> inactiveHumanoids) => 
+            _dataBase.ChangeInactiveHumanoid( inactiveHumanoids);
+
+        public List<Humanoid> GetInactiveHumanoids( ) => 
+            _dataBase.ReadInactiveHumanoid();
+        
+        public void SetAvailableCharacters(List<Humanoid> avaibelCharacters) => 
+            _dataBase.ChangeAvailableCharacters( avaibelCharacters);
+
+        public List <Humanoid> GetAvailableCharacters( ) => 
+            _dataBase.ReadAvailableCharacters();
+        
+        public void SetActiveEnemy(Enemy activeEnemy) => 
+            _dataBase.ChangeActiveEnemy( activeEnemy);
+
+        public List<Enemy> GetActiveEnemy( ) => 
+            _dataBase.ReadActiveEnemy();
+
+        public void SetInactiveEnemy(Enemy inactiveEnemy) => 
+            _dataBase.ChangeInactiveEnemy( inactiveEnemy);
+
+        public List<Enemy> GetInactiveEnemy( ) => 
+            _dataBase.ReadInactiveEnemy();
     }
 }

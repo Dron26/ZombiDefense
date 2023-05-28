@@ -23,7 +23,7 @@ namespace Service.DragAndDrop
         private UnitGroup _unitGroup;
         private UnitSlot _unitSlot;
         private bool _isTakeUnitForBuy;
-        private Camera _mainCamera;
+        private UnityEngine.Camera _mainCamera;
         private Vector3 _offset;
         private int _defaulIndex;
         private bool _isMerge;

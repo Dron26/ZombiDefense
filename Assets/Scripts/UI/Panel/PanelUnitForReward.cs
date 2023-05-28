@@ -15,16 +15,9 @@ namespace UI.Panel
         [SerializeField] private MergeUnitGroup _unitGroup;
         [SerializeField] private WindowSwither _windowSwither;
         [SerializeField] private CharacterSeller _characterSeller;
+        [SerializeField] private PanelProposal _panelProposal;
         
-
-        private PanelProposal _panelProposal;
         private bool isCanView;
-
-        private void Awake()
-        {
-            _panelProposal = GetComponentInChildren<PanelProposal>();
-            _panelProposal.gameObject.SetActive(false);
-        }
 
         public void GetReward() => _uiMerge.SetUnit(_characterSeller.GetAdViwer());
 

@@ -1,136 +1,115 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Audio;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Service.SaveLoadService;
-using UI;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SettingPanel : MonoCache
+namespace UI.SettingsPanel
 {
-    [SerializeField] private Button buttonSound;
-    [SerializeField] private Image _soundImage;
-    [SerializeField] private Sprite _soundOn;
-    [SerializeField] private Sprite _soundOff;
-
-    [SerializeField] private Button buttonMusic;
-    [SerializeField] private Image _musicImage;
-    [SerializeField] private Sprite _musicOn;
-    [SerializeField] private Sprite _musicOff;
-    [SerializeField] private GameObject _settingPanel;
-    [SerializeField] private Button _settingButton;
-    [SerializeField] private Button _closeButton;
-    
-    [SerializeField]private Slider soundSlider;
-    [SerializeField]private Slider musicSlider;
-    
-    private SaveLoad _saveLoad;
-    private AudioController _audioController;
-    private AudioSettingsParameters _audioSettingsParameters;
-    private bool _isActive=true;
-    private  bool _soundEnabled ;
-    private bool _musicEnabled ;
-    private float _currentVolumeSound ;
-    private float _currentVolumeMusic ;
-    private bool vibrationEnabled = false;
-    public void Initialize(AudioController audioController,SaveLoad saveLoad)
+    public class SettingPanel : MonoCache
     {
-        
-        _audioController = audioController;
-        _saveLoad = saveLoad;
+        [SerializeField] private Toggle _toggleSound;
 
-        LoadSound();
+        [SerializeField] private Toggle _toggleMusic;
+    
+        [SerializeField]private Slider soundSlider;
+        [SerializeField]private Slider musicSlider;
+    
+        private SaveLoad _saveLoad;
+        private AudioManager _audioManager;
+        private AudioSettingsParameters _audioSettingsParameters;
+        private bool _isActive=true;
+        private  bool _soundEnabled ;
+        private bool _musicEnabled ;
+        private float _currentVolumeSound ;
+        private float _currentVolumeMusic ;
+        private bool vibrationEnabled = false;
+        
+        public void Initialize(AudioManager audioManager,SaveLoad saveLoad)
+        {
+            _audioManager = audioManager;
+            _saveLoad = saveLoad;
+
+            LoadSound();
        
-        _settingButton.onClick.AddListener(ChangeStatePanel);
-        _closeButton.onClick.AddListener(ChangeStatePanel);
-        buttonSound.onClick.AddListener(SetSound);
-        buttonMusic.onClick.AddListener(SetNusic);
-        ChangeStatePanel();
-    }
+            _toggleSound.onValueChanged.AddListener(SetSound);
+            _toggleMusic.onValueChanged.AddListener(SetNusic);
+            soundSlider.onValueChanged.AddListener(ChangeSound);
+            musicSlider.onValueChanged.AddListener(ChangeMusic);
+        }
     
     
-    private void SetSliders()
-    {
-        soundSlider.value = _currentVolumeSound;
-        musicSlider.value = _currentVolumeMusic;
-    }
-    private void SetButtons()
-    {
-        _soundImage.sprite = _soundEnabled ? _soundOn : _soundOff;
-        _musicImage.sprite = _musicEnabled ? _musicOn : _musicOff;
-    }
-
-    private void ChangeStatePanel()
-    {
-        _isActive = !_isActive;
-        _settingPanel.SetActive(_isActive);
+        private void SetSliders()
+        {
+            soundSlider.value = _currentVolumeSound;
+            musicSlider.value = _currentVolumeMusic;
+        }
+        private void SetButtons()
+        {
+            _toggleSound.isOn = _soundEnabled ;
+            _toggleMusic.isOn = _soundEnabled ;
+        }
         
-    }
-    
-    
-    public void SetSound()
-    {
-        _audioController.ToggleSound();
-        _soundEnabled = _audioController.SoundEnabled;
-        _soundImage.sprite = _soundEnabled ? _soundOn : _soundOff;
         
-         ChangeSliderFill(soundSlider,_soundEnabled);
-    }
+        public void SetSound(bool value)
+        {
+            _audioManager.ToggleSound(value);
+            _soundEnabled = _audioManager.SoundEnabled;
+     //       _toggleSound.isOn = _soundEnabled ;
+        
+          //  ChangeSliderFill(soundSlider,_soundEnabled);
+        }
 
-    public void SetNusic()
-    {
-        _audioController.ToggleMusic();
-        _musicEnabled = _audioController.MusicEnabled;
-        _musicImage.sprite = _musicEnabled ? _musicOn : _musicOff;
-         ChangeSliderFill(musicSlider,_musicEnabled);
-    }
+        public void SetNusic(bool value)
+        {
+            _audioManager.ToggleMusic(value);
+            _musicEnabled = _audioManager.MusicEnabled;
+         //   _toggleMusic.isOn = _soundEnabled ;
+         
+          //  ChangeSliderFill(musicSlider,_musicEnabled);
+        }
 
-    public void ChangeSound( )
-    {
-        _audioController.SetSFXVolume(soundSlider.value);
-    }
+        public void ChangeSound(float value)
+        {
+            _audioManager.SetSFXVolume(value);
+        }
 
-    public void ChangeMusic( )
-    {
-        _audioController.SetMusicVolume(musicSlider.value);
-    }
+        public void ChangeMusic(float value )
+        {
+            _audioManager.SetMusicVolume(value);
+        }
     
-    private void ChangeSliderFill(Slider slider ,bool isActive)
-    {
-        GameObject fill = slider.GetComponent<SliderSettings>().Fill;
-        fill.SetActive(isActive);
-    }
+        private void ChangeSliderFill(Slider slider ,bool isActive)
+        {
+            GameObject fill = slider.GetComponent<SliderSettings>().Fill;
+            fill.SetActive(isActive);
+        }
 
-    private void SetPause()
-    {
-        SetSound();
-        SetNusic();
-    }
+        private void SetPause(bool isActive)
+        {
+            SetSound(isActive);
+            SetNusic(isActive);
+        }
 
     
-    public void LoadSound()
-    {
-        if ( AudioListener.pause==true) SetPause();
+        public void LoadSound()
+        {
+            bool isActive = AudioListener.pause;
+            
+            SetPause(!isActive);
 
-        _audioSettingsParameters = _saveLoad.GetAudioSettings();
-        _currentVolumeMusic = _audioSettingsParameters.CurrentVolumeMusic;
-        _currentVolumeSound = _audioSettingsParameters.CurrentVolumeSound;
-        _musicEnabled = _audioSettingsParameters.MusicEnabled;
-        _soundEnabled = _audioSettingsParameters.SoundEnabled;
-        SetSliders();
-        SetButtons();
-    }
+            _audioSettingsParameters = _saveLoad.GetAudioSettings();
+            _currentVolumeMusic = _audioSettingsParameters.CurrentVolumeMusic;
+            _currentVolumeSound = _audioSettingsParameters.CurrentVolumeSound;
+            _musicEnabled = _audioSettingsParameters.MusicEnabled;
+            _soundEnabled = _audioSettingsParameters.SoundEnabled;
+            SetSliders();
+            SetButtons();
+        }
 
-    private void OnDisable()
-    {
-        _settingButton.onClick.RemoveListener(ChangeStatePanel);
-        _closeButton.onClick.RemoveListener(ChangeStatePanel);
+        private void OnDisable()
+        {
+            
+        }
     }
-    
-    
-    
-    
 }

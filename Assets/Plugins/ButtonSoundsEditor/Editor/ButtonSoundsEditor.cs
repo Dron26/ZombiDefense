@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Plugins.ButtonSoundsEditor;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -20,6 +21,7 @@ namespace Assets.Plugins.ButtonSoundsEditor.Editor
 
         private AudioSource _audioSource;
         private AudioClip _clickSound;
+        private AudioClip _hoverSound;
         private Vector2 _scrollPosition;
 
         #region Initialization
@@ -38,7 +40,8 @@ namespace Assets.Plugins.ButtonSoundsEditor.Editor
             RefreshCandidates();
             ButtonClickSound[] clickSounds = _candidates.Select(_ => _.GetComponent<ButtonClickSound>()).Where(_ => _ != null).ToArray();
             _audioSource = GetFirstAudioSource(clickSounds);
-            _clickSound = GetFirstClickSound(clickSounds);
+            _clickSound = GetClickSound(clickSounds);
+            _hoverSound = GetClickSound(clickSounds);
         }
 
         private AudioSource GetFirstAudioSource(ButtonClickSound[] clickSounds)
@@ -47,11 +50,17 @@ namespace Assets.Plugins.ButtonSoundsEditor.Editor
             return buttonClickSound == null ? null : buttonClickSound.AudioSource;
         }
 
-        private AudioClip GetFirstClickSound(ButtonClickSound[] clickSounds)
+        private AudioClip GetClickSound(ButtonClickSound[] clickSounds)
         {
             ButtonClickSound buttonClickSound = clickSounds.FirstOrDefault(_ => _.ClickSound != null);
             return buttonClickSound == null ? null : buttonClickSound.ClickSound;
         }
+        private AudioClip GetHoverSound(ButtonClickSound[] clickSounds)
+        {
+            ButtonClickSound buttonHoverSound = clickSounds.FirstOrDefault(_ => _.ClickSound != null);
+            return buttonHoverSound == null ? null : buttonHoverSound.HoverSound;
+        }
+        
 
         #endregion
 
@@ -111,12 +120,21 @@ namespace Assets.Plugins.ButtonSoundsEditor.Editor
 
             GUILayout.Label("Click sound", GUILayout.Width(120));
             _clickSound = EditorGUILayout.ObjectField(_clickSound, typeof(AudioClip), false, GUILayout.Width(200)) as AudioClip;
-
-            bool isEnabled = _audioSource != null && _clickSound != null;
+            
+            GUILayout.Label("Hover sound", GUILayout.Width(120));
+            _hoverSound = EditorGUILayout.ObjectField(_hoverSound, typeof(AudioClip), false, GUILayout.Width(200)) as AudioClip;
+            
+            bool isEnabled = _audioSource != null && _clickSound != null&& _hoverSound != null;
+            
             EditorGUI.BeginDisabledGroup(!isEnabled);
             GUILayout.Space(25f);
+            
             if (GUILayout.Button(new GUIContent("Play", "Test assigned AudioClip."), GUILayout.Width(50)))
                 _audioSource.PlayOneShot(_clickSound);
+           
+            if (GUILayout.Button(new GUIContent("Play", "Test assigned AudioClip."), GUILayout.Width(50)))
+                _audioSource.PlayOneShot(_hoverSound);
+            
             EditorGUI.EndDisabledGroup();
 
             GUILayout.EndHorizontal();
@@ -237,7 +255,8 @@ namespace Assets.Plugins.ButtonSoundsEditor.Editor
                     SelectButton(candidate);
                 }
 
-                bool hasErrors = clickSound.AudioSource == null || clickSound.ClickSound == null;
+                bool hasErrors = clickSound.AudioSource == null || clickSound.ClickSound == null|| clickSound.HoverSound == null;
+                
                 if (hasErrors)
                 {
                     if (GUILayout.Button("Fix", GUILayout.Width(50)))
@@ -247,6 +266,9 @@ namespace Assets.Plugins.ButtonSoundsEditor.Editor
 
                         if (clickSound.ClickSound == null)
                             clickSound.ClickSound = _clickSound;
+                        
+                        if (clickSound.HoverSound == null)
+                            clickSound.HoverSound = _hoverSound;
 
                         EditorUtility.SetDirty(clickSound);
                     }
@@ -313,6 +335,7 @@ namespace Assets.Plugins.ButtonSoundsEditor.Editor
         {
             buttonClickSound.AudioSource = _audioSource;
             buttonClickSound.ClickSound = _clickSound;
+            buttonClickSound.HoverSound = _hoverSound;
             EditorUtility.SetDirty(buttonClickSound);
         }
 
@@ -350,7 +373,10 @@ namespace Assets.Plugins.ButtonSoundsEditor.Editor
 
             GUILayout.FlexibleSpace();
 
+           
             EditorGUI.BeginDisabledGroup(_clickSound == null);
+            
+            EditorGUI.BeginDisabledGroup(_hoverSound == null);
 
             if (GUILayout.Button("Add click sound to ALL"))
             {

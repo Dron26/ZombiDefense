@@ -2,6 +2,9 @@
 using Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.FactoryWarriors;
+using Infrastructure.FactoryWarriors.Humanoids;
+using Infrastructure.Location;
+using Infrastructure.WeaponManagment;
 using Service.SaveLoadService;
 using TMPro;
 using UnityEngine;
@@ -18,27 +21,26 @@ namespace Observer
         
         public int TotalMoney { get; private set; }
         public int TotalPoints { get; private set; }
-        
+        private WeaponController _weaponController;
         public Dictionary<int, InfoMemberBattle> GetMembersBattle() =>
             _membersBattles;
         
-        public void SetDataBase(Factory factory)
+        public void SetDataBase(PlayerCharacterInitializer playerCharacterInitializer)
         {
             Init();
 
-            foreach (Humanoid humanoid in factory.GetAllHumanoids)
-            { 
+            foreach (Humanoid humanoid in playerCharacterInitializer.GetAllHumanoids())
+            {
+                _weaponController = humanoid.GetComponent<WeaponController>();
+                
                 _membersBattles[humanoid.GetLevel()].DamageDone += humanoid.GetDamageDone();
-                _membersBattles[humanoid.GetLevel()].DamageReceived += humanoid.DamageReceived();
-                _membersBattles[humanoid.GetLevel()].TotalPoints += humanoid.TotalPoints();
+                _membersBattles[humanoid.GetLevel()].DamageReceived += _weaponController.DamageReceived();
                 
                 TotalMoney += humanoid.GetDamageDone();
-                TotalMoney += humanoid.DamageReceived();
-                TotalMoney += humanoid.TotalPoints();
+                TotalMoney += _weaponController.DamageReceived();
                 
                 TotalPoints += humanoid.GetDamageDone();
-                TotalPoints += humanoid.DamageReceived();
-                TotalPoints += humanoid.TotalPoints();
+                TotalPoints += _weaponController.DamageReceived();
             }
 
             _saveLoad.ApplyMoney(TotalMoney);
@@ -50,7 +52,7 @@ namespace Observer
             for (int i = 1; i < GeneralCountMembers; i++)
             {
                 int countHumanoid = _saveLoad.ReadAmountHumanoids(i);
-                _membersBattles.Add(i, new InfoMemberBattle(0, 0, 0));
+                _membersBattles.Add(i, new InfoMemberBattle(0, 0));
             }
         }
     }

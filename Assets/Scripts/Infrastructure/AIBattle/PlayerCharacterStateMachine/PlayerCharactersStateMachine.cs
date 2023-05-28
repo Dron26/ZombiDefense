@@ -1,7 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using Humanoids.AbstractLevel;
+using Infrastructure.AIBattle.EnemyAI.States;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Infrastructure.FactoryWarriors.Enemies;
+using Infrastructure.FactoryWarriors.Humanoids;
+using Infrastructure.Location;
+using Infrastructure.WaveManagment;
+using Observer;
+using Service.SaveLoadService;
+using UnityEditor;
 using UnityEngine;
 
 namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
@@ -9,32 +18,44 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
     [RequireComponent(typeof(FXController))]
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(Animator))]
-    [RequireComponent(typeof(HashAnimator))]
+    [RequireComponent(typeof(PlayerCharacterAnimController))]
     [RequireComponent(typeof(SearchTargetState))]
     [RequireComponent(typeof(MovementState))]
     [RequireComponent(typeof(AttackState))]
-    public class PlayerCharactersStateMachine : MonoCache
+    [RequireComponent(typeof(DieState))]
+    
+    public class PlayerCharactersStateMachine : MonoCache,IObserverByHumanoid
     {
         private Dictionary<Type, ISwitcherState> _allBehaviors;
         private ISwitcherState _currentBehavior;
-
-        private void Start()
+        private SceneInitializer _sceneInitializer;
+        private SaveLoad _saveLoad;
+        private Humanoid _humanoid;
+        private void Awake()
         {
+            
+            if (TryGetComponent(out Humanoid humanoid))
+            {
+                _humanoid=humanoid;
+                _humanoid.AddObserver(this);
+            }
+            
+            _sceneInitializer=FindObjectOfType<SceneInitializer>();
+            _saveLoad=_sceneInitializer.GetSaveLoad();
+            
             _allBehaviors = new Dictionary<Type, ISwitcherState>
             {
                 [typeof(SearchTargetState)] = GetComponent<SearchTargetState>(),
                 [typeof(MovementState)] = GetComponent<MovementState>(),
                 [typeof(AttackState)] = GetComponent<AttackState>(),
+                [typeof(DieState)] = GetComponent<DieState>(),
             };
 
             foreach (var behavior in _allBehaviors)
             {
-                behavior.Value.Init(this);
+                behavior.Value.Init(this,_saveLoad);
                 behavior.Value.ExitBehavior();
             }
-            
-            _currentBehavior = _allBehaviors[typeof(SearchTargetState)];
-            EnterBehavior<SearchTargetState>();
         }
 
         public void EnterBehavior<TState>() where TState : ISwitcherState
@@ -44,5 +65,20 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
             behavior.EnterBehavior();
             _currentBehavior = behavior;
         }
+
+        private void OnDisable() =>
+            _humanoid.RemoveObserver(this);
+
+        public void NotifyFromHumanoid(object data)
+        {
+            _currentBehavior = _allBehaviors[typeof(SearchTargetState)];
+           EnterBehavior<SearchTargetState>();
+        }
+
+        public void NotifySelection(bool isSelected)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

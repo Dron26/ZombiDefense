@@ -17,12 +17,11 @@ namespace Observer
         [SerializeField] private TMP_Text _countGetDamage;
         [SerializeField] private TMP_Text _countTakeDamage;
         
-        [SerializeField] private TMP_Text _totalPoints;
         
         public void Init(Image iconMember, string fractionMember, 
             string nameMember, string levelMember, 
             string countSurvivals, string countGetDamage, 
-            string countTakeDamage, string totalPoints)
+            string countTakeDamage)
         {
             _iconMember = iconMember;
             _fractionMember.text = fractionMember;
@@ -31,7 +30,6 @@ namespace Observer
             _countSurvivals.text = countSurvivals;
             _countGetDamage.text = countGetDamage;
             _countTakeDamage.text = countTakeDamage;
-            _totalPoints.text = totalPoints;
         }
     }
 }

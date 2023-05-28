@@ -1,136 +1,234 @@
-﻿using System.Collections;
-using DG.Tweening;
+﻿using System;
+using System.Collections;
+using System.Threading.Tasks;
 using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
+using Infrastructure.WeaponManagment;
 using UnityEngine;
 
 namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 {
     public class AttackState : State
     {
-        private readonly WaitForSeconds _waitForSeconds = new (1f);
-        
-        private Humanoid _opponentHumanoid;
-        private Enemy _opponentEnemy;
+        private readonly WaitForSeconds _waitForSeconds = new(1f);
+
+        private Enemy _enemy = null;
 
         private float _currentRange;
-        private bool _isAttack;
-        
-        private Animator _animator;
-        private HashAnimator _hashAnimator;
+
+        private PlayerCharacterAnimController _playerCharacterAnimController;
         private Coroutine _coroutine;
         private FXController _fxController;
-        
-        private void Start()
+        private Humanoid _humanoid;
+        private WeaponController _weaponController;
+        private bool _isAttacked;
+
+        private bool _isShotgun;
+
+        //private bool _isAttacked;
+        private bool _isAttacking;
+        private bool _isReloading;
+        private Weapon _activeWeapon;
+
+        private int _maxAmmo;
+
+        //  private float _reloadTime;
+        private float _fireRate;
+        private float _damage;
+        private float _range;
+        public int _ammoCount;
+
+        float _firstRadius;
+        float _secondRadius;
+        float _thirdRadius;
+        private float[] _radiusList;
+        private float[] _damageList;
+        private float _maxRadius;
+        private bool _isGoalSet;
+
+        private void Awake()
         {
-            _animator = GetComponent<Animator>();
-            _hashAnimator = GetComponent<HashAnimator>();
+            _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
             _fxController = GetComponent<FXController>();
+            _humanoid = GetComponent<Humanoid>();
+            _weaponController = GetComponent<WeaponController>();
+            _weaponController.ChangeWeapon += OnWeaponChanged;
         }
 
         protected override void UpdateCustom()
         {
-            if (isActiveAndEnabled == false)
-            {
-                if (_coroutine != null) 
-                    StopCoroutine(_coroutine);
-                
+            if (!enabled)
                 return;
-            }
-
-            _coroutine ??= StartCoroutine(Attack());
+            else if (_isGoalSet == true && isActiveAndEnabled) StartCoroutine(Attack());
         }
 
-        public void InitHumanoid(Humanoid targetHumanoid)
+        public void InitEnemy(Enemy targetEnemy)
         {
-            
-            _opponentHumanoid = targetHumanoid;
+            _enemy = targetEnemy;
+            _isGoalSet = true;
         }
-
-        public void InitEnemy(Enemy targetEnemy) =>
-            _opponentEnemy = targetEnemy;
 
         private IEnumerator Attack()
         {
-            Vector3 ourPosition = transform.position;
-            _isAttack = true;
-
-            while (_isAttack)
+            while ( _enemy.IsLife())
             {
-                if (transform.position.y < -3.5)
-                    transform.position =
-                        new Vector3(ourPosition.x, ourPosition.y + 1.5f, ourPosition.z);
-                
-                _animator.SetBool(_hashAnimator.IsShoot, true);
-                
-                if (TryGetComponent(out Enemy enemy))
+                if (_ammoCount <= 0 && _isReloading == false)
                 {
-                    if (_opponentHumanoid == null)
-                        StopCoroutine(_coroutine);
-
-                    if (_opponentHumanoid != null && _opponentHumanoid.IsLife() == false)
-                    {
-                        _animator.SetBool(_hashAnimator.IsShoot, false);
-                        _opponentHumanoid.gameObject.SetActive(false);
-                        PlayerCharactersStateMachine.EnterBehavior<SearchTargetState>();
-                    }
-
-                    if(_opponentHumanoid!=null){
-                        
-                        _currentRange = Vector3.Distance(transform.position, _opponentHumanoid.transform.position);
-
-                        if (_currentRange <= enemy.GetRangeAttack())
-                        {
-                            _fxController.OnAttackFX();
-                            transform.DOLookAt(_opponentHumanoid.transform.position, .1f);
-                            _opponentHumanoid.ApplyDamage(enemy.GetDamage());
-                        }
-
-                        if (_currentRange >= enemy.GetRangeAttack())
-                        {
-                            _animator.SetBool(_hashAnimator.IsShoot, false);
-                            _isAttack = false;
-                            PlayerCharactersStateMachine.EnterBehavior<MovementState>();
-                        }}
-                    
-
-                    yield return _waitForSeconds;
+                    Reload();
                 }
 
-                if (TryGetComponent(out Humanoid humanoid))
+                if (_isAttacking == false & _isReloading == false)
                 {
-                    if (_opponentEnemy == null)
-                        StopCoroutine(_coroutine);
+                    _currentRange = Vector3.Distance(transform.position, _enemy.transform.position);
+                    float rangeAttack = _weaponController.GetRangeAttack();
 
-                    if (_opponentEnemy != null && _opponentEnemy.IsLife() == false)
+                    if (_currentRange <= rangeAttack & _ammoCount > 0)
                     {
-                        _animator.SetBool(_hashAnimator.IsShoot, false);
-                        _opponentEnemy.gameObject.SetActive(false);
-                        PlayerCharactersStateMachine.EnterBehavior<SearchTargetState>();
+                        _isAttacking = true;
+                        _isGoalSet = false;
+                        Fire();
                     }
+                }
 
-                    if (_opponentEnemy != null)
+                yield return null;
+            }
+
+            yield return null;
+        }
+
+
+        public void Fire()
+        {
+            _playerCharacterAnimController.OnShoot(true);
+        }
+
+        private void Reload()
+        {
+            _isReloading = true;
+            _isAttacking = false;
+
+            _playerCharacterAnimController.OnShoot(false);
+            _playerCharacterAnimController.OnReload();
+        }
+
+
+        public void OnReloadEnd()
+        {
+            _ammoCount = _maxAmmo;
+            _isReloading = false;
+        }
+
+        public void FinishAnimationAttackPlay()
+        {
+            _ammoCount--;
+
+            if (_isShotgun)
+                ApplyDamageToEnemiesInRange();
+            else
+                _enemy.ApplyDamage(_damage, _weaponController.WeaponName);
+
+            if (!_enemy.IsLife())
+            {
+                // if (_isShotgun)
+                // {
+                //     await Task.Delay(TimeSpan.FromSeconds(_fireRate));
+                // }
+
+
+                ChangeState();
+            }
+
+            if (_ammoCount == 0 & _isReloading == false)
+            {
+                Reload();
+            }
+
+            return;
+        }
+
+        private void ChangeState()
+        {
+            _isGoalSet = false;
+            _isAttacking = false;
+            _playerCharacterAnimController.OnShoot(false);
+            PlayerCharactersStateMachine.EnterBehavior<SearchTargetState>();
+        }
+
+        private void ApplyDamageToEnemiesInRange()
+        {
+            float angle = _weaponController.GetSpreadAngle();
+            Vector3 attackDirection = _enemy.transform.position - transform.position;
+
+            Collider[] hitColliders = Physics.OverlapSphere(transform.position, _maxRadius, LayerMask.GetMask("Enemy"));
+
+            foreach (Collider hitCollider in hitColliders)
+            {
+                if (hitCollider.TryGetComponent(out Enemy enemy))
+                {
+                    if (enemy.IsLife())
                     {
-                        _currentRange = Vector3.Distance(transform.position, _opponentEnemy.transform.position);
+                        Vector3 directionToEnemy = enemy.transform.position - transform.position;
+                        float angleToEnemy = Vector3.Angle(attackDirection, directionToEnemy);
 
-                        if (_currentRange <= humanoid.GetRangeAttack())
+                        // Проверяем, находится ли враг внутри угла атаки
+                        if (angleToEnemy <= angle)
                         {
-                            _fxController.OnAttackFX();
-                            transform.DOLookAt(_opponentEnemy.transform.position, .1f);
-                            _opponentEnemy.ApplyDamage(humanoid.GetDamage());
+                            float distance = Vector3.Distance(transform.position, enemy.transform.position);
+                            float damagePercent = 0;
+
+                            for (int i = 0; i < _radiusList.Length; i++)
+                            {
+                                if (distance <= _radiusList[i])
+                                {
+                                    damagePercent = _damageList[i];
+                                    break;
+                                }
+                            }
+
+                            enemy.ApplyDamage(_weaponController.GetDamage() * damagePercent,
+                                _weaponController.WeaponName); // применяем урон
                         }
                     }
-                    
-
-                    if (_currentRange >= humanoid.GetRangeAttack())
-                    {
-                        _animator.SetBool(_hashAnimator.IsShoot, false);
-                        _isAttack = false;
-                        PlayerCharactersStateMachine.EnterBehavior<MovementState>();
-                    }
-
-                    yield return _waitForSeconds;
                 }
+            }
+        }
+
+
+        protected override void OnDisable()
+        {
+            if (_coroutine != null)
+                StopCoroutine(_coroutine);
+
+            _isAttacking = false;
+        }
+
+        public void SetAttacked()
+        {
+            _isAttacked = false;
+        }
+
+
+        private void OnWeaponChanged()
+        {
+            _activeWeapon = _weaponController.GetActiveWeapon();
+            _isShotgun = _activeWeapon.IsShotgun;
+            _maxAmmo = _activeWeapon.MaxAmmo;
+            _ammoCount = _maxAmmo;
+            //  _reloadTime = _weaponController.ReloadTime;
+            _fireRate = _activeWeapon.FireRate;
+            _range = _activeWeapon.Range;
+            _damage = _weaponController.GetDamage();
+
+            if (_isShotgun)
+            {
+                _firstRadius = _weaponController.GetSpread();
+                _secondRadius = _weaponController.GetSpread() * 0.6f;
+                _thirdRadius = _weaponController.GetSpread() * 0.3f;
+
+                _radiusList = new[] { _firstRadius, _secondRadius, _thirdRadius };
+
+                _damageList = new[] { 1.3f, 1f, _damage * 0.026f };
+                _maxRadius = _radiusList[0];
             }
         }
     }

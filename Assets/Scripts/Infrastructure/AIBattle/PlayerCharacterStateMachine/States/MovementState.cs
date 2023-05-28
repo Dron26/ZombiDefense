@@ -1,5 +1,11 @@
-﻿using Enemies.AbstractEntity;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using DG.Tweening;
+using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
+using Infrastructure.Location;
+using Infrastructure.WeaponManagment;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -8,107 +14,92 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
     public class MovementState : State
     {
         private readonly float _rateStepUnit = .01f;
-
-        private Humanoid _opponentHumanoid;
-        private Enemy _opponentEnemy;
-        private NavMeshAgent agent;
-        private float _stoppingDistance;
-        private float _distance;
+        private readonly WaitForSeconds _waitForSeconds = new(0.3f);
+        private WorkPoint _point;
+        private NavMeshAgent _agent;
         private float _move;
+        private bool isStopped = false;
+        private PlayerCharacterAnimController _playerCharacterAnimController;
+        private WeaponController _weaponController;
+        private float minDistance = 0.3f;
+        private bool reachedDestination = true;
+        private bool isSetDestination = false;
+        private Humanoid _humanoid;
         
-        private Animator _animator;
-        private HashAnimator _hashAnimator;
-
-        private void Start()
+        private void Awake()
         {
+            _humanoid=GetComponent<Humanoid>();
+            _weaponController = GetComponent<WeaponController>();
+            _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
+            _agent = GetComponent<NavMeshAgent>();
+            _agent.stoppingDistance = 0f; // Задайте минимальную дистанцию остановки
             _move = 0f;
-            _animator = GetComponent<Animator>();
-            _hashAnimator = GetComponent<HashAnimator>();
-
-            if (TryGetComponent(out Enemy enemy)) 
-                _stoppingDistance = enemy.GetRangeAttack();
-            
-            if (TryGetComponent(out Humanoid humanoid)) 
-                _stoppingDistance = humanoid.GetRangeAttack();
-            agent = GetComponent<NavMeshAgent>();
         }
 
-       protected override void FixedUpdateCustom()
-       {
-           if (isActiveAndEnabled == false)
-               return;
-           
-                     Move();
-       }
 
-       public void InitHumanoid(Humanoid targetHumanoid) => 
-            _opponentHumanoid = targetHumanoid;
+        protected override void FixedUpdateCustom()
+        {
+            if (!isActiveAndEnabled)
+                return;
 
-       public void InitEnemy(Enemy targetEnemy) =>
-            _opponentEnemy = targetEnemy;
+            if (reachedDestination)
+            {
+                if (!isSetDestination)
+                {
+                    Move();
+                }
+            }
+        }
 
-       private void Move()
-       {
-           if (_opponentHumanoid != null && _opponentHumanoid.IsLife() == false
-               || _opponentEnemy != null && _opponentEnemy.IsLife() == false)
-           {
-               //_animator.SetBool(_hashAnimator.IsRun, false);
-               PlayerCharactersStateMachine.EnterBehavior<SearchTargetState>();
-           }
-           
-           if (_opponentHumanoid != null && _opponentEnemy != null)
-           {_move = 0.2f;
-              
-               PlayerCharactersStateMachine.EnterBehavior<SearchTargetState>();
-           }
-           
-           Vector3 ourPosition = transform.position;
-           Vector3 opponentPosition;
-           
-           if (_opponentHumanoid != null && _opponentHumanoid.IsLife())
-           {
-               opponentPosition = _opponentHumanoid.transform.position;
-               agent.SetDestination(opponentPosition);
-                Movement(ourPosition, opponentPosition);
-           }
-           
-           if (_opponentHumanoid == null)
-           {
-               _animator.SetBool(_hashAnimator.IsRun, false);
-              // Movement(ourPosition, opponentPosition);
-           }
-       }
+        private void Move()
+        {
+            if (_point != null)
+            {
+                Vector3 targetPosition = _point.transform.position;
+                _playerCharacterAnimController.OnShoot(false);
+                _playerCharacterAnimController.OnMove(true);
+                _agent.SetDestination(targetPosition);
+                _humanoid.IsMoving(true);
+                isSetDestination = true;
+                StartCoroutine(CheckDistance()) ;
+            }
+            else
+            {
+                print("Invalid point");
+            }
+        }
 
-       private void Movement(Vector3 ourPosition, Vector3 opponentPosition)
-       {
-           _animator.SetBool(_hashAnimator.IsRun, true);
-           // if (transform.position.y < -3.5)
-           //     transform.position =
-           //         new Vector3(ourPosition.x, ourPosition.y + 1.5f, ourPosition.z);
 
-           // if (transform.rotation.x != 0) 
-           //     transform.Rotate(0, ourPosition.y, ourPosition.z);
-          //  
-          // transform.position = new Vector3(MovementAxis(ourPosition.x, opponentPosition.x), 
-          //     MovementAxis(ourPosition.y, opponentPosition.y), 
-          //     MovementAxis(ourPosition.z, opponentPosition.z));
+        private IEnumerator CheckDistance()
+        {
+            reachedDestination = false;
+            if (_point == null)
+                yield return null;
 
-         //  transform.DOLookAt(opponentPosition, .05f);
-           
-           TryNextState(ourPosition, opponentPosition);
-       }
+            while (reachedDestination==false)
+            {
+                float distance = Vector3.Distance(transform.position, _point.transform.position);
+            
+                if (distance <= minDistance)
+                {
+                    reachedDestination = true;
+                    isSetDestination = false;
+                    Humanoid humanoid =GetComponent<Humanoid>();
+                    _point.SetHumanoid(humanoid);
+                    _humanoid.IsMoving(false);
+                    _playerCharacterAnimController.OnMove(false);
+                    PlayerCharactersStateMachine.EnterBehavior<SearchTargetState>();
+                }
+                
+                yield return _waitForSeconds;
+            }
+        }
 
-       private void TryNextState(Vector3 ourPosition, Vector3 opponentPosition)
-       {
-           _distance = Vector3.Distance(ourPosition, opponentPosition);
-
-           if (_stoppingDistance >= _distance)
-           {
-               PlayerCharactersStateMachine.EnterBehavior<AttackState>();
-           }
-       }
-
-       private float MovementAxis(float ourPosition, float targetPosition) => 
-            Mathf.MoveTowards(ourPosition, targetPosition, _rateStepUnit);
+        public void SetNewPoint(WorkPoint newPoint)
+        {
+            _point = newPoint;
+            reachedDestination = true;
+            isSetDestination = false;
+        }
     }
 }

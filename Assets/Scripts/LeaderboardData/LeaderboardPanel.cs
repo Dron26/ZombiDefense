@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Agava.YandexGames;
-using Assets.Plugins.ButtonSoundsEditor;
 using Audio;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Plugins.ButtonSoundsEditor;
 using Service.SaveLoadService;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -23,7 +23,7 @@ public class LeaderboardPanel : MonoCache
     {
         _leaderboardView=GetComponentInChildren<LeaderboardView>();
         _leaderboardPanel = _leaderboardView.gameObject;
-        _sourceSound = FindObjectOfType<AudioController>().GetComponentInChildren<AudioSource>();
+        _sourceSound = FindObjectOfType<AudioManager>().GetComponentInChildren<AudioSource>();
     }
 
     public void OpenLeaderboard()

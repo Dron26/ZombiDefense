@@ -1,32 +1,32 @@
-﻿using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
-namespace Assets.Plugins.ButtonSoundsEditor
+namespace Plugins.ButtonSoundsEditor
 {
-    public class ButtonClickSound : MonoBehaviour
+    public class ButtonClickSound : MonoBehaviour , IPointerEnterHandler, IPointerClickHandler
     {
         public AudioSource AudioSource;
         public AudioClip ClickSound;
+        public AudioClip HoverSound;
+        
+        // public void Awake()
+        // {
+        //     Button button = GetComponent<Button>();
+        //     if (button != null)
+        //     {
+        //         button.onClick.AddListener(PlayClickSound);
+        //     }
+        //
+        //     EventTrigger eventTrigger = GetComponent<EventTrigger>();
+        //     if (eventTrigger != null)
+        //     {
+        //         EventTrigger.Entry clickEntry = eventTrigger.triggers.SingleOrDefault(_ => _.eventID == EventTriggerType.PointerClick);
+        //         if (clickEntry != null)
+        //             clickEntry.callback.AddListener(_ => PlayClickSound());
+        //     }
+        // }
 
-        public void Awake()
-        {
-            Button button = GetComponent<Button>();
-            if (button != null)
-            {
-                button.onClick.AddListener(PlayClickSound);
-            }
-
-            EventTrigger eventTrigger = GetComponent<EventTrigger>();
-            if (eventTrigger != null)
-            {
-                EventTrigger.Entry clickEntry = eventTrigger.triggers.SingleOrDefault(_ => _.eventID == EventTriggerType.PointerClick);
-                if (clickEntry != null)
-                    clickEntry.callback.AddListener(_ => PlayClickSound());
-            }
-        }
-
+       
         private void PlayClickSound()
         {
             AudioSource.Play();
@@ -35,6 +35,16 @@ namespace Assets.Plugins.ButtonSoundsEditor
         public void Initiallize(AudioSource audioSource)
         {
             AudioSource = audioSource;
+        }
+        
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            AudioSource.PlayOneShot(HoverSound);
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            AudioSource.PlayOneShot(HoverSound);
         }
     }
 

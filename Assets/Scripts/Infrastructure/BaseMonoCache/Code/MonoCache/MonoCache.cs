@@ -21,7 +21,7 @@ namespace Infrastructure.BaseMonoCache.Code.MonoCache
                 SubscribeToGlobalUpdate();
         }
 
-        private void OnDisable()
+        protected virtual void OnDisable()
         {
             if (_isSetup) 
                 UnsubscribeFromGlobalUpdate();

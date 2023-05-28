@@ -2,7 +2,7 @@ using Agava.WebUtility;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using UnityEngine;
 
-namespace Sound
+namespace Audio
 {
     public class WebSoundMuter : MonoCache
     {

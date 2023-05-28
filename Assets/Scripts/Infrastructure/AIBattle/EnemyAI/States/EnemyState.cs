@@ -1,13 +1,17 @@
+using System.Collections.Generic;
+using Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.FactoryWarriors;
 using Infrastructure.FactoryWarriors.Enemies;
+using Infrastructure.Location;
+using Service.SaveLoadService;
 
 namespace Infrastructure.AIBattle.EnemyAI.States
 {
     public abstract class EnemyState : MonoCache, IEnemySwitcherState
     {
-        protected EnemyStateMachineWarriors StateMachine;
-        protected EnemyFactory Factory;
+        protected EnemyStateMachine StateMachine;
+        protected SaveLoad SaveLoad;
 
         public void EnterBehavior() =>
             enabled = true;
@@ -15,10 +19,10 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         public void ExitBehavior() =>
             enabled = false;
 
-        public void Init(EnemyStateMachineWarriors enemyStateMachineWarriors) => 
-            StateMachine = enemyStateMachineWarriors;
-
-        public void InitFactory(EnemyFactory factory) => 
-            Factory = factory;
+        public void Init(EnemyStateMachine enemyStateMachine, SaveLoad saveLoad)
+        {
+            StateMachine = enemyStateMachine;
+            SaveLoad = saveLoad;
+        }
     }
 }

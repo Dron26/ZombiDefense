@@ -1,51 +1,32 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Audio;
+using Cysharp.Threading.Tasks;
 using Enemies.AbstractEntity;
+using Humanoids.AbstractLevel;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Infrastructure.FactoryWarriors.Enemies
 {
     public class EnemyFactory : MonoBehaviour
     {
-        [SerializeField] private List<EnemyData> enemiesData;
-        public Enemy CreateEnemy( Enemy enemy,Transform spawnPoint)
+        public UnityAction<Enemy> CreatedEnemy;
+        public async Task<GameObject> Create(GameObject enemy)
         {
-            enemy.LoadPrefab();
-            GameObject newEnemy = Instantiate(enemy.GetPrefab(), spawnPoint.position, Quaternion.identity, transform);
-            var enemyComponent = enemy.GetComponent<Enemy>();
-            if (enemyComponent != null)
-            {
-                return enemyComponent;
-            }
-            else
-            {
-                Debug.LogError($"Prefab {enemy.GetPrefab().name} doesn't have a component of type Enemy.");
-                Destroy(enemy);
-                return null;
-            }
+            GameObject newEnemy = Instantiate(enemy);
+            Enemy enemyComponent = newEnemy.GetComponent<Enemy>();
+            enemyComponent.OnDataLoad = Created;
+            
+            await UniTask.SwitchToMainThread();
+            await enemyComponent.LoadPrefab();
+            
+            return newEnemy;
         }
-    
-        public EnemyData GetRandomEnemyData(int level)
+
+        private void Created(Enemy enemyComponent)
         {
-            var enemiesWithLevel = new List<EnemyData>();
-            foreach (var enemy in enemiesData)
-            {
-                if (enemy.Level == level)
-                {
-                    enemiesWithLevel.Add(enemy);
-                }
-            }
-    
-            if (enemiesWithLevel.Count > 0)
-            {
-                var index = Random.Range(0, enemiesWithLevel.Count);
-                return enemiesWithLevel[index];
-            }
-            else
-            {
-                Debug.LogError($"No enemies found with level {level}.");
-                return null;
-            }
+            CreatedEnemy?.Invoke(enemyComponent);
         }
     }
-    
 }

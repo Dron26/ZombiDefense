@@ -1,75 +1,238 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
+using Infrastructure.WeaponManagment;
+using Unity.Collections;
+using Unity.Jobs;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 {
-    [RequireComponent(typeof(MovementState))]
-    [RequireComponent(typeof(AttackState))]
     public class SearchTargetState : State
     {
         private MovementState _movementState;
         private AttackState _attackState;
+        private Enemy _enemy;
+        private WeaponController _weaponController;
+        private Transform[] _enemyTransforms;
+        private bool _isSearhing;
+        private PlayerCharacterAnimController _playerCharacterAnimController;
+        
+        private Coroutine currentTurnCoroutine;
+        
+        private bool _isTurning;
+        public float maxTurnTime = 1f; // максимальное время поворота
+        public float _maxTurnAngle = 180.0f; // максимальный угол, при котором персонаж поворачивается
+        private float minTurnTime = 0.5f; // минимальное время поворота
+        public float _minTurnAngle = 10f; // минимальный угол, при котором персонаж поворачивается
+        private float _turnTime = 0.3f;
+        private float minDistanceToEnemy = 2.0f; // минимальное расстояние до врага, при котором персонаж перестает поворачиваться
 
-        private Enemy _targetEnemy;
-        private Humanoid _targetHumanoid;
+        private float time = 1f;
+        private WaitForSeconds timeout;
 
-        private void Start()
+        private void Awake()
         {
+            timeout = new WaitForSeconds(time);
+            _weaponController = GetComponent<WeaponController>();
             _movementState = GetComponent<MovementState>();
             _attackState = GetComponent<AttackState>();
+            _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
         }
 
         protected override void UpdateCustom()
         {
-            if (isActiveAndEnabled == false)
+            if ( gameObject.activeSelf== false)
                 return;
             
-            Search();
+            if (_isSearhing==false) StartCoroutine(Search());
         }
 
-        private void Search()
+        private IEnumerator Search()
         {
-            // if (TryGetComponent(out Humanoid _))
-            // {
-            //     _targetEnemy = GetTargetEnemy();
-            //     _movementState.InitEnemy(_targetEnemy);
-            //     _attackState.InitEnemy(_targetEnemy);
-            //     PlayerCharactersStateMachine.EnterBehavior<MovementState>();
-            // }
-
-            if (TryGetComponent(out Enemy _))
+            _isSearhing = true;
+            _playerCharacterAnimController.OnIdle();
+            
+            while (_isSearhing)
             {
-                //_targetHumanoid = GetTargetHumanoid();
-                _targetHumanoid = FindObjectOfType<Humanoid>();
-                    _movementState.InitHumanoid(_targetHumanoid);
-                    _attackState.InitHumanoid(_targetHumanoid);
-                    PlayerCharactersStateMachine.EnterBehavior<MovementState>();
+               
+                
+                _enemyTransforms = SaveLoad.GetActiveEnemy()
+                    .Select(enemy => enemy.transform)
+                    .ToArray();
+            
+                int closestEnemyIndex = GetClosestEnemyIndex(transform.position);
+                
+                if (closestEnemyIndex != -1)
+                {
+                    _enemy = SaveLoad.GetActiveEnemy()[closestEnemyIndex];
+
+                    float _currentRange = Vector3.Distance(transform.position, _enemy.transform.position);
+                    float rangeAttack = _weaponController.GetRangeAttack();
+                    
+                    if (_currentRange <= rangeAttack && !_isTurning&&_enemy.IsLife())
+                    {
+                        LookEnemyPosition(_enemy.transform);
+                    }
+                }
+                
+                yield return timeout;
+            }
+            
+        }
+        
+        private void ChangeState()
+        {
+            _isTurning = false;
+            if (_enemy.IsLife())
+            {
+                _attackState.InitEnemy(_enemy);
+                _isSearhing = false;
+                PlayerCharactersStateMachine.EnterBehavior<AttackState>();
             }
         }
-
-        private Humanoid GetTargetHumanoid()
+        
+        private void LookEnemyPosition(Transform enemyTransform)
         {
-            List<Humanoid> aliveHumanoids = Factory.GetAllHumanoids.Where(humanoid => 
-                humanoid.IsLife()).ToList();
+            _turnTime = 0;
 
-            if (aliveHumanoids.Count > 0)
-                return aliveHumanoids[Random.Range(0, aliveHumanoids.Count)];
+            if (currentTurnCoroutine != null)
+            {
+                StopCoroutine(currentTurnCoroutine);
+            }
 
-            return null;
+            Vector3 direction = enemyTransform.position - transform.position;
+            float distance = direction.magnitude;
+
+            if (distance <= minDistanceToEnemy)
+            {
+                ChangeState();
+                return;
+            }
+
+            float angle = Vector3.Angle(direction, transform.forward);
+
+            _turnTime = Mathf.Lerp(minTurnTime, maxTurnTime, (angle - _minTurnAngle) / (_maxTurnAngle - _minTurnAngle));
+            _turnTime = Mathf.Min(_turnTime, maxTurnTime);
+            
+            if (Vector3.Dot(direction.normalized, transform.forward) < 0)
+            {
+                // Враг находится за спиной персонажа
+                currentTurnCoroutine = StartCoroutine(TurnTowardsEnemy(enemyTransform, _turnTime, true));
+                return;
+            }
+            
+            if (angle < _minTurnAngle)
+            {
+                ChangeState();
+                return;
+            }
+
+            currentTurnCoroutine = StartCoroutine(TurnTowardsEnemy(enemyTransform, _turnTime, false));
         }
 
-        private Enemy GetTargetEnemy()
+        private IEnumerator TurnTowardsEnemy(Transform enemyTransform, float turnTime, bool shouldShoot)
         {
-            List<Enemy> aliveEnemies = Factory.GetAllEnemies.Where(enemy => 
-                enemy.IsLife()).ToList();
+            _isTurning = true;
+            Quaternion targetRotation = Quaternion.LookRotation(enemyTransform.position - transform.position);
+            float t = 0.0f;
+            Quaternion startRotation = transform.rotation;
 
-            if (aliveEnemies.Count > 0)
-                return aliveEnemies[Random.Range(0, aliveEnemies.Count)];
+            while (t < turnTime)
+            {
+                t += Time.deltaTime;
+                float normalizedTime = t / turnTime;
+                transform.rotation = Quaternion.Lerp(startRotation, targetRotation, normalizedTime);
+                yield return null;
+            }
 
-            return null;
+            transform.rotation = targetRotation;
+            ChangeState();
+        }
+        
+        
+        
+        
+        private int GetClosestEnemyIndex(Vector3 soldierPosition)
+        {
+            NativeArray<EnemyPositionData> enemyPositionDataArray = new NativeArray<EnemyPositionData>(_enemyTransforms.Length, Allocator.TempJob);
+            
+            for (int i = 0; i < _enemyTransforms.Length; i++)
+            {
+                enemyPositionDataArray[i] = new EnemyPositionData
+                {
+                    soldierPosition = soldierPosition,
+                    enemyPosition = _enemyTransforms[i].position
+                };
+            }
+
+            // Create a job and set the size of the result array.
+            var job = new GetClosestEnemyJob
+            {
+                enemyPositionDataArray = enemyPositionDataArray
+            };
+            
+            job.SetResultArraySize(_enemyTransforms.Length);
+
+            // Schedule the job and wait for it to complete.
+            var jobHandle = job.Schedule(_enemyTransforms.Length, 100);
+            jobHandle.Complete();
+
+            // Find the index of the closest enemy from the results of the job.
+            int closestEnemyIndex = -1;
+            float closestEnemyDistance = float.MaxValue;
+            for (int i = 0; i < _enemyTransforms.Length; i++)
+            {
+                float distance = job.resultArray[i].distance;
+                if (distance < closestEnemyDistance)
+                {
+                    closestEnemyDistance = distance;
+                    closestEnemyIndex = job.resultArray[i].enemyIndex;
+                }
+            }
+
+            enemyPositionDataArray.Dispose();
+            job.resultArray.Dispose();
+
+            return closestEnemyIndex;
+        }
+        
+        private struct EnemyPositionData
+        {
+            public Vector3 soldierPosition;
+            public Vector3 enemyPosition;
+        }
+        
+        private struct GetClosestEnemyJob : IJobParallelFor
+        {
+            [ReadOnly] public NativeArray<EnemyPositionData> enemyPositionDataArray;
+            public NativeArray<EnemyDistanceData> resultArray;
+
+            public struct EnemyDistanceData
+            {
+                public int enemyIndex;
+                public float distance;
+            }
+
+            public void Execute(int index)
+            {
+                EnemyPositionData enemyPositionData = enemyPositionDataArray[index];
+                float distance = math.distance(enemyPositionData.soldierPosition, enemyPositionData.enemyPosition);
+
+                resultArray[index] = new EnemyDistanceData
+                {
+                    enemyIndex = index,
+                    distance = distance
+                };
+            }
+
+            public void SetResultArraySize(int size)
+            {
+                resultArray = new NativeArray<EnemyDistanceData>(size, Allocator.TempJob);
+            }
         }
     }
 }

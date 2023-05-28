@@ -12,13 +12,13 @@ namespace Infrastructure.States
         [SerializeField] private CanvasLuckySpin _canvasLuckySpin;
         [SerializeField] private CanvasResultBar _canvasResultBar; 
         private GameStateMachine _stateMachine;
-        private LoadingCurtain _loadingCurtain;
+        private LoadingCurtainOld _loadingCurtainOld;
         
         public void Initialize( GameStateMachine stateMachine)
         {
             _stateMachine = stateMachine;
-            _loadingCurtain = GetComponentInChildren<LoadingCurtain>();
-            _loadingCurtain.Hide(false);
+            _loadingCurtainOld = GetComponentInChildren<LoadingCurtainOld>();
+            _loadingCurtainOld.Hide(false);
 
             _canvasLuckySpin.Initialize(this);
             _canvasResultBar.Initialize(this);

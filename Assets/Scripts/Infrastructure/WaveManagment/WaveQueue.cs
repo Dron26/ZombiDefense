@@ -2,16 +2,26 @@ using System.Collections.Generic;
 using Enemies.AbstractEntity;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.FactoryWarriors.Enemies;
+using Unity.VisualScripting;
 
 namespace Infrastructure.WaveManagment
 {
     public class WaveQueue:MonoCache
     {
         private Queue<Enemy> _enemiesToSpawn = new Queue<Enemy>();
-
-        public void Enqueue(Enemy enemyData)
+        public int  Count=>_enemiesToSpawn.Count;
+        public float DelayTime;
+        public int Level=>_level;
+        private int _level;
+        
+        public void Enqueue(Enemy enemy)
         {
-            _enemiesToSpawn.Enqueue(enemyData);
+            _enemiesToSpawn.Enqueue(enemy);
+        }
+
+        public void SetTime(float delayTime)
+        {
+            DelayTime = delayTime;
         }
 
         public Enemy Dequeue()

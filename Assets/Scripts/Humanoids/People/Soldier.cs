@@ -1,38 +1,46 @@
-﻿using Humanoids.AbstractLevel.SimpleWarriors;
+﻿using Humanoids.AbstractLevel;
 using Infrastructure.AIBattle;
 using UnityEngine;
 
 namespace Humanoids.People
 {
-    public class Soldier : PeopleMen
+    public class Soldier : Humanoid
     {
         private const int Level = 1;
         private const int Price = 1;
-        private const int Damage = 15;
+        private const int Damage = 20;
         
-        private const float RangeAttack = 10f;
 
         private readonly float _minHealth = 0f;
-        private readonly float _maxHealth = 10f;
+        private  float _maxHealth;
         
         private bool _isLife = true;
+        private bool _isTakeDamagePlay;
+        private float _health;
 
-        private float _health = 10f;
-        private int _totalReceivedDamage;
-
-        private HashAnimator _hashAnimator;
+        private PlayerCharacterAnimController _playerCharacterAnimController;
         private Animator _animator;
         private FXController _fxController;
 
         private void Start()
         {
             _animator = GetComponent<Animator>();
-            _hashAnimator = GetComponent<HashAnimator>();
+            _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
             _fxController = GetComponent<FXController>();
+            Humanoid _humanoid = GetComponent<Humanoid>();
+            _humanoid.OnLoadData += Initialize;
         }
-        
-        public override float GetRangeAttack() =>
-            RangeAttack;
+
+        private void Initialize( )
+        {
+            _maxHealth= MaxHealth;
+            _health= _maxHealth;
+        }
+
+        public override float GetHealth()
+        {
+            return _health;
+        }
 
         public override bool IsLife() => 
             _isLife;
@@ -43,33 +51,37 @@ namespace Humanoids.People
         public override int GetPrice() =>
             Price;
 
-        public override int GetDamage()
-        {
-            _totalReceivedDamage += Damage;
-            return Damage;
-        }
+       
 
         public override void ApplyDamage(int getDamage)
         {
             if (_health <= 0)
             {
-                _animator.SetTrigger(_hashAnimator.Die);
-                _fxController.OnDieFX();
+                _animator.SetTrigger(_playerCharacterAnimController.Die);
                 _isLife = false;
+                Die();
             }
-            
-            _fxController.OnHitFX();
-            _animator.SetTrigger(_hashAnimator.IsHit);
-            _health -= Mathf.Clamp(getDamage, _minHealth, _maxHealth);
+            else
+            {
+                if (!_isTakeDamagePlay)
+                {
+                    
+                    _isTakeDamagePlay = true;
+                    _animator.SetTrigger(_playerCharacterAnimController.IsHit);
+                    // нужно событие в гуманойде  когда принимает урон чтобы все действия остановить
+                }
+                
+                _fxController.OnHitFX();
+                _health -= Mathf.Clamp(getDamage, _minHealth, _maxHealth);
+            }
+           }
+
+        public void TakeDamageEnd()
+        {
+            _isTakeDamagePlay=false;
         }
         
         public override int GetDamageDone() => 
             (int)Mathf.Round(_maxHealth - _health);
-
-        public override int DamageReceived() =>
-            _totalReceivedDamage;
-
-        public override int TotalPoints() => 
-            _totalReceivedDamage + (int)Mathf.Round(_maxHealth - _health);
     }
 }
