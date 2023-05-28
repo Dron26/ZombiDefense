@@ -51,7 +51,7 @@ namespace UI
         [SerializeField] private LeaderboardPanel _leaderboardPanel;
         [SerializeField] private GameObject _loadingCurtainPrefab;
         [SerializeField] private SettingPanel _settingPanel;
-        [SerializeField] private AudioController _audioController;
+        [SerializeField] private AudioManager _audioManager;
         [SerializeField] private MergeUnitGroup _mergeUnitGroup;
 
         private YandexLeaderboard _yandexLeaderboard;
@@ -82,9 +82,9 @@ namespace UI
             _raidInitializer.Initialize(_controller, _raidSlot);
             _continueButton.onClick.AddListener(ContinueButtonClicked);
             _yandexLeaderboard.Initialize(CreateLeaderboard());
-            _loadingCurtain.GetComponent<LoadingCurtain>().Hide(true);
-            _audioController.Initialize(_saveLoad);
-            _settingPanel.Initialize(_audioController, _saveLoad);
+            _loadingCurtain.GetComponent<LoadingCurtainOld>().Hide(true);
+            //_audioController.Initialize(_saveLoad);
+            _settingPanel.Initialize(_audioManager, _saveLoad);
         }
 
         private void ContinueButtonClicked()
@@ -164,7 +164,7 @@ namespace UI
         {
             if (_loadingCurtain!=null)
             {
-                _loadingCurtain.GetComponent<LoadingCurtain>().OnFinishedShow -= GoToFirstMenu;
+         //       _loadingCurtain.GetComponent<LoadingCurtain>().OnFinishedShow -= GoToFirstMenu;
             }
             
             _armyInitializer.ClickButtonBack-=GoToFirstMenu;
@@ -173,7 +173,7 @@ namespace UI
         private void  CreateLoadingCurtain()
         {
              _loadingCurtain = Instantiate(_loadingCurtainPrefab.gameObject);
-            _loadingCurtain.GetComponent<LoadingCurtain>().OnFinishedShow += GoToFirstMenu;;
+    //        _loadingCurtain.GetComponent<LoadingCurtain>().OnFinishedShow += GoToFirstMenu;;
         }
     }
 }

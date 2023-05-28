@@ -37,11 +37,11 @@ namespace Infrastructure.WaveManagment
         private WaveData _waveData;
         //private float _cycleTimer;
         private float _cycleDuration;
-        private AudioController _audioController;
+        private AudioManager _audioManager;
         
-        public void Initialize(AudioController audioController)
+        public void Initialize(AudioManager audioManager)
         {
-            _audioController=audioController;
+            _audioManager=audioManager;
             
             if (_saveLoad==null)
             {
@@ -141,7 +141,7 @@ namespace Infrastructure.WaveManagment
 
         private void OnCreatedEnemy(Enemy enemy)
         {
-            enemy.SetAudioController(_audioController);
+            enemy.SetAudioController(_audioManager);
             enemy.gameObject.SetActive(false);
             enemy.OnDataLoad += OnCreatedEnemy;
             enemy.OnDeath += OnDeath;

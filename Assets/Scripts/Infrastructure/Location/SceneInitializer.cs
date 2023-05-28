@@ -20,7 +20,7 @@ namespace Infrastructure.Location
         [SerializeField] private PlayerCharacterInitializer _playerCharacterInitializer;
         [SerializeField] private EnemyCharacterInitializer _enemyCharacterInitializer;
         [SerializeField] private StoreOnPlay _storeOnPlay;
-        [SerializeField] private AudioController _audioController;
+        [SerializeField] private AudioManager _audioManager;
         [SerializeField] private List<Humanoid> _avaibelCharacters;
         [SerializeField] private MovePointController _movePointController;
         [SerializeField] private TimerDisplay _timerDisplay;
@@ -32,8 +32,8 @@ namespace Infrastructure.Location
             _saveLoad = GetComponent<SaveLoad>();
             _saveLoad.SetAvailableCharacters(_avaibelCharacters);
             _playerCharacterInitializer.CreatedHumanoid+= SetInfo;
-            _audioController.Initialize(_saveLoad);
-            _playerCharacterInitializer.Initialize(_audioController,this,_saveLoad);
+          //  _audioManager.Initialize(_saveLoad);
+            _playerCharacterInitializer.Initialize(_audioManager,this,_saveLoad);
             _enemyCharacterInitializer.Initialize(_saveLoad,this);
             _playerCharacterInitializer.AreOverHumanoids+=_enemyCharacterInitializer.StopSpawning;
            _movePointController.Initialize(this,_saveLoad);
@@ -57,7 +57,7 @@ namespace Infrastructure.Location
         public StoreOnPlay GetStoreOnPlay() => _storeOnPlay;
         public MovePointController GetMovePointController() => _movePointController;
         public SaveLoad GetSaveLoad() => _saveLoad;
-        public AudioController GetAudioController() => _audioController;
+        public AudioManager GetAudioController() => _audioManager;
         
     }
 }

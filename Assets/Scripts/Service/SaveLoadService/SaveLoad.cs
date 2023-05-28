@@ -5,7 +5,6 @@ using Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
 using Newtonsoft.Json;
-using Service.SaveLoadService;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -17,7 +16,6 @@ namespace Service.SaveLoadService
         private DataBase _dataBase=new DataBase();
         private bool _isFirstStart=true;
         public UnityAction OnSetActiveHumanoid;
-
         public int ReadPointsDamage => _dataBase.ReadPointsDamage;
      
         private void Awake()
@@ -151,8 +149,15 @@ namespace Service.SaveLoadService
         public WorkPoint GetSelectedPOoint()=>
             _dataBase.ReadSelectedPoint();
         
-        public void SetSelectedHumanoid(Humanoid humanoid) => 
+        public void SetSelectedHumanoid(Humanoid humanoid)
+        {
+            if (GetSelectedHumanoid() != null)
+            {
+                GetSelectedHumanoid().SetSelected(false);
+            }
+            
             _dataBase.ChangeSelectedHumanoid(humanoid);
+        }
 
         public Humanoid GetSelectedHumanoid()=>
             _dataBase.ReadSelectedHumanoid();

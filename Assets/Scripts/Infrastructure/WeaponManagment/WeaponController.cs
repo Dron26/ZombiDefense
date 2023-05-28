@@ -137,9 +137,9 @@ namespace Infrastructure.WeaponManagment
             _fireRate = _weaponAnimInfo[_playerCharacterAnimController.IsShoot];
             _reloadTime = _weaponAnimInfo[_playerCharacterAnimController.Reload];
             _range = _smallArms.Range;
-            
-            _ring.gameObject.SetActive(true);
         }
+        
+        
 
         public int GetDamage()
         {
@@ -184,6 +184,7 @@ namespace Infrastructure.WeaponManagment
         {
             _humanoid=GetComponent<Humanoid>();
             _weaponData = _humanoid.GetWeaponData();
+          //  _humanoid.OnHumanoidSelected=NotifySelection;
             
             _playerCharacterAnimController=GetComponent<PlayerCharacterAnimController>();
             _animator=GetComponent<Animator>();

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Threading.Tasks;
 using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
@@ -23,13 +24,15 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         private bool _isAttacked;
 
         private bool _isShotgun;
+
         //private bool _isAttacked;
         private bool _isAttacking;
         private bool _isReloading;
         private Weapon _activeWeapon;
 
         private int _maxAmmo;
-            //  private float _reloadTime;
+
+        //  private float _reloadTime;
         private float _fireRate;
         private float _damage;
         private float _range;
@@ -41,6 +44,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         private float[] _radiusList;
         private float[] _damageList;
         private float _maxRadius;
+        private bool _isGoalSet;
 
         private void Awake()
         {
@@ -53,20 +57,21 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 
         protected override void UpdateCustom()
         {
-            
-            if (!enabled) 
+            if (!enabled)
                 return;
-            else if (_isAttacking == false && isActiveAndEnabled) Attack();
+            else if (_isGoalSet == true && isActiveAndEnabled) StartCoroutine(Attack());
         }
 
-        public void InitEnemy(Enemy targetEnemy) =>
-            _enemy = targetEnemy;
-
-        private async Task Attack()
+        public void InitEnemy(Enemy targetEnemy)
         {
-            while (isActiveAndEnabled && _enemy.IsLife())
+            _enemy = targetEnemy;
+            _isGoalSet = true;
+        }
+
+        private IEnumerator Attack()
+        {
+            while ( _enemy.IsLife())
             {
-                
                 if (_ammoCount <= 0 && _isReloading == false)
                 {
                     Reload();
@@ -77,18 +82,18 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
                     _currentRange = Vector3.Distance(transform.position, _enemy.transform.position);
                     float rangeAttack = _weaponController.GetRangeAttack();
 
-                    if (_currentRange <= rangeAttack & _ammoCount > 0) 
+                    if (_currentRange <= rangeAttack & _ammoCount > 0)
                     {
-                        Fire();
                         _isAttacking = true;
-                        return;
-                        // _fxController.OnAttackFX();
+                        _isGoalSet = false;
+                        Fire();
                     }
                 }
-                break;
+
+                yield return null;
             }
 
-            if (_isAttacking != false) return;
+            yield return null;
         }
 
 
@@ -97,25 +102,23 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
             _playerCharacterAnimController.OnShoot(true);
         }
 
-        private async Task Reload()
+        private void Reload()
         {
             _isReloading = true;
             _isAttacking = false;
-            
-                _isAttacking = false;
-                _playerCharacterAnimController.OnShoot(false);
-                _playerCharacterAnimController.OnReload();
+
+            _playerCharacterAnimController.OnShoot(false);
+            _playerCharacterAnimController.OnReload();
         }
 
-        
-        private void ReloadEnd()
+
+        public void OnReloadEnd()
         {
-            
             _ammoCount = _maxAmmo;
-            _isReloading = false;   
+            _isReloading = false;
         }
 
-        public async Task FinishAnimationAttackPlay()
+        public void FinishAnimationAttackPlay()
         {
             _ammoCount--;
 
@@ -125,26 +128,27 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
                 _enemy.ApplyDamage(_damage, _weaponController.WeaponName);
 
             if (!_enemy.IsLife())
-            { 
-                if (_isShotgun)
-                {
-                    await Task.Delay(TimeSpan.FromSeconds(_fireRate));
-                }
+            {
+                // if (_isShotgun)
+                // {
+                //     await Task.Delay(TimeSpan.FromSeconds(_fireRate));
+                // }
+
 
                 ChangeState();
             }
 
-            if (_ammoCount<=0&_isReloading==false)
+            if (_ammoCount == 0 & _isReloading == false)
             {
                 Reload();
             }
-            
+
             return;
         }
 
         private void ChangeState()
         {
-
+            _isGoalSet = false;
             _isAttacking = false;
             _playerCharacterAnimController.OnShoot(false);
             PlayerCharactersStateMachine.EnterBehavior<SearchTargetState>();
@@ -180,15 +184,15 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
                                     break;
                                 }
                             }
-                    
-                            enemy.ApplyDamage(_weaponController.GetDamage() * damagePercent, _weaponController.WeaponName); // применяем урон
+
+                            enemy.ApplyDamage(_weaponController.GetDamage() * damagePercent,
+                                _weaponController.WeaponName); // применяем урон
                         }
                     }
                 }
             }
         }
 
-        
 
         protected override void OnDisable()
         {
@@ -203,15 +207,14 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
             _isAttacked = false;
         }
 
-   
 
         private void OnWeaponChanged()
         {
             _activeWeapon = _weaponController.GetActiveWeapon();
-            _isShotgun=_activeWeapon.IsShotgun;
+            _isShotgun = _activeWeapon.IsShotgun;
             _maxAmmo = _activeWeapon.MaxAmmo;
             _ammoCount = _maxAmmo;
-          //  _reloadTime = _weaponController.ReloadTime;
+            //  _reloadTime = _weaponController.ReloadTime;
             _fireRate = _activeWeapon.FireRate;
             _range = _activeWeapon.Range;
             _damage = _weaponController.GetDamage();
@@ -223,8 +226,8 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
                 _thirdRadius = _weaponController.GetSpread() * 0.3f;
 
                 _radiusList = new[] { _firstRadius, _secondRadius, _thirdRadius };
-                
-                _damageList = new[] { 1.3f ,1f,_damage * 0.026f};
+
+                _damageList = new[] { 1.3f, 1f, _damage * 0.026f };
                 _maxRadius = _radiusList[0];
             }
         }

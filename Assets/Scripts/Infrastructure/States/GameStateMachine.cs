@@ -58,7 +58,7 @@ namespace Infrastructure.States
              //     into name
              //     select name.Substring(0, name.Length - 6)).ToList();
                  Debug.Log("осторожно говнокод");
-             List<string> names = new() { "Initial", "Main", "SimulationSceneOne" };
+             List<string> names = new() { "Initial", "GeneralMenu", "SimulationSceneOne" };
              return  names;
 
         }

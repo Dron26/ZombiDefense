@@ -25,7 +25,7 @@ namespace Infrastructure.States
         {
         }
 
-        public void EnterLoadLevel() => _stateMachine.Enter<LoadLevelState,string>("Main");
+        public void EnterLoadLevel() => _stateMachine.Enter<LoadLevelState,string>("GeneralMenu");
 
         private void RegisterServices()
         {

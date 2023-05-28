@@ -22,7 +22,7 @@ namespace Enemies.AbstractEntity
         [SerializeField] private AssetReferenceT<EnemyData> enemyDataReference;
         private List<SkinGroup> _skinGroups = new();
 
-        private AudioController _audioController;
+        private AudioManager _audioManager;
         public delegate void EnemyDeathHandler(Enemy enemy);
 
         public event EnemyDeathHandler OnDeath;
@@ -137,13 +137,13 @@ namespace Enemies.AbstractEntity
             }
         }
         
-        public void SetAudioController(AudioController audioController)
+        public void SetAudioController(AudioManager audioManager)
         {
-            _audioController = audioController;
+            _audioManager = audioManager;
         }
-        public AudioController GetAudioController()
+        public AudioManager GetAudioController()
         {
-            return _audioController;
+            return _audioManager;
         }
         
         

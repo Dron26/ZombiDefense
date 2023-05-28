@@ -24,12 +24,12 @@ namespace Humanoids.AbstractLevel
         public Vector3 StartPosition;
         private int _countLoaded = 0;
         private int _maxCountLoaded = 2;
-        private AudioController _audioController;
+        private AudioManager _audioManager;
         private List<IObserverByHumanoid> observers = new List<IObserverByHumanoid>();
-        
         public UnityAction<Humanoid> OnDataLoad;
-        public UnityAction<Humanoid> OnHumanoidSelected;
-        
+        public UnityAction<bool> OnHumanoidSelected;
+        [SerializeField ]private ParticleSystem _ring;
+
         public Sprite sprite;
 
         protected HumanoidData humanoidData;
@@ -136,20 +136,30 @@ namespace Humanoids.AbstractLevel
             }
         }
 
-        public void SetAudioController(AudioController audioController)
+        public void SetAudioController(AudioManager audioManager)
         {
-            _audioController = audioController;
+            _audioManager = audioManager;
         }
 
-        public AudioController GetAudioController()
+        public AudioManager GetAudioController()
         {
-            return _audioController;
+            return _audioManager;
         }
 
         public void SetSelected(bool isSelected)
         {
             _isSelected = isSelected;
+            
+            if (isSelected)
+            {
+                _ring.Play();
+            }
+            else
+            {
+                _ring.Stop();
+            }
         }
+        
 
         public void SetPontInfo()
         {

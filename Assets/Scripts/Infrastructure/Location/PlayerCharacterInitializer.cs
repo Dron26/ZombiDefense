@@ -38,11 +38,11 @@ namespace Infrastructure.Location
         private int _countOrdered;
         private SaveLoad _saveLoad;
 
-        public void Initialize(AudioController audioController, SceneInitializer sceneInitializer, SaveLoad saveLoad)
+        public void Initialize(AudioManager audioManager, SceneInitializer sceneInitializer, SaveLoad saveLoad)
         {
             _saveLoad = saveLoad;
             _humanoidFactory.CreatedHumanoid += OnCreatedHumanoid;
-            _humanoidFactory.Initialize(audioController);
+            _humanoidFactory.Initialize(audioManager);
             _workPointsGroup.Initialize(_saveLoad);
             FillWorkPoints();
             _storeOnPlay=sceneInitializer.GetStoreOnPlay();

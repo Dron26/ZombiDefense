@@ -5,7 +5,7 @@ namespace Infrastructure.FactoryGame
 {
     public interface IGameFactory:IService
     {
-        GameObject CreateMainScene();
+        GameObject CreateGeneralMenu();
         GameObject CreateSceneBattle();
     }
 }

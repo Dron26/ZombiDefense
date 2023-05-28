@@ -15,6 +15,7 @@ namespace Lean.Localization
 	public class LeanLocalization : MonoBehaviour
 	{
 
+
 		public UnityAction Changelanguage;
 		public enum DetectType
 		{

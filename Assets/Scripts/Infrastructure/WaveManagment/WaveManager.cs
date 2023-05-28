@@ -25,11 +25,11 @@ namespace Infrastructure.WaveManagment
         public int TotalWaves => _waveDatas.Count;
         public UnityAction SpawningCompleted;
         private SaveLoad _saveLoad;
-        public void Initialize(SaveLoad saveLoad,AudioController audioController)
+        public void Initialize(SaveLoad saveLoad,AudioManager audioManager)
         {
             _saveLoad=saveLoad;
             InitializeWaveData();
-            _waveSpawner.Initialize(audioController);
+            _waveSpawner.Initialize(audioManager);
             _waveSpawner.SpawningCompleted += OnWaveSpawningCompleted;
             StartCoroutine(SpawnWaves());
         }

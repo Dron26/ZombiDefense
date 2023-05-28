@@ -65,6 +65,7 @@ namespace Infrastructure.WaveManagment
                     enemy.SetSaveLoad(_saveLoad);
                     enemy.StartPosition = transform.position;
                     enemy.GetComponent<EnemyDieState>().OnRevival += OnEnemyRevival;
+                    queue.Enqueue(enemy);
                     Activated(enemy);
 
                     float randomDelayTime = Random.Range(0.57f, 5.33f);

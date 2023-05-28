@@ -22,7 +22,7 @@ namespace Infrastructure.AIBattle
          private AudioClip _reload;
         private AudioSource _audioSource;
         private Weapon _weapon;
-        private AudioController _audioController;
+        private AudioManager _audioManager;
         private WeaponController _weaponController;
 
         private void Awake()
@@ -81,8 +81,8 @@ namespace Infrastructure.AIBattle
         public void NotifyFromHumanoid(object data)
         {
             Humanoid humanoid = GetComponent<Humanoid>();
-            _audioController=humanoid.GetAudioController();
-            _audioSource= _audioController.GetSoundSource();
+            _audioManager=humanoid.GetAudioController();
+            _audioSource= _audioManager.GetSoundSource();
             
             _weaponController=humanoid.GetComponent<WeaponController>();
             _weaponController.AddObserver(this);

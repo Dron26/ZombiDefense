@@ -10,9 +10,9 @@ namespace Infrastructure.FactoryGame
         public GameFactory(IAssets assets) => 
             _assets = assets;
         
-        public GameObject CreateMainScene() => 
-            _assets.Instantiate(AssetPath.MainScene);
-        
+        public GameObject CreateGeneralMenu() => 
+            _assets.Instantiate(AssetPath.GeneralMenu);
+
         public GameObject CreateSceneBattle() => 
             _assets.Instantiate(AssetPath.SceneSwitcher);
     }

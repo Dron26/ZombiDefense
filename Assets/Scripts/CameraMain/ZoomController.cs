@@ -9,7 +9,7 @@ namespace CameraMain
         public float zoomSpeed = 0.5f;
         public float mouseZoomSpeed = 30f;
         public float minZoomDistance = 10f;
-        public float maxZoomDistance = 30f;
+        public float maxZoomDistance = 10f;
 
         private Vector2 initialTouchPosition;
         private float initialCameraDistance;

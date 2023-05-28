@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Infrastructure.FactoryGame;
 using Infrastructure.Logic;
 using UI;
+using UI.GeneralMenu;
 using UnityEngine;
 
 namespace Infrastructure.States
@@ -49,11 +50,11 @@ namespace Infrastructure.States
                     value();
         }
 
-        private void CreateMainScene()
+        private void CreateGeneralMenu()
         {
             
-            GameObject mainScene = _gameFactory.CreateMainScene();
-            mainScene.GetComponentInChildren<MainScene>().Initialize(_stateMachine);
+            GameObject generalMenu = _gameFactory.CreateGeneralMenu();
+            generalMenu.GetComponentInChildren<GeneralMenuManager>().Initialize(_stateMachine);
             _stateMachine.Enter<GameLoopState>();
         }
 
@@ -76,7 +77,7 @@ namespace Infrastructure.States
         private void FillActionGroup()
         {
             _actions.Add(null);
-            _actions.Add(CreateMainScene);
+            _actions.Add(CreateGeneralMenu);
             _actions.Add(CreateSceneSwitcher);
         }
     }
