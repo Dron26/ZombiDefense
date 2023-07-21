@@ -6,6 +6,6 @@ namespace Infrastructure.FactoryGame
     public interface IGameFactory:IService
     {
         GameObject CreateGeneralMenu();
-        GameObject CreateSceneBattle();
+        GameObject CreateSceneLevel();
     }
 }

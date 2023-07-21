@@ -14,7 +14,7 @@ namespace CameraMain
         private Vector2 initialTouchPosition;
         private float initialCameraDistance;
 
-        private void Update()
+        protected override void UpdateCustom()
         {
             if (Input.touchCount == 2)
             {

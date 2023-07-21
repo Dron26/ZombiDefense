@@ -25,7 +25,6 @@ namespace Infrastructure.AIBattle
     
         private Animator _animator;
         private AnimatorOverrideController animatorOverrideController;
-        private int weaponIndex;
         private Dictionary<int, float> _animInfo=new();
 
         private RuntimeAnimatorController animatorController;
@@ -122,7 +121,6 @@ namespace Infrastructure.AIBattle
         public void NotifyFromHumanoid(object data)
         {
             _animator = GetComponent<Animator>();
-            weaponIndex = 0;
             
             SetAnimInfo();
         }
@@ -132,7 +130,7 @@ namespace Infrastructure.AIBattle
             
         }
 
-        private void OnDisable()
+        protected override void  OnDisable()
         {
             if (TryGetComponent(out Humanoid humanoid))
             {

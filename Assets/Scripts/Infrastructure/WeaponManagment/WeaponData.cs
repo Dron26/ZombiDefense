@@ -12,17 +12,27 @@ namespace Infrastructure.WeaponManagment
         [SerializeField] private Weapon _heavyMachinуeGun;
         [SerializeField] private Weapon _shootgun;
         [SerializeField] private Weapon _granade;
-         
-        private List<Weapon> _smallArms;
-        private List<Weapon> _granads;
+        public bool IsGranade => _isGranade;
+        private bool _isGranade=false;
+        
+        private List<Weapon> _smallArms=new();
+        private List<Weapon> _granads=new();
 
-        public List<Weapon> SmallArms()
+        private void Awake()
+        {
+            if (_granads.Count != 0)
+            {
+                _isGranade = true;
+            }
+        } 
+
+        public List<Weapon> GetSmallArms()
         {
             _smallArms = new() { _handgun, _rifle, _sniperRifle, _heavyMachinуeGun,_shootgun };
             return _smallArms;
         }
         
-        public List<Weapon> Granads()
+        public List<Weapon> GetGranads()
         {
             _granads = new() { _granade };
             return _granads;

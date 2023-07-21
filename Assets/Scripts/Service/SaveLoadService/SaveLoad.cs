@@ -4,6 +4,7 @@ using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
+using Infrastructure.WaveManagment;
 using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Events;
@@ -16,8 +17,10 @@ namespace Service.SaveLoadService
         private DataBase _dataBase=new DataBase();
         private bool _isFirstStart=true;
         public UnityAction OnSetActiveHumanoid;
+        public UnityAction<WorkPoint> OnSelectedNewPoint;
+        
+        public UnityAction OnChangeMoney;
         public int ReadPointsDamage => _dataBase.ReadPointsDamage;
-     
         private void Awake()
         {
             if (!PlayerPrefs.HasKey(Key))
@@ -76,13 +79,9 @@ namespace Service.SaveLoadService
         {
             _dataBase.AddMoney(amountMoney);
             Save();
+            OnChangeMoney?.Invoke();
         }
-
-        public void SpendMoney(int amountSpendMoney)
-        {
-            _dataBase.SpendMoney(amountSpendMoney);
-            Save();
-        }
+        
 
         public int ReadAmountHumanoids(int levelHumanoid) => 
             _dataBase.ReadHumanoid(levelHumanoid);
@@ -109,16 +108,7 @@ namespace Service.SaveLoadService
         
         public AudioSettingsParameters  GetAudioSettings( ) => 
             _dataBase.ReadAudioSettings();
-
-        public void SetMergedSlots(List<GameObject> slots)
-        {
-            _dataBase.ChangeMergeSlots(slots);
-            Save();
-        }
-
-        public List<GameObject> GetMergedSlots()=>
-            _dataBase.ReadMergeSlots();
-
+        
         public void SetFirstStart()
         {
             _dataBase.ChangeIsFirstStart();
@@ -143,15 +133,15 @@ namespace Service.SaveLoadService
             SetStartParametrs();
         }
 
-        public void SetSelectedPOoint(WorkPoint point) => 
+        public void SetSelectedPoint(WorkPoint point)
+        {
             _dataBase.ChangeSelectedPoint(point);
-
-        public WorkPoint GetSelectedPOoint()=>
-            _dataBase.ReadSelectedPoint();
+            OnSelectedNewPoint?.Invoke(point);
+        }
         
         public void SetSelectedHumanoid(Humanoid humanoid)
         {
-            if (GetSelectedHumanoid() != null)
+            if (GetSelectedHumanoid() != null&&humanoid!=GetSelectedHumanoid())
             {
                 GetSelectedHumanoid().SetSelected(false);
             }
@@ -183,8 +173,11 @@ namespace Service.SaveLoadService
         public List <Humanoid> GetAvailableCharacters( ) => 
             _dataBase.ReadAvailableCharacters();
         
-        public void SetActiveEnemy(Enemy activeEnemy) => 
-            _dataBase.ChangeActiveEnemy( activeEnemy);
+        public void SetActiveEnemy(Enemy activeEnemy)
+        {
+            _dataBase.ChangeActiveEnemy(activeEnemy);
+            print(_dataBase.ReadActiveEnemy().Count);
+        }
 
         public List<Enemy> GetActiveEnemy( ) => 
             _dataBase.ReadActiveEnemy();
@@ -194,5 +187,27 @@ namespace Service.SaveLoadService
 
         public List<Enemy> GetInactiveEnemy( ) => 
             _dataBase.ReadInactiveEnemy();
+        
+        public void SetLevel( List<WaveData> waveDatas) => 
+            _dataBase.ChangeLevelPoint( waveDatas);
+        
+        public List<WaveData> GetLevelPoint() => 
+            _dataBase.ReadLevelPoint();
+
+
+        public void SetCameras(Camera cameraPhysical, Camera cameraUI)
+        {
+            _dataBase.ChangeCameras(cameraPhysical,cameraUI);
+        }
+        
+        public Camera GetPhysicalCamera()
+        {
+            return _dataBase.ReadPhysicalCamera();
+        }
+        
+        public Camera GetUICamera()
+        {
+            return _dataBase.ReadUICamera();
+        }
     }
 }

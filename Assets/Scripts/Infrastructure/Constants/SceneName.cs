@@ -4,6 +4,6 @@ namespace Infrastructure.Constants
     {
         public const string Init = "Initial";
         public const string Menu = "Main";
-        public const string Game = "SimulationSceneOne";
+        public const string Level = "Level";
     }
 }

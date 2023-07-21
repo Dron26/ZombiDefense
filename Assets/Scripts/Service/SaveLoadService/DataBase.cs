@@ -5,6 +5,8 @@ using Audio;
 using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
 using Infrastructure.Location;
+using Infrastructure.WaveManagment;
+using UI.Levels;
 using UnityEngine;
 
 namespace Service.SaveLoadService
@@ -12,32 +14,51 @@ namespace Service.SaveLoadService
     [Serializable]
     public class DataBase
     {
+      
         public int Money;
+      
         public int Points;
+       
         public AudioSettingsParameters AudioParametrs;
-        public List<MergeSceneData> MergeSceneDatas = new();
-        public List<GameObject> Slots = new();
-        public List<int> _levelHumanoid = new();
-        public List<int> _amountHumanoids = new();
-        public bool _isFirstStart = true;
-        public bool _isBattleStart = false;
         
+        public List<int> LevelHumanoid = new();
+       
+        public List<int> AmountHumanoids = new();
+         
+        public bool IsFirstStart = true;
+        [NonSerialized] 
+        public Camera CameraUI;
+        [NonSerialized] 
+        public Camera CameraPhysical;
+        
+        public bool IsBattleStart = false;
+        [NonSerialized] 
+        public List<WaveData> _waveDatas;
+        [NonSerialized] 
+        private List<MergeSceneData> MergeSceneDatas = new();
+        [NonSerialized] 
         private List<Humanoid> AvaibelCharacters;
+        [NonSerialized] 
         private WorkPoint SelectedPoint;
+        [NonSerialized] 
         private Humanoid SelectedHumanoid;
+        [NonSerialized] 
         private List<Humanoid> ActiveHumanoids = new();
+        [NonSerialized] 
         private List<Enemy> ActiveEnemy = new();
+        [NonSerialized] 
         private List<Humanoid> InactiveHumanoids = new();
+        [NonSerialized] 
         private List<Enemy> InactiveEnemy = new();
-
-        public int CountSpins { get; private set; }
+        
+        private int CountSpins { get;  set; }
 
         public void AddHumanoidAndCount(List<int> levels, List<int> amount)
         {
             for (int i = 0; i < levels.Count; i++)
             {
-                _levelHumanoid.Add(levels[i]);
-                _amountHumanoids.Add(amount[i]);
+                LevelHumanoid.Add(levels[i]);
+                AmountHumanoids.Add(amount[i]);
             }
         }
 
@@ -45,11 +66,11 @@ namespace Service.SaveLoadService
         {
             int number = 0;
 
-            for (int i = 0; i < _levelHumanoid.Count; i++)
+            for (int i = 0; i < LevelHumanoid.Count; i++)
             {
-                if (levelHumanoid == _levelHumanoid[i])
+                if (levelHumanoid == LevelHumanoid[i])
                 {
-                    number = _amountHumanoids[i];
+                    number = AmountHumanoids[i];
                 }
             }
 
@@ -88,38 +109,28 @@ namespace Service.SaveLoadService
 
         public void ChangeMergeSlots(List<GameObject> slots)
         {
-            foreach (GameObject slot in slots)
-            {
-                Slots.Clear();
-                Slots.Add(slot);
-            }
+            
         }
 
         public List<GameObject> ReadMergeSlots()
         {
-            List<GameObject> tempSlots = new();
 
-            foreach (GameObject slot in Slots)
-            {
-                tempSlots.Add(slot);
-            }
-
-            return tempSlots;
+            return null;
         }
 
         public void ChangeIsFirstStart()
         {
-            _isFirstStart = false;
+            IsFirstStart = false;
         }
 
         public bool ReadIsFirstStart() =>
-            _isFirstStart;
+            IsFirstStart;
 
         public void ChangeIsStartBattle() =>
-            _isBattleStart = true;
+            IsBattleStart = true;
 
         public bool ReadIsStartBattle() =>
-            _isBattleStart;
+            IsBattleStart;
 
         public WorkPoint ChangeSelectedPoint(WorkPoint point) =>
             SelectedPoint = point;
@@ -169,5 +180,28 @@ namespace Service.SaveLoadService
 
         public List<Enemy> ReadInactiveEnemy() =>
             new List<Enemy>(InactiveEnemy);
+
+        public void ChangeLevelPoint(List<WaveData> waveDatas) => 
+            _waveDatas = waveDatas;
+        
+        public List<WaveData> ReadLevelPoint() => 
+            _waveDatas;
+
+        public void ChangeCameras(Camera cameraPhysical, Camera cameraUI)
+        {
+            CameraPhysical = cameraPhysical;
+            CameraUI = cameraUI;
+        }
+
+        public Camera ReadPhysicalCamera()
+        {
+           return  CameraPhysical;
+        }
+        
+        public Camera ReadUICamera()
+        {
+            return  CameraUI;
+        }
+        
     }
 }

@@ -12,11 +12,11 @@ namespace Infrastructure.WaveManagment
     public class WaveData:MonoCache
     {
         [SerializeField] private List<Enemy> _enemys;
-        [SerializeField] private List<int> enemyCounts;
+        [SerializeField] private List<int> _enemyCounts;
         [SerializeField] private  List<float> _delayTimes;
         public List<float> DelayTimes=>_delayTimes;
         public List<Enemy> Enemys => _enemys;
-        public List<int> EnemyCounts => enemyCounts;
+        public List<int> EnemyCounts => _enemyCounts;
         Dictionary<List<Enemy>,List<int>> _info=new Dictionary<List<Enemy>, List<int>>();
 
         public int Count => _enemys.Count;

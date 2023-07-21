@@ -43,6 +43,6 @@ namespace UI.SceneSetArmy
 
         private void ShowTotalNumber() => _text.text = _totalNumber.ToString();
 
-          private void OnDisable() => _priceChenger.ChengeArmy -= OnChangeArmy;
+        protected override void  OnDisable() => _priceChenger.ChengeArmy -= OnChangeArmy;
     }
 }

@@ -1,7 +1,6 @@
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Service.SaveLoadService;
 using UI.BuyAndMerge;
-using UI.BuyAndMerge.Merge;
 using UnityEngine;
 
 namespace UI.Resurse
@@ -11,21 +10,14 @@ namespace UI.Resurse
     {
         private StatsMoney _statsMoney;
         private SaveLoad _saveLoad;
-        private CharacterSeller _characterSeller;
-        public void Initialize(SaveLoad saveLoad, CharacterSeller characterSeller)
+        public void Initialize(SaveLoad saveLoad)
         {
             _saveLoad= saveLoad;
-            _characterSeller = characterSeller;
-            _characterSeller.ChangeMoney += OnChangeMoney;
             _statsMoney = GetComponentInChildren<StatsMoney>();
             _statsMoney.Initialize(_saveLoad.ReadAmountMoney());
+            _saveLoad.OnChangeMoney += OnChangeMoney;
         }
 
         private void OnChangeMoney() => _statsMoney.SetMoney(_saveLoad.ReadAmountMoney());
-
-        protected override void OnDisabled()
-        {
-            _characterSeller.ChangeMoney -= OnChangeMoney;
-        }
     }
 }

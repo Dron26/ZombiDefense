@@ -20,7 +20,6 @@ namespace Infrastructure.PlatoonGenerator
         private GameObject _unit;
         private List<HumanoidUI> _playerPlatoon;
 
-        private int _factionNumber;
         public void Initialize(UIUnitEnemy enemyUnit, List<HumanoidUI> playerPlatoon)
         {
             _playerPlatoon = playerPlatoon;
@@ -75,7 +74,6 @@ namespace Infrastructure.PlatoonGenerator
 
         private void СreateEnemyUnit(Enemy character)
         {
-            _factionNumber = 9;
             GameObject newCharacterObject = Instantiate(_unit, Vector3.zero, Quaternion.identity);
             Type characterType = character.GetType();
 

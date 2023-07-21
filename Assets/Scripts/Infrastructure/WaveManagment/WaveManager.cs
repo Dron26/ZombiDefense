@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Audio;
 using Enemies.AbstractEntity;
 using Service.SaveLoadService;
+using UI.Levels;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -11,7 +12,7 @@ namespace Infrastructure.WaveManagment
 {
     public class WaveManager : MonoBehaviour
     {
-        [SerializeField] private List<WaveData> _waveDatas;
+        private List<WaveData> _waveDatas=new();
         [SerializeField] private WaveSpawner _waveSpawner;
         [SerializeField] public float TimeBetweenWaves;
         
@@ -19,19 +20,28 @@ namespace Infrastructure.WaveManagment
         private int currentWaveIndex = 0;
         private bool isSpawningWave = false;
         private bool isWaitingForNextWave = false;
-        private bool canStartNextWave = false; // Флаг, разрешающий начало новой волны
+        private bool canStartNextWave = true; // Флаг, разрешающий начало новой волны
         public WaveData CurrentWave => _waveDatas[currentWaveIndex];
         public int CurrentWaveIndex => currentWaveIndex;
         public int TotalWaves => _waveDatas.Count;
+        public UnityAction OnReadySpawning;
         public UnityAction SpawningCompleted;
         private SaveLoad _saveLoad;
+        
         public void Initialize(SaveLoad saveLoad,AudioManager audioManager)
         {
             _saveLoad=saveLoad;
+            ReadWaveDatas();
             InitializeWaveData();
             _waveSpawner.Initialize(audioManager);
-            _waveSpawner.SpawningCompleted += OnWaveSpawningCompleted;
+            _waveSpawner.OnSpawnPointsReady += OnWaveSpawningCompleted;
+            _waveSpawner.OnSpawnPointsReady+= OnWaveSpawnerReady;
             StartCoroutine(SpawnWaves());
+        }
+
+        private void OnWaveSpawnerReady()
+        {
+            OnReadySpawning?.Invoke();
         }
 
         private IEnumerator SpawnWaves()
@@ -51,6 +61,15 @@ namespace Infrastructure.WaveManagment
             }
         }
 
+        private void ReadWaveDatas()
+        {
+            foreach (var wave in _saveLoad.GetLevelPoint())
+            {
+                _waveDatas.Add(wave);
+            }
+            
+        }
+        
         private void InitializeWaveData()
         {
             foreach (WaveData waveData in _waveDatas)
@@ -93,7 +112,7 @@ namespace Infrastructure.WaveManagment
 
         public void StartSpawn()
         {
-            canStartNextWave = true; // Устанавливаем флаг canStartNextWave, чтобы разрешить начало новой волны
+            _waveSpawner.OnStartSpawn();
         }
         
         public SaveLoad GetSaveLoad()

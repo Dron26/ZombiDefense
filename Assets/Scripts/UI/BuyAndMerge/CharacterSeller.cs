@@ -88,7 +88,7 @@ namespace UI.BuyAndMerge
 
         private void Buy(int price)
         {
-            _saveLoad.SpendMoney(price);
+     //       _saveLoad.SpendMoney(price);
             ChangeMoney?.Invoke();
         }
     }

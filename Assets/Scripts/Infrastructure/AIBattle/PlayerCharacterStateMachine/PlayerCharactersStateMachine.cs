@@ -66,7 +66,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
             _currentBehavior = behavior;
         }
 
-        private void OnDisable() =>
+        protected override void OnDisable() =>
             _humanoid.RemoveObserver(this);
 
         public void NotifyFromHumanoid(object data)

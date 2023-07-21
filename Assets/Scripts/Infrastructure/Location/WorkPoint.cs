@@ -22,7 +22,7 @@ namespace Infrastructure.Location
         public bool IsBusy=>_isBusy;
         public bool IsSelected => _isSelected;
         public int Level => _level;
-        
+        public int UpPrecent=>_upPrecent;
         private SpriteRenderer _currentCircle=new ();
         private List<GameObject> _selectedCircles = new();
         private Humanoid _humanoid;
@@ -31,9 +31,8 @@ namespace Infrastructure.Location
         private bool _isSelectedForMove = false;
         private Collider _collider;
         private int _level;
-        private float _upPercent;
+        private int _upPrecent;
         SaveLoad _saveLoad;
-        
 
         private void Awake()
         {
@@ -91,10 +90,10 @@ namespace Infrastructure.Location
             CheckState();
         }
 
-        public void UpLevel(float upPercent)
+        public void UpLevel(int precent)
         {
             _selectedCircles[_level].gameObject.SetActive(false);
-            _upPercent = upPercent;
+            _upPrecent += precent;
             _level++;
             _selectedCircles[_level].gameObject.SetActive(true);
         } 
@@ -106,6 +105,7 @@ namespace Infrastructure.Location
 
         public void OnPointerClick(PointerEventData eventData)
         {
+            print("Pointer");
             SetSelected(true);
             CheckState();
                 OnSelected?.Invoke(this);
@@ -119,6 +119,14 @@ namespace Infrastructure.Location
         public void SelectedForMove(bool isSelected)
         {
             _isSelectedForMove=isSelected;
+        }
+
+        public void SetStartPointer()
+        {
+            print("Pointer");
+            SetSelected(true);
+            CheckState();
+            OnSelected?.Invoke(this);
         }
     }
 }

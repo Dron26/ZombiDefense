@@ -28,12 +28,18 @@ namespace Enemies.AbstractEntity
         public event EnemyDeathHandler OnDeath;
 
 
-        public int MinLevelForHumanoid => enemyData.MinLevelForHumanoid;
+            // public int MinLevelForHumanoid => enemyData.MinLevelForHumanoid;
+        
         protected EnemyData enemyData;
-        public float MaxHealth => enemyData.MaxHealth;
-        public float RangeAttack => enemyData.RangeAttack;
-        public int Damage => enemyData.Damage;
-        public int Level => enemyData.Level; // Добавлено поле Level
+        public float MaxHealth => _maxHealth;
+        public float RangeAttack => _rangeAttack;
+        public int Damage => _damage;
+        public int Level => _level;
+        
+        public float _maxHealth =0;
+        public float _rangeAttack =0;
+        public int _damage =0;
+        public int _level =0;// Добавлено поле Level
         public GameObject GetPrefab() => enemyData.PrefabCharacter;
         public abstract int GetLevel();
         public abstract float GetRangeAttack();
@@ -77,6 +83,7 @@ namespace Enemies.AbstractEntity
                     Initialize();
                     SetSkin();
                     SetNavMeshSpeed();
+                    SetStartParametr();
                     OnDataLoad?.Invoke(this);
                 }
                 else
@@ -146,6 +153,13 @@ namespace Enemies.AbstractEntity
             return _audioManager;
         }
         
+        private void SetStartParametr()
+        {
+              _maxHealth = enemyData.MaxHealth;
+              _rangeAttack = enemyData.RangeAttack;
+              _damage = enemyData.Damage;
+              _level = enemyData.Level;
+        }
         
     }
 }

@@ -13,7 +13,7 @@ namespace Infrastructure.FactoryGame
         public GameObject CreateGeneralMenu() => 
             _assets.Instantiate(AssetPath.GeneralMenu);
 
-        public GameObject CreateSceneBattle() => 
-            _assets.Instantiate(AssetPath.SceneSwitcher);
+        public GameObject CreateSceneLevel() => 
+            _assets.Instantiate(AssetPath.SceneLevel);
     }
 }

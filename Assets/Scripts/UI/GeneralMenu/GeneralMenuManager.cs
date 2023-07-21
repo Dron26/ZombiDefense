@@ -5,6 +5,7 @@ using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Constants;
 using Infrastructure.States;
 using Service.SaveLoadService;
+using UI.Levels;
 using UI.SettingsPanel;
 using UnityEngine;
 
@@ -16,13 +17,14 @@ namespace UI.GeneralMenu
         
         private YandexLeaderboard _yandexLeaderboard;
         private SaveLoad _saveLoad;
-        private bool isReady = false;
         private GameStateMachine _stateMachine;
         private LoadingCurtain _loadingCurtain  ;
         private GameBootstrapper _gameBootstrapper; 
         [SerializeField]private  SettingPanel _settingPanel;
         [SerializeField] private GameObject _menuPanel;
         [SerializeField]private AudioManager _audioManager;
+        [SerializeField]private LevelMap _levelMap;
+        
         public async void Initialize( GameStateMachine stateMachine)
         {
             _stateMachine = stateMachine;
@@ -35,6 +37,7 @@ namespace UI.GeneralMenu
             _menuPanel.SetActive(false);
             _loadingCurtain.OnClicked = OnClikedCurtain;
             _settingPanel.Initialize(_audioManager,_saveLoad);
+            _levelMap.Initialize(_stateMachine,_saveLoad);
         }
         
         private async Task LoadAudioControllerAsync()
@@ -71,12 +74,5 @@ namespace UI.GeneralMenu
             leaderboardPanel.Initiallize();
             return leaderboardPanel;
         }
-        
-        
-        public void EnterBattleLevel()
-        {
-            _stateMachine.Enter<LoadLevelState,string>(SceneName.Game); 
-            Destroy(gameObject);
-        } 
     }
 }

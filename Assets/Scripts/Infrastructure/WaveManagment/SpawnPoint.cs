@@ -2,24 +2,24 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
+using Audio;
 using Enemies.AbstractEntity;
 using Infrastructure.AIBattle.EnemyAI.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Infrastructure.FactoryWarriors.Enemies;
 using Service.SaveLoadService;
 using UnityEngine;
-using UnityEngine.AI;
+using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
 namespace Infrastructure.WaveManagment
 {
     public class SpawnPoint : MonoCache
     {
-        public List<WaveQueue> _groupWaveQueue = new();
-      
+        public List<Wave> _groupWave = new();
+
         private int _number;
         private int _priority;
-        private float _delayTime;
         private float _stepDelayTime;
         private float _stepTime;
         private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
@@ -27,71 +27,122 @@ namespace Infrastructure.WaveManagment
         private List<Enemy> _activeEnemys = new();
         private List<Enemy> _inactiveEnemys = new();
         private SaveLoad _saveLoad;
+        private EnemyFactory _enemyFactory= new ();
+        private AudioManager _audioManager;
+        public  UnityAction FillCompleted;
         
-        public void Initialize(int number, int priority, SaveLoad saveLoad)
+        public void Initialize(int number, int priority, SaveLoad saveLoad ,AudioManager audioManager)
         {
             _number = number;
             _priority = priority;
             _stepDelayTime = 0.73f;
-            _delayTime = 7f;
             _stepTime = _stepDelayTime;
+            _saveLoad = saveLoad;
+            _enemyFactory.CreatedEnemy += OnCreatedEnemy;
             
-            _saveLoad=saveLoad;
+            _audioManager=audioManager;
         }
-        
-        public void SetQueue(WaveQueue queue)
-        {
-            _groupWaveQueue.Add(queue);
-            isStopSpawn = false;
 
+        public void SetWave(Wave wave)
+        {
+            _groupWave.Add(wave);
+            isStopSpawn = false;
+            
+            StartCoroutine(StartFillPool());
+        }
+
+        public void OnStartSpawn()
+        {
             StartCoroutine(StartSpawn());
         }
-        
+
         private IEnumerator StartSpawn()
         {
-            float delayTime = 5.0f; 
-            yield return new WaitForSeconds(Random.Range(0.57f, 5.33f));
-    
-            foreach (WaveQueue queue in _groupWaveQueue)
+            float delayTime = 5f;
+            
+            foreach (Enemy enemy in _activeEnemys)
             {
-                int count = queue.Count;
+                float randomDelayTime = Random.Range(0.57f, 5.33f);
+                yield return new WaitForSeconds(delayTime + randomDelayTime);
+                Activated(enemy);
+            }
+        }
+
+
+        private IEnumerator StartFillPool()
+        {
+            float delayTime = 0.1f;
+
+            foreach (Wave wave in _groupWave)
+            {
+                int count = wave.Count;
 
                 for (int i = 0; i < count; i++)
                 {
                     if (isStopSpawn)
                         break;
-                    Enemy enemy = queue.Dequeue();
-                    enemy.gameObject.transform.parent = transform;
-                    enemy.SetSaveLoad(_saveLoad);
-                    enemy.StartPosition = transform.position;
-                    enemy.GetComponent<EnemyDieState>().OnRevival += OnEnemyRevival;
-                    queue.Enqueue(enemy);
-                    Activated(enemy);
-
-                    float randomDelayTime = Random.Range(0.57f, 5.33f);
-                    yield return new WaitForSeconds(delayTime + randomDelayTime);
+                    CreateEnemy(wave.GetEnemy(i).gameObject);
+                    
+                   // float randomDelayTime = Random.Range(0.57f, 5.33f);
+                   // yield return new WaitForSeconds(delayTime + randomDelayTime);
+                    yield return new WaitForSeconds(delayTime);
                 }
             }
+            
+            FillCompleted?.Invoke();
         }
 
-        private void Activated( Enemy enemy)
+        private void CreateEnemy(GameObject enemy)
+        {
+            _enemyFactory.Create(enemy);
+        }
+        
+        private void OnCreatedEnemy(Enemy enemy)
+        {
+            enemy.gameObject.SetActive(false);
+            enemy.gameObject.layer = LayerMask.NameToLayer("Enemy");
+            enemy.gameObject.transform.parent = transform;
+            
+            enemy.SetSaveLoad(_saveLoad);
+            enemy.SetAudioController(_audioManager);
+            enemy.StartPosition = transform.position;
+            enemy.transform.localPosition = Vector3.zero;
+            
+            enemy.GetComponent<EnemyDieState>().OnRevival += OnEnemyRevival;
+            enemy.OnDataLoad += OnCreatedEnemy;
+            enemy.OnDeath += OnEnemyDeath;
+            _activeEnemys.Add(enemy);
+        }
+        
+        private void OnEnemyDeath(Enemy enemy)
+        {
+            _saveLoad.SetInactiveEnemy(enemy);
+        }
+
+        private void Activated(Enemy enemy)
         {
             enemy.gameObject.transform.position = transform.position;
             enemy.gameObject.SetActive(true);
             _saveLoad.SetActiveEnemy(enemy);
         }
 
-        
+
         private void OnEnemyRevival(Enemy enemy)
         {
             Activated(enemy);
         }
-        
+
         public void StopSpawn()
         {
             isStopSpawn = true;
             _cancellationTokenSource.Cancel();
             _cancellationTokenSource = new CancellationTokenSource();
         }
+
+        protected override void OnDisable()
+        {
+            StopAllCoroutines();
+        }
+        
     }
 }

@@ -16,8 +16,7 @@ namespace UI.HUD.LuckySpin
 
         [SerializeField] private YandexAds _rewardAds;
 
-        private bool isRewardShowed;
-        private const int RewardSpinsADS = 3;
+        private const int RewardSpinsAds = 3;
         private const int MaxCountSpins = 3;
 
         private int _counterSpins = 3;
@@ -63,7 +62,6 @@ namespace UI.HUD.LuckySpin
         public void TryGetSpin()
         {
             _rewardAds.ShowRewardedAd();
-            isRewardShowed = false;
         }
 
         private void Draw() =>
@@ -72,9 +70,7 @@ namespace UI.HUD.LuckySpin
 
         public void GetSpin()
         {
-            isRewardShowed = true;
-
-            _counterSpins += RewardSpinsADS;
+            _counterSpins += RewardSpinsAds;
 
             if (_counterSpins > MaxCountSpins)
                 _counterSpins = MaxCountSpins;

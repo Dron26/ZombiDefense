@@ -13,17 +13,14 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 {
     public class MovementState : State
     {
-        private readonly float _rateStepUnit = .01f;
         private readonly WaitForSeconds _waitForSeconds = new(0.3f);
         private WorkPoint _point;
         private NavMeshAgent _agent;
-        private float _move;
-        private bool isStopped = false;
         private PlayerCharacterAnimController _playerCharacterAnimController;
         private WeaponController _weaponController;
-        private float minDistance = 0.3f;
-        private bool reachedDestination = true;
-        private bool isSetDestination = false;
+        private float _minDistance = 0.3f;
+        private bool _reachedDestination = true;
+        private bool _isSetDestination = false;
         private Humanoid _humanoid;
         
         private void Awake()
@@ -33,7 +30,6 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
             _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
             _agent = GetComponent<NavMeshAgent>();
             _agent.stoppingDistance = 0f; // Задайте минимальную дистанцию остановки
-            _move = 0f;
         }
 
 
@@ -42,9 +38,9 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
             if (!isActiveAndEnabled)
                 return;
 
-            if (reachedDestination)
+            if (_reachedDestination)
             {
-                if (!isSetDestination)
+                if (!_isSetDestination)
                 {
                     Move();
                 }
@@ -60,7 +56,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
                 _playerCharacterAnimController.OnMove(true);
                 _agent.SetDestination(targetPosition);
                 _humanoid.IsMoving(true);
-                isSetDestination = true;
+                _isSetDestination = true;
                 StartCoroutine(CheckDistance()) ;
             }
             else
@@ -72,18 +68,18 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 
         private IEnumerator CheckDistance()
         {
-            reachedDestination = false;
+            _reachedDestination = false;
             if (_point == null)
                 yield return null;
 
-            while (reachedDestination==false)
+            while (_reachedDestination==false)
             {
                 float distance = Vector3.Distance(transform.position, _point.transform.position);
             
-                if (distance <= minDistance)
+                if (distance <= _minDistance)
                 {
-                    reachedDestination = true;
-                    isSetDestination = false;
+                    _reachedDestination = true;
+                    _isSetDestination = false;
                     Humanoid humanoid =GetComponent<Humanoid>();
                     _point.SetHumanoid(humanoid);
                     _humanoid.IsMoving(false);
@@ -98,8 +94,8 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         public void SetNewPoint(WorkPoint newPoint)
         {
             _point = newPoint;
-            reachedDestination = true;
-            isSetDestination = false;
+            _reachedDestination = true;
+            _isSetDestination = false;
         }
     }
 }

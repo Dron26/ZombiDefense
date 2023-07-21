@@ -23,7 +23,7 @@ namespace Infrastructure.Location
 
        
 
-        public WaveSpawner GetWaveSpawner() => _waveManager.GetWaveSpawner();
+        public WaveManager GetWaveManager() => _waveManager;
 
 
         public void StartSpawning()

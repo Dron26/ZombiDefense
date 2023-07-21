@@ -32,8 +32,7 @@ namespace Infrastructure
 
         private  void  Init()
         {
-            _loadingCurtain.StartLoading();
-            _game = new Game(this);
+            _game = new Game(this,_loadingCurtain);
             _game.StateMashine.Enter<BootstrapState>();
             DontDestroyOnLoad(this);
         }

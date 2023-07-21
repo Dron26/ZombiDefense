@@ -21,7 +21,6 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         private FXController _fxController;
         private Humanoid _humanoid;
         private WeaponController _weaponController;
-        private bool _isAttacked;
 
         private bool _isShotgun;
 
@@ -93,7 +92,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
                 yield return null;
             }
 
-            yield return null;
+            ChangeState();
         }
 
 
@@ -201,12 +200,6 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 
             _isAttacking = false;
         }
-
-        public void SetAttacked()
-        {
-            _isAttacked = false;
-        }
-
 
         private void OnWeaponChanged()
         {

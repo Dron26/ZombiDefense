@@ -16,6 +16,6 @@ namespace UI.Resurse
             SetMoney(money);
         }
 
-        public void SetMoney(int money) => _text.text = money.ToString();
+        public void SetMoney(int money) => _text.text = "$"+money.ToString();
     }
 }

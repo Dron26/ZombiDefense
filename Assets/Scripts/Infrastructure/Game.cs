@@ -1,4 +1,3 @@
-using Infrastructure.Logic;
 using Infrastructure.States;
 using Lean.Localization;
 using Service;
@@ -9,9 +8,9 @@ namespace Infrastructure
     {
         public readonly GameStateMachine StateMashine;
         
-        public Game(GameBootstrapper corountineRunner )
+        public Game(GameBootstrapper corountineRunner ,LoadingCurtain curtain)
         {
-            StateMashine = new GameStateMachine(new SceneLoader(corountineRunner),AllServices.Container );
+            StateMashine = new GameStateMachine(new SceneLoader(corountineRunner),AllServices.Container ,curtain);
         }
     }
 }

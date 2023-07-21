@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Infrastructure.FactoryGame;
-using Infrastructure.Logic;
-using UI;
+using Infrastructure.Location;
 using UI.GeneralMenu;
 using UnityEngine;
 
@@ -58,11 +57,11 @@ namespace Infrastructure.States
             _stateMachine.Enter<GameLoopState>();
         }
 
-        private void CreateSceneSwitcher()
+        private void CreateSceneLevel()
         { 
             
-            GameObject battleLevel = _gameFactory.CreateSceneBattle();
-            battleLevel.GetComponentInChildren<BattleLevel>().Initialize(_stateMachine);
+            GameObject level = _gameFactory.CreateSceneLevel();
+            level.GetComponentInChildren<SceneInitializer>().Initialize(_stateMachine);
             _stateMachine.Enter<GameLoopState>();
         }
 
@@ -78,7 +77,7 @@ namespace Infrastructure.States
         {
             _actions.Add(null);
             _actions.Add(CreateGeneralMenu);
-            _actions.Add(CreateSceneSwitcher);
+            _actions.Add(CreateSceneLevel);
         }
     }
 }

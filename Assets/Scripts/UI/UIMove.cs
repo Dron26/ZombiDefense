@@ -14,7 +14,6 @@ namespace UI
        
         private List<RectTransform[]> _windiws;
         private readonly float _duration = 1f;
-        private readonly float _delay = 1f;
 
         private Vector2[] _startPositions;
         private Vector2[] _endPositions;
@@ -32,7 +31,7 @@ namespace UI
             
         }
 
-        public async Task SlideIn(int id)
+        public  void SlideIn(int id)
         {
             _startPositions = new Vector2[_windiws[id].Length];
             _endPositions = new Vector2[_windiws[id].Length];

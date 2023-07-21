@@ -28,14 +28,12 @@ namespace Animation
 
         private Animator _animator;
         private AnimatorOverrideController animatorOverrideController;
-        private int weaponIndex;
         private Dictionary<int, float> _animInfo = new();
         private RuntimeAnimatorController animatorController;
         
         public void Awake( )
         {
             _animator = GetComponent<Animator>();
-            weaponIndex = 0;
             SetAnimInfo();
         }
         // поставить смерть и падение под землю  по событию в анимации

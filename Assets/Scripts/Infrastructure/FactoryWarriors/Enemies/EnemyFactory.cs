@@ -4,29 +4,28 @@ using Audio;
 using Cysharp.Threading.Tasks;
 using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
+using Infrastructure.BaseMonoCache.Code.MonoCache;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace Infrastructure.FactoryWarriors.Enemies
 {
-    public class EnemyFactory : MonoBehaviour
+    public class EnemyFactory : MonoCache
     {
         public UnityAction<Enemy> CreatedEnemy;
-        public async Task<GameObject> Create(GameObject enemy)
+        
+        public void Create(GameObject enemy)
         {
             GameObject newEnemy = Instantiate(enemy);
             Enemy enemyComponent = newEnemy.GetComponent<Enemy>();
-            enemyComponent.OnDataLoad = Created;
-            
-            await UniTask.SwitchToMainThread();
-            await enemyComponent.LoadPrefab();
-            
-            return newEnemy;
+            enemyComponent.OnDataLoad = Created; 
+            enemyComponent.LoadPrefab();
         }
 
         private void Created(Enemy enemyComponent)
         {
             CreatedEnemy?.Invoke(enemyComponent);
+            print("Enemy created");
         }
     }
 }

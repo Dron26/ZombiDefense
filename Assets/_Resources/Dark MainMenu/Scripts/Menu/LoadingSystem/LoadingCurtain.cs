@@ -11,23 +11,10 @@ public class LoadingCurtain : MonoBehaviour
     [SerializeField] private GameObject _panel;
 
     public UnityAction OnClicked;
-    private bool _isLoading = false;
-    private static LoadingCurtain instance;
     
     private void Awake()
     {
-        // Проверяем, есть ли уже другой экземпляр 
-        if (instance != null && instance != this)
-        {
-            // Уничтожаем текущий экземпляр 
-            Destroy(gameObject);
-            return;
-        }
-
-        // Если нет других экземпляров, делаем текущий экземпляр  неуничтожаемым при загрузке новой сцены
         DontDestroyOnLoad(gameObject);
-        instance = this;
-        
     }
 
     public void StartLoading()

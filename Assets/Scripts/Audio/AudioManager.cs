@@ -79,7 +79,7 @@ namespace Audio
 
             else
             {
-                _backgroundMusic=_currentMusics[Random.Range(0,_backgroundMusics.Count)];
+                _backgroundMusic=_backgroundMusics[Random.Range(0,_backgroundMusics.Count)];
             }
                
 
@@ -91,7 +91,7 @@ namespace Audio
 
         private void Start()
         {
-            if (_musicEnabled!=false&&isGeneralMenuEnabled==false) StartCoroutine(MusicCoroutine());
+            // if (_musicEnabled!=false&&isGeneralMenuEnabled==false) StartCoroutine(MusicCoroutine());
         }
 
         private void CheckMixerException()
@@ -156,13 +156,13 @@ namespace Audio
             else
             {
                 PlayBackgroundMusic();
-                if (isGeneralMenuEnabled == false)
-                {
-                    if (_musicCoroutine == null)
-                    {
-                        _musicCoroutine = StartCoroutine(MusicCoroutine());
-                    }
-                }
+                // if (isGeneralMenuEnabled == false)
+                // {
+                //     if (_musicCoroutine == null)
+                //     {
+                //         _musicCoroutine = StartCoroutine(MusicCoroutine());
+                //     }
+                // }
             }
         }
         
@@ -211,7 +211,7 @@ namespace Audio
             return parametrs;
         }
 
-        private void OnDisable()
+        protected override void OnDisable()
         {
             UpdateParameter();
         }

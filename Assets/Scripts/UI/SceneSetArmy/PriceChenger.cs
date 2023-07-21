@@ -37,7 +37,6 @@ namespace UI.SceneSetArmy
         private int _price;
         private int indexSlider;
         private int _previousValue;
-        private bool _isBuy = false;
 
 
         public void Initialize(PlayerSlotsInitializer slotsInitializer, SaveLoad saveLoad)

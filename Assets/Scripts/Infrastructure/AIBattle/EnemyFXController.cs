@@ -100,7 +100,7 @@ namespace Infrastructure.AIBattle
             throw new NotImplementedException();
         }
 
-        private void OnDisable()
+        protected override void  OnDisable()
         {
             if (TryGetComponent(out Enemy enemy))
             {

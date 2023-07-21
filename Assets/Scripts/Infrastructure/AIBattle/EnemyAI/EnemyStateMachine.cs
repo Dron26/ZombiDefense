@@ -9,7 +9,6 @@ using UnityEngine;
 
 namespace Infrastructure.AIBattle.EnemyAI{
     [RequireComponent(typeof(EnemyFXController))]
-    [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(Animator))]
     [RequireComponent(typeof(EnemyAnimController))]
     [RequireComponent(typeof(EnemySearchTargetState))]

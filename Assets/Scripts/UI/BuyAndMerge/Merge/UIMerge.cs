@@ -86,7 +86,7 @@ namespace UI.BuyAndMerge.Merge
                     {
                         int price = dragging.pointerDrag.GetComponent<HumanoidUI>().GetPrice();
 
-                        _saveLoad.SpendMoney(price);
+                       // _saveLoad.SpendMoney(price);
                     }
 
                     newUnit = Instantiate(unitForBuy.gameObject, dropZone.transform);

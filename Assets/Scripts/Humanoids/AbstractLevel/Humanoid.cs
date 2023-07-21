@@ -18,9 +18,12 @@ namespace Humanoids.AbstractLevel
     [RequireComponent(typeof(PlayerCharactersStateMachine))]
     public abstract class Humanoid : MonoCache, IObservableHumanoid
     {
-        [SerializeField] private AssetReferenceT<HumanoidData> humanoidDataReference;
         [SerializeField] private AssetReferenceT<WeaponData> weaponDataReference;
-       
+        [SerializeField]  private int _id;
+        [SerializeField]  private string _name;
+        [SerializeField] private string _characterInfoName;
+        [SerializeField] private string _characterInfo;
+        
         public Vector3 StartPosition;
         private int _countLoaded = 0;
         private int _maxCountLoaded = 2;
@@ -29,16 +32,17 @@ namespace Humanoids.AbstractLevel
         public UnityAction<Humanoid> OnDataLoad;
         public UnityAction<bool> OnHumanoidSelected;
         [SerializeField ]private ParticleSystem _ring;
-
-        public Sprite sprite;
-
+        private WeaponController _weaponControl;
+        public string GetInfo() => _characterInfo;
+       
+        public int ID=>_id;
         protected HumanoidData humanoidData;
         protected WeaponData weaponData;
+        private bool _isBuyed = false;
+        public bool IsBuyed => _isBuyed;
         public bool IsSelected => _isSelected;
-        public float MaxHealth => humanoidData.MaxHealth;
-        public int Level => humanoidData.Level;
         public abstract int GetLevel();
-        public abstract float GetHealth();
+        public abstract int GetHealth();
         public abstract bool IsLife();
         public abstract int GetPrice();
         public bool IsMove=>_isMoving;
@@ -47,43 +51,25 @@ namespace Humanoids.AbstractLevel
         public UnityAction OnLoadData;
         private bool _isSelected;
         private bool _isMoving;
-
+public string GetName() => _name;
         public WeaponData GetWeaponData() => weaponData;
         public abstract void ApplyDamage(int getDamage);
+        public abstract Sprite GetSprite();
 
 
+        private void Awake()
+        {
+            _weaponControl= GetComponent<WeaponController>();    
+        }
         public Task LoadPrefab()
         {
             var tcs = new TaskCompletionSource<bool>();
-
-            if (humanoidDataReference.Asset != null)
-            {
-                humanoidData = (HumanoidData)humanoidDataReference.Asset;
-                Debug.Log($"HumanoidData loaded: {humanoidData}");
-            }
 
             if (weaponDataReference.Asset != null)
             {
                 weaponData = (WeaponData)weaponDataReference.Asset;
                 Debug.Log($"HumanoidData loaded: {weaponData}");
             }
-
-            humanoidDataReference.LoadAssetAsync().Completed += handle =>
-            {
-                if (handle.Status == AsyncOperationStatus.Succeeded)
-                {
-                    humanoidData = (HumanoidData)handle.Result;
-                    Debug.Log($"HumanoidData loaded: {humanoidData}");
-                    tcs.TrySetResult(true);
-                    NotifyObservers(this);
-                    OnLoadData?.Invoke();
-                }
-                else
-                {
-                    Debug.LogError($"Failed to load HumanoidData: {handle.OperationException}");
-                    tcs.TrySetException(handle.OperationException);
-                }
-            };
 
             weaponDataReference.LoadAssetAsync().Completed += handle =>
             {
@@ -93,6 +79,7 @@ namespace Humanoids.AbstractLevel
                     Debug.Log($"weaponData loaded: {weaponData}");
                     tcs.TrySetResult(true);
                     NotifyObservers(this);
+                    OnLoadData?.Invoke();
                 }
                 else
                 {
@@ -150,13 +137,13 @@ namespace Humanoids.AbstractLevel
         {
             _isSelected = isSelected;
             
-            if (isSelected)
+            if(_isSelected==true)
             {
-                _ring.Play();
+                _ring.gameObject.SetActive(true);
             }
             else
             {
-                _ring.Stop();
+                _ring.gameObject.SetActive(false);
             }
         }
         
@@ -170,5 +157,21 @@ namespace Humanoids.AbstractLevel
             _isMoving = isMoving;
             OnMove?.Invoke();
         }
+
+
+        public void SetAvailable(bool isBuyed)
+        {
+            isBuyed=isBuyed;
+        }
+
+        public WeaponController GetWeaponController()
+        {
+            _weaponControl= GetComponent<WeaponController>();    
+            return _weaponControl;
+        }
+
+        public abstract void SetUpgrade(UpgradeInfo upgrade);
+
+        public string GetInfoName() => _characterInfoName;
     }
 }

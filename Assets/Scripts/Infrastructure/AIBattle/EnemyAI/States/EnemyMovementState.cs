@@ -13,7 +13,6 @@ namespace Infrastructure.AIBattle.EnemyAI.States
 {
     public class EnemyMovementState : EnemyState
     {
-        private readonly float _rateStepUnit = .01f;
 
         private Humanoid _humanoid;
         private NavMeshAgent _agent;
@@ -142,15 +141,18 @@ namespace Infrastructure.AIBattle.EnemyAI.States
 
        private void OnTargetChangePoint()
        {
-           if (ShouldTrackSoldier())
-               StartCoroutine(CheckSoldierPosition());
-           else
-               ChangeState();
+           if (gameObject.activeInHierarchy) // Проверка активности объекта
+           {
+               if (ShouldTrackSoldier())
+                   StartCoroutine(CheckSoldierPosition());
+               else
+                   ChangeState();
+           }
        }
        
        private void ChangeState()
        {
-           _agent.SetDestination(transform.position);
+           _agent.isStopped = true;
            _animator.SetBool(_enemyAnimController.Walk, false);
            StateMachine.EnterBehavior<EnemySearchTargetState>();
        }

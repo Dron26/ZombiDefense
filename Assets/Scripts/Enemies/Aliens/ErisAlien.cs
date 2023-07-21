@@ -23,6 +23,7 @@ namespace Enemies.Aliens
         private EnemyFXController _fxController;
         private SaveLoad _saveLoad;
 
+        private int _price = 100;
         private void Awake()
         {
             _animator = GetComponent<Animator>();
@@ -40,7 +41,7 @@ namespace Enemies.Aliens
 
         public override int GetPrice()
         {
-            throw new System.NotImplementedException();
+            return _price;
         }
 
         public override void SetAttacments()

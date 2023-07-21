@@ -13,9 +13,10 @@ namespace Infrastructure.States
     {
         private readonly Dictionary<Type,IExitebleState> _states;
         private IExitebleState _activeState;
-
-        public GameStateMachine(SceneLoader sceneLoader , AllServices services)
+        private LoadingCurtain _loadingCurtain;
+        public GameStateMachine(SceneLoader sceneLoader , AllServices services,LoadingCurtain loadingCurtain)
         {
+            _loadingCurtain=loadingCurtain;
             List<string> sceneNames = GetSceneNames();
 
             _states = new Dictionary<Type, IExitebleState>
@@ -29,12 +30,14 @@ namespace Infrastructure.States
 
         public void Enter<TState>() where TState : class, IState
         {
+            _loadingCurtain.StartLoading();
             IState state = ChangeState<TState>();
             state.Enter();
         }
 
         public void Enter<TState,TPayload>(TPayload payload) where TState : class, IPayloadState<TPayload>
         {
+            _loadingCurtain.StartLoading();
             TState state = ChangeState<TState>();
             state.Enter(payload);
         }
@@ -58,7 +61,7 @@ namespace Infrastructure.States
              //     into name
              //     select name.Substring(0, name.Length - 6)).ToList();
                  Debug.Log("осторожно говнокод");
-             List<string> names = new() { "Initial", "GeneralMenu", "SimulationSceneOne" };
+             List<string> names = new() { "Initial", "GeneralMenu", "Level" };
              return  names;
 
         }

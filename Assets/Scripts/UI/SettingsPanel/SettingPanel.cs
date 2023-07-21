@@ -18,7 +18,6 @@ namespace UI.SettingsPanel
         private SaveLoad _saveLoad;
         private AudioManager _audioManager;
         private AudioSettingsParameters _audioSettingsParameters;
-        private bool _isActive=true;
         private  bool _soundEnabled ;
         private bool _musicEnabled ;
         private float _currentVolumeSound ;
@@ -105,11 +104,6 @@ namespace UI.SettingsPanel
             _soundEnabled = _audioSettingsParameters.SoundEnabled;
             SetSliders();
             SetButtons();
-        }
-
-        private void OnDisable()
-        {
-            
         }
     }
 }

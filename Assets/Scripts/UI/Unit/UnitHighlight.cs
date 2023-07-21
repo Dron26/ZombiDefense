@@ -18,7 +18,7 @@ namespace UI.Unit
         private bool _isHighlightedPrev = false;
         private bool _isHighlighted = false;
 
-        private async void Start()
+        private void Start()
         {
             _highlightImage = GetComponentInChildren<Image>();
             _originalAlpha = _highlightImage.color.a;

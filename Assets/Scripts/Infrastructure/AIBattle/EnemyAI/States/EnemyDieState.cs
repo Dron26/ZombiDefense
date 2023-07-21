@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,10 +18,18 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         public event EnemyRevivalHandler OnRevival;
         private Enemy _enemy;
         private bool _isDeath;
-        private void FixedUpdate()
+        private NavMeshAgent _agent;
+
+        private void Awake()
+        {
+            _agent = GetComponent<NavMeshAgent>();
+        }
+
+        protected override void FixedUpdateCustom()
         {
             if (!_isDeath)
             {
+                _agent.isStopped = true;
                 StartCoroutine(WaitBeforeDie());
             }
         }
@@ -40,7 +49,6 @@ namespace Infrastructure.AIBattle.EnemyAI.States
                 _enemy.gameObject.transform.position = _enemy.StartPosition;
             }
             
-            _enemy.GetComponent<Rigidbody>().useGravity=false;
             _enemy.GetComponent<Collider>().enabled = false;
             _enemy.GetComponent<NavMeshAgent>().enabled = false;
             
@@ -58,13 +66,14 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         
         private void AfterDie()
         {
-            _enemy.GetComponent<Rigidbody>().useGravity=true;
             _enemy.GetComponent<Collider>().enabled = true;
             _enemy.GetComponent<NavMeshAgent>().enabled = true;
             
             OnRevival?.Invoke(_enemy);
-            StateMachine.EnterBehavior<EnemySearchTargetState>();
             _isDeath=false;
+            _agent.isStopped = false;
+            StateMachine.EnterBehavior<EnemySearchTargetState>();
+            
         }
         
         

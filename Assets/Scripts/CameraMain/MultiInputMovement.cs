@@ -1,83 +1,85 @@
-using System;
 using UnityEngine;
 
-public class MultiInputMovement : MonoBehaviour
+namespace CameraMain
 {
-    private Vector3 touchStartPosition;
-    private Vector3 currentTouchPosition;
-    private bool isDragging = false;
-
-    public float moveSpeed = 5f;
-    public Vector2 minBounds;
-    public Vector2 maxBounds;
-    public Vector2 _startPosition;
-
-    private void Start()
+    public class MultiInputMovement : MonoBehaviour
     {
-        _startPosition = transform.position;
-    }
+        private Vector3 _touchStartPosition;
+        private Vector3 _currentTouchPosition;
+        private bool _isDragging = false;
 
-    private void Update()
-    {
-        HandleTouchInput();
-        HandleMouseAndKeyboardInput();
-    }
+        public float moveSpeed = 5f;
+        public Vector2 minBounds;
+        public Vector2 maxBounds;
+        private Vector2 _startPosition;
 
-    private void HandleTouchInput()
-    {
-        if (Input.touchCount > 0)
+        private void Start()
         {
-            Touch touch = Input.GetTouch(0);
+            _startPosition = transform.position;
+        }
 
-            switch (touch.phase)
+        private void Update()
+        {
+            HandleTouchInput();
+            HandleMouseAndKeyboardInput();
+        }
+
+        private void HandleTouchInput()
+        {
+            if (Input.touchCount > 0)
             {
-                case TouchPhase.Began:
-                    touchStartPosition = touch.position;
-                    isDragging = true;
-                    break;
+                Touch touch = Input.GetTouch(0);
 
-                case TouchPhase.Moved:
-                    currentTouchPosition = touch.position;
-                    break;
+                switch (touch.phase)
+                {
+                    case TouchPhase.Began:
+                        _touchStartPosition = touch.position;
+                        _isDragging = true;
+                        break;
 
-                case TouchPhase.Ended:
-                    isDragging = false;
-                    break;
+                    case TouchPhase.Moved:
+                        _currentTouchPosition = touch.position;
+                        break;
+
+                    case TouchPhase.Ended:
+                        _isDragging = false;
+                        break;
+                }
             }
         }
-    }
 
-    private void HandleMouseAndKeyboardInput()
-    {
-        Vector3 moveDirection = Vector3.zero;
-        moveDirection.x = Input.GetAxis("Horizontal");
-        moveDirection.z = Input.GetAxis("Vertical");
-
-        if (moveDirection != Vector3.zero)
+        private void HandleMouseAndKeyboardInput()
         {
-            isDragging = false;
-        }
+            Vector3 moveDirection = Vector3.zero;
+            moveDirection.x = Input.GetAxis("Horizontal");
+            moveDirection.z = Input.GetAxis("Vertical");
 
-        if (isDragging || moveDirection != Vector3.zero)
-        {
-            if (isDragging)
+            if (moveDirection != Vector3.zero)
             {
-                moveDirection = currentTouchPosition - touchStartPosition;
+                _isDragging = false;
             }
 
-            moveDirection.y = 0f;
-            moveDirection.Normalize();
+            if (_isDragging || moveDirection != Vector3.zero)
+            {
+                if (_isDragging)
+                {
+                    moveDirection = _currentTouchPosition - _touchStartPosition;
+                }
 
-            Vector3 newPosition = transform.position + moveDirection * moveSpeed * Time.deltaTime;
-            newPosition.x = Mathf.Clamp(newPosition.x, minBounds.x, maxBounds.x);
-            newPosition.z = Mathf.Clamp(newPosition.z, minBounds.y, maxBounds.y);
+                moveDirection.y = 0f;
+                moveDirection.Normalize();
 
-            MoveTo(newPosition);
+                Vector3 newPosition = transform.position + moveDirection * moveSpeed * Time.deltaTime;
+                newPosition.x = Mathf.Clamp(newPosition.x, minBounds.x, maxBounds.x);
+                newPosition.z = Mathf.Clamp(newPosition.z, minBounds.y, maxBounds.y);
+
+                MoveTo(newPosition);
+            }
         }
-    }
 
-    private void MoveTo(Vector3 position)
-    {
-        transform.position = position;
+        private void MoveTo(Vector3 position)
+        {
+            transform.position = position;
+        }
     }
 }

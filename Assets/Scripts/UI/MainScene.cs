@@ -1,11 +1,8 @@
 using System.Collections.Generic;
 using Audio;
-using Cysharp.Threading.Tasks.Triggers;
 using EnemiesUI.AbstractEntity;
 using HumanoidsUI.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.Constants;
-using Infrastructure.Logic;
 using Infrastructure.PlatoonGenerator;
 using Infrastructure.States;
 using Service.ADS;
@@ -42,7 +39,7 @@ namespace UI
         [SerializeField] private GameObject _raidSlot;
         [SerializeField] private UIMerge _merge;
         [SerializeField] private ArmyInitializer _armyInitializer;
-        [SerializeField] private ResursesCanvas _resursesCanvas;
+            // [SerializeField] private ResursesCanvas _resursesCanvas;
         [SerializeField] private WindowSwither _windowSwither;
         [SerializeField] private ADCanvas _adCanvas;
         [SerializeField] private OpponentPlatoonGenerator _generator;
@@ -58,14 +55,12 @@ namespace UI
         private SaveLoad _saveLoad;
         private List<HumanoidUI> _playerPlatoon;
         private List<Enemy> _enemyPlatoon;
-        private bool isReady = false;
         private GameStateMachine _stateMachine;
         private GameObject _loadingCurtain  ;
         
         public void Initialize( GameStateMachine stateMachine)
         {
             _stateMachine = stateMachine;
-            isReady = true;
             CreateLoadingCurtain();
             _yandexLeaderboard = FindObjectOfType<YandexLeaderboard>();
             _saveLoad=FindObjectOfType<SaveLoad>();
@@ -73,7 +68,7 @@ namespace UI
         
         private void Start()
         {
-            InitializeResursesCanvas();
+         //   InitializeResursesCanvas();
             _controller.Initialize(_saveLoad, _adCanvas);
             _fractionsInitializer.Initialize(_units, _controller, _characterSeller);
             _mergePanelInitializer.Initialize(_controller, _slot,_saveLoad);
@@ -82,7 +77,6 @@ namespace UI
             _raidInitializer.Initialize(_controller, _raidSlot);
             _continueButton.onClick.AddListener(ContinueButtonClicked);
             _yandexLeaderboard.Initialize(CreateLeaderboard());
-            _loadingCurtain.GetComponent<LoadingCurtainOld>().Hide(true);
             //_audioController.Initialize(_saveLoad);
             _settingPanel.Initialize(_audioManager, _saveLoad);
         }
@@ -152,15 +146,15 @@ namespace UI
 
         public void EnterBattleLevel()
         {
-            _stateMachine.Enter<LoadLevelState,string>(SceneName.Game); 
+         //   _stateMachine.Enter<LoadLevelState,string>(SceneName.Game); 
             Destroy(gameObject);
         } 
         
         
-        private void InitializeResursesCanvas() => _resursesCanvas.Initialize(_saveLoad, _characterSeller);
+      //  private void InitializeResursesCanvas() => _resursesCanvas.Initialize(_saveLoad, _characterSeller);
 
 
-        private void OnDisable()
+        protected override void  OnDisable()
         {
             if (_loadingCurtain!=null)
             {

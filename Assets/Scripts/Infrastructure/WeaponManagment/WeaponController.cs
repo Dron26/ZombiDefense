@@ -29,10 +29,7 @@ namespace Infrastructure.WeaponManagment
         private PlayerCharacterAnimController _playerCharacterAnimController;
         private Animator _animator;
         //private  Weapon _weaponGranade;
-        private int _numberSmallArms = 0;
-        private int _numberGranade = 4;
         private Humanoid _humanoid;
-        private float _fireTimer = 0f;
         private int _totalReceivedDamage;
         private Dictionary<int, float> _weaponAnimInfo=new();
         private string _weaponName;
@@ -89,16 +86,14 @@ namespace Infrastructure.WeaponManagment
 
         private void SetWeapons()
         { 
-            List<Weapon> smallArms=_weaponData.SmallArms();
-         //   List<Weapon> granads=_weaponData.Granads();
-
-            if (smallArms!=null)
+            
+            if (_weaponData.GetSmallArms().Count > 0)
             {
-                for (int i = 0; i < smallArms.Count; i++)
+                for (int i = 0; i < _weaponData.GetSmallArms().Count; i++)
                 {
-                    if (smallArms[i]!=null)
+                    if (_weaponData.GetSmallArms()[i]!=null)
                     {
-                        _smallArms=smallArms[i];
+                        _smallArms=_weaponData.GetSmallArms()[i];
                         _isShotgun=_smallArms.IsShotgun;
                     }
                 }
@@ -108,25 +103,26 @@ namespace Infrastructure.WeaponManagment
                 _smallArms=new ();
                 print("Send null smallArms in Prefab");
             }
-           
-            // if (granads != null)
-            // {
-            //     for (int i = 0; i < granads.Count; i++)
-            //     {
-            //         if (granads[i]!=null)
-            //         {
-            //             _granade=granads[i];
-            //         }
-            //     }
-            // }
-            // else
-            // {
-            //     granads=new ();
-            //     print("Send null granads in Prefab");
-            // }
             
-            
-            
+            if (_weaponData.GetGranads().Count > 0)
+            {
+                
+                if (_weaponData.GetSmallArms().Count > 0)
+                {
+                    for (int i = 0; i < _weaponData.GetGranads().Count; i++)
+                    {
+                        if (_weaponData.GetGranads()[i]!=null)
+                        {
+                            _granade=_weaponData.GetGranads()[i];
+                        }
+                    }
+                }
+                else
+                {
+                    _granade=new ();
+                    print("Send null granads in Prefab");
+                }
+            }
         }
 
         private void SetWeaponParametrs()
@@ -134,9 +130,13 @@ namespace Infrastructure.WeaponManagment
             _weaponName = _smallArms.WeaponName;
             _damage = _smallArms.Damage;
             _maxAmmo = _smallArms.MaxAmmo;
-            _fireRate = _weaponAnimInfo[_playerCharacterAnimController.IsShoot];
-            _reloadTime = _weaponAnimInfo[_playerCharacterAnimController.Reload];
             _range = _smallArms.Range;
+            
+            if (!_weaponData.IsGranade)
+            {
+                _fireRate = _weaponAnimInfo[_playerCharacterAnimController.IsShoot];
+                _reloadTime = _weaponAnimInfo[_playerCharacterAnimController.Reload];
+            }
         }
         
         
@@ -223,7 +223,7 @@ namespace Infrastructure.WeaponManagment
         }
 
 
-        private void OnDisable()
+        protected override void  OnDisable()
         {
             if (TryGetComponent(out Humanoid humanoid))
             {
@@ -256,6 +256,15 @@ namespace Infrastructure.WeaponManagment
 
         public float GetSpreadAngle() => 
             _smallArms.SpreadAngle;
+
+        public void SetDamage(int damage)
+        {
+            if (damage<=_damage*2)
+            {
+                
+            }
+            _damage=damage;
+        }
     }
 
     //    Sniper Vector3(0.0289999992,-0.0839999989,0.0170000009)Vector3(347.422821,89.5062866,89.6258698)

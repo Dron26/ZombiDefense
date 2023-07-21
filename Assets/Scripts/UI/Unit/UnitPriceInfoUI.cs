@@ -47,7 +47,7 @@ namespace UI.Unit
             _text.text = _price.ToString();
         }
 
-        private void OnDisabled()
+        protected override void  OnDisabled()
         {
             foreach (SliderUnit sliderUnit in _sliders)
             {

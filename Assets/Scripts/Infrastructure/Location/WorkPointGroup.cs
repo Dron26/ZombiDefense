@@ -11,6 +11,10 @@ namespace Infrastructure.Location
     {
         [SerializeField] public List<float> persentUp=new();
         private  List<WorkPoint> _workPoints = new();
+        private  List<int> _workPointsPercent = new();
+        public int MaxCountPrecent => _maxCountPrecent;
+         private int _maxCountPrecent=3;
+         private int _startPercent = 5;
         public UnityAction<WorkPoint> OnSelectPointToMove;
         public UnityAction<WorkPoint> OnSelectedPoint;
         public UnityAction<WorkPoint> OnSelectedStartPoint;
@@ -42,16 +46,41 @@ namespace Infrastructure.Location
             return new List<WorkPoint>(_workPoints);
         }
         
-        private void OnUpLevel(int number)
+        public void UpLevel(WorkPoint workPoint)
         {
-            _workPoints[number].UpLevel(persentUp[_workPoints[number].Level + 1]);
+            int index = _workPoints.IndexOf(workPoint);
+            
+            if (index!=-1)
+            {
+                workPoint.UpLevel(_workPointsPercent[workPoint.Level]);
+                print("Up Level " + workPoint.Level);
+            }
+            else
+            {
+                print("Error: WorkPoint not found");
+            }
         }
 
 
         public void Initialize(SaveLoad saveLoad)
         {
             _saveLoad=saveLoad;
+            FillPercent();
             TakeAllWorkPoints();
+        }
+
+        private void FillPercent()
+        {
+            _workPointsPercent = new ();
+
+            int percent = _startPercent;
+            
+            for (int i = 0; i < _maxCountPrecent; i++)
+            {
+                _workPointsPercent.Add(percent);
+                percent++;
+            }
+            
         }
     }
 }
