@@ -10,7 +10,7 @@ namespace UI.HUD.StorePanel
     public class CharacterSlot: MonoCache
     {
        [SerializeField] private Image _icon;
-       [SerializeField] private  TMP_Text _name;
+       //[SerializeField] private  TMP_Text _name;
         public Humanoid Humanoid => _humanoid;
         public bool IsSelected => _isSelected;
         public int Price => _humanoid.GetPrice();
@@ -39,7 +39,7 @@ namespace UI.HUD.StorePanel
             _store=store;
             _humanoid = humanoid;
             _icon.sprite = _humanoid.GetSprite();
-            _name.text = humanoid.GetName();
+      //      _name.text = humanoid.GetName();
         }
         
     }

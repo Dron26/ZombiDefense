@@ -4,13 +4,13 @@ using UnityEngine;
 
 namespace Service
 {
-    public class Wallet:MonoCache
+    public class Wallet
     {
         private SaveLoad _saveLoad;
         public int Money => _money;
         private  int _money;
 
-        public void Initialize(SaveLoad saveLoad)
+        public  Wallet(SaveLoad saveLoad)
         {
             _saveLoad=saveLoad;
             _money = _saveLoad.ReadAmountMoney();
@@ -30,15 +30,7 @@ namespace Service
         
         public bool CheckPossibilityBuy(int price)
         {
-            if (_money >= price)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-            
+            return _money >= price;
         }
     }
 }

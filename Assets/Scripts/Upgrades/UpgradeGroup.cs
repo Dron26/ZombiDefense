@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Humanoids;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
@@ -6,36 +7,67 @@ using UnityEngine.UI;
 
 namespace Upgrades
 {
-    public class UpgradeSlot : MonoCache
+    public class UpgradeGroup : MonoCache
     {
-        [SerializeField] private  Image _first;
-        [SerializeField] private  Image _second;
-        [SerializeField] private  Image _third;
-        [SerializeField] private  Image _fourth;
-        [SerializeField] private Image _fifth;
+        [SerializeField] private HumanoidType _humanoidType;
+         private UpgradeSlot _upgradeSlot;
+        [SerializeField] private List<GameObject> _slots;
+         private List<UpgradeSlot> _upgradeSlots=new();
        
-        public HumanoidType HumanoidType => _humanoidType;
-        private HumanoidType _humanoidType;
+         public HumanoidType HumanoidType => _humanoidType;
         private int _currentLevel;
-        
         private List<UpgradeData> _upgradeDatas = new();
 
-        private void Initialize(List<UpgradeData> upgradeDatas, HumanoidType humanoidType, int currentLevel)
+        public Action<UpgradeData> OnBuyUpgrade;
+        
+        public void Initialize(List<UpgradeData> upgradeDatas,UpgradeSlot upgradeSlot, int currentLevel)
         {
-            _humanoidType = humanoidType;
+            _upgradeSlot = upgradeSlot;
             _currentLevel = currentLevel;
+            
+            bool isLocked = false;
             
             for(int i = 0; i < upgradeDatas.Count; i++)
             {
-                _upgradeDatas.Add(upgradeDatas[i]);
+                if (_currentLevel<i)
+                {
+                    isLocked = true;
+                }
+                
+                UpgradeSlot newUpgradeSlot = Instantiate(_upgradeSlot,_slots[i].transform);
+                newUpgradeSlot.Initialize(i,upgradeDatas[i],isLocked);
+                
+                newUpgradeSlot.GetUpgrateButton().onClick.AddListener(() => TryBuyUpgrade(i));
+                newUpgradeSlot.GetLockeButton().onClick.AddListener(() => OnClickLockUpgrade(i));
+                
+                _upgradeSlots.Add(newUpgradeSlot);
             }
             
             foreach (UpgradeData upgradeData in upgradeDatas)
             {
                 _upgradeDatas.Add(upgradeData);
             }
-            
-            
+        }
+        
+        private void TryBuyUpgrade(int slotIndex)
+        {
+            OnBuyUpgrade?.Invoke(_upgradeDatas[slotIndex]);
+        }
+        
+        public void SetCurrentLevel(int levelIndex)
+        {
+            foreach (UpgradeSlot slot in _upgradeSlots)
+            {
+                if (levelIndex<slot.SlotIndex)
+                {
+                    slot.IsLocked(true);
+                }
+            }
+        }
+        
+        private void OnClickLockUpgrade(int slotIndex)
+        {
+                
         }
     }
 }

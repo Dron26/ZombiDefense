@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Humanoids.AbstractLevel;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine;
@@ -16,15 +17,15 @@ namespace UI.HUD.StorePanel
     {
         [SerializeField] private CharacterStore _characterStore;
         [SerializeField] private Button _buttonStorePanel;
-        [SerializeField] private Image _dimImage;
-        [SerializeField] private Button _closeButton;
         [SerializeField] private Button _buttonRightPanel;
-        [SerializeField] private CharacterStorePanelInfo _storePanelInfo;
-        [SerializeField] private GameObject _buttonPanel;
-        [SerializeField] private Wallet _wallet;
-        [SerializeField] private WorkPointGroup _workPointGroup;
+        [SerializeField] private Button _closeButton;
         [SerializeField] private GameObject _controlPanel;
-        [SerializeField] private List<int> _priceForWorkPointUp;
+        [SerializeField] private GameObject _buttonPanel;
+        [SerializeField] private WorkPointUpgradePanel _pointUpgradePanel;
+        [SerializeField] private WorkPointGroup _workPointGroup;
+        [SerializeField] private int _priceForWorkPointUp;
+       
+        [SerializeField] private Image _dimImage;
         [SerializeField] private Camera _cameraPhysical;
         [SerializeField] private Camera _cameraUI;
         [SerializeField] private Camera _characterVisual;
@@ -39,12 +40,16 @@ namespace UI.HUD.StorePanel
         private SaveLoad _saveLoad;
         private int maxLevel = 3;
         private bool _isPanelActive=false;
+        private Wallet _wallet;
 
         public UnityAction<bool> IsStoreActive;
-        public void Initialize(SceneInitializer initializer, SaveLoad saveLoad)
+        public Action<WorkPoint> OnBoughtUpgrade;
+
+        public void Initialize(SceneInitializer initializer, SaveLoad saveLoad, Wallet wallet)
         {
             _saveLoad = saveLoad;
             _sceneInitializer = initializer;
+            _wallet=wallet;
             SetCharacterInitializer();
         }
 
@@ -54,12 +59,14 @@ namespace UI.HUD.StorePanel
             //_characterInitializer.OnClickWorkpoint += CheckPointInfo;
             _characters = _saveLoad.GetAvailableCharacters();
             _saveLoad.OnSelectedNewPoint += CheckPointInfo;
-            _characterStore.Initialize(_saveLoad,this);
+            _characterStore.Initialize(_saveLoad,this,_wallet);
             InitializeButton();
             //_characterStore.BuyCharacter += OnBuyCharacter;
             _movePointController = _sceneInitializer.GetMovePointController();
-            _storePanelInfo.Initialize(_characterInitializer, _saveLoad);
-            _storePanelInfo.GetButton().onClick.AddListener(BuyPointUp);
+           
+            _pointUpgradePanel.Initialize(_characterInitializer, _saveLoad);
+            _pointUpgradePanel.GetButton().onClick.AddListener(BuyPointUp);
+            
             //_movePointController.OnClickWorkpoint += OnClickWorkpoint;
             //_movePointController.OnSelectedNewPoint+=OnSelectedNewPoint;
             //_movePointController.OnUnSelectedPoint+=OnUnSelectedPoint;
@@ -80,35 +87,30 @@ namespace UI.HUD.StorePanel
 
         private void CheckPointInfo(WorkPoint workPoint)
         {
-            bool isStartPoint = false;
+           // bool isStartPoint = false;
 
-            if (isStartPoint)
-            {
                 _selectedWorkPoint = workPoint;
 
-                if (_selectedWorkPoint.Level < _workPointGroup.MaxCountPrecent)
+                if (_selectedWorkPoint.Level <=maxLevel )
                 {
-                    _storePanelInfo.ShowButton(true);
+                    _pointUpgradePanel.SwitchStateButton(true);
                 }
                 else
                 {
-                    _storePanelInfo.ShowButton(false);
+                    _pointUpgradePanel.SwitchStateButton(false);
                 }
-            }
-            else
-            {
-                isStartPoint = true;
-            }
         }
 
         private void BuyPointUp()
         {
-            int price = _priceForWorkPointUp[_selectedWorkPoint.Level];
+            int price = _priceForWorkPointUp;
 
             if (_wallet.CheckPossibilityBuy(price))
             {
                 _wallet.SpendMoney(price);
                 _workPointGroup.UpLevel(_selectedWorkPoint);
+                
+                OnBoughtUpgrade?.Invoke(_selectedWorkPoint);
             }
             else
             {
@@ -141,9 +143,7 @@ namespace UI.HUD.StorePanel
         {
             _buttonStorePanel.gameObject.SetActive(isActive);
         }
-
-       
-
+        
         private void ChangeStateButtonPanel()
         {
             isButtonPanelOpen = !isButtonPanelOpen;
@@ -173,7 +173,6 @@ namespace UI.HUD.StorePanel
         {
             IsStoreActive(isActive);
             _dimImage.gameObject.SetActive(isActive);
-            _storePanelInfo.gameObject.SetActive(isActive);
             isActive = !isActive;
             _controlPanel.gameObject.SetActive(isActive);
         }

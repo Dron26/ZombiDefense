@@ -4,6 +4,7 @@ using Infrastructure;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Constants;
 using Infrastructure.States;
+using Service;
 using Service.SaveLoadService;
 using UI.Levels;
 using UI.SettingsPanel;
@@ -20,16 +21,19 @@ namespace UI.GeneralMenu
         private GameStateMachine _stateMachine;
         private LoadingCurtain _loadingCurtain  ;
         private GameBootstrapper _gameBootstrapper; 
+        
         [SerializeField]private  SettingPanel _settingPanel;
         [SerializeField] private GameObject _menuPanel;
         [SerializeField]private AudioManager _audioManager;
         [SerializeField]private LevelMap _levelMap;
+        private Wallet _wallet;
         
         public async void Initialize( GameStateMachine stateMachine)
         {
             _stateMachine = stateMachine;
             _gameBootstrapper=FindObjectOfType<GameBootstrapper>();
             _saveLoad = _gameBootstrapper.GetSAaveLoad();
+            _wallet=new Wallet(_saveLoad);
             await LoadAudioControllerAsync();
 
             _yandexLeaderboard = _gameBootstrapper.GetYandexLeaderboard();

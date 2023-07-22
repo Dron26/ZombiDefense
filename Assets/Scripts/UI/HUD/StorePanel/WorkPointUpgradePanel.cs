@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace UI.SceneBattle.Store
 {
-    public class CharacterStorePanelInfo:MonoCache
+    public class WorkPointUpgradePanel:MonoCache
     {
         private PlayerCharacterInitializer _characterInitializer;
         private SaveLoad _saveLoad;
@@ -24,7 +24,7 @@ namespace UI.SceneBattle.Store
             print("ShowInfo");
         }
 
-        public void ShowButton(bool isActive)
+        public void SwitchStateButton(bool isActive)
         {
             _button.gameObject.SetActive(isActive);
         }
