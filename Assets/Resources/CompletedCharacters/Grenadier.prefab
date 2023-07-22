@@ -540,13 +540,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4c607e475c24fb4b44b4ccb5b54616c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponDataReference:
-    m_AssetGUID: 825d5cb96c3e08d41aa9393a77b1865e
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_EditorAssetChanged: 0
   _id: 2
   _name: Grenadier
+  _characterInfoName: GrenaderInfo
   StartPosition: {x: 0, y: 0, z: 0}
   _ring: {fileID: 1895851485990909471}
   maxHealth: 80
@@ -636,8 +632,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f830727607e4ae4b44550dac031f891, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _smallArmsGameObject: {fileID: 5796433978329646387, guid: 20d6374f3988fce4aba34976f191baf8, type: 3}
-  _smallArmsType: 6
+  _weapon: {fileID: -4155330075065595398, guid: 20d6374f3988fce4aba34976f191baf8, type: 3}
+  _granade: {fileID: 0}
   shootingRadiusSprite: {fileID: 21300000, guid: c036f3de1f1584b6eb35aa03cce9964c, type: 3}
   _ring: {fileID: 1895851485990909471}
   _isShotgun: 1
@@ -741,13 +737,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bf03cca532e4b9d981fbb3b1a6dec55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponDataReference:
-    m_AssetGUID: 825d5cb96c3e08d41aa9393a77b1865e
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_EditorAssetChanged: 0
   _id: 2
   _name: Grenadier
+  _characterInfoName: 
   StartPosition: {x: 0, y: 0, z: 0}
   _ring: {fileID: 1895851485990909471}
   maxHealth: 80

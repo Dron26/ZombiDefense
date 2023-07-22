@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2532071828987346496}
   - component: {fileID: 2532071828988640864}
   - component: {fileID: 2532071828989770912}
+  - component: {fileID: 3917274954107357593}
   m_Layer: 6
   m_Name: weapon_submachinegun
   m_TagString: Untagged
@@ -86,6 +87,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &3917274954107357593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2532071828987830880}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abb217199da0455a9a030aa72df1a973, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WeaponTypeEnum: 2
+  _weaponName: Light
+  _damage: 5
+  _maxAmmo: 30
+  _reloadTime: 0.5
+  _fireRate: 0.5
+  _range: 17
+  _shoot: {fileID: 8300000, guid: debc97bd1ccf63b42a000a469ad8b7bd, type: 3}
+  _spreadAngle: 0
+  _reload: {fileID: 8300000, guid: 6daacd1251b68714a87ff6f334e03b00, type: 3}
 --- !u!1 &6108437234560009232
 GameObject:
   m_ObjectHideFlags: 0

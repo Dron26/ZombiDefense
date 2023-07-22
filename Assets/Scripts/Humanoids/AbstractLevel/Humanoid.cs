@@ -11,6 +11,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using Upgrades;
 
 namespace Humanoids.AbstractLevel
 {
@@ -18,11 +19,9 @@ namespace Humanoids.AbstractLevel
     [RequireComponent(typeof(PlayerCharactersStateMachine))]
     public abstract class Humanoid : MonoCache, IObservableHumanoid
     {
-        [SerializeField] private AssetReferenceT<WeaponData> weaponDataReference;
         [SerializeField]  private int _id;
         [SerializeField]  private string _name;
         [SerializeField] private string _characterInfoName;
-        [SerializeField] private string _characterInfo;
         
         public Vector3 StartPosition;
         private int _countLoaded = 0;
@@ -33,16 +32,15 @@ namespace Humanoids.AbstractLevel
         public UnityAction<bool> OnHumanoidSelected;
         [SerializeField ]private ParticleSystem _ring;
         private WeaponController _weaponControl;
-        public string GetInfo() => _characterInfo;
        
         public int ID=>_id;
         protected HumanoidData humanoidData;
-        protected WeaponData weaponData;
         private bool _isBuyed = false;
         public bool IsBuyed => _isBuyed;
         public bool IsSelected => _isSelected;
         public abstract int GetLevel();
         public abstract int GetHealth();
+        public abstract int GetMaxHealth();
         public abstract bool IsLife();
         public abstract int GetPrice();
         public bool IsMove=>_isMoving;
@@ -52,7 +50,6 @@ namespace Humanoids.AbstractLevel
         private bool _isSelected;
         private bool _isMoving;
 public string GetName() => _name;
-        public WeaponData GetWeaponData() => weaponData;
         public abstract void ApplyDamage(int getDamage);
         public abstract Sprite GetSprite();
 
@@ -61,34 +58,9 @@ public string GetName() => _name;
         {
             _weaponControl= GetComponent<WeaponController>();    
         }
-        public Task LoadPrefab()
+        public void LoadedData()
         {
-            var tcs = new TaskCompletionSource<bool>();
-
-            if (weaponDataReference.Asset != null)
-            {
-                weaponData = (WeaponData)weaponDataReference.Asset;
-                Debug.Log($"HumanoidData loaded: {weaponData}");
-            }
-
-            weaponDataReference.LoadAssetAsync().Completed += handle =>
-            {
-                if (handle.Status == AsyncOperationStatus.Succeeded)
-                {
-                    weaponData = (WeaponData)handle.Result;
-                    Debug.Log($"weaponData loaded: {weaponData}");
-                    tcs.TrySetResult(true);
-                    NotifyObservers(this);
-                    OnLoadData?.Invoke();
-                }
-                else
-                {
-                    Debug.LogError($"Failed to load enemy data: {handle.OperationException}");
-                    tcs.TrySetException(handle.OperationException);
-                }
-            };
-
-            return tcs.Task;
+            NotifyObservers(this);
         }
 
         protected virtual void Die()
@@ -170,7 +142,7 @@ public string GetName() => _name;
             return _weaponControl;
         }
 
-        public abstract void SetUpgrade(UpgradeInfo upgrade);
+        public abstract void SetUpgrade(UpgradeData upgrade, int level);
 
         public string GetInfoName() => _characterInfoName;
     }

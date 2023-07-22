@@ -5,6 +5,7 @@ using Infrastructure.AIBattle.EnemyAI;
 using Infrastructure.AIBattle.EnemyAI.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.FactoryWarriors.Enemies;
+using Infrastructure.WeaponManagment;
 using Observer;
 using Service.SaveLoadService;
 using UnityEngine;
@@ -18,8 +19,18 @@ namespace Enemies.AbstractEntity
     [RequireComponent(typeof(EnemyStateMachine))]
     public abstract class Enemy : MonoCache, IObservableHumanoid
     {
+        [SerializeField] private float _maxHealth = 40f;
+        [SerializeField] private float _rangeAttack = 1.2f;
+        [SerializeField] private int _damage = 15;
+        [SerializeField] private int _level = 1;
+        [SerializeField] private int _minLevelForHumanoid = 0;
+
+        
+        public int MinLevelForHumanoid =>_minLevelForHumanoid;
+
+        
+        
         private List<IObserverByHumanoid> observers = new List<IObserverByHumanoid>();
-        [SerializeField] private AssetReferenceT<EnemyData> enemyDataReference;
         private List<SkinGroup> _skinGroups = new();
 
         private AudioManager _audioManager;
@@ -30,17 +41,10 @@ namespace Enemies.AbstractEntity
 
             // public int MinLevelForHumanoid => enemyData.MinLevelForHumanoid;
         
-        protected EnemyData enemyData;
         public float MaxHealth => _maxHealth;
         public float RangeAttack => _rangeAttack;
         public int Damage => _damage;
         public int Level => _level;
-        
-        public float _maxHealth =0;
-        public float _rangeAttack =0;
-        public int _damage =0;
-        public int _level =0;// Добавлено поле Level
-        public GameObject GetPrefab() => enemyData.PrefabCharacter;
         public abstract int GetLevel();
         public abstract float GetRangeAttack();
         public abstract int GetDamage();
@@ -52,7 +56,7 @@ namespace Enemies.AbstractEntity
         private NavMeshAgent _agent;
         public Vector3 StartPosition;
 
-        public abstract void ApplyDamage(float getDamage, string weaponName);
+        public abstract void ApplyDamage(float getDamage, WeaponType weaponWeaponType);
 
         public abstract void SetAttacments();
 
@@ -65,36 +69,20 @@ namespace Enemies.AbstractEntity
             stateMachine.EnterBehavior<EnemyDieState>();
         }
 
-        public Task LoadPrefab()
+        
+        
+        
+        
+        public void LoadPrefab()
         {
-            var tcs = new TaskCompletionSource<bool>();
-
-            if (enemyDataReference.Asset != null)
-            {
-                enemyData = (EnemyData)enemyDataReference.Asset;
-            }
-
-            enemyDataReference.LoadAssetAsync().Completed += handle =>
-            {
-                if (handle.Status == AsyncOperationStatus.Succeeded)
-                {
-                    enemyData = (Infrastructure.FactoryWarriors.Enemies.EnemyData)handle.Result;
-                    tcs.TrySetResult(true);
+            
                     Initialize();
                     SetSkin();
                     SetNavMeshSpeed();
-                    SetStartParametr();
                     OnDataLoad?.Invoke(this);
-                }
-                else
-                {
-                    Debug.LogError($"Failed to load enemy data: {handle.OperationException}");
-                    tcs.TrySetException(handle.OperationException);
-                }
-            };
-
-            return tcs.Task;
+                
         }
+
 
         public abstract void SetSaveLoad(SaveLoad saveLoad);
 
@@ -152,14 +140,6 @@ namespace Enemies.AbstractEntity
         {
             return _audioManager;
         }
-        
-        private void SetStartParametr()
-        {
-              _maxHealth = enemyData.MaxHealth;
-              _rangeAttack = enemyData.RangeAttack;
-              _damage = enemyData.Damage;
-              _level = enemyData.Level;
-        }
-        
+
     }
 }

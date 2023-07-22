@@ -25309,11 +25309,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eab47f758ea74c9182186eeeb87a2d42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyDataReference:
-    m_AssetGUID: 6721a5acc936c1d42ba5f1ff3039465e
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_EditorAssetChanged: 0
+  _maxHealth: 40
+  _rangeAttack: 1.2
+  _damage: 15
+  _level: 1
+  _minLevelForHumanoid: 0
   StartPosition: {x: 0, y: 0, z: 0}
 --- !u!54 &4667134088787838571
 Rigidbody:
@@ -25387,9 +25387,7 @@ MonoBehaviour:
   - {fileID: 6752189427074526569, guid: 65ccf215aa4daf84ca3f4c6f1b4d2345, type: 3}
   _particleTankDie: {fileID: 0}
   _particleTankDie1: {fileID: 0}
-  _weaponNames:
-  - Light
-  - RifleSniper
+  _weaponNames: 0000000003000000
   _bloodFlowing: {fileID: 741721886828309837, guid: 8e535d5e588f3374fb5693b5ebe5ea9a, type: 3}
   _areaWidth: 1
   _areaHeight: 1

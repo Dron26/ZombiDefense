@@ -1,27 +1,25 @@
+using System;
 using Humanoids.AbstractLevel;
 using Infrastructure.AIBattle;
 using Infrastructure.WeaponManagment;
 using UnityEngine;
+using Upgrades;
 
 namespace Humanoids.People
 {
     public class Grenadier:Humanoid
     {
-        [SerializeField] private int maxHealth = 60;
-        [SerializeField] private int level = 1;
+        [SerializeField] private int _maxHealth = 60;
+        [SerializeField] private int _level;
         [SerializeField] private Sprite _sprite;
+        
         private const int Price = 400;
         private const int Damage = 20;
 
-        public int MaxHealth => maxHealth;
-        public int Level
-        {
-            get => level;
-            set => level = value;
-        }
+        public int MaxHealth => _maxHealth;
+        public int Level=>_level;
 
         private  int _minHealth = 0;
-        private  int _maxHealth;
         
         private bool _isLife = true;
         private bool _isTakeDamagePlay;
@@ -31,6 +29,14 @@ namespace Humanoids.People
         private Animator _animator;
         private FXController _fxController;
         private WeaponController _weaponController;
+        
+        [SerializeField] private HumanoidType _humanoidType = HumanoidType.Grenadier;
+        public HumanoidType HumanoidType => _humanoidType;
+        private void Awake()
+        {
+            _humanoidType = (HumanoidType)Enum.Parse(typeof(HumanoidType), GetType().Name, true);
+        }
+        
         private void Start()
         {
             _animator = GetComponent<Animator>();
@@ -46,14 +52,11 @@ namespace Humanoids.People
         }
         private void Initialize( )
         {
-            _maxHealth= maxHealth;
             _currentHealth= _maxHealth;
         }
 
-        public override int GetHealth()
-        {
-            return _currentHealth;
-        }
+        public override int GetHealth() => _currentHealth;
+        public override int GetMaxHealth() => _maxHealth;
 
         public override bool IsLife() => 
             _isLife;
@@ -88,12 +91,12 @@ namespace Humanoids.People
             }
            }
 
-        public override void SetUpgrade(UpgradeInfo upgrade)
+        public override void SetUpgrade(UpgradeData upgrade, int level)
         {
-            
-            _currentHealth=upgrade.Health;
+            _maxHealth+= upgrade.Health;
             _weaponController.SetDamage(upgrade.Damage);
-            Level=upgrade.Level;
+            _currentHealth+=_maxHealth;
+            _level=level;
             
             OnLoadData?.Invoke();
         }

@@ -32,7 +32,7 @@ namespace Infrastructure.FactoryWarriors.Humanoids
         private AudioManager _audioManager;
         public UnityAction<Humanoid> CreatedHumanoid;
 
-        public async Task Create(GameObject prefab, Transform transform )
+        public void Create(GameObject prefab, Transform transform )
         {
             GameObject newHumanoid = Instantiate(prefab, transform);
             Humanoid humanoidComponent = newHumanoid.GetComponent<Humanoid>();
@@ -41,9 +41,7 @@ namespace Infrastructure.FactoryWarriors.Humanoids
             humanoidComponent.OnDataLoad = Created;
             float randomAngle = Random.Range(0f, 360f);
             newHumanoid.transform.rotation = Quaternion.Euler(0f, randomAngle, 0f);
-           
-            await UniTask.SwitchToMainThread();
-            await humanoidComponent.LoadPrefab();
+            humanoidComponent.LoadedData();
         }
 
         private void Created( Humanoid humanoidComponent)

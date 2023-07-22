@@ -1617,13 +1617,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3942b61a43d74d7e9abc87f1173ea424, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponDataReference:
-    m_AssetGUID: 55e794e0ad4e4994ebfa2adc75e9cc62
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_EditorAssetChanged: 0
   _id: 4
   _name: Sniper
+  _characterInfoName: SniperInfo
   StartPosition: {x: 0, y: 0, z: 0}
   _ring: {fileID: 8466718246872609645}
   maxHealth: 100
@@ -1733,8 +1729,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f830727607e4ae4b44550dac031f891, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _smallArmsGameObject: {fileID: 9057235628590670995, guid: c952f27a4041d144aa6929a027d9d6c2, type: 3}
-  _smallArmsType: 3
+  _weapon: {fileID: -2659364372863128536, guid: c952f27a4041d144aa6929a027d9d6c2, type: 3}
+  _granade: {fileID: 0}
   shootingRadiusSprite: {fileID: 21300000, guid: 70d596da23d36c845bde8366d4f3c33a, type: 3}
   _ring: {fileID: 8466718246872609645}
   _isShotgun: 0

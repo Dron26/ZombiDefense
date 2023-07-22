@@ -1405,13 +1405,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18c63aedfec9486bb2065e526368d4e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponDataReference:
-    m_AssetGUID: e28a023e36858174f8d08e00df3ef2f1
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_EditorAssetChanged: 0
   _id: 3
   _name: Scout
+  _characterInfoName: ScoutInfo
   StartPosition: {x: 0, y: 0, z: 0}
   _ring: {fileID: 2410110626214410003}
   maxHealth: 120
@@ -1501,8 +1497,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f830727607e4ae4b44550dac031f891, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _smallArmsGameObject: {fileID: 2532071828987830880, guid: 2c4ccf830816fcc4dbe4f90efb2d5ac2, type: 3}
-  _smallArmsType: 2
+  _weapon: {fileID: 3917274954107357593, guid: 2c4ccf830816fcc4dbe4f90efb2d5ac2, type: 3}
+  _granade: {fileID: 0}
   shootingRadiusSprite: {fileID: 21300000, guid: c036f3de1f1584b6eb35aa03cce9964c, type: 3}
   _ring: {fileID: 2410110626214410003}
   _isShotgun: 0

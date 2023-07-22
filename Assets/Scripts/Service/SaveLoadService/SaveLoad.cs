@@ -48,7 +48,7 @@ namespace Service.SaveLoadService
 
         private void SetStartParametrs()
         {
-            _dataBase.AddMoney(100); 
+            _dataBase.AddMoney(1000); 
             AudioSettingsParameters parametrs = new AudioSettingsParameters();
             SetAudioSettings(parametrs);
             Save();

@@ -5,6 +5,7 @@ using Infrastructure.AIBattle.PlayerCharacterStateMachine;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.States;
 using Infrastructure.WaveManagment;
+using Service;
 using Service.SaveLoadService;
 using UI.HUD.StorePanel;
 using UI.Resurse;
@@ -25,6 +26,8 @@ namespace Infrastructure.Location
         [SerializeField] private MovePointController _movePointController;
         [SerializeField] private TimerDisplay _timerDisplay;
         [SerializeField] private ResursesCanvas _resursesCanvas;
+       
+        private Wallet _wallet;
         
         [SerializeField] private Camera _cameraPhysical;
         [SerializeField] private Camera _cameraUI;
@@ -49,6 +52,7 @@ namespace Infrastructure.Location
             _saveLoad.SetCameras(_cameraPhysical, _cameraUI);
             _loadingCurtain = _gameBootstrapper.GetLoadingCurtain();
             _loadingCurtain.OnClicked = OnClikedCurtain;
+            _wallet=new Wallet(_saveLoad);
             _playerCharacterInitializer.CreatedHumanoid += SetInfo;
             await _audioManager.InitializeAsync(_saveLoad);
             _playerCharacterInitializer.Initialize(_audioManager, this, _saveLoad);
@@ -57,7 +61,7 @@ namespace Infrastructure.Location
             _waveManager.OnReadySpawning = OnReadySpawning;
             _playerCharacterInitializer.AreOverHumanoids += _enemyCharacterInitializer.StopSpawning;
             _movePointController.Initialize(this, _saveLoad);
-            store.Initialize(this, _saveLoad);
+            store.Initialize(this, _saveLoad,_wallet);
             _timerDisplay.Initialize(_playerCharacterInitializer);
             _resursesCanvas.Initialize(_saveLoad);
 //_loadingCurtain.OnLoaded();

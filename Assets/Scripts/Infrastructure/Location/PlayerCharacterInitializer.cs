@@ -60,9 +60,9 @@ namespace Infrastructure.Location
             SetLocalParametrs();
         }
 
-        private async void CreateHumanoid(Humanoid humanoid, Transform transform)
+        private  void CreateHumanoid(Humanoid humanoid, Transform transform)
         {
-            await _humanoidFactory.Create(humanoid.gameObject, transform);
+             _humanoidFactory.Create(humanoid.gameObject, transform);
         }
 
         public void SetCreatHumanoid(Humanoid humanoid)

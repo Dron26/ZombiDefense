@@ -105,6 +105,7 @@ GameObject:
   - component: {fileID: 9057235628591102131}
   - component: {fileID: 9057235628589807763}
   - component: {fileID: 9057235628588677715}
+  - component: {fileID: -2659364372863128536}
   m_Layer: 6
   m_Name: weapon_sniper_rifle
   m_TagString: Untagged
@@ -178,3 +179,25 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &-2659364372863128536
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9057235628590670995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abb217199da0455a9a030aa72df1a973, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WeaponTypeEnum: 3
+  _weaponName: RifleSniper
+  _damage: 40
+  _maxAmmo: 1
+  _reloadTime: 2
+  _fireRate: 1
+  _range: 25
+  _shoot: {fileID: 8300000, guid: e8b6ea3b5e5a6d646afd79f367029170, type: 3}
+  _spreadAngle: 0
+  _reload: {fileID: 8300000, guid: 6daacd1251b68714a87ff6f334e03b00, type: 3}

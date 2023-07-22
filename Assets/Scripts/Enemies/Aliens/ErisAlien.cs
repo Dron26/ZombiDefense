@@ -3,6 +3,7 @@ using Enemies.AbstractEntity;
 using Infrastructure.AIBattle;
 using Infrastructure.AIBattle.EnemyAI.States;
 using Infrastructure.AssetManagement;
+using Infrastructure.WeaponManagment;
 using Service.SaveLoadService;
 using UnityEngine;
 using UnityEngine.Events;
@@ -24,6 +25,7 @@ namespace Enemies.Aliens
         private SaveLoad _saveLoad;
 
         private int _price = 100;
+        
         private void Awake()
         {
             _animator = GetComponent<Animator>();
@@ -60,7 +62,7 @@ namespace Enemies.Aliens
             _health = _maxHealth;
         }
 
-        public override void ApplyDamage(float getDamage, string weaponName)
+        public override void ApplyDamage(float getDamage,WeaponType weaponWeaponType)
         {
             if (_health >= 0)
             {
@@ -70,7 +72,7 @@ namespace Enemies.Aliens
                     _animator.SetTrigger(_enemyAnimController.IsHit);
                 }
 
-                _fxController.OnHitFX(weaponName);
+                _fxController.OnHitFX(weaponWeaponType);
               //  _animator.SetTrigger(_enemyAnimController.IsHit);
                 _health -= Mathf.Clamp(getDamage, _minHealth, _maxHealth);
             }

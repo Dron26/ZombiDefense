@@ -5,8 +5,7 @@ namespace Infrastructure.WeaponManagment
 {
     public  class Weapon:MonoCache
     {
-        public Type WeaponTypeEnum;
-        [SerializeField] private string _weaponName;
+        [SerializeField] private WeaponType _weaponWeaponTypeEnum;
         [SerializeField] private int _damage;
         [SerializeField] private int _maxAmmo;
         [SerializeField] private float _reloadTime;
@@ -18,24 +17,16 @@ namespace Infrastructure.WeaponManagment
         
         public AudioClip Shoot => _shoot;
         public AudioClip Reload => _reload;
-        public string WeaponName => _weaponName;
         public int Damage => _damage;
         public int MaxAmmo => _maxAmmo;
         public float ReloadTime => _reloadTime;
         public float FireRate => _fireRate;
         public float Range => _range;
-        public bool IsShotgun => WeaponTypeEnum == Type.Shotgun;
+        public bool IsShotgun => _weaponWeaponTypeEnum == WeaponType.Shotgun;
+        public bool IsGranade => _weaponWeaponTypeEnum == WeaponType.Grenade;
         
         public float SpreadAngle=>_spreadAngle;
+        
+        public WeaponType GetWeaponType() => _weaponWeaponTypeEnum;
     }
-    
-    public enum Type
-    {
-        Pistol = 0,
-        Revolver= 1,
-        Rifle = 2,
-        SniperRifle = 3,
-        Grenade = 4,
-        HeavyMachineGun = 5,
-            Shotgun = 6}
 }

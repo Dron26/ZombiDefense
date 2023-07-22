@@ -105,6 +105,7 @@ GameObject:
   - component: {fileID: 5796433978329159955}
   - component: {fileID: 5796433978330454323}
   - component: {fileID: 5796433978331585523}
+  - component: {fileID: -4155330075065595398}
   m_Layer: 6
   m_Name: weapon_shotgun
   m_TagString: Untagged
@@ -178,3 +179,25 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &-4155330075065595398
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5796433978329646387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abb217199da0455a9a030aa72df1a973, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WeaponTypeEnum: 6
+  _weaponName: Light
+  _damage: 20
+  _maxAmmo: 5
+  _reloadTime: 1
+  _fireRate: 1
+  _range: 8
+  _shoot: {fileID: 8300000, guid: edb97777959ec0942aee572252e33240, type: 3}
+  _spreadAngle: 20
+  _reload: {fileID: 8300000, guid: 6daacd1251b68714a87ff6f334e03b00, type: 3}

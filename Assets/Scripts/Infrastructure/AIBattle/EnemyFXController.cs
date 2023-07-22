@@ -23,9 +23,9 @@ namespace Infrastructure.AIBattle
         
         [SerializeField] private ParticleSystem _particleTankDie;
         [SerializeField] private ParticleSystem _particleTankDie1;
-        [SerializeField] private List<String> _weaponNames;
+        [SerializeField] private List<WeaponType> _weaponNames;
         [SerializeField] private ParticleSystem _bloodFlowing ;
-        [SerializeField] private Dictionary<String,List<ParticleSystem> > _particleByType=new();
+        [SerializeField] private Dictionary<WeaponType,List<ParticleSystem> > _particleByType=new();
         
         [SerializeField] private float _areaWidth = 0.1f;
         [SerializeField] private float _areaHeight = 0.1f;
@@ -70,9 +70,9 @@ namespace Infrastructure.AIBattle
             particleTankDie1.Play();
         }
 
-        public void OnHitFX(string weaponName)
+        public void OnHitFX(WeaponType weaponWeaponType)
         {
-            PlayRandomParticleEffect(weaponName);
+            PlayRandomParticleEffect(weaponWeaponType);
         }
 
         public void OnDieFX()
@@ -115,9 +115,9 @@ namespace Infrastructure.AIBattle
             _reload=_weapon.Reload;
         }
         
-        public void PlayRandomParticleEffect(string weaponName)
+        public void PlayRandomParticleEffect(WeaponType weaponWeaponType)
         {
-            if (_particleByType.TryGetValue(weaponName, out List<ParticleSystem> effect))
+            if (_particleByType.TryGetValue(weaponWeaponType, out List<ParticleSystem> effect))
             {
                 if (effect.Count > 0)
                 {
@@ -131,12 +131,12 @@ namespace Infrastructure.AIBattle
                 }
                 else
                 {
-                    Debug.LogWarning($"No particle effects found for weapon name '{weaponName}'.");
+                    Debug.LogWarning($"No particle effects found for weapon name '{weaponWeaponType}'.");
                 }
             }
             else
             {
-                Debug.LogWarning($"No particle effects found for weapon name '{weaponName}'.");
+                Debug.LogWarning($"No particle effects found for weapon name '{weaponWeaponType}'.");
             }
         }
 

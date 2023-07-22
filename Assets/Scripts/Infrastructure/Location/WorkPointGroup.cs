@@ -12,9 +12,6 @@ namespace Infrastructure.Location
         [SerializeField] public List<float> persentUp=new();
         private  List<WorkPoint> _workPoints = new();
         private  List<int> _workPointsPercent = new();
-        public int MaxCountPrecent => _maxCountPrecent;
-         private int _maxCountPrecent=3;
-         private int _startPercent = 5;
         public UnityAction<WorkPoint> OnSelectPointToMove;
         public UnityAction<WorkPoint> OnSelectedPoint;
         public UnityAction<WorkPoint> OnSelectedStartPoint;
@@ -65,22 +62,7 @@ namespace Infrastructure.Location
         public void Initialize(SaveLoad saveLoad)
         {
             _saveLoad=saveLoad;
-            FillPercent();
             TakeAllWorkPoints();
-        }
-
-        private void FillPercent()
-        {
-            _workPointsPercent = new ();
-
-            int percent = _startPercent;
-            
-            for (int i = 0; i < _maxCountPrecent; i++)
-            {
-                _workPointsPercent.Add(percent);
-                percent++;
-            }
-            
         }
     }
 }

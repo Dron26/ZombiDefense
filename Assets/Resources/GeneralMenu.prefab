@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6282269702723098744}
   - component: {fileID: 8638458930334654424}
   - component: {fileID: 4773039887455645658}
+  - component: {fileID: 4394690008776758890}
   m_Layer: 5
   m_Name: BackButton (1)
   m_TagString: Untagged
@@ -122,6 +123,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4394690008776758890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 377933851377192258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db7d01bc933f27143a65ab22c43e8d6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AudioSource: {fileID: 2631611901465381972}
+  ClickSound: {fileID: 8300000, guid: f0a7aa437c1fdd841b243d10cb73940a, type: 3}
+  HoverSound: {fileID: 8300000, guid: f8db8a0417582e04e956a23f5b286a3f, type: 3}
 --- !u!1 &589200218612104395
 GameObject:
   m_ObjectHideFlags: 0
@@ -865,6 +881,7 @@ GameObject:
   - component: {fileID: 8390579200280646136}
   - component: {fileID: 6896290378867886951}
   - component: {fileID: 6734745271073944772}
+  - component: {fileID: 5993866031839626274}
   m_Layer: 5
   m_Name: Level
   m_TagString: Untagged
@@ -1035,6 +1052,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &5993866031839626274
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2496557456769441039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db7d01bc933f27143a65ab22c43e8d6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AudioSource: {fileID: 2631611901465381972}
+  ClickSound: {fileID: 8300000, guid: f0a7aa437c1fdd841b243d10cb73940a, type: 3}
+  HoverSound: {fileID: 8300000, guid: f8db8a0417582e04e956a23f5b286a3f, type: 3}
 --- !u!1 &2928219521785114376
 GameObject:
   m_ObjectHideFlags: 0
@@ -1399,7 +1431,7 @@ GameObject:
   - component: {fileID: 9117969497910322651}
   - component: {fileID: 7679484049485699324}
   - component: {fileID: 1847394372401875446}
-  - component: {fileID: 4422571568575497792}
+  - component: {fileID: 3852926597439320869}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -1621,7 +1653,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   translationName: Back
   FallbackText: BACK
---- !u!114 &4422571568575497792
+--- !u!114 &3852926597439320869
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1633,7 +1665,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db7d01bc933f27143a65ab22c43e8d6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AudioSource: {fileID: 2631611901465381972}
+  AudioSource: {fileID: 0}
   ClickSound: {fileID: 8300000, guid: f0a7aa437c1fdd841b243d10cb73940a, type: 3}
   HoverSound: {fileID: 8300000, guid: f8db8a0417582e04e956a23f5b286a3f, type: 3}
 --- !u!1 &6855377678489796260
@@ -12097,6 +12129,7 @@ GameObject:
   - component: {fileID: 7475750270074026589}
   - component: {fileID: 7295605640128916429}
   - component: {fileID: 7295567136180113805}
+  - component: {fileID: 8013858453491543546}
   m_Layer: 5
   m_Name: BackGameButton
   m_TagString: Untagged
@@ -12207,6 +12240,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8013858453491543546
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7253895336473373717}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db7d01bc933f27143a65ab22c43e8d6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AudioSource: {fileID: 2631611901465381972}
+  ClickSound: {fileID: 8300000, guid: f0a7aa437c1fdd841b243d10cb73940a, type: 3}
+  HoverSound: {fileID: 8300000, guid: f8db8a0417582e04e956a23f5b286a3f, type: 3}
 --- !u!1 &7253909091196263519
 GameObject:
   m_ObjectHideFlags: 0
@@ -12964,6 +13012,7 @@ GameObject:
   - component: {fileID: 7295029792259078475}
   - component: {fileID: 1645690075}
   - component: {fileID: 1645690076}
+  - component: {fileID: 4889958508468408632}
   m_Layer: 5
   m_Name: Apply
   m_TagString: Untagged
@@ -13173,6 +13222,21 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4889958508468408632
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7253953592807038287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db7d01bc933f27143a65ab22c43e8d6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AudioSource: {fileID: 2631611901465381972}
+  ClickSound: {fileID: 8300000, guid: f0a7aa437c1fdd841b243d10cb73940a, type: 3}
+  HoverSound: {fileID: 8300000, guid: f0a7aa437c1fdd841b243d10cb73940a, type: 3}
 --- !u!1 &7253959723005951649
 GameObject:
   m_ObjectHideFlags: 0
@@ -13267,6 +13331,7 @@ GameObject:
   - component: {fileID: 7474962919089220623}
   - component: {fileID: 7295507806077029825}
   - component: {fileID: 7295211198836752883}
+  - component: {fileID: 4751267436436820921}
   m_Layer: 5
   m_Name: ExitButton
   m_TagString: Untagged
@@ -13377,6 +13442,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4751267436436820921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7253964579572022403}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db7d01bc933f27143a65ab22c43e8d6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AudioSource: {fileID: 2631611901465381972}
+  ClickSound: {fileID: 8300000, guid: f0a7aa437c1fdd841b243d10cb73940a, type: 3}
+  HoverSound: {fileID: 8300000, guid: f8db8a0417582e04e956a23f5b286a3f, type: 3}
 --- !u!1 &7253973242267980733
 GameObject:
   m_ObjectHideFlags: 0
@@ -13466,6 +13546,7 @@ GameObject:
   - component: {fileID: 7291562851222281365}
   - component: {fileID: 7295585616431858711}
   - component: {fileID: 7295509682893778015}
+  - component: {fileID: 2408786630371430121}
   m_Layer: 5
   m_Name: BackwardKey
   m_TagString: Untagged
@@ -13603,6 +13684,21 @@ MonoBehaviour:
   _buttonText: {fileID: 7295390399938222535}
   _defaultKeyName: Back
   _defaultKeyCode: 115
+--- !u!114 &2408786630371430121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7253974284876161443}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db7d01bc933f27143a65ab22c43e8d6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AudioSource: {fileID: 2631611901465381972}
+  ClickSound: {fileID: 8300000, guid: f0a7aa437c1fdd841b243d10cb73940a, type: 3}
+  HoverSound: {fileID: 8300000, guid: f0a7aa437c1fdd841b243d10cb73940a, type: 3}
 --- !u!1 &7253979098124740017
 GameObject:
   m_ObjectHideFlags: 0
@@ -14936,6 +15032,7 @@ GameObject:
   - component: {fileID: 7475585457918686615}
   - component: {fileID: 7291507609298144119}
   - component: {fileID: 7295656912132808385}
+  - component: {fileID: 6576258841508124534}
   m_Layer: 5
   m_Name: CointinueButton
   m_TagString: Untagged
@@ -15046,6 +15143,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &6576258841508124534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7254260846111450641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db7d01bc933f27143a65ab22c43e8d6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AudioSource: {fileID: 2631611901465381972}
+  ClickSound: {fileID: 8300000, guid: f0a7aa437c1fdd841b243d10cb73940a, type: 3}
+  HoverSound: {fileID: 8300000, guid: f8db8a0417582e04e956a23f5b286a3f, type: 3}
 --- !u!1 &7254265889695725647
 GameObject:
   m_ObjectHideFlags: 0
@@ -15628,6 +15740,7 @@ GameObject:
   - component: {fileID: 7475322146534676321}
   - component: {fileID: 7291490780684995235}
   - component: {fileID: 7295077967712539777}
+  - component: {fileID: 4241815613899681359}
   m_Layer: 5
   m_Name: ControlsButton
   m_TagString: Untagged
@@ -15738,6 +15851,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4241815613899681359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7254288781329085079}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db7d01bc933f27143a65ab22c43e8d6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AudioSource: {fileID: 2631611901465381972}
+  ClickSound: {fileID: 8300000, guid: f0a7aa437c1fdd841b243d10cb73940a, type: 3}
+  HoverSound: {fileID: 8300000, guid: f8db8a0417582e04e956a23f5b286a3f, type: 3}
 --- !u!1 &7254298959734375807
 GameObject:
   m_ObjectHideFlags: 0
@@ -16169,6 +16297,7 @@ GameObject:
   - component: {fileID: 7475240529640619637}
   - component: {fileID: 7295526919534742877}
   - component: {fileID: 7295227934960462561}
+  - component: {fileID: 8865495312345450944}
   m_Layer: 5
   m_Name: AudioButton
   m_TagString: Untagged
@@ -16279,6 +16408,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8865495312345450944
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7254337677159861253}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db7d01bc933f27143a65ab22c43e8d6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AudioSource: {fileID: 2631611901465381972}
+  ClickSound: {fileID: 8300000, guid: f0a7aa437c1fdd841b243d10cb73940a, type: 3}
+  HoverSound: {fileID: 8300000, guid: f8db8a0417582e04e956a23f5b286a3f, type: 3}
 --- !u!1 &7254359455411749993
 GameObject:
   m_ObjectHideFlags: 0
@@ -17242,6 +17386,7 @@ GameObject:
   - component: {fileID: 7475789622700600069}
   - component: {fileID: 7295187252112864697}
   - component: {fileID: 7291498166535102773}
+  - component: {fileID: 1913241919529589307}
   m_Layer: 5
   m_Name: BackButton
   m_TagString: Untagged
@@ -17352,6 +17497,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1913241919529589307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7254420035718384299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db7d01bc933f27143a65ab22c43e8d6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AudioSource: {fileID: 2631611901465381972}
+  ClickSound: {fileID: 8300000, guid: f0a7aa437c1fdd841b243d10cb73940a, type: 3}
+  HoverSound: {fileID: 8300000, guid: f8db8a0417582e04e956a23f5b286a3f, type: 3}
 --- !u!1 &7254421604096458143
 GameObject:
   m_ObjectHideFlags: 0
@@ -17913,6 +18073,7 @@ GameObject:
   - component: {fileID: 7475328356380861441}
   - component: {fileID: 7295676724872244019}
   - component: {fileID: 7291491685423243473}
+  - component: {fileID: 2857366179377239114}
   m_Layer: 5
   m_Name: PlayGameButton
   m_TagString: Untagged
@@ -18023,6 +18184,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &2857366179377239114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7254435339837340661}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db7d01bc933f27143a65ab22c43e8d6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AudioSource: {fileID: 2631611901465381972}
+  ClickSound: {fileID: 8300000, guid: f0a7aa437c1fdd841b243d10cb73940a, type: 3}
+  HoverSound: {fileID: 8300000, guid: f8db8a0417582e04e956a23f5b286a3f, type: 3}
 --- !u!1 &7254442602731479129
 GameObject:
   m_ObjectHideFlags: 0
@@ -18336,6 +18512,7 @@ GameObject:
   - component: {fileID: 7475840962374579281}
   - component: {fileID: 7295795155403425851}
   - component: {fileID: 7295157679502980305}
+  - component: {fileID: 6478529795242472281}
   m_Layer: 5
   m_Name: NewGameButton
   m_TagString: Untagged
@@ -18446,6 +18623,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &6478529795242472281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7254466005596809161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db7d01bc933f27143a65ab22c43e8d6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AudioSource: {fileID: 2631611901465381972}
+  ClickSound: {fileID: 8300000, guid: f0a7aa437c1fdd841b243d10cb73940a, type: 3}
+  HoverSound: {fileID: 8300000, guid: f8db8a0417582e04e956a23f5b286a3f, type: 3}
 --- !u!1 &7254479034559331643
 GameObject:
   m_ObjectHideFlags: 0
@@ -18705,6 +18897,7 @@ GameObject:
   - component: {fileID: 7475421569671232711}
   - component: {fileID: 7295526256601523827}
   - component: {fileID: 7295511543727191369}
+  - component: {fileID: 8289342259364720242}
   m_Layer: 5
   m_Name: CreditButton
   m_TagString: Untagged
@@ -18815,6 +19008,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8289342259364720242
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7254532637384033891}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db7d01bc933f27143a65ab22c43e8d6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AudioSource: {fileID: 2631611901465381972}
+  ClickSound: {fileID: 8300000, guid: f0a7aa437c1fdd841b243d10cb73940a, type: 3}
+  HoverSound: {fileID: 8300000, guid: f0a7aa437c1fdd841b243d10cb73940a, type: 3}
 --- !u!1 &7254581761041207731
 GameObject:
   m_ObjectHideFlags: 0
@@ -18865,6 +19073,7 @@ GameObject:
   - component: {fileID: 7474969064661088135}
   - component: {fileID: 7295191352032701119}
   - component: {fileID: 7295257730282180567}
+  - component: {fileID: 1183545701327007245}
   m_Layer: 5
   m_Name: OptionGameButton
   m_TagString: Untagged
@@ -18975,6 +19184,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1183545701327007245
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7254581968338593179}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db7d01bc933f27143a65ab22c43e8d6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AudioSource: {fileID: 2631611901465381972}
+  ClickSound: {fileID: 8300000, guid: f0a7aa437c1fdd841b243d10cb73940a, type: 3}
+  HoverSound: {fileID: 8300000, guid: f8db8a0417582e04e956a23f5b286a3f, type: 3}
 --- !u!1 &7254596435718911883
 GameObject:
   m_ObjectHideFlags: 0
@@ -19581,6 +19805,7 @@ GameObject:
   - component: {fileID: 7295031596967940245}
   - component: {fileID: 7295692899277831821}
   - component: {fileID: 7295685802471782943}
+  - component: {fileID: 310100233766622069}
   m_Layer: 5
   m_Name: ForwardKey
   m_TagString: Untagged
@@ -19718,6 +19943,21 @@ MonoBehaviour:
   _buttonText: {fileID: 7295468138034697939}
   _defaultKeyName: Forward
   _defaultKeyCode: 119
+--- !u!114 &310100233766622069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7254732310839647203}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db7d01bc933f27143a65ab22c43e8d6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AudioSource: {fileID: 2631611901465381972}
+  ClickSound: {fileID: 8300000, guid: f0a7aa437c1fdd841b243d10cb73940a, type: 3}
+  HoverSound: {fileID: 8300000, guid: f0a7aa437c1fdd841b243d10cb73940a, type: 3}
 --- !u!1 &7254767498512791513
 GameObject:
   m_ObjectHideFlags: 0
@@ -20436,6 +20676,7 @@ GameObject:
   - component: {fileID: 7295623449137339789}
   - component: {fileID: 7291517432064626927}
   - component: {fileID: 7295665768219830059}
+  - component: {fileID: 8885496140638194894}
   m_Layer: 5
   m_Name: LeftKey
   m_TagString: Untagged
@@ -20573,6 +20814,21 @@ MonoBehaviour:
   _buttonText: {fileID: 7295193693085344353}
   _defaultKeyName: Left
   _defaultKeyCode: 97
+--- !u!114 &8885496140638194894
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7254930488876507757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db7d01bc933f27143a65ab22c43e8d6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AudioSource: {fileID: 2631611901465381972}
+  ClickSound: {fileID: 8300000, guid: f0a7aa437c1fdd841b243d10cb73940a, type: 3}
+  HoverSound: {fileID: 8300000, guid: f0a7aa437c1fdd841b243d10cb73940a, type: 3}
 --- !u!1 &7254983971249955113
 GameObject:
   m_ObjectHideFlags: 0
@@ -20730,6 +20986,7 @@ GameObject:
   - component: {fileID: 7295156725923264139}
   - component: {fileID: 7295329327947498005}
   - component: {fileID: 7295660659529491973}
+  - component: {fileID: 6281525093869314368}
   m_Layer: 5
   m_Name: RightKey
   m_TagString: Untagged
@@ -20867,6 +21124,21 @@ MonoBehaviour:
   _buttonText: {fileID: 7295607041589338209}
   _defaultKeyName: Right
   _defaultKeyCode: 100
+--- !u!114 &6281525093869314368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7255014278626467207}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db7d01bc933f27143a65ab22c43e8d6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AudioSource: {fileID: 2631611901465381972}
+  ClickSound: {fileID: 8300000, guid: f0a7aa437c1fdd841b243d10cb73940a, type: 3}
+  HoverSound: {fileID: 8300000, guid: f0a7aa437c1fdd841b243d10cb73940a, type: 3}
 --- !u!1 &7255241225683067735
 GameObject:
   m_ObjectHideFlags: 0

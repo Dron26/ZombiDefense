@@ -446,12 +446,12 @@ GameObject:
   - component: {fileID: 3438307147572362950}
   - component: {fileID: 3438307147562832506}
   - component: {fileID: -8651523625067826391}
+  - component: {fileID: 3438307147572246865}
   - component: {fileID: 3438307147572246878}
   - component: {fileID: 3438307147572246877}
   - component: {fileID: 3438307147572246876}
   - component: {fileID: 3438307147572246867}
   - component: {fileID: 3438307147572246866}
-  - component: {fileID: 3438307147572246865}
   - component: {fileID: 3438307147572246864}
   - component: {fileID: 3438307147572246871}
   - component: {fileID: 3438307147572246870}
@@ -538,18 +538,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2657db48498f4ecba493e55008f10e78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponDataReference:
-    m_AssetGUID: 2e81334f0f23706429cfb8145a98efdd
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_EditorAssetChanged: 0
   _id: 0
-  _name: Ordinary Soldier
+  _name: Soldier
+  _characterInfoName: SoldierInfo
   StartPosition: {x: 0, y: 0, z: 0}
   _ring: {fileID: 1895851485990909471}
   maxHealth: 60
   level: 1
   _sprite: {fileID: 21300000, guid: e18c14ee28fe0bb45974b7b5df495de7, type: 3}
+--- !u!114 &3438307147572246865
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3438307147572064486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f830727607e4ae4b44550dac031f891, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _weapon: {fileID: 3507410096402464790, guid: 02d3df70778c60a4d948efba03390046, type: 3}
+  _granade: {fileID: 0}
+  shootingRadiusSprite: {fileID: 21300000, guid: c036f3de1f1584b6eb35aa03cce9964c, type: 3}
+  _ring: {fileID: 1895851485990909471}
+  _isShotgun: 0
 --- !u!114 &3438307147572246878
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -622,23 +635,6 @@ MonoBehaviour:
   maxTurnTime: 1
   _maxTurnAngle: 180
   _minTurnAngle: 10
---- !u!114 &3438307147572246865
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3438307147572064486}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f830727607e4ae4b44550dac031f891, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _smallArmsGameObject: {fileID: 2169595047411215623, guid: 34b641cdbdc11014991181c750d9d0de, type: 3}
-  _smallArmsType: 0
-  shootingRadiusSprite: {fileID: 21300000, guid: c036f3de1f1584b6eb35aa03cce9964c, type: 3}
-  _ring: {fileID: 1895851485990909471}
-  _isShotgun: 0
 --- !u!114 &3438307147572246864
 MonoBehaviour:
   m_ObjectHideFlags: 0

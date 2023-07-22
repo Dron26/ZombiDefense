@@ -124,7 +124,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
             if (_isShotgun)
                 ApplyDamageToEnemiesInRange();
             else
-                _enemy.ApplyDamage(_damage, _weaponController.WeaponName);
+                _enemy.ApplyDamage(_damage, _weaponController.WeaponWeaponType);
 
             if (!_enemy.IsLife())
             {
@@ -185,7 +185,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
                             }
 
                             enemy.ApplyDamage(_weaponController.GetDamage() * damagePercent,
-                                _weaponController.WeaponName); // применяем урон
+                                _weaponController.WeaponWeaponType); // применяем урон
                         }
                     }
                 }

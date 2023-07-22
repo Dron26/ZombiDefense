@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5926965011725076873}
   - component: {fileID: 5926965011728517609}
   - component: {fileID: 5926965011727076359}
+  - component: {fileID: -8418919812489252254}
   m_Layer: 0
   m_Name: weapon_assault_rifle_A
   m_TagString: Untagged
@@ -85,6 +86,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &-8418919812489252254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5926965011725403781}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abb217199da0455a9a030aa72df1a973, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WeaponTypeEnum: 2
+  _weaponName: Light
+  _damage: 10
+  _maxAmmo: 25
+  _reloadTime: 1
+  _fireRate: 1
+  _range: 17
+  _shoot: {fileID: 8300000, guid: edb97777959ec0942aee572252e33240, type: 3}
+  _spreadAngle: 0
+  _reload: {fileID: 8300000, guid: 6daacd1251b68714a87ff6f334e03b00, type: 3}
 --- !u!1001 &6717944509988644135
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -9,169 +9,86 @@ using UnityEngine.Events;
 
 namespace Infrastructure.WeaponManagment
 {
-    public class WeaponController : MonoCache, IWeapon, IObserverByHumanoid,IObservableWeapon
+    public class WeaponController : MonoCache, IWeapon, IObservableWeapon
     {
-        private WeaponData _weaponData;
         private GameObject _weaponPrefab;
+
+        [SerializeField] private Weapon _weapon;
+        [SerializeField] private Weapon _granade;
         
-        private Weapon _smallArms;
-        private Weapon _granade;
-        
-         [SerializeField]private GameObject _smallArmsGameObject;
-        [SerializeField] private Type _smallArmsType;
         [SerializeField] private Sprite shootingRadiusSprite;
 
-        [SerializeField ]private ParticleSystem _ring;
+        [SerializeField] private ParticleSystem _ring;
         //  [SerializeField]private GameObject _granadeGameObject;
         //  [SerializeField] private Type _garnadeType;
-         
+
         private List<IObserverByWeaponController> observers = new List<IObserverByWeaponController>();
         private PlayerCharacterAnimController _playerCharacterAnimController;
+
         private Animator _animator;
-        //private  Weapon _weaponGranade;
+
         private Humanoid _humanoid;
         private int _totalReceivedDamage;
-        private Dictionary<int, float> _weaponAnimInfo=new();
-        private string _weaponName;
+        private Dictionary<int, float> _weaponAnimInfo = new();
+        private WeaponType _weaponWeaponType;
         private int _damage;
         private int _maxAmmo;
         private float _reloadTime;
         private float _fireRate;
         private float _range;
-    
+
 
         public UnityAction ChangeWeapon;
         public float ReloadTime => _reloadTime;
         public bool _isShotgun;
-        public string WeaponName=>_weaponName;
-        private void Awake()
+        private bool _isGranade;
+        
+        public WeaponType WeaponWeaponType => _weaponWeaponType;
+        public Weapon GetWeapon() => _weapon;
+
+        public Weapon GetGranads() => _granade;
+
+
+        public int DamageReceived() => _totalReceivedDamage;
+
+        public float GetRangeAttack() => _range;
+
+        public Weapon GetActiveWeapon() => _weapon;
+
+        public void SetWeapon(Transform weaponTransform) =>
+            _weaponPrefab.transform.parent = weaponTransform;
+
+        private void Awake() => SetWeaponData();
+
+        public void SetWeaponData()
         {
-            if (TryGetComponent(out Humanoid humanoid))
-            {
-                humanoid.AddObserver(this);
-            }
-            else if (TryGetComponent(out Enemy enemy))
-            {
-                enemy.AddObserver(this);
-            }
-        }
-        
-        
-        public void SetSmallArmsPrefab()
-        {
-            _smallArmsGameObject.SetActive(true);
-            
-        }
-        
-        // public void SetGranadePrefab()
-        // {
-        //     _granadeGameObject.SetActive(true);
-        //     
-        // }
-        
-        public WeaponData GetWeaponData()
-        {
-            return _weaponData;
-        }
-        
-        public Weapon GetSmallArms()
-        {
-            return _smallArms;
-        }
-        
-        public Weapon GetGranads()
-        {
-            return _granade;
+            _humanoid = GetComponent<Humanoid>();
+            _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
+            _animator = GetComponent<Animator>();
+
+            SetWeapons();
+            SetAnimInfo();
+            SetWeaponParametrs();
+            ChangeWeapon?.Invoke();
+            SetShootingRadius();
+            NotifyObserverWeaponController(_weapon);
         }
 
         private void SetWeapons()
-        { 
-            
-            if (_weaponData.GetSmallArms().Count > 0)
+        {
+            if (_weapon==null)
             {
-                for (int i = 0; i < _weaponData.GetSmallArms().Count; i++)
-                {
-                    if (_weaponData.GetSmallArms()[i]!=null)
-                    {
-                        _smallArms=_weaponData.GetSmallArms()[i];
-                        _isShotgun=_smallArms.IsShotgun;
-                    }
-                }
+                _weapon = new();
+                print("Send null weapon");
             }
             else
             {
-                _smallArms=new ();
-                print("Send null smallArms in Prefab");
-            }
-            
-            if (_weaponData.GetGranads().Count > 0)
-            {
-                
-                if (_weaponData.GetSmallArms().Count > 0)
-                {
-                    for (int i = 0; i < _weaponData.GetGranads().Count; i++)
-                    {
-                        if (_weaponData.GetGranads()[i]!=null)
-                        {
-                            _granade=_weaponData.GetGranads()[i];
-                        }
-                    }
-                }
-                else
-                {
-                    _granade=new ();
-                    print("Send null granads in Prefab");
-                }
-            }
-        }
+                _isGranade = _weapon.IsGranade is true and true;
 
-        private void SetWeaponParametrs()
-        {
-            _weaponName = _smallArms.WeaponName;
-            _damage = _smallArms.Damage;
-            _maxAmmo = _smallArms.MaxAmmo;
-            _range = _smallArms.Range;
-            
-            if (!_weaponData.IsGranade)
-            {
-                _fireRate = _weaponAnimInfo[_playerCharacterAnimController.IsShoot];
-                _reloadTime = _weaponAnimInfo[_playerCharacterAnimController.Reload];
+                _isShotgun = _weapon.IsShotgun is true and true;
             }
         }
         
-        
-
-        public int GetDamage()
-        {
-            _totalReceivedDamage += _damage;
-            return _damage;
-        }
-        
-        public float GetSpread()
-        {
-            float spread = 8;
-
-            return spread;
-        }
-        
-
-        public int DamageReceived() =>
-            _totalReceivedDamage;
-
-        public float GetRangeAttack()
-        {
-            return _range;
-        }
-
-        public Weapon GetActiveWeapon()
-        {
-            return _smallArms;
-        }
-        public void SetWeapon(Transform weaponTransform )
-        {
-            _weaponPrefab.transform.parent = weaponTransform;
-        }
-
         private void SetAnimInfo()
         {
             foreach (KeyValuePair<int, float> info in _playerCharacterAnimController.GetAnimInfo())
@@ -180,36 +97,20 @@ namespace Infrastructure.WeaponManagment
             }
         }
 
-        public void NotifyFromHumanoid(object data)
+        private void SetWeaponParametrs()
         {
-            _humanoid=GetComponent<Humanoid>();
-            _weaponData = _humanoid.GetWeaponData();
-          //  _humanoid.OnHumanoidSelected=NotifySelection;
-            
-            _playerCharacterAnimController=GetComponent<PlayerCharacterAnimController>();
-            _animator=GetComponent<Animator>();
+            _weaponWeaponType = _weapon.GetWeaponType();
+            _damage = _weapon.Damage;
+            _maxAmmo = _weapon.MaxAmmo;
+            _range = _weapon.Range;
 
-            SetWeapons();
-            SetAnimInfo();
-            SetWeaponParametrs();
-            SetSmallArmsPrefab();
-            ChangeWeapon?.Invoke();
-            SetShootingRadius();
-            NotifyObserverWeaponController(_smallArms);
-        }
-
-        public void NotifySelection(bool isSelected)
-        {
-            if (isSelected)
+            if (!_isGranade)
             {
-                _ring.Play();
-            }
-            else
-            {
-                _ring.Stop();
+                _fireRate = _weaponAnimInfo[_playerCharacterAnimController.IsShoot];
+                _reloadTime = _weaponAnimInfo[_playerCharacterAnimController.Reload];
             }
         }
-
+        
         private void SetShootingRadius()
         {
             GameObject radiusObject = new GameObject("ShootingRadius");
@@ -221,31 +122,8 @@ namespace Infrastructure.WeaponManagment
             radiusObject.transform.localScale = new Vector3(_range * 2f, _range * 2f, 1f);
             radiusObject.SetActive(false);
         }
-
-
-        protected override void  OnDisable()
-        {
-            if (TryGetComponent(out Humanoid humanoid))
-            {
-                humanoid.RemoveObserver(this);
-            }
-            else if (TryGetComponent(out Enemy enemy))
-            {
-                enemy.RemoveObserver(this);
-            }
-        }
-
-        public void AddObserver(IObserverByWeaponController observerByWeapon)
-        {
-            observers.Add(observerByWeapon);
-            int c= observers.Count;
-        }
-
-        public void RemoveObserver(IObserverByWeaponController observerByWeapon)
-        {
-            observers.Remove(observerByWeapon);
-        }
-
+        
+        
         public void NotifyObserverWeaponController(Weapon weapon)
         {
             foreach (var observer in observers)
@@ -253,17 +131,52 @@ namespace Infrastructure.WeaponManagment
                 observer.NotifyFromWeaponController(weapon);
             }
         }
+        
+        
+        public int GetDamage()
+        {
+            _totalReceivedDamage += _damage;
+            return _damage;
+        }
 
-        public float GetSpreadAngle() => 
-            _smallArms.SpreadAngle;
+        public float GetSpread()
+        {
+            float spread = 8;
+            return spread;
+        }
+        
+        public void NotifySelection(bool isSelected)
+        {
+            if (isSelected)
+            {
+                _ring.Play();
+            }
+            else
+            {
+                _ring.Stop();
+            }
+        }
+        
+        public void AddObserver(IObserverByWeaponController observerByWeapon)
+        {
+            observers.Add(observerByWeapon);
+            int c = observers.Count;
+        }
+
+        public void RemoveObserver(IObserverByWeaponController observerByWeapon) =>
+            observers.Remove(observerByWeapon);
+
+        
+        public float GetSpreadAngle() =>
+            _weapon.SpreadAngle;
 
         public void SetDamage(int damage)
         {
-            if (damage<=_damage*2)
-            {
-                
-            }
-            _damage=damage;
+            _damage += damage;
+        }
+
+        protected override void OnDisable()
+        {
         }
     }
 

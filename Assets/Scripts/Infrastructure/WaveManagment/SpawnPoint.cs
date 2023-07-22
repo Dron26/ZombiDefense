@@ -71,7 +71,7 @@ namespace Infrastructure.WaveManagment
 
         private IEnumerator StartFillPool()
         {
-            float delayTime = 0.1f;
+            float delayTime = 0f;
 
             foreach (Wave wave in _groupWave)
             {
