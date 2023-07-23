@@ -32,7 +32,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
         [SerializeField] private WorkPoint _startPoint;
         private Store store;
         private SaveLoad _saveLoad;
-
+private bool isMovementOver = false;
         public void Initialize(SceneInitializer sceneInitializer, SaveLoad saveLoad)
         {
             _saveLoad = saveLoad;
@@ -66,39 +66,41 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
         private void OnSelectedPoint(WorkPoint newPoint)
         {
             isHumanoidSelected = _saveLoad.GetSelectedHumanoid();
+            _selectedHumanoid = _saveLoad.GetSelectedHumanoid();
+          
             if (_selectedPoint != newPoint)
             {
                 isPointToMoveTaked = false;
                 _selectedPoint.SetSelected(false);
+                _previousMovePoint = _selectedPoint;
                 _selectedPoint = newPoint;
-                _saveLoad.SetSelectedPoint(
-                    _selectedPoint);
+                _saveLoad.SetSelectedPoint(_selectedPoint);
+                
                 if (newPoint.IsBusy == false && isHumanoidSelected && isPointToMoveTaked == false)
                 {
                     isPointToMoveTaked = true;
                     MovePoint = newPoint;
                 }
             }
-            else if (newPoint.IsBusy == false && isPointToMoveTaked == true)
+            else if (_selectedHumanoid!=null&&!_selectedHumanoid.IsMove)
             {
-                _previousMovePoint.SetBusy(false);
-                newPoint.SetBusy(true);
-                newPoint.SelectedForMove(true);
-                _previousMovePoint = MovePoint;
-                _selectedHumanoid =
-                    _saveLoad
-                        .GetSelectedHumanoid();
-                PlayerCharactersStateMachine stateMachine =
-                    _selectedHumanoid.GetComponent<PlayerCharactersStateMachine>();
-                MovementState movementState = _selectedHumanoid.GetComponent<MovementState>();
-                movementState.SetNewPoint(newPoint);
-                if (_selectedHumanoid.IsMove == false)
+                if (newPoint.IsBusy == false && isPointToMoveTaked == true)
                 {
-                    stateMachine.EnterBehavior<MovementState>();
+                    _previousMovePoint.SetBusy(false);
+                    newPoint.SetBusy(true);
+                    newPoint.SelectedForMove(true);
+                    _previousMovePoint = MovePoint;
+               
+                    PlayerCharactersStateMachine stateMachine =
+                        _selectedHumanoid.GetComponent<PlayerCharactersStateMachine>();
+                    MovementState movementState = _selectedHumanoid.GetComponent<MovementState>();
+                    movementState.SetNewPoint(newPoint);
+                    
+                        stateMachine.EnterBehavior<MovementState>();
+                        
+                    isPointToMoveTaked = false;
                 }
-
-                isPointToMoveTaked = false;
-                _selectedPoint = newPoint;
+               
             }
 
             store.SetButtonState(_selectedPoint.IsBusy == false);
