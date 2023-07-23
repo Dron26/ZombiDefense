@@ -6,6 +6,7 @@ using Service;
 using Service.SaveLoadService;
 using UI.HUD.Store;
 using UnityEngine;
+using UnityEngine.UI;
 using Upgrades;
 
 namespace UI.HUD.StorePanel
@@ -18,7 +19,7 @@ namespace UI.HUD.StorePanel
        // [SerializeField] private CharacterGroupPanel _characterGroupPanel;
        
         [SerializeField] UpgradGrouper _upgradGrouper;
-       
+        [SerializeField] private Button _buyButton;
         [SerializeField] private PricePanel _pricePanel;
         [SerializeField]private CharacterInfoPanel _characterInfoPanel;
 
@@ -32,7 +33,9 @@ namespace UI.HUD.StorePanel
         [SerializeField] private CharacterGroupContent _characterGroupContent;
         [SerializeField] private CharacterSkinnedMeshesGroup _characterSkinnedMeshesGroup;
         [SerializeField] CharacterStoreRotation _characterStoreRotation;
-        
+       
+        public Action<Humanoid> OnCharacterBought;
+
         private List<int> _indexAvailableHumanoid=new();
         private List<CharacterSlot> _characterSlots=new();
         private CharacterSlot _selectedCharacterSlot;
@@ -40,8 +43,8 @@ namespace UI.HUD.StorePanel
         private SaveLoad _saveLoad;
         private Store _store;
         private Wallet _wallet;
-
         public Action OnUpdateBought;
+        
         public void Initialize( SaveLoad saveLoad,Store store ,Wallet wallet )
         {
             _wallet=wallet;
@@ -53,8 +56,15 @@ namespace UI.HUD.StorePanel
            
                 //  InitializeUpgradePanel();
             SetCharacterData(false);
+
+            InitializeButton();
         }
 
+        private void InitializeButton()
+        {
+            _buyButton.onClick.AddListener(OnTryBuyCharacter);
+        }
+        
         public void OpenPanel()
         {
             //_saveLoad.UpdateData();
@@ -74,6 +84,7 @@ namespace UI.HUD.StorePanel
             }
             
             _selectedCharacterSlot= _characterSlots[0];
+            _selectedHumanoid=_selectedCharacterSlot.Humanoid;
             
         }
 
@@ -86,10 +97,12 @@ namespace UI.HUD.StorePanel
         {
             _characterSkinnedMeshesGroup.ShowCharacter(_selectedCharacterSlot.Index);
         }
+        
         private void SetCharacterInfo()
         {
             _characterInfoPanel.SetParametrs(_selectedCharacterSlot.Humanoid);
         }
+        
         private void InitializeUpgradePanel()
         {
             _upgradGrouper.Initialize(_saveLoad,this);
@@ -98,14 +111,32 @@ namespace UI.HUD.StorePanel
 
         private void OnTryBuyUpgrade(UpgradeData upgradeData,int price,int level)
         {
+            if (OnTryBuy(price))
+            {
+                UpdateParametrs(upgradeData,level);
+            }
+        }
+        
+        private void OnTryBuyCharacter()
+        {
+            if (OnTryBuy(_selectedHumanoid.GetPrice()))
+            {
+                OnCharacterBought?.Invoke(_selectedHumanoid);
+                
+            }
+        }
+        
+        private bool OnTryBuy(int price)
+        {
             if (_wallet.CheckPossibilityBuy(price))
             {
                 _wallet.SpendMoney(price);
-                UpdateParametrs(upgradeData,level);
+                return true;
             }
             else
             {
                 print("должен мигать кошелек");
+                return false;
             }
         }
 
@@ -114,20 +145,9 @@ namespace UI.HUD.StorePanel
             _selectedHumanoid.SetUpgrade(upgradeData, level);
             OnUpdateBought?.Invoke();
         }
-        
-        private void InitializeCharacterConteiner()
-        {
-            
-        }
-
-        public List<Humanoid> GetCharacters()
-        {
-            return _allHumanoid;
-        }
 
         private void SetHumanoid()
         {
-            
             foreach (GameObject character in _characters)
             {
                 if (character.TryGetComponent(out Humanoid humanoid))
@@ -153,9 +173,8 @@ namespace UI.HUD.StorePanel
             {
                 _selectedCharacterSlot = characterSlot;
                 _selectedHumanoid=_selectedCharacterSlot.Humanoid;
+                SetCharacterData(true);
             }
-            
-            SetCharacterData(true);
         }
 
         private void SetCharacterData(bool isActive)

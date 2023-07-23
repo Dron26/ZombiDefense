@@ -19,13 +19,13 @@ namespace Service
         public void AddMoney(int amountMoney)
         {
             _money += amountMoney;
-            _saveLoad.ApplyMoney(_money);
+            _saveLoad.AddMoney(_money);
         }
         
         public void SpendMoney(int amountSpendMoney)
         {
             _money -= Mathf.Clamp(amountSpendMoney, 0, int.MaxValue);
-            _saveLoad.ApplyMoney(_money);
+            _saveLoad.SpendMoney(_money);
         }
         
         public bool CheckPossibilityBuy(int price)

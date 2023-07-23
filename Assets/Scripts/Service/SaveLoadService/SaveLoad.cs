@@ -75,9 +75,16 @@ namespace Service.SaveLoadService
             Save();
         }
 
-        public void ApplyMoney(int amountMoney)
+        public void AddMoney(int amountMoney)
         {
             _dataBase.AddMoney(amountMoney);
+            Save();
+            OnChangeMoney?.Invoke();
+        }
+        
+        public void SpendMoney(int amountMoney)
+        {
+            _dataBase.SpendMoney(amountMoney);
             Save();
             OnChangeMoney?.Invoke();
         }

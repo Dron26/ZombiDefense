@@ -43,7 +43,7 @@ namespace Observer
                 TotalPoints += _weaponController.DamageReceived();
             }
 
-            _saveLoad.ApplyMoney(TotalMoney);
+            _saveLoad.AddMoney(TotalMoney);
             _saveLoad.ApplyTotalPoints(TotalPoints);
         }
         

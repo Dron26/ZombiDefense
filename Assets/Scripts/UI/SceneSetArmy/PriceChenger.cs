@@ -198,7 +198,7 @@ namespace UI.SceneSetArmy
         {
             if (!_saveLoad.GetStartBattle())
             {
-                _saveLoad.ApplyMoney(GetPrice());
+                _saveLoad.AddMoney(GetPrice());
             }
         }
 

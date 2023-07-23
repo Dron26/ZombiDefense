@@ -16,9 +16,11 @@ namespace UI.HUD.StorePanel
     public class Store : MonoCache
     {
         [SerializeField] private CharacterStore _characterStore;
+        
         [SerializeField] private Button _buttonStorePanel;
         [SerializeField] private Button _buttonRightPanel;
         [SerializeField] private Button _closeButton;
+        
         [SerializeField] private GameObject _controlPanel;
         [SerializeField] private GameObject _buttonPanel;
         [SerializeField] private WorkPointUpgradePanel _pointUpgradePanel;
@@ -36,7 +38,6 @@ namespace UI.HUD.StorePanel
         private SceneInitializer _sceneInitializer;
         private PlayerCharacterInitializer _characterInitializer;
         private MovePointController _movePointController;
-        public UnityAction<Humanoid> BuyCharacter;
         private SaveLoad _saveLoad;
         private int maxLevel = 3;
         private bool _isPanelActive=false;
@@ -60,6 +61,7 @@ namespace UI.HUD.StorePanel
             _characters = _saveLoad.GetAvailableCharacters();
             _saveLoad.OnSelectedNewPoint += CheckPointInfo;
             _characterStore.Initialize(_saveLoad,this,_wallet);
+            _characterStore.OnCharacterBought += OnCharacterBought;
             InitializeButton();
             //_characterStore.BuyCharacter += OnBuyCharacter;
             _movePointController = _sceneInitializer.GetMovePointController();
@@ -72,10 +74,9 @@ namespace UI.HUD.StorePanel
             //_movePointController.OnUnSelectedPoint+=OnUnSelectedPoint;
         }
 
-        private void OnBuyCharacter(Humanoid humanoid)
+        private void OnCharacterBought(Humanoid humanoid)
         {
-            BuyCharacter?.Invoke(humanoid);
-            ClosePanel();
+            SwithStorePanel();
         }
 
         private void InitializeButton()
@@ -175,6 +176,11 @@ namespace UI.HUD.StorePanel
             _dimImage.gameObject.SetActive(isActive);
             isActive = !isActive;
             _controlPanel.gameObject.SetActive(isActive);
+        }
+
+        public CharacterStore GetCharacterStore()
+        {
+            return _characterStore;
         }
     }
 }

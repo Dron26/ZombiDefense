@@ -57,6 +57,7 @@ public string GetName() => _name;
         private void Awake()
         {
             _weaponControl= GetComponent<WeaponController>();    
+            _weaponControl.SetWeaponData();
         }
         public void LoadedData()
         {
@@ -82,17 +83,11 @@ public string GetName() => _name;
 
         public void NotifyObservers(object data)
         {
-                _countLoaded++;
-                
-            if (_countLoaded==_maxCountLoaded)
-            {
                 foreach (var observer in observers)
                 {
-                    
                     OnDataLoad?.Invoke(this);
                     observer.NotifyFromHumanoid(data);
                 }
-            }
         }
 
         public void SetAudioController(AudioManager audioManager)

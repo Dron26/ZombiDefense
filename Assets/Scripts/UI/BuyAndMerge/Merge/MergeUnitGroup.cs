@@ -57,7 +57,7 @@ namespace UI.BuyAndMerge.Merge
         {
             if (!_saveLoad.GetStartBattle())
             {
-                _saveLoad.ApplyMoney(GetPrice());
+                _saveLoad.AddMoney(GetPrice());
             }
         }
 

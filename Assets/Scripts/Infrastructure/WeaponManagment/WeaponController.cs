@@ -57,9 +57,7 @@ namespace Infrastructure.WeaponManagment
 
         public void SetWeapon(Transform weaponTransform) =>
             _weaponPrefab.transform.parent = weaponTransform;
-
-        private void Awake() => SetWeaponData();
-
+        
         public void SetWeaponData()
         {
             _humanoid = GetComponent<Humanoid>();

@@ -22,7 +22,8 @@ namespace Infrastructure.Location
         public UnityAction AreOverHumanoids;
         public UnityAction CreatedHumanoid;
         private Humanoid _selectedHumanoid;
-        private Store store;
+        private Store _store;
+        private CharacterStore _characterStore;
         private MovePointController _movePointController;
         public int CoutnCreated => _coutnCreated;
         private int _coutnCreated;
@@ -37,8 +38,9 @@ namespace Infrastructure.Location
             _humanoidFactory.Initialize(audioManager);
             _workPointsGroup.Initialize(_saveLoad);
             FillWorkPoints();
-            store = sceneInitializer.GetStoreOnPlay();
-            store.BuyCharacter += SetCreatHumanoid;
+            _store = sceneInitializer.GetStoreOnPlay();
+            _characterStore = _store.GetCharacterStore();
+            _characterStore.OnCharacterBought += SetCreatHumanoid;
             _movePointController = sceneInitializer.GetMovePointController();
         }
 

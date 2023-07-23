@@ -69,8 +69,8 @@ namespace Infrastructure.Location
                 _isBusy = true;
             }
             else
-            
-            { if (_isSelectedForMove==false)
+            { 
+                if (_isSelectedForMove==false)
                 {
                     _isBusy = false;
                 }
