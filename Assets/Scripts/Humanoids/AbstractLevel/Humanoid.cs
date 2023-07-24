@@ -53,14 +53,9 @@ public string GetName() => _name;
         public abstract void ApplyDamage(int getDamage);
         public abstract Sprite GetSprite();
 
-
-        private void Awake()
+        public void Initialize()
         {
-            _weaponControl= GetComponent<WeaponController>();    
-            _weaponControl.SetWeaponData();
-        }
-        public void LoadedData()
-        {
+            GetWeaponController().SetWeaponData();
             NotifyObservers(this);
         }
 

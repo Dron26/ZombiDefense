@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Infrastructure.AIBattle
 {
-    public class PlayerCharacterAnimController : MonoCache,IObserverByHumanoid
+    public class PlayerCharacterAnimController : MonoCache
     {
         public readonly int Idle = Animator.StringToHash("Idle");
         public readonly int Run = Animator.StringToHash("IsRun");
@@ -30,14 +30,9 @@ namespace Infrastructure.AIBattle
         private RuntimeAnimatorController animatorController;
         private void Awake()
         {
-            if (TryGetComponent(out Humanoid humanoid))
-            {
-                humanoid.AddObserver(this);
-            }
-            else if (TryGetComponent(out Enemy enemy))
-            {
-                enemy.AddObserver(this);
-            }
+            _animator = GetComponent<Animator>();
+            
+            SetAnimInfo();
         }
 
         public void SetRandomAnimation()
@@ -117,31 +112,5 @@ namespace Infrastructure.AIBattle
         {
             return _animInfo;
         }
-
-        public void NotifyFromHumanoid(object data)
-        {
-            _animator = GetComponent<Animator>();
-            
-            SetAnimInfo();
-        }
-
-        public void NotifySelection(bool isSelected)
-        {
-            
-        }
-
-        protected override void  OnDisable()
-        {
-            if (TryGetComponent(out Humanoid humanoid))
-            {
-                humanoid.RemoveObserver(this);
-            }
-            else if (TryGetComponent(out Enemy enemy))
-            {
-                enemy.RemoveObserver(this);
-            }
-        }
-
-       
     }
 }

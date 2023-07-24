@@ -69,8 +69,7 @@ namespace Infrastructure.Location
                 _isBusy = true;
             }
             else
-            { 
-                if (_isSelectedForMove==false)
+            { if (_isSelectedForMove==false)
                 {
                     _isBusy = false;
                 }
@@ -127,6 +126,13 @@ namespace Infrastructure.Location
             SetSelected(true);
             CheckState();
             OnSelected?.Invoke(this);
+        }
+
+        public void RemoveHumanoid()
+        {
+            
+            _humanoid.transform.parent=transform.parent;
+            CheckState();
         }
     }
 }

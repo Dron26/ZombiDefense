@@ -93,6 +93,11 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 
         public void SetNewPoint(WorkPoint newPoint)
         {
+            if (_point!=null)
+            {
+                _point.RemoveHumanoid();
+            }
+            
             _point = newPoint;
             _reachedDestination = true;
             _isSetDestination = false;

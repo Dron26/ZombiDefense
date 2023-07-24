@@ -70,11 +70,15 @@ private bool isMovementOver = false;
           
             if (_selectedPoint != newPoint)
             {
-                isPointToMoveTaked = false;
+                if (!_selectedHumanoid.IsMove)
+                {
+                    isPointToMoveTaked = false;
+                   
+                }
                 _selectedPoint.SetSelected(false);
-                _previousMovePoint = _selectedPoint;
                 _selectedPoint = newPoint;
                 _saveLoad.SetSelectedPoint(_selectedPoint);
+                
                 
                 if (newPoint.IsBusy == false && isHumanoidSelected && isPointToMoveTaked == false)
                 {

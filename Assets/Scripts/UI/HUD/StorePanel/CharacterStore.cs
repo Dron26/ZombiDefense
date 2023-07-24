@@ -152,8 +152,6 @@ namespace UI.HUD.StorePanel
             {
                 if (character.TryGetComponent(out Humanoid humanoid))
                 {
-                    humanoid.LoadedData();
-                    
                     _allHumanoid.Add(humanoid);
                     
                     if (humanoid.IsBuyed)

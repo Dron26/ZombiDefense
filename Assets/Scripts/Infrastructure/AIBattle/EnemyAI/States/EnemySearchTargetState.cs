@@ -39,7 +39,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
             agent.speed = 0;
                 _isSearhing = true;
                 _humanoidTransforms = SaveLoad.GetActiveHumanoids()
-                    .Where(humanoid => humanoid.IsMove == false)
+                    .Where(humanoid => humanoid.IsLife() == true)
                     .Select(humanoid => humanoid.transform)
                     .ToArray();
             
@@ -57,7 +57,6 @@ namespace Infrastructure.AIBattle.EnemyAI.States
                     _enemyMovement.SetHumanoidInstalled(false);
                     agent.speed = 1;
                     StateMachine.EnterBehavior<EnemyMovementState>();
-                    
                 }
                 
                 _isSearhing = false;

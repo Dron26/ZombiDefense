@@ -41,7 +41,7 @@ namespace Infrastructure.FactoryWarriors.Humanoids
             humanoidComponent.OnDataLoad = Created;
             float randomAngle = Random.Range(0f, 360f);
             newHumanoid.transform.rotation = Quaternion.Euler(0f, randomAngle, 0f);
-            humanoidComponent.LoadedData();
+            humanoidComponent.Initialize();
         }
 
         private void Created( Humanoid humanoidComponent)

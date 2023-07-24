@@ -18,7 +18,6 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         private NavMeshAgent _agent;
         private float _stoppingDistance;
         private float _distance;
-        private float _stoppingTime;
         private Animator _animator;
         private EnemyAnimController _enemyAnimController;
         private Enemy _enemy;
@@ -47,6 +46,13 @@ namespace Infrastructure.AIBattle.EnemyAI.States
            // StopRandomly();
            SaveLoad.OnSetActiveHumanoid=OnSetActiveHumanoid;
         }
+        
+        public void InitHumanoid(Humanoid targetHumanoid)
+        {
+            _humanoid = targetHumanoid;
+            _humanoidPosition = _humanoid.transform.position;
+            _humanoid.OnMove += OnTargetChangePoint;
+        }
 
         private void OnSetActiveHumanoid()
         {
@@ -67,14 +73,12 @@ namespace Infrastructure.AIBattle.EnemyAI.States
             if (_humanoid != null && _humanoid.IsLife())
             {
                 
-                
-                    if (!_isHumanoidInstalled&&_agent.isOnNavMesh)
+                if (_agent.isOnNavMesh)
                     {
                         _agent.SetDestination(_humanoidPosition);
                         _isHumanoidInstalled = true;
                         Movement();
                     }
-                
             }
             else
             {
@@ -82,63 +86,44 @@ namespace Infrastructure.AIBattle.EnemyAI.States
             }
         }
         
-        private bool ShouldTrackSoldier() {     return Random.value <= _trackingProbability; }
-        
-        private async void StopRandomly()
-        {
-            int minTime = 6;
-            int maxTime = 15;
-            int sec = 1000;
-            
-            
-            
-            while (isActiveAndEnabled)
-            {
-                await Task.Delay(Random.Range(minTime, maxTime) * sec);
-
-                if (!_isStopping)
-                {
-                    _isStopping = true;
-                    StopMovement();
-                   // PlayScream();
-                    
-                    await Task.Delay(TimeSpan.FromSeconds(_stoppingTime));
-                    _isStopping = false;
-                    ResumeMovement();
-                }
-            }
-        }
-
-        // private void PlayScream()
-        // {
-        //     AnimatorClipInfo[] currentClipInfo = _animator.GetCurrentAnimatorClipInfo(0);
-        //     AnimationClip currentClip = currentClipInfo.Length > 0 ? currentClipInfo[0].clip : null;
-        //     int randomIndex = Random.Range(0, _enemyAnimController.GetScreamAnimationClips().Length);
-        //     AnimationClip newClip = _enemyAnimController.GetScreamAnimationClips()[randomIndex];
-        //      _stoppingTime = newClip.length;
-        //      _enemyAnimController.SetRandomAnimation();
-        //     _animator.CrossFade(newClip.name, 0.2f);
-        // }
-        
-        private void StopMovement()
-        {
-            _agent.isStopped = true;
-            _animator.SetBool("Walk", false); 
-        }
-
-        private void ResumeMovement()
+        private void Movement()
         {
             _agent.isStopped = false;
-            _animator.SetBool("Walk", true); 
+            _animator.SetBool(_enemyAnimController.Walk, true);
+           
+            StartCoroutine(CheckDistance());;
+        }
+
+        private void ChangeState()
+        {
+            _agent.isStopped = true;
+            _animator.SetBool(_enemyAnimController.Walk, false);
+            StateMachine.EnterBehavior<EnemySearchTargetState>();
         }
         
-       public void InitHumanoid(Humanoid targetHumanoid)
-       {
-           _humanoid = targetHumanoid;
-           _humanoidPosition = _humanoid.transform.position;
-           _humanoid.OnMove += OnTargetChangePoint;
-       }
+        private IEnumerator CheckDistance()
+        {
+            while (_isHumanoidInstalled)
+            {
+                _distance = Vector3.Distance(transform.position, _humanoid.transform.position);
 
+                if (_stoppingDistance >= _distance)
+                {
+                    _animator.SetBool(_enemyAnimController.Walk, false);
+                    StateMachine.EnterBehavior<EnemyAttackState>();
+                }
+
+                if (!_humanoid.IsLife())
+                {
+                    _animator.SetBool(_enemyAnimController.Walk, false);
+                    StateMachine.EnterBehavior<EnemySearchTargetState>();
+                }
+               
+           
+                yield return new WaitForSeconds(0.5f);
+            }
+        }
+        
        private void OnTargetChangePoint()
        {
            if (gameObject.activeInHierarchy) // Проверка активности объекта
@@ -149,68 +134,82 @@ namespace Infrastructure.AIBattle.EnemyAI.States
                    ChangeState();
            }
        }
-       
-       private void ChangeState()
-       {
-           _agent.isStopped = true;
-           _animator.SetBool(_enemyAnimController.Walk, false);
-           StateMachine.EnterBehavior<EnemySearchTargetState>();
-       }
-
-       private void Movement()
-       {
-           _animator.SetBool(_enemyAnimController.Walk, true);
-           
-           StartCoroutine(CheckDistance());;
-       }
-
-       private IEnumerator CheckDistance()
-       {
-           while (_isHumanoidInstalled)
-           {
-               _distance = Vector3.Distance(transform.position, _humanoid.transform.position);
-
-               if (_stoppingDistance >= _distance)
-               {
-                   _animator.SetBool(_enemyAnimController.Walk, false);
-                   StateMachine.EnterBehavior<EnemyAttackState>();
-               }
-
-               if (!_humanoid.IsLife())
-               {
-                   _animator.SetBool(_enemyAnimController.Walk, false);
-                   StateMachine.EnterBehavior<EnemySearchTargetState>();
-               }
-               
-           
-               yield return new WaitForSeconds(0.5f);
-           }
-       }
-       
-       public void SetHumanoidInstalled(bool isHumanoidInstalled)
-       {
-           _isHumanoidInstalled = isHumanoidInstalled;
-       }
-       
-       private void SetAnimInfo()
-       {
-           foreach (KeyValuePair<int, float> info in _enemyAnimController.GetAnimInfo())
-           {
-               _animInfo.Add(info.Key, info.Value);
-               _stoppingTime = _animInfo[_enemyAnimController.Walk];
-           }
-       }
-       
-       
+        
        private IEnumerator CheckSoldierPosition()
        {
-           while (isActiveAndEnabled && _humanoid != null && _humanoid.IsMove)
+           while ( _humanoid.IsMove)
            {
                Vector3 soldierPosition = _humanoid.transform.position;
                _agent.SetDestination(soldierPosition);
+               
                yield return new WaitForSeconds(1.5f);
            }
+           
+           _agent.isStopped = false;
+           _animator.SetBool(_enemyAnimController.Walk, true);
        }
 
+       private bool ShouldTrackSoldier() {     return Random.value <= _trackingProbability; }
+
+        public void SetHumanoidInstalled(bool isHumanoidInstalled)
+       {
+           _isHumanoidInstalled = isHumanoidInstalled;
+       }
+        
     }
 }
+// private void SetAnimInfo()
+// {
+//     foreach (KeyValuePair<int, float> info in _enemyAnimController.GetAnimInfo())
+//     {
+//         _animInfo.Add(info.Key, info.Value);
+//         _stoppingTime = _animInfo[_enemyAnimController.Walk];
+//     }
+// }
+// private async void StopRandomly()
+// {
+//     int minTime = 6;
+//     int maxTime = 15;
+//     int sec = 1000;
+//     
+//     
+//     
+//     while (isActiveAndEnabled)
+//     {
+//         await Task.Delay(Random.Range(minTime, maxTime) * sec);
+//
+//         if (!_isStopping)
+//         {
+//             _isStopping = true;
+//             StopMovement();
+//            // PlayScream();
+//             
+//             await Task.Delay(TimeSpan.FromSeconds(_stoppingTime));
+//             _isStopping = false;
+//             ResumeMovement();
+//         }
+//     }
+// }
+
+// private void PlayScream()
+// {
+//     AnimatorClipInfo[] currentClipInfo = _animator.GetCurrentAnimatorClipInfo(0);
+//     AnimationClip currentClip = currentClipInfo.Length > 0 ? currentClipInfo[0].clip : null;
+//     int randomIndex = Random.Range(0, _enemyAnimController.GetScreamAnimationClips().Length);
+//     AnimationClip newClip = _enemyAnimController.GetScreamAnimationClips()[randomIndex];
+//      _stoppingTime = newClip.length;
+//      _enemyAnimController.SetRandomAnimation();
+//     _animator.CrossFade(newClip.name, 0.2f);
+// }
+        
+// private void StopMovement()
+// {
+//     _agent.isStopped = true;
+//     _animator.SetBool("Walk", false); 
+// }
+//
+// private void ResumeMovement()
+// {
+//     _agent.isStopped = false;
+//     _animator.SetBool("Walk", true); 
+// }
