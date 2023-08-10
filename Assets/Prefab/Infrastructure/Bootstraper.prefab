@@ -1,5 +1,60 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &264337090
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 264337091}
+  - component: {fileID: 264337092}
+  m_Layer: 0
+  m_Name: 'Level:'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &264337091
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 264337090}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1992244174962108506}
+  m_RootOrder: 65
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &264337092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 264337090}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb15fa0e7301ff849bf4d6dcede7c12b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data: 0
+  entries:
+  - Language: Turkey
+    Text: 'Seviye:'
+    Object: {fileID: 0}
+  - Language: Russian
+    Text: "\u0423\u0440\u043E\u0432\u0435\u043D\u044C:"
+    Object: {fileID: 0}
+  - Language: English
+    Text: 'Level:'
+    Object: {fileID: 0}
 --- !u!1 &763789916
 GameObject:
   m_ObjectHideFlags: 0
@@ -150,6 +205,235 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   translationName: '"LOADING ...'
   FallbackText: Loading ...
+--- !u!1 &914183546
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 914183547}
+  - component: {fileID: 914183548}
+  m_Layer: 0
+  m_Name: Buy
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &914183547
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 914183546}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1992244174962108506}
+  m_RootOrder: 66
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &914183548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 914183546}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb15fa0e7301ff849bf4d6dcede7c12b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data: 0
+  entries:
+  - Language: Turkey
+    Text: "Sat\u0131n Al"
+    Object: {fileID: 0}
+  - Language: Russian
+    Text: "\u041A\u0443\u043F\u0438\u0442\u044C"
+    Object: {fileID: 0}
+  - Language: English
+    Text: Buy
+    Object: {fileID: 0}
+--- !u!1 &1308873887
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1308873888}
+  - component: {fileID: 1308873889}
+  m_Layer: 0
+  m_Name: Are you sure you want to go to the menu? All progress made on the location
+    will be lost.
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1308873888
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1308873887}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1992244174962108506}
+  m_RootOrder: 69
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1308873889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1308873887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb15fa0e7301ff849bf4d6dcede7c12b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data: 0
+  entries:
+  - Language: Turkey
+    Text: "Men\xFCye \xE7\u0131kmak istedi\u011Finize emin misiniz?\n\n Lokasyonda
+      kaydedilen t\xFCm ilerlemeler kaybolacak."
+    Object: {fileID: 0}
+  - Language: Russian
+    Text: "\u0412\u044B \u0443\u0432\u0435\u0440\u0435\u043D\u044B \u0447\u0442\u043E
+      \u0445\u043E\u0442\u0438\u0442\u0435 \u0432\u044B\u0439\u0442\u0438 \u0432 
+      \u043C\u0435\u043D\u044E?\n\n \u0412\u0435\u0441\u044C \u043F\u0440\u043E\u0433\u0440\u0435\u0441\u0441
+      \u0434\u043E\u0441\u0442\u0438\u0433\u043D\u0443\u0442\u044B\u0439 \u043D\u0430
+      \u043B\u043E\u043A\u0430\u0446\u0438\u0438 \u0431\u0443\u0434\u0435\u0442 \u0443\u0442\u0435\u0440\u044F\u043D."
+    Object: {fileID: 0}
+  - Language: English
+    Text: "Are you sure you want to go to the menu?\n\n All progress made on the
+      location will be lost."
+    Object: {fileID: 0}
+--- !u!1 &1705635135
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1705635136}
+  - component: {fileID: 1705635137}
+  m_Layer: 0
+  m_Name: ScoutInfo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1705635136
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1705635135}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1992244174962108506}
+  m_RootOrder: 64
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1705635137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1705635135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb15fa0e7301ff849bf4d6dcede7c12b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data: 0
+  entries:
+  - Language: Turkey
+    Text: "\"Scout, g\xFC\xE7l\xFC bir otomatik t\xFCfe\u011Fi olan \xE7evik bir
+      at\u0131c\u0131d\u0131r. Do\u011Fru ve h\u0131zl\u0131 \xE7ekimleri, insanl\u0131\u011F\u0131
+      kaostan kurtar\u0131rken zombilere \xF6l\xFCmc\xFCl bir darbe indiriyor.\""
+    Object: {fileID: 0}
+  - Language: Russian
+    Text: "\"\u0421\u043A\u0430\u0443\u0442 \u2013 \u043B\u043E\u0432\u043A\u0438\u0439
+      \u0441\u0442\u0440\u0435\u043B\u043E\u043A \u0441 \u043C\u043E\u0449\u043D\u043E\u0439
+      \u0430\u0432\u0442\u043E\u043C\u0430\u0442\u0438\u0447\u0435\u0441\u043A\u043E\u0439
+      \u0432\u0438\u043D\u0442\u043E\u0432\u043A\u043E\u0439. \u0415\u0433\u043E
+      \u0442\u043E\u0447\u043D\u044B\u0435 \u0438 \u0431\u044B\u0441\u0442\u0440\u044B\u0435
+      \u0432\u044B\u0441\u0442\u0440\u0435\u043B\u044B \u043D\u0430\u043D\u043E\u0441\u044F\u0442
+      \u0441\u043C\u0435\u0440\u0442\u0435\u043B\u044C\u043D\u044B\u0439 \u0443\u0434\u0430\u0440
+      \u0437\u043E\u043C\u0431\u0438, \u0441\u043F\u0430\u0441\u0430\u044F \u0447\u0435\u043B\u043E\u0432\u0435\u0447\u0435\u0441\u0442\u0432\u043E
+      \u043E\u0442 \u0445\u0430\u043E\u0441\u0430.\""
+    Object: {fileID: 0}
+  - Language: English
+    Text: '"Scout is a clever shooter with a powerful automatic rifle. His accurate
+      and fast shots deal a deadly blow to zombies, saving humanity from chaos."'
+    Object: {fileID: 0}
+--- !u!1 &1905379158
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1905379159}
+  - component: {fileID: 1905379160}
+  m_Layer: 0
+  m_Name: Continue
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1905379159
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1905379158}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1992244174962108506}
+  m_RootOrder: 67
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1905379160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1905379158}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb15fa0e7301ff849bf4d6dcede7c12b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data: 0
+  entries: []
 --- !u!1 &1381380307772579188
 GameObject:
   m_ObjectHideFlags: 0
@@ -218,6 +502,7 @@ GameObject:
   - component: {fileID: 5288077137254643608}
   - component: {fileID: 5288077137254643685}
   - component: {fileID: 5288077137254643686}
+  - component: {fileID: 883427525}
   m_Layer: 0
   m_Name: Curtain
   m_TagString: LoadingCurtain
@@ -318,6 +603,23 @@ MonoBehaviour:
   loadedInfo: {fileID: 8228502194964590754}
   loadingIcon: {fileID: 8228502193658979324}
   _panel: {fileID: 5288077137777512223}
+--- !u!114 &883427525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5288077137254643614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 3
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1 &5288077137777512223
 GameObject:
   m_ObjectHideFlags: 0
@@ -893,6 +1195,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8421369870866822688}
     m_Modifications:
+    - target: {fileID: 1539467747838824786, guid: 53ede33102defff4f92be11ed2d5d66e, type: 3}
+      propertyPath: m_RootOrder
+      value: 63
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719025494255624380, guid: 53ede33102defff4f92be11ed2d5d66e, type: 3}
+      propertyPath: m_Name
+      value: SoldierInfo
+      objectReference: {fileID: 0}
+    - target: {fileID: 1843086748385219119, guid: 53ede33102defff4f92be11ed2d5d66e, type: 3}
+      propertyPath: m_RootOrder
+      value: 62
+      objectReference: {fileID: 0}
     - target: {fileID: 1992244176145147115, guid: 53ede33102defff4f92be11ed2d5d66e, type: 3}
       propertyPath: m_Name
       value: LeanLocalization
@@ -940,6 +1254,38 @@ PrefabInstance:
     - target: {fileID: 1992244176145147117, guid: 53ede33102defff4f92be11ed2d5d66e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3063839561693245215, guid: 53ede33102defff4f92be11ed2d5d66e, type: 3}
+      propertyPath: entries.Array.data[1].Text
+      value: "C\u043E\u043B\u0434\u0430\u0442"
+      objectReference: {fileID: 0}
+    - target: {fileID: 3063839561693245215, guid: 53ede33102defff4f92be11ed2d5d66e, type: 3}
+      propertyPath: entries.Array.data[2].Text
+      value: Soldier
+      objectReference: {fileID: 0}
+    - target: {fileID: 3260456599329546759, guid: 53ede33102defff4f92be11ed2d5d66e, type: 3}
+      propertyPath: m_Name
+      value: Soldier
+      objectReference: {fileID: 0}
+    - target: {fileID: 5414454223570980955, guid: 53ede33102defff4f92be11ed2d5d66e, type: 3}
+      propertyPath: m_RootOrder
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 6872020781411034513, guid: 53ede33102defff4f92be11ed2d5d66e, type: 3}
+      propertyPath: m_RootOrder
+      value: 61
+      objectReference: {fileID: 0}
+    - target: {fileID: 7038604883147887462, guid: 53ede33102defff4f92be11ed2d5d66e, type: 3}
+      propertyPath: m_RootOrder
+      value: 59
+      objectReference: {fileID: 0}
+    - target: {fileID: 8674591526572981513, guid: 53ede33102defff4f92be11ed2d5d66e, type: 3}
+      propertyPath: entries.Array.data[1].Text
+      value: "\u041B\u0438\u0434\u0435\u0440\u044B"
+      objectReference: {fileID: 0}
+    - target: {fileID: 9169025604124898135, guid: 53ede33102defff4f92be11ed2d5d66e, type: 3}
+      propertyPath: m_RootOrder
+      value: 68
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 53ede33102defff4f92be11ed2d5d66e, type: 3}

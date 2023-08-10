@@ -10,16 +10,20 @@ public class LoadingCurtain : MonoBehaviour
     [SerializeField]private GameObject loadingIcon;
     [SerializeField] private GameObject _panel;
 
+    private CanvasGroup _canvasGroup;
     public UnityAction OnClicked;
     
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
+        _canvasGroup = _panel.GetComponent<CanvasGroup>();
+        
     }
 
     public void StartLoading()
     {
         _panel.SetActive(true);
+        _canvasGroup.blocksRaycasts = true;
         loadingIcon.SetActive(true);
         loadingInfo.SetActive(true);
         loadedInfo.SetActive(false);
@@ -40,6 +44,7 @@ public class LoadingCurtain : MonoBehaviour
         }
         
         _panel.SetActive(false);
+        _canvasGroup.blocksRaycasts = false;
         OnClicked?.Invoke();
     }
 

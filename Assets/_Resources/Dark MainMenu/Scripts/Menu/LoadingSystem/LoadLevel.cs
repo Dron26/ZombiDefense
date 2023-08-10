@@ -46,6 +46,4 @@ public class LoadLevel : MonoBehaviour {
 	{	
 		Application.Quit();
 	}
-	
-
 }
