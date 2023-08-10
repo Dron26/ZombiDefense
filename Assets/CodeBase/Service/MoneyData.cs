@@ -1,35 +1,26 @@
-using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Service.SaveLoadService;
+using System;
 using UnityEngine;
 
 namespace Service
 {
-    public class Wallet
+    public class MoneyData
     {
-        private SaveLoadService.SaveLoadService _saveLoadService;
+        public event Action MoneyChanged;
         public int Money => _money;
         private  int _money;
 
-        public  Wallet(SaveLoadService.SaveLoadService saveLoadService)
-        {
-            _saveLoadService=saveLoadService;
-            _money = _saveLoadService.ReadAmountMoney();
-        }
-        
         public void AddMoney(int amountMoney)
         {
             _money += amountMoney;
-            _saveLoadService.AddMoney(_money);
         }
         
         public void SpendMoney( int amountMoney)
         {
-            _money-=amountMoney; 
-                _saveLoadService.SpendMoney(amountMoney);
-                
+            _money -= Mathf.Clamp(amountMoney, 0, int.MaxValue);
         }
-        
-        public bool CheckPossibilityBuy(int price)
+
+
+        public bool IsMoneyEnough(int price)
         {
             return _money >= price;
         }

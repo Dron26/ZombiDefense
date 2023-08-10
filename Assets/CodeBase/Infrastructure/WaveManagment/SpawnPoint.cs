@@ -7,6 +7,7 @@ using Enemies.AbstractEntity;
 using Infrastructure.AIBattle.EnemyAI.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.FactoryWarriors.Enemies;
+using Service;
 using Service.SaveLoadService;
 using UnityEngine;
 using UnityEngine.Events;
@@ -27,6 +28,7 @@ namespace Infrastructure.WaveManagment
         private List<Enemy> _activeEnemys = new();
         private List<Enemy> _inactiveEnemys = new();
         private SaveLoadService _saveLoadService;
+        private MoneyData _moneyData;
         private EnemyFactory _enemyFactory= new ();
         private AudioManager _audioManager;
         public  UnityAction FillCompleted;
@@ -38,6 +40,7 @@ namespace Infrastructure.WaveManagment
             _stepDelayTime = 0.73f;
             _stepTime = _stepDelayTime;
             _saveLoadService = saveLoadService;
+            _moneyData=saveLoadService.MoneyData;
             _enemyFactory.CreatedEnemy += OnCreatedEnemy;
             
             _audioManager=audioManager;
@@ -116,7 +119,7 @@ namespace Infrastructure.WaveManagment
         
         private void OnEnemyDeath(Enemy enemy)
         {
-            _saveLoadService.AddMoney(enemy.GetPrice());
+            _moneyData.AddMoney(enemy.GetPrice());
             _saveLoadService.SetInactiveEnemy(enemy);
         }
 

@@ -42,12 +42,12 @@ namespace UI.HUD.StorePanel
         private Humanoid _selectedHumanoid;
         private SaveLoadService _saveLoadService;
         private Store _store;
-        private Wallet _wallet;
+        private MoneyData _moneyData;
         public Action OnUpdateBought;
         
-        public void Initialize( SaveLoadService saveLoadService,Store store ,Wallet wallet )
+        public void Initialize( SaveLoadService saveLoadService,Store store ,MoneyData moneyData )
         {
-            _wallet=wallet;
+            _moneyData=moneyData;
             _saveLoadService=saveLoadService;
             _store = store;
             _store.IsStoreActive +=SetCharacterData ;
@@ -128,9 +128,9 @@ namespace UI.HUD.StorePanel
         
         private bool OnTryBuy(int price)
         {
-            if (_wallet.CheckPossibilityBuy(price))
+            if (_moneyData.IsMoneyEnough(price))
             {
-                _wallet.SpendMoney(price);
+                _moneyData.SpendMoney(price);
                 return true;
             }
             else

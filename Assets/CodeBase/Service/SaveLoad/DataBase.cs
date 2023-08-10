@@ -14,8 +14,7 @@ namespace Service.SaveLoadService
     [Serializable]
     public class DataBase
     {
-      
-        public int Money;
+        public MoneyData MoneyData;
       
         public int Points;
         
@@ -51,7 +50,7 @@ namespace Service.SaveLoadService
         private List<Humanoid> InactiveHumanoids = new();
         [NonSerialized] 
         private List<Enemy> InactiveEnemy = new();
-        
+
         private int CountSpins { get;  set; }
 
         public void AddHumanoidAndCount(List<int> levels, List<int> amount)
@@ -79,17 +78,8 @@ namespace Service.SaveLoadService
         }
 
         public int ReadAmountMoney =>
-            Money;
-
-        public int ReadPointsDamage => Points;
-
-
-        public void AddMoney(int amountMoney) =>
-            Money += amountMoney;
-
-        public void SpendMoney(int amountSpendMoney) =>
-            Money -= Mathf.Clamp(amountSpendMoney, 0, int.MaxValue);
-
+            MoneyData.Money;
+        
         public void AddPoints(int totalPoints) =>
             Points += totalPoints;
 

@@ -29,7 +29,7 @@ namespace Infrastructure.Location
         [SerializeField] private ResursesCanvas _resursesCanvas;
         [SerializeField] private TimeManager _timeManager;
         [SerializeField] private MenuPanel _menuPanel;
-        private Wallet _wallet;
+        private MoneyData _moneyData;
         
         [SerializeField] private Camera _cameraPhysical;
         [SerializeField] private Camera _cameraUI;
@@ -54,7 +54,7 @@ namespace Infrastructure.Location
             _saveLoadService.SetCameras(_cameraPhysical, _cameraUI);
             _loadingCurtain = _gameBootstrapper.GetLoadingCurtain();
             _loadingCurtain.OnClicked = OnClikedCurtain;
-            _wallet=new Wallet(_saveLoadService);
+            _moneyData=new MoneyData(_saveLoadService);
             _playerCharacterInitializer.CreatedHumanoid += SetInfo;
              _audioManager.Initialize(_saveLoadService);
             _playerCharacterInitializer.Initialize(_audioManager, this, _saveLoadService);
@@ -63,7 +63,7 @@ namespace Infrastructure.Location
             _waveManager.OnReadySpawning = OnReadySpawning;
             _playerCharacterInitializer.AreOverHumanoids += _enemyCharacterInitializer.StopSpawning;
             _movePointController.Initialize(this, _saveLoadService);
-            store.Initialize(this, _saveLoadService,_wallet);
+            store.Initialize(this, _saveLoadService,_moneyData);
             _timerDisplay.Initialize(_playerCharacterInitializer);
             _resursesCanvas.Initialize(_saveLoadService);
 //_loadingCurtain.OnLoaded();

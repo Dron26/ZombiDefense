@@ -26,14 +26,14 @@ namespace UI.GeneralMenu
         [SerializeField] private GameObject _menuPanel;
         [SerializeField]private AudioManager _audioManager;
         [SerializeField]private LevelMap _levelMap;
-        private Wallet _wallet;
+        private MoneyData _moneyData;
         
         public  void Initialize( GameStateMachine stateMachine)
         {
             _stateMachine = stateMachine;
             _gameBootstrapper=FindObjectOfType<GameBootstrapper>();
             _saveLoadService = _gameBootstrapper.GetSAaveLoad();
-            _wallet=new Wallet(_saveLoadService);
+            _moneyData=new MoneyData(_saveLoadService);
              LoadAudioControllerAsync();
 
             _yandexLeaderboard = _gameBootstrapper.GetYandexLeaderboard();

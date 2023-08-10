@@ -41,16 +41,16 @@ namespace UI.HUD.StorePanel
         private SaveLoadService _saveLoadService;
         private int maxLevel = 3;
         private bool _isPanelActive=false;
-        private Wallet _wallet;
+        private MoneyData _moneyData;
 
         public UnityAction<bool> IsStoreActive;
         public Action<WorkPoint> OnBoughtUpgrade;
 
-        public void Initialize(SceneInitializer initializer, SaveLoadService saveLoadService, Wallet wallet)
+        public void Initialize(SceneInitializer initializer, SaveLoadService saveLoadService, MoneyData moneyData)
         {
             _saveLoadService = saveLoadService;
             _sceneInitializer = initializer;
-            _wallet=wallet;
+            _moneyData=moneyData;
             SetCharacterInitializer();
         }
 
@@ -60,7 +60,7 @@ namespace UI.HUD.StorePanel
             //_characterInitializer.OnClickWorkpoint += CheckPointInfo;
             _characters = _saveLoadService.GetAvailableCharacters();
             _saveLoadService.OnSelectedNewPoint += CheckPointInfo;
-            _characterStore.Initialize(_saveLoadService,this,_wallet);
+            _characterStore.Initialize(_saveLoadService,this,_moneyData);
             _characterStore.OnCharacterBought += OnCharacterBought;
             InitializeButton();
             //_characterStore.BuyCharacter += OnBuyCharacter;
@@ -106,9 +106,9 @@ namespace UI.HUD.StorePanel
         {
             int price = _priceForWorkPointUp;
 
-            if (_wallet.CheckPossibilityBuy(price))
+            if (_moneyData.IsMoneyEnough(price))
             {
-                _wallet.SpendMoney(price);
+                _moneyData.SpendMoney(price);
                 _workPointGroup.UpLevel(_selectedWorkPoint);
                 
                 OnBoughtUpgrade?.Invoke(_selectedWorkPoint);

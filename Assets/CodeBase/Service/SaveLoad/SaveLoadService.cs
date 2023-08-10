@@ -18,14 +18,15 @@ namespace Service.SaveLoadService
         private bool _isFirstStart=true;
         public UnityAction OnSetActiveHumanoid;
         public UnityAction<WorkPoint> OnSelectedNewPoint;
-        
-        public UnityAction OnChangeMoney;
-        public int ReadPointsDamage => _dataBase.ReadPointsDamage;
+        private MoneyData _moneyData;
+        public MoneyData MoneyData => _moneyData;
+
         private void Awake()
         {
             if (!PlayerPrefs.HasKey(Key))
             {
                 _dataBase = new DataBase();
+                _moneyData=_dataBase.MoneyData;
                 print("FirstStart");
                 SetStartParametrs();
                 
@@ -48,7 +49,7 @@ namespace Service.SaveLoadService
 
         private void SetStartParametrs()
         {
-            _dataBase.AddMoney(10000); 
+            _moneyData.AddMoney(10000); 
             Audio.Audio parametrs = new Audio.Audio();
             SetAudioSettings(parametrs);
             Save();
@@ -75,39 +76,12 @@ namespace Service.SaveLoadService
             Save();
         }
 
-        public void AddMoney(int amountMoney)
-        {
-            _dataBase.AddMoney(amountMoney);
-            Save();
-            OnChangeMoney?.Invoke();
-        }
-        
-        public void SpendMoney(int amountMoney)
-        {
-            _dataBase.SpendMoney(amountMoney);
-            Save();
-            OnChangeMoney?.Invoke();
-        }
-        
-
         public int ReadAmountHumanoids(int levelHumanoid) => 
             _dataBase.ReadHumanoid(levelHumanoid);
 
         public int ReadAmountMoney() =>
             _dataBase.ReadAmountMoney;
         
-        public void ApplyTotalPoints(int totalPoints)
-        {
-            _dataBase.AddPoints(totalPoints);
-            Save();
-        }
-
-        public int GetCountSpins() => 
-            _dataBase.ReadCountSpins();
-        
-        public void SaveCountSpins(int counterSpins) => 
-            _dataBase.ChangeCountSpins(counterSpins);
-
         public void SetAudioSettings( Audio.Audio parametrs)
         {
             _dataBase.ChangeAudioSettings(parametrs);
