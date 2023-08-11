@@ -1,6 +1,4 @@
-﻿using Infrastructure.FactoryWarriors.Enemies;
-using Infrastructure.WaveManagment;
-using Service.SaveLoadService;
+﻿using Service.SaveLoad;
 
 namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
 {

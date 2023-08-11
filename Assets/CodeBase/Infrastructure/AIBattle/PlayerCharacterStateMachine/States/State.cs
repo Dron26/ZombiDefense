@@ -1,8 +1,5 @@
 ﻿using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.FactoryWarriors.Enemies;
-using Infrastructure.FactoryWarriors.Humanoids;
-using Infrastructure.WaveManagment;
-using Service.SaveLoadService;
+using Service.SaveLoad;
 
 namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 {

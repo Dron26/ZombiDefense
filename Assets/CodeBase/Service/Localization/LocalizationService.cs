@@ -1,18 +1,18 @@
 using System;
-using Unity.VisualScripting;
+using Data.Settings.Language;
 
-namespace CodeBase.Services.Localization
+namespace Service.Localization
 {
     public class LocalizationService : ILocalizationService
     {
-        public Icons.Language Language { get; private set; }
+        public Language Language { get; private set; }
 
         public event Action LanguageChanged;
 
-        public LocalizationService(Icons.Language language) =>
+        public LocalizationService(Language language) =>
             ChangeLanguage(language);
 
-        public void ChangeLanguage(Icons.Language language)
+        public void ChangeLanguage(Language language)
         {
             Language = language;
             LanguageChanged?.Invoke();

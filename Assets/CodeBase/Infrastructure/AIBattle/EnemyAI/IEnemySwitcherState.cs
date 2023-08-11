@@ -1,6 +1,5 @@
-using Infrastructure.FactoryWarriors.Enemies;
 using Infrastructure.Location;
-using Service.SaveLoadService;
+using Service.SaveLoad;
 
 namespace Infrastructure.AIBattle.EnemyAI
 {

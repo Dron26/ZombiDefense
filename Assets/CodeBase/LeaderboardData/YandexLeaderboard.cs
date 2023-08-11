@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Agava.YandexGames;
 using Cysharp.Threading.Tasks.Triggers;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.Constants;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 

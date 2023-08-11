@@ -1,4 +1,4 @@
-namespace Data.Settings
+namespace Data.Settings.Language
 {
     public enum Language
     {

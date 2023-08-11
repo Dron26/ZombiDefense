@@ -2,7 +2,6 @@
 using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Observer;
 using UnityEngine;
 
 namespace Infrastructure.AIBattle

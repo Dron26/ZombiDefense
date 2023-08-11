@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Service.SaveLoadService;
+using Service.SaveLoad;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -104,7 +104,6 @@ namespace Infrastructure.Location
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            print("Pointer");
             SetSelected(true);
             CheckState();
                 OnSelected?.Invoke(this);
@@ -122,7 +121,6 @@ namespace Infrastructure.Location
 
         public void SetStartPointer()
         {
-            print("Pointer");
             SetSelected(true);
             CheckState();
             OnSelected?.Invoke(this);

@@ -15,13 +15,10 @@ namespace Infrastructure
         [SerializeField] private Button _thirdTime;
         [SerializeField] private Button _fourthTime;
         private TMP_Text[] _texts;
-        
-        private float value;
         private TMP_Text[] _selectedTexts;
         private bool isPanelActive;
         private Color _colorDefault;
 
-        //   = new Color(96f, 15f, 15f,255f)
         public void Initialize()
         {
         _buttonTime.onClick.AddListener(ShowPanel);

@@ -1,41 +1,34 @@
 ﻿using System.Collections.Generic;
-using Audio;
+using Data;
+using Data.Settings.Audio;
 using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
-using Infrastructure.WaveManagment;
 using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Service.SaveLoadService
+namespace Service.SaveLoad
 {
-    public class SaveLoadService : MonoCache
+    public class SaveLoadService :MonoCache
     {
         private const string Key = "Key";
-        private DataBase _dataBase=new DataBase();
+        private DataBase _dataBase;
         private bool _isFirstStart=true;
         public UnityAction OnSetActiveHumanoid;
         public UnityAction<WorkPoint> OnSelectedNewPoint;
-        private MoneyData _moneyData;
-        public MoneyData MoneyData => _moneyData;
+        public MoneyData MoneyData => _dataBase.MoneyData;
 
         private void Awake()
         {
             if (!PlayerPrefs.HasKey(Key))
             {
                 _dataBase = new DataBase();
-                _moneyData=_dataBase.MoneyData;
-                print("FirstStart");
                 SetStartParametrs();
-                
-                print("AddMoney(1000)");
             }
             else
             {
-                print("SecondStart");
-                //_dataBase =JsonUtility.FromJson<DataBase>(PlayerPrefs.GetString(Key)) ;
                 _dataBase = JsonConvert.DeserializeObject<DataBase>(PlayerPrefs.GetString(Key));
                 
                 if (_isFirstStart)
@@ -49,15 +42,12 @@ namespace Service.SaveLoadService
 
         private void SetStartParametrs()
         {
-            _moneyData.AddMoney(10000); 
-            Audio.Audio parametrs = new Audio.Audio();
+            _dataBase.MoneyData.AddMoney(10000); 
+            Audio parametrs = new Audio();
             SetAudioSettings(parametrs);
             Save();
         }
 
-        protected override void OnDisabled() => 
-            Save();
-        
         public void Save()
         {
             var settings = new JsonSerializerSettings()
@@ -70,24 +60,15 @@ namespace Service.SaveLoadService
             PlayerPrefs.Save();
         }
 
-        public void SaveHumanoidAndCount( List<int> levels ,List<int> amount )
-        {
-            _dataBase.AddHumanoidAndCount( levels,amount);
-            Save();
-        }
-
-        public int ReadAmountHumanoids(int levelHumanoid) => 
-            _dataBase.ReadHumanoid(levelHumanoid);
-
         public int ReadAmountMoney() =>
             _dataBase.ReadAmountMoney;
         
-        public void SetAudioSettings( Audio.Audio parametrs)
+        public void SetAudioSettings( Audio parametrs)
         {
             _dataBase.ChangeAudioSettings(parametrs);
         }
         
-        public Audio.Audio  GetAudioSettings( ) => 
+        public Audio  GetAudioSettings( ) => 
             _dataBase.ReadAudioSettings();
         
         public void SetFirstStart()
@@ -95,18 +76,6 @@ namespace Service.SaveLoadService
             _dataBase.ChangeIsFirstStart();
             Save();
         }
-
-        public bool ReadIsFirstStart()=>
-            _dataBase.ReadIsFirstStart();
-
-        public void SetStartBattle()
-        {
-            _dataBase.ChangeIsStartBattle();
-            Save();
-        }
-        
-        public bool GetStartBattle() => 
-            _dataBase.ReadIsStartBattle();
 
         public void ResetProgress()
         {
@@ -157,7 +126,6 @@ namespace Service.SaveLoadService
         public void SetActiveEnemy(Enemy activeEnemy)
         {
             _dataBase.ChangeActiveEnemy(activeEnemy);
-            print(_dataBase.ReadActiveEnemy().Count);
         }
 
         public List<Enemy> GetActiveEnemy( ) => 
@@ -189,6 +157,16 @@ namespace Service.SaveLoadService
         public Camera GetUICamera()
         {
             return _dataBase.ReadUICamera();
+        }
+
+        public void SaveProgress()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void ClearProgress()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

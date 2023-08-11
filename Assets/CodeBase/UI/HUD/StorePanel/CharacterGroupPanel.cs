@@ -1,6 +1,6 @@
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 
-namespace UI.HUD.Store
+namespace UI.HUD.StorePanel
 {
     class CharacterGroupPanel : MonoCache
     {

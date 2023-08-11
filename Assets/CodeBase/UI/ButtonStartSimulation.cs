@@ -1,6 +1,6 @@
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.StateMachine;
-using Infrastructure.States;
+using Infrastructure.StateMachine.States;
 using UnityEngine;
 
 namespace UI

@@ -1,7 +1,8 @@
 using System;
+using Data.Upgrades;
 using Humanoids.AbstractLevel;
 using Infrastructure.AIBattle;
-using Infrastructure.WeaponManagment;
+using Infrastructure.Logic.WeaponManagment;
 using UnityEngine;
 using Upgrades;
 

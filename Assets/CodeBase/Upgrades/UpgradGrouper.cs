@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
+using Data.Upgrades;
 using Humanoids;
 using Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.WeaponManagment;
-using Service.SaveLoadService;
+using Service.SaveLoad;
 using TextMesh_Pro.Examples___Extras.Scripts;
 using UI.HUD.StorePanel;
 using UnityEngine;
-using Upgrades;
 
 namespace Upgrades
 {
@@ -76,24 +75,23 @@ namespace Upgrades
             _selectedData = new SelectedData(index,upgradeData,_currentLevel[index]);
         }
     }
-}
 
-class SelectedData
-{
-    private int _upgradeGroupIndex;
-    private UpgradeData _upgradeData;
-    private int _currentLevel;
-    
-    public int UpgradesGroupIndex => _upgradeGroupIndex;
-    public int CurrentLevel => _currentLevel;
-
-    public SelectedData(int upgradeGroupIndex, UpgradeData upgradeData, int currentLevel)
+    class SelectedData
     {
-        _upgradeGroupIndex = upgradeGroupIndex;
-        _upgradeData = upgradeData;
-        _currentLevel = currentLevel;
+        private int _upgradeGroupIndex;
+        private UpgradeData _upgradeData;
+        private int _currentLevel;
+    
+        public int UpgradesGroupIndex => _upgradeGroupIndex;
+        public int CurrentLevel => _currentLevel;
+
+        public SelectedData(int upgradeGroupIndex, UpgradeData upgradeData, int currentLevel)
+        {
+            _upgradeGroupIndex = upgradeGroupIndex;
+            _upgradeData = upgradeData;
+            _currentLevel = currentLevel;
+        }
     }
-}
 
 //private Dictionary<string, List<UpgradeData>> upgradeDatas = new Dictionary<string, List<UpgradeData>>();
 // List<string> nameCharacters = new List<string>();
@@ -149,3 +147,4 @@ class SelectedData
 //         nameCharacters.Add(fieldName);
 //     }
 // }
+}

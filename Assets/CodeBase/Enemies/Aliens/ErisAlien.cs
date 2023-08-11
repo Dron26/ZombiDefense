@@ -3,8 +3,8 @@ using Enemies.AbstractEntity;
 using Infrastructure.AIBattle;
 using Infrastructure.AIBattle.EnemyAI.States;
 using Infrastructure.AssetManagement;
-using Infrastructure.WeaponManagment;
-using Service.SaveLoadService;
+using Infrastructure.Logic.WeaponManagment;
+using Service.SaveLoad;
 using UnityEngine;
 using UnityEngine.Events;
 

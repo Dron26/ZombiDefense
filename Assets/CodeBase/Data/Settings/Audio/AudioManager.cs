@@ -2,15 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Service.SaveLoadService;
+using Service.SaveLoad;
 using UnityEngine;
 using UnityEngine.Audio;
-using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
-namespace Audio
+namespace Data.Settings.Audio
 {
     public class AudioManager : MonoCache
     {
@@ -86,7 +84,6 @@ namespace Audio
                
             _musicSource.clip = _backgroundMusic;
             _musicSource.loop = true;
-            print(_musicSource.clip.name);
         }
 
         private void Start()

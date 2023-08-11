@@ -1,6 +1,6 @@
-using Audio;
+using Data.Settings.Audio;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Service.SaveLoadService;
+using Service.SaveLoad;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,7 +17,7 @@ namespace UI.SettingsPanel
     
         private SaveLoadService _saveLoadService;
         private AudioManager _audioManager;
-        private Audio.Audio _audioSettings;
+        private Audio _audioSettings;
         private  bool _soundEnabled ;
         private bool _musicEnabled ;
         private float _currentVolumeSound ;

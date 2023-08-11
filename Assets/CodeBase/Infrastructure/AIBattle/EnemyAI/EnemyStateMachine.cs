@@ -4,7 +4,8 @@ using Animation;
 using Infrastructure.AIBattle.EnemyAI.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
-using Service.SaveLoadService;
+using Infrastructure.Logic.Inits;
+using Service.SaveLoad;
 using UnityEngine;
 
 namespace Infrastructure.AIBattle.EnemyAI{

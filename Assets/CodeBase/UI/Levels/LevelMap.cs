@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using Data;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.Constants;
-using Infrastructure.States;
-using Service.SaveLoadService;
+using Infrastructure.StateMachine;
+using Infrastructure.StateMachine.States;
+using Service.SaveLoad;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -43,7 +44,7 @@ namespace UI.Levels
         
         public void EnterLevel()
         {
-            _stateMachine.Enter<LoadLevelState,string>(SceneName.Level); 
+            _stateMachine.Enter<LoadLevelState,string>(ConstantsData.Level); 
             Destroy(gameObject);
         } 
     }

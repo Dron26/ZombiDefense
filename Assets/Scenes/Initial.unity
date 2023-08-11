@@ -181,7 +181,7 @@ PrefabInstance:
     - target: {fileID: 8421369870866822689, guid: cbdc50b839fa64f44a8ef75d01e478fc, type: 3}
       propertyPath: _yandexAds
       value: 
-      objectReference: {fileID: 1535816804}
+      objectReference: {fileID: 0}
     - target: {fileID: 8421369870866822689, guid: cbdc50b839fa64f44a8ef75d01e478fc, type: 3}
       propertyPath: _yandexInitializer
       value: 
@@ -301,7 +301,6 @@ GameObject:
   - component: {fileID: 1535816800}
   - component: {fileID: 1535816799}
   - component: {fileID: 1535816801}
-  - component: {fileID: 1535816804}
   m_Layer: 0
   m_Name: Yandex
   m_TagString: Untagged
@@ -348,19 +347,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7bd1654bbd29d647b996fdd2a7782c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1535816804
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1535816798}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0abfa1ec26eb410c872423c61b79ac4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _yandexInitializer: {fileID: 1535816799}
 --- !u!114 &4781410623909021776
 MonoBehaviour:
   m_ObjectHideFlags: 0

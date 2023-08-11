@@ -1,19 +1,17 @@
-using System;
-using System.Threading.Tasks;
-using Audio;
+using Data.Settings;
+using Data.Settings.Language;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.States;
-using Infrastructure.Yandex;
-using Service.SaveLoadService;
-using Unity.VisualScripting;
+using Infrastructure.StateMachine.States;
+using Service.SaveLoad;
+using Service.Yandex;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Infrastructure
 {
     public class GameBootstrapper : MonoCache, ICoroutineRunner
     {
         [SerializeField]private YandexLeaderboard _yandexLeaderboard; 
-        [SerializeField]private YandexAds _yandexAds; 
         [SerializeField]private YandexInitializer _yandexInitializer; 
         
         private Game _game;
@@ -23,7 +21,6 @@ namespace Infrastructure
         private void Awake()
         {
             DontDestroyOnLoad(this);
-            Language language = GetLanguage();
             _saveLoadService = GetComponent<SaveLoadService>();
             _loadingCurtain=GetComponentInChildren<LoadingCurtain>();
         }
@@ -35,28 +32,34 @@ namespace Infrastructure
 
         private  void  Init()
         {
-            _game = new Game(this,_loadingCurtain);
+            Language language = GetLanguage();
+            _game = new Game(this,_loadingCurtain,language);
             _game.StateMashine.Enter<BootstrapState>();
            
         }
-
-        private void Destroy()
-        {
-            _yandexInitializer.Completed -= Init;
-        }
         
-        
-
         public YandexInitializer GetYandexInitializer() => 
             _yandexInitializer;
         public YandexLeaderboard GetYandexLeaderboard() => 
             _yandexLeaderboard;
-        public YandexAds GetYandexAds() => 
-            _yandexAds;
         public SaveLoadService GetSAaveLoad() => 
             _saveLoadService;
 
         public LoadingCurtain GetLoadingCurtain() =>
             _loadingCurtain;
+
+
+        private Language GetLanguage()
+        {
+            switch (Application.systemLanguage)
+            {
+                case SystemLanguage.Russian:
+                    return Language.RU;
+                case SystemLanguage.Turkish:
+                    return Language.TR;
+                default:
+                    return Language.EN;
+            }
+        }
     }
 }

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Infrastructure.FactoryWarriors.Enemies
+namespace Data
 {
     [CreateAssetMenu(fileName = "New Enemys Data", menuName = "Enemies/Enemys Data")]
     public class EnemyData : ScriptableObject

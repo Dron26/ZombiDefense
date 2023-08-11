@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using Audio;
+using Data.Settings.Audio;
 using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.WeaponManagment;
-using Observer;
+using Infrastructure.Logic.WeaponManagment;
+using Infrastructure.Observer;
 using UnityEngine;
 
 namespace Infrastructure.AIBattle

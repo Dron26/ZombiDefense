@@ -3,7 +3,7 @@ using System.Collections;
 using System.Threading.Tasks;
 using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
-using Infrastructure.WeaponManagment;
+using Infrastructure.Logic.WeaponManagment;
 using UnityEngine;
 
 namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States

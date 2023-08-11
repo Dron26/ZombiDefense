@@ -4,12 +4,10 @@ using Humanoids.AbstractLevel;
 using Infrastructure.AIBattle.EnemyAI.States;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.FactoryWarriors.Enemies;
-using Infrastructure.FactoryWarriors.Humanoids;
 using Infrastructure.Location;
-using Infrastructure.WaveManagment;
-using Observer;
-using Service.SaveLoadService;
+using Infrastructure.Logic.Inits;
+using Infrastructure.Observer;
+using Service.SaveLoad;
 using UnityEditor;
 using UnityEngine;
 

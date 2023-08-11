@@ -2,7 +2,7 @@ using Infrastructure.BaseMonoCache.Code.MonoCache;
 using TMPro;
 using UnityEngine;
 
-namespace UI.HUD.Store
+namespace UI.HUD.StorePanel
 {
     public class PricePanel: MonoCache
     {

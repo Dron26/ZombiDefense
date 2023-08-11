@@ -4,7 +4,7 @@ using Lean.Localization;
 using TMPro;
 using UnityEngine;
 
-namespace UI.HUD.Store
+namespace UI.HUD.StorePanel
 {
     public class CharacterInfoPanel : MonoCache
     {

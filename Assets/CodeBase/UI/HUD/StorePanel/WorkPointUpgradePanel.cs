@@ -1,9 +1,9 @@
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.Location;
-using Service.SaveLoadService;
+using Infrastructure.Logic.Inits;
+using Service.SaveLoad;
 using UnityEngine.UI;
 
-namespace UI.SceneBattle.Store
+namespace UI.HUD.StorePanel
 {
     public class WorkPointUpgradePanel:MonoCache
     {

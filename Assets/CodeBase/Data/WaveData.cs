@@ -2,11 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Enemies.AbstractEntity;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.FactoryWarriors;
-using Infrastructure.FactoryWarriors.Enemies;
 using UnityEngine;
 
-namespace Infrastructure.WaveManagment
+namespace Data
 {
     [System.Serializable]
     public class WaveData:MonoCache

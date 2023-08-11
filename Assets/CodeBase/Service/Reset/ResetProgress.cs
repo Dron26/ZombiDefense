@@ -1,5 +1,5 @@
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Service.SaveLoadService;
+using Service.SaveLoad;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,7 +7,7 @@ namespace Service.Reset
 {
     public class ResetProgress : MonoCache
     {
-        [SerializeField] private SaveLoadService.SaveLoadService _saveLoadService;
+        [SerializeField] private SaveLoadService _saveLoadService;
         private Button _buttonReset;
 
         private void Awake()

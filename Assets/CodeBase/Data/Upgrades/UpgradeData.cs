@@ -1,10 +1,8 @@
-using System.Collections.Generic;
 using Humanoids;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.WeaponManagment;
 using UnityEngine;
 
-namespace Upgrades
+namespace Data.Upgrades
 {
     public class UpgradeData : MonoCache
     {

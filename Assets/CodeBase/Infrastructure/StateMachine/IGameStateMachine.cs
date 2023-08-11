@@ -1,4 +1,4 @@
-using Infrastructure.States;
+using Infrastructure.StateMachine.States;
 
 namespace Infrastructure.StateMachine
 {

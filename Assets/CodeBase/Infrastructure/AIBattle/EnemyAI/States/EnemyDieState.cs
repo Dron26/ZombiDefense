@@ -6,7 +6,6 @@ using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
 using Infrastructure.BaseMonoCache.Code.System;
-using Infrastructure.FactoryWarriors.Humanoids;
 using UnityEngine;
 using UnityEngine.AI;
 

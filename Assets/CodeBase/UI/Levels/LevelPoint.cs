@@ -1,6 +1,6 @@
 using System.Collections.Generic;
+using Data;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.WaveManagment;
 using UnityEngine;
 
 namespace UI.Levels

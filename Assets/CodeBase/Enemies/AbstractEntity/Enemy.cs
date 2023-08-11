@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Audio;
+using Data.Settings.Audio;
 using Infrastructure.AIBattle.EnemyAI;
 using Infrastructure.AIBattle.EnemyAI.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.FactoryWarriors.Enemies;
-using Infrastructure.WeaponManagment;
-using Observer;
-using Service.SaveLoadService;
+using Infrastructure.Logic.WeaponManagment;
+using Infrastructure.Observer;
+using Service.SaveLoad;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.AI;

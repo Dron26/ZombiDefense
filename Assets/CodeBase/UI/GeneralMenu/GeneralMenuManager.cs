@@ -1,11 +1,10 @@
 using System.Threading.Tasks;
-using Audio;
+using Data.Settings.Audio;
 using Infrastructure;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.Constants;
-using Infrastructure.States;
+using Infrastructure.StateMachine;
 using Service;
-using Service.SaveLoadService;
+using Service.SaveLoad;
 using UI.Levels;
 using UI.SettingsPanel;
 using UnityEngine;
@@ -33,7 +32,7 @@ namespace UI.GeneralMenu
             _stateMachine = stateMachine;
             _gameBootstrapper=FindObjectOfType<GameBootstrapper>();
             _saveLoadService = _gameBootstrapper.GetSAaveLoad();
-            _moneyData=new MoneyData(_saveLoadService);
+            _moneyData=_saveLoadService.MoneyData;
              LoadAudioControllerAsync();
 
             _yandexLeaderboard = _gameBootstrapper.GetYandexLeaderboard();
@@ -47,10 +46,7 @@ namespace UI.GeneralMenu
         private  void  LoadAudioControllerAsync()
         {
             _audioManager.SetGeneralMenuEnabled(true);
-            
-             _audioManager.Initialize(_saveLoadService);
-            
-            Debug.Log("AudioController loaded");
+            _audioManager.Initialize(_saveLoadService);
         }
         
         private void OnClikedCurtain()

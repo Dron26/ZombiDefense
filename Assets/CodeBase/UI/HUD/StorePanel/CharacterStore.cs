@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Data.Upgrades;
 using Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Service;
-using Service.SaveLoadService;
-using UI.HUD.Store;
+using Service.SaveLoad;
 using UnityEngine;
 using UnityEngine.UI;
 using Upgrades;
