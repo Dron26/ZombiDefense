@@ -1,5 +1,5 @@
-using Data.Settings.Audio;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Service.Audio;
 using Service.SaveLoad;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,7 +9,6 @@ namespace UI.SettingsPanel
     public class SettingPanel : MonoCache
     {
         [SerializeField] private Toggle _toggleSound;
-
         [SerializeField] private Toggle _toggleMusic;
     
         [SerializeField]private Slider soundSlider;
@@ -17,7 +16,7 @@ namespace UI.SettingsPanel
     
         private SaveLoadService _saveLoadService;
         private AudioManager _audioManager;
-        private Audio _audioSettings;
+        private AudioData _audioDataSettings;
         private  bool _soundEnabled ;
         private bool _musicEnabled ;
         private float _currentVolumeSound ;
@@ -32,7 +31,7 @@ namespace UI.SettingsPanel
             LoadSound();
        
             _toggleSound.onValueChanged.AddListener(SetSound);
-            _toggleMusic.onValueChanged.AddListener(SetNusic);
+            _toggleMusic.onValueChanged.AddListener(SetMusic);
             soundSlider.onValueChanged.AddListener(ChangeSound);
             musicSlider.onValueChanged.AddListener(ChangeMusic);
         }
@@ -50,44 +49,32 @@ namespace UI.SettingsPanel
         }
         
         
-        public void SetSound(bool value)
+        private void SetSound(bool value)
         {
             _audioManager.ToggleSound(value);
             _soundEnabled = _audioManager.SoundEnabled;
-     //       _toggleSound.isOn = _soundEnabled ;
-        
-          //  ChangeSliderFill(soundSlider,_soundEnabled);
         }
 
-        public void SetNusic(bool value)
+        private void SetMusic(bool value)
         {
             _audioManager.ToggleMusic(value);
             _musicEnabled = _audioManager.MusicEnabled;
-         //   _toggleMusic.isOn = _soundEnabled ;
-         
-          //  ChangeSliderFill(musicSlider,_musicEnabled);
         }
 
-        public void ChangeSound(float value)
+        private void ChangeSound(float value)
         {
-            _audioManager.SetSFXVolume(value);
+            _audioManager.SetSoundVolume(value);
         }
 
-        public void ChangeMusic(float value )
+        private void ChangeMusic(float value )
         {
             _audioManager.SetMusicVolume(value);
-        }
-    
-        private void ChangeSliderFill(Slider slider ,bool isActive)
-        {
-            GameObject fill = slider.GetComponent<SliderSettings>().Fill;
-            fill.SetActive(isActive);
         }
 
         private void SetPause(bool isActive)
         {
             SetSound(isActive);
-            SetNusic(isActive);
+            SetMusic(isActive);
         }
 
     
@@ -97,11 +84,11 @@ namespace UI.SettingsPanel
             
             SetPause(!isActive);
 
-            _audioSettings = _saveLoadService.GetAudioSettings();
-            _currentVolumeMusic = _audioSettings.CurrentVolumeMusic;
-            _currentVolumeSound = _audioSettings.CurrentVolumeSound;
-            _musicEnabled = _audioSettings.MusicEnabled;
-            _soundEnabled = _audioSettings.SoundEnabled;
+            _audioDataSettings = _saveLoadService.GetAudioData();
+            _currentVolumeMusic = _audioDataSettings.CurrentVolumeMusic;
+            _currentVolumeSound = _audioDataSettings.CurrentVolumeSound;
+           _musicEnabled = _audioDataSettings.MusicEnabled;
+            _soundEnabled = _audioDataSettings.SoundEnabled;
             SetSliders();
             SetButtons();
         }

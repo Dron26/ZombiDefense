@@ -1,11 +1,11 @@
 using System.Collections.Generic;
-using Data.Settings.Audio;
 using Humanoids.AbstractLevel;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WaveManagment;
 using Infrastructure.StateMachine;
 using Service;
+using Service.Audio;
 using Service.SaveLoad;
 using UI.HUD.StorePanel;
 using UI.Resurse;

@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
-using Data.Settings.Audio;
 using Infrastructure;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.StateMachine;
 using Service;
+using Service.Audio;
 using Service.SaveLoad;
 using UI.Levels;
 using UI.SettingsPanel;
@@ -13,9 +13,8 @@ namespace UI.GeneralMenu
 {
     public class GeneralMenuManager:MonoCache
     {
-        [SerializeField] private LeaderboardPanel _leaderboardPanel;
+        [SerializeField] private GameObject _leaderboardPanel;
         
-        private YandexLeaderboard _yandexLeaderboard;
         private SaveLoadService _saveLoadService;
         private GameStateMachine _stateMachine;
         private LoadingCurtain _loadingCurtain  ;
@@ -33,19 +32,20 @@ namespace UI.GeneralMenu
             _gameBootstrapper=FindObjectOfType<GameBootstrapper>();
             _saveLoadService = _gameBootstrapper.GetSAaveLoad();
             _moneyData=_saveLoadService.MoneyData;
-             LoadAudioControllerAsync();
-
-            _yandexLeaderboard = _gameBootstrapper.GetYandexLeaderboard();
+            
             _loadingCurtain=_gameBootstrapper.GetLoadingCurtain();
             _menuPanel.SetActive(false);
+            _saveLoadService.SetCurtain(_loadingCurtain);
             _loadingCurtain.OnClicked = OnClikedCurtain;
+            
+            LoadAudioController();
             _settingPanel.Initialize(_audioManager,_saveLoadService);
             _levelMap.Initialize(_stateMachine,_saveLoadService);
         }
         
-        private  void  LoadAudioControllerAsync()
+        private  void  LoadAudioController()
         {
-            _audioManager.SetGeneralMenuEnabled(true);
+            _audioManager.SetMenuEnabled(true);
             _audioManager.Initialize(_saveLoadService);
         }
         
@@ -62,17 +62,6 @@ namespace UI.GeneralMenu
             
             
                 _loadingCurtain.OnLoaded();
-        }
-
-        private LeaderboardPanel CreateLeaderboard()
-        {
-            GameObject panel = Instantiate(_leaderboardPanel.gameObject);
-            LeaderboardPanel leaderboardPanel = panel.GetComponentInChildren<LeaderboardPanel>();
-            Canvas myCanvas = panel.GetComponent<Canvas>();
-
-            myCanvas.worldCamera = FindObjectOfType<Camera>();
-            leaderboardPanel.Initiallize();
-            return leaderboardPanel;
         }
     }
 }

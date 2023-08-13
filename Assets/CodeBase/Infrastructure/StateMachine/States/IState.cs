@@ -3,7 +3,6 @@ namespace Infrastructure.StateMachine.States
     public interface IState:IExitebleState
     {
         void Enter();
-        void Exit();
     }
 
     public interface IPayloadState<TPayload>:IExitebleState

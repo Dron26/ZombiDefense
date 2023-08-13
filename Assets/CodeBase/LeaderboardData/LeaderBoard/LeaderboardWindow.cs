@@ -9,7 +9,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
-namespace UI.LeaderBoard
+namespace LeaderBoard
 {
     public class LeaderboardWindow:MonoCache
     {
@@ -47,7 +47,7 @@ namespace UI.LeaderBoard
             InitializeLeaderBoard();
         }
 
-        protected override void OnDisable()
+        protected override void OnDisabled()
         {
             _closeButton.onClick.RemoveListener(Close);
 
@@ -156,41 +156,20 @@ namespace UI.LeaderBoard
             if (LeaderBoardService != null)
                 LeaderBoardService.OnSuccessGetEntries -= FillLeaderBoard;
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        
         public void Show(bool showCursor = true)
         {
             gameObject.SetActive(true);
             Time.timeScale = ConstantsData.TimeScaleStop;
         }
         
-        protected void Hide()
+        private void Hide()
         {
             gameObject.SetActive(false);
             Time.timeScale = ConstantsData.TimeScaleResume;
         }
         
-        protected void InitializeAdsSDK()
+        private void InitializeAdsSDK()
         {
             Debug.Log("InitializeAdsSDK");
             
@@ -200,10 +179,10 @@ namespace UI.LeaderBoard
                 StartCoroutine(AdsService.Initialize());
         }
         
-        protected virtual void AdsServiceInitializedSuccess() =>
+        private void AdsServiceInitializedSuccess() =>
             AdsService.OnInitializeSuccess -= AdsServiceInitializedSuccess;
         
-        protected void InitializeLeaderBoard()
+        private void InitializeLeaderBoard()
         {
             if (LeaderBoardService.IsInitialized())
                 RequestLeaderBoard();
@@ -211,7 +190,7 @@ namespace UI.LeaderBoard
                 StartCoroutine(CoroutineInitializeLeaderBoard());
         }
         
-        protected virtual void RequestLeaderBoard() =>
+        private  void RequestLeaderBoard() =>
             LeaderBoardService.OnInitializeSuccess -= RequestLeaderBoard;
 
         private IEnumerator CoroutineInitializeLeaderBoard()
@@ -225,13 +204,13 @@ namespace UI.LeaderBoard
             LeaderBoardService.OnSetValueError -= ShowSetValueError;
         }
 
-        protected void SuccessSetValue()
+        private void SuccessSetValue()
         {
             Debug.Log("SuccessSetValue");
             LeaderBoardService.OnSetValueSuccess -= SuccessSetValue;
         }
 
-        protected virtual void SubscribeSetValueSuccess() =>
+        private  void SubscribeSetValueSuccess() =>
             LeaderBoardService.OnSetValueSuccess += SuccessSetValue;
     }
 }

@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using Data.Settings.Audio;
 using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
 using Infrastructure.Location;
 using Service;
+using Service.Audio;
+using Service.PlayerAuthorization;
 using UnityEngine;
 
 namespace Data
@@ -17,7 +18,8 @@ namespace Data
         public int Points;
         
         public const int WorkTime=1; 
-        public Audio AudioParametrs;
+        
+        public AudioData AudioData;
         
         public List<int> LevelHumanoid = new();
        
@@ -46,7 +48,11 @@ namespace Data
         private List<Humanoid> InactiveHumanoids = new();
         [NonSerialized] 
         private List<Enemy> InactiveEnemy = new();
-
+                
+        
+        private YandexAuthorization _authorization;
+        
+        
         private int CountSpins { get;  set; }
 
         public void AddHumanoidAndCount(List<int> levels, List<int> amount)
@@ -85,11 +91,11 @@ namespace Data
         public int ReadCountSpins() =>
             CountSpins;
 
-        public void ChangeAudioSettings(Audio parametrs) =>
-            AudioParametrs = parametrs;
+        public void ChangeAudioData(AudioData parametrs) =>
+            AudioData = parametrs;
 
-        public Audio ReadAudioSettings() =>
-            AudioParametrs;
+        public AudioData ReadAudioData() =>
+            AudioData;
 
         public void ChangeMergeSlots(List<GameObject> slots)
         {

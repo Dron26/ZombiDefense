@@ -16,7 +16,8 @@ namespace Infrastructure.StateMachine
         private LoadingCurtain _loadingCurtain;
         
         
-        public GameStateMachine(SceneLoader sceneLoader , AllServices services,LoadingCurtain loadingCurtain,Language language)
+        public GameStateMachine(SceneLoader sceneLoader, AllServices services, LoadingCurtain loadingCurtain,
+             Language language)
         {
             _loadingCurtain=loadingCurtain;
             List<string> sceneNames = GetSceneNames();
@@ -24,7 +25,7 @@ namespace Infrastructure.StateMachine
             _states = new Dictionary<Type, IExitebleState>
             {
                 [typeof(BootstrapState)] = new BootstrapState(this,sceneLoader, services,language),
-                [typeof(LoadLevelState)] = new LoadLevelState(this,sceneLoader, services.Single<IGameFactory>(),services.Single<IAdsService>(),sceneNames),
+                [typeof(LoadLevelState)] = new LoadLevelState(this,sceneLoader, services.Single<IGameFactory>(),sceneNames),
                 [typeof(GameLoopState)] = new GameLoopState(this),
             };
 

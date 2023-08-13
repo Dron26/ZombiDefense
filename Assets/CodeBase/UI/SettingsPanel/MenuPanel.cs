@@ -1,13 +1,12 @@
 using Data;
-using Data.Settings.Audio;
 using Infrastructure;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.StateMachine;
 using Infrastructure.StateMachine.States;
 using Service;
+using Service.Audio;
 using Service.SaveLoad;
 using UI.Buttons;
-using UI.LeaderBoard;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -36,7 +35,6 @@ namespace UI.SettingsPanel
         [SerializeField]private AudioManager _audioManager;
         
         private GameStateMachine _stateMachine;
-        private YandexLeaderboard _yandexLeaderboard;
         private SaveLoadService _saveLoadService;
         private GameBootstrapper _gameBootstrapper;
         
@@ -46,7 +44,6 @@ namespace UI.SettingsPanel
             _panel.SetActive(true);
             _gameBootstrapper=FindObjectOfType<GameBootstrapper>();
             _saveLoadService = saveLoadService;
-            _yandexLeaderboard = _gameBootstrapper.GetYandexLeaderboard();
             _settingPanel.Initialize(_audioManager,_saveLoadService);
             
             InitializeButton();
@@ -58,17 +55,6 @@ namespace UI.SettingsPanel
         private void Start()
         {
             //    _yandexLeaderboard.Initialize(CreateLeaderboard());
-        }
-
-        private LeaderboardPanel CreateLeaderboard()
-        {
-            GameObject panel = Instantiate(_leaderboardWindow.gameObject);
-            LeaderboardPanel leaderboardPanel = panel.GetComponentInChildren<LeaderboardPanel>();
-            Canvas myCanvas = panel.GetComponent<Canvas>();
-
-            myCanvas.worldCamera = FindObjectOfType<Camera>();
-            leaderboardPanel.Initiallize();
-            return leaderboardPanel;
         }
         
         private void InitializeButton()
@@ -85,6 +71,7 @@ namespace UI.SettingsPanel
 
         private void SwitchState()
         {
+            _audioManager.SetMenuEnabled(!_panel.activeSelf);
             _panel.SetActive(!_panel.activeSelf);
             _resursePanel.SetActive(!_resursePanel.activeSelf); 
             _buttonPanel.SwitchPanelState();

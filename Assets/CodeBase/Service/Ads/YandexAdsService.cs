@@ -29,5 +29,7 @@ namespace Service.Ads
         public void ShowInterstitialAd() =>
             InterstitialAd.Show(onCloseCallback: OnClosedInterstitialAd, onErrorCallback: OnShowInterstitialAdError,
                 onOfflineCallback: OnOfflineInterstitialAd);
+        
+       
     }
 }

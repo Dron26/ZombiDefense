@@ -38,7 +38,7 @@ using Random = UnityEngine.Random;
 
         public int NextIndexFrom(HashSet<int> set)
         {
-            int i = Random.Range(0, musics.Count);
+            int i = Random.Range(1, musics.Count);
 
             if (set.Contains(i) || i == _pastIndex)
                 return NextIndexFrom(set);

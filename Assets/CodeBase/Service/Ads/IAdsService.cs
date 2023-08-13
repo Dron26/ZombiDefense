@@ -7,11 +7,11 @@ namespace Service.Ads
     {
         public event Action OnInitializeSuccess;
         public event Action OnClosedVideoAd;
-        public event Action OnOfflineInterstitialAd;
-        public event Action<bool> OnClosedInterstitialAd;
         public event Action<string> OnShowVideoAdError;
-        public event Action<string> OnShowInterstitialAdError;
         public event Action OnRewardedAd;
+        public event Action<bool> OnClosedInterstitialAd;
+        public event Action<string> OnShowInterstitialAdError;
+        public event Action OnOfflineInterstitialAd;
 
         bool IsInitialized();
         IEnumerator Initialize();

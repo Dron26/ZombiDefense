@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using Data;
-using Data.Settings.Audio;
 using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
 using Newtonsoft.Json;
+using Service.Audio;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -18,6 +18,7 @@ namespace Service.SaveLoad
         private bool _isFirstStart=true;
         public UnityAction OnSetActiveHumanoid;
         public UnityAction<WorkPoint> OnSelectedNewPoint;
+        private LoadingCurtain _loadingCurtain;
         public MoneyData MoneyData => _dataBase.MoneyData;
 
         private void Awake()
@@ -43,8 +44,8 @@ namespace Service.SaveLoad
         private void SetStartParametrs()
         {
             _dataBase.MoneyData.AddMoney(10000); 
-            Audio parametrs = new Audio();
-            SetAudioSettings(parametrs);
+            AudioData audioData = new AudioData();
+            SetAudioData(audioData);
             Save();
         }
 
@@ -63,13 +64,13 @@ namespace Service.SaveLoad
         public int ReadAmountMoney() =>
             _dataBase.ReadAmountMoney;
         
-        public void SetAudioSettings( Audio parametrs)
+        public void SetAudioData( AudioData parametrs)
         {
-            _dataBase.ChangeAudioSettings(parametrs);
+            _dataBase.ChangeAudioData(parametrs);
         }
         
-        public Audio  GetAudioSettings( ) => 
-            _dataBase.ReadAudioSettings();
+        public AudioData  GetAudioData( ) => 
+            _dataBase.ReadAudioData();
         
         public void SetFirstStart()
         {
@@ -167,6 +168,16 @@ namespace Service.SaveLoad
         public void ClearProgress()
         {
             throw new System.NotImplementedException();
+        }
+
+        public void SetCurtain(LoadingCurtain loadingCurtain)
+        {
+            _loadingCurtain=loadingCurtain;
+        }
+        
+        public LoadingCurtain GetCurtain( )
+        {
+           return  _loadingCurtain;
         }
     }
 }

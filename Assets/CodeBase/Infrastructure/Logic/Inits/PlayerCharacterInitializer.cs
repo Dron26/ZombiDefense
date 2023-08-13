@@ -1,11 +1,11 @@
 using System.Collections.Generic;
-using Data.Settings.Audio;
 using Humanoids.AbstractLevel;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Factories.FactoryWarriors.Humanoids;
 using Infrastructure.Location;
+using Service.Audio;
 using Service.SaveLoad;
 using UI.HUD.StorePanel;
 using UnityEngine;

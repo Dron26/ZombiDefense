@@ -1,5 +1,8 @@
-﻿using UnityEngine;
+﻿using Plugins.SoundInstance.Core.Scripts;
+using UnityEngine;
 
+namespace Plugins.SoundInstance.Core.Static
+{
     public static class SoundInstance
     {
         public static float defaultVolume = 1;
@@ -303,3 +306,4 @@
         public static void StartRandomMusic() =>
             _MusicHandler.StartRandomMusic();
     }
+}

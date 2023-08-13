@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using TMPro;
 using UnityEngine.Events;
@@ -11,7 +12,8 @@ public class LoadingCurtain : MonoBehaviour
     [SerializeField] private GameObject _panel;
 
     private CanvasGroup _canvasGroup;
-    public UnityAction OnClicked;
+    public Action OnStartLoading;
+    public Action OnClicked;
     
     private void Awake()
     {
@@ -22,6 +24,7 @@ public class LoadingCurtain : MonoBehaviour
 
     public void StartLoading()
     {
+        OnStartLoading?.Invoke();
         _panel.SetActive(true);
         _canvasGroup.blocksRaycasts = true;
         loadingIcon.SetActive(true);

@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using Data;
-using Data.Settings.Audio;
 using Enemies.AbstractEntity;
+using Service.Audio;
 using Service.SaveLoad;
 using UnityEngine;
 using UnityEngine.Events;

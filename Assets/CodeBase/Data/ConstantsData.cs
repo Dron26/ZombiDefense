@@ -15,5 +15,9 @@ namespace Data
         public const float TimeThirdScale = 1.5f;
         public const float TimeFourthScale = 3f;
         
+        
+        public const float Visible = 1f;
+        public const float HalfVisible = 0.5f;
+        public const float Invisible = 0f;
     }
 }

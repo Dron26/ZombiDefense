@@ -11,18 +11,18 @@ namespace Infrastructure
 {
     public class GameBootstrapper : MonoCache, ICoroutineRunner
     {
-        [SerializeField]private YandexLeaderboard _yandexLeaderboard; 
         [SerializeField]private YandexInitializer _yandexInitializer; 
         
         private Game _game;
         private LoadingCurtain _loadingCurtain;
         private SaveLoadService _saveLoadService;
-        
         private void Awake()
         {
             DontDestroyOnLoad(this);
             _saveLoadService = GetComponent<SaveLoadService>();
             _loadingCurtain=GetComponentInChildren<LoadingCurtain>();
+
+            _saveLoadService.SetCurtain(_loadingCurtain);
         }
 
         public void Start()
@@ -40,8 +40,7 @@ namespace Infrastructure
         
         public YandexInitializer GetYandexInitializer() => 
             _yandexInitializer;
-        public YandexLeaderboard GetYandexLeaderboard() => 
-            _yandexLeaderboard;
+        
         public SaveLoadService GetSAaveLoad() => 
             _saveLoadService;
 

@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Data.Settings.Audio;
 using Infrastructure.AIBattle.EnemyAI;
 using Infrastructure.AIBattle.EnemyAI.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
 using Infrastructure.Observer;
+using Service.Audio;
 using Service.SaveLoad;
 using UnityEngine;
 using UnityEngine.AddressableAssets;

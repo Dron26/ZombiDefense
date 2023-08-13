@@ -20,6 +20,18 @@ namespace Service
             PauseService.Register(this);
         }
         
+        private void Initialize()
+        {
+            try
+            {
+                PauseService = new PauseService();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"Failed to initialize PauseService: {e}");
+            }
+        }
+        
         protected override void OnEnabled()
         {
             WebApplication.InBackgroundChangeEvent += OnInBackgroundChange;
@@ -60,17 +72,7 @@ namespace Service
             PauseService.SetPaused(inBackground);
         }
 
-        private void Initialize()
-        {
-            try
-            {
-                PauseService = new PauseService();
-            }
-            catch (Exception e)
-            {
-                Debug.LogError($"Failed to initialize PauseService: {e}");
-            }
-        }
+       
         
         private void OnApplicationFocus(bool hasFocus)
         {

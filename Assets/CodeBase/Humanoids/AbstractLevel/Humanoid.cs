@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Data;
-using Data.Settings.Audio;
 using Data.Upgrades;
 using Infrastructure.AIBattle.EnemyAI.States;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine;
@@ -9,6 +8,7 @@ using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
 using Infrastructure.Observer;
+using Service.Audio;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Data;
 using Infrastructure.Factories.FactoryGame;
 using Infrastructure.Logic.Inits;
-using Service.Ads;
+using Plugins.SoundInstance.Core.Static;
 using UI.GeneralMenu;
 using UnityEngine;
 
@@ -17,19 +17,15 @@ namespace Infrastructure.StateMachine.States
         private readonly List<string> _sceneNames;
         private readonly List<Action> _actions = new();
         private string _nameScene;
-        private IAdsService _adsService;
-        
         Dictionary<string, Action> _switherGroup = new();
 
-        public LoadLevelState(GameStateMachine stateMachine, SceneLoader sceneLoader ,
-            IGameFactory gameFactory,IAdsService adsService, List<string> sceneNames)
+        public LoadLevelState(GameStateMachine stateMachine, SceneLoader sceneLoader,
+            IGameFactory gameFactory, List<string> sceneNames)
         {
             _stateMachine = stateMachine;
             _sceneLoader = sceneLoader;
             _gameFactory = gameFactory;
             _sceneNames = sceneNames;
-            _adsService = adsService;
-            
             FillActionGroup();
             FillSwitcherGroup();
         }
@@ -44,8 +40,7 @@ namespace Infrastructure.StateMachine.States
         {
             
         }
-            
-
+        
         private void OnLoaded()
         {
             foreach (var (key, value) in _switherGroup)
@@ -55,15 +50,13 @@ namespace Infrastructure.StateMachine.States
 
         private void CreateGeneralMenu()
         {
-            
             GameObject generalMenu = _gameFactory.CreateMenu();
             generalMenu.GetComponentInChildren<GeneralMenuManager>().Initialize(_stateMachine);
             _stateMachine.Enter<GameLoopState>();
         }
 
         private void CreateSceneLevel()
-        { 
-            
+        {
             GameObject level = _gameFactory.CreateLevel();
             level.GetComponentInChildren<SceneInitializer>().Initialize(_stateMachine);
             _stateMachine.Enter<GameLoopState>();
@@ -82,18 +75,6 @@ namespace Infrastructure.StateMachine.States
             _actions.Add(null);
             _actions.Add(CreateGeneralMenu);
             _actions.Add(CreateSceneLevel);
-        }
-        
-        private void TryPauseGame()
-        {
-            
-                if (Application.isEditor)
-                    return;
-
-                Time.timeScale = ConstantsData.TimeScaleStop;
-                SoundInstance.StopRandomMusic(false);
-                _adsService.ShowInterstitialAd();
-            
         }
     }
 }

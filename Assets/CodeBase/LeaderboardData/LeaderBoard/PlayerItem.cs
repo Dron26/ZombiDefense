@@ -2,7 +2,7 @@ using Infrastructure.BaseMonoCache.Code.MonoCache;
 using TMPro;
 using UnityEngine.UI;
 
-namespace UI.LeaderBoard
+namespace LeaderBoard
 {
     public class PlayerItem : MonoCache
     {

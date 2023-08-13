@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Data.Settings.Audio;
 using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
 using Infrastructure.Observer;
+using Service.Audio;
 using UnityEngine;
 
 namespace Infrastructure.AIBattle
@@ -35,7 +35,6 @@ namespace Infrastructure.AIBattle
         
          private AudioClip _shoot;
          private AudioClip _reload;
-        private AudioSource _audioSource;
         private Weapon _weapon;
         private AudioManager _audioManager;
         private WeaponController _weaponController;
@@ -56,10 +55,7 @@ namespace Infrastructure.AIBattle
             }
 
         }
-
-        public void OnAttackFX()
-        {
-        }
+        
         
         public void OnTankDeathFX()
         {
@@ -79,18 +75,12 @@ namespace Infrastructure.AIBattle
         {
             _bloodFlowing.Play();
         }
-
-        public void SetAudioSource(AudioSource audioSource)
-        {
-            _audioSource=audioSource;
-        }
+        
 
         public void NotifyFromHumanoid(object data)
         {
             Humanoid humanoid = GetComponent<Humanoid>();
             _audioManager=humanoid.GetAudioController();
-            _audioSource= _audioManager.GetSoundSource();
-            
             _weaponController=humanoid.GetComponent<WeaponController>();
             _weaponController.AddObserver(this);
         }
