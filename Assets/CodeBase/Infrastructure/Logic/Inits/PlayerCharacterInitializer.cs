@@ -25,6 +25,7 @@ namespace Infrastructure.Logic.Inits
         private Humanoid _selectedHumanoid;
         private Store _store;
         private CharacterStore _characterStore;
+        private CharacterStore _vipCharacterStore;
         private MovePointController _movePointController;
         public int CoutnCreated => _coutnCreated;
         private int _coutnCreated;
@@ -40,8 +41,13 @@ namespace Infrastructure.Logic.Inits
             _workPointsGroup.Initialize(_saveLoadService);
             FillWorkPoints();
             _store = sceneInitializer.GetStoreOnPlay();
+            
             _characterStore = _store.GetCharacterStore();
             _characterStore.OnCharacterBought += SetCreatHumanoid;
+            
+            _vipCharacterStore = _store.GetVipCharacterStore();
+            _vipCharacterStore.OnCharacterBought += SetCreatHumanoid;
+            
             _movePointController = sceneInitializer.GetMovePointController();
         }
 

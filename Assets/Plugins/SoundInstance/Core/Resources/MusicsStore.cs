@@ -38,10 +38,11 @@ using Random = UnityEngine.Random;
 
         public int NextIndexFrom(HashSet<int> set)
         {
-            int i = Random.Range(1, musics.Count);
-
-            if (set.Contains(i) || i == _pastIndex)
-                return NextIndexFrom(set);
+            int i;
+            do
+            {
+                i = Random.Range(3, musics.Count);
+            } while (set.Contains(i) || i == _pastIndex);
 
             set.Add(i);
             _pastIndex = i;
@@ -50,7 +51,7 @@ using Random = UnityEngine.Random;
 
         public int GetMusicIndex(Music music)
         {
-            for (int i = 0; i < musics.Count; i++)
+            for (int i = 3; i < musics.Count; i++)
             {
                 if (musics[i].name == music.name)
                 {

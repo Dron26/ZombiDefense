@@ -14,13 +14,12 @@ namespace Infrastructure
         [SerializeField]private YandexInitializer _yandexInitializer; 
         
         private Game _game;
-        private LoadingCurtain _loadingCurtain;
+       [SerializeField] private LoadingCurtain _loadingCurtain;
         private SaveLoadService _saveLoadService;
         private void Awake()
         {
             DontDestroyOnLoad(this);
             _saveLoadService = GetComponent<SaveLoadService>();
-            _loadingCurtain=GetComponentInChildren<LoadingCurtain>();
 
             _saveLoadService.SetCurtain(_loadingCurtain);
         }

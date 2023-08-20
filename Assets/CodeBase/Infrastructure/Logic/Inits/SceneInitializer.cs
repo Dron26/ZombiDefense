@@ -43,32 +43,62 @@ namespace Infrastructure.Logic.Inits
         public string characterFolderPath = "Assets/NewArmy/Characters/Completed";
         public List<Humanoid> availableCharacters = new ();
 
-        public async void Initialize(GameStateMachine stateMachine)
+        public void Initialize(GameStateMachine stateMachine)
         {
+            Debug.Log("SceneInitializer().Initialize");
             _stateMachine = stateMachine;
             _gameBootstrapper = FindObjectOfType<GameBootstrapper>();
             _saveLoadService = _gameBootstrapper.GetSAaveLoad();
+
             LoadCharacters();
+            Debug.Log("Finish LoadCharacters();");
             _saveLoadService.SetAvailableCharacters(availableCharacters);
+            
+            Debug.Log("Finish SetAvailableCharacters();");
             _saveLoadService.SetCameras(_cameraPhysical, _cameraUI);
+            Debug.Log("Finish SetCameras();");
+
             _loadingCurtain = _gameBootstrapper.GetLoadingCurtain();
+
             _loadingCurtain.OnClicked = OnClikedCurtain;
+
             _moneyData=_saveLoadService.MoneyData;
+
             _playerCharacterInitializer.CreatedHumanoid += SetInfo;
+            Debug.Log("Finish _playerCharacterInitializer();");
              _audioManager.Initialize(_saveLoadService);
-            _playerCharacterInitializer.Initialize(_audioManager, this, _saveLoadService);
-            _enemyCharacterInitializer.Initialize(_saveLoadService, this);
+            
+             _playerCharacterInitializer.Initialize(_audioManager, this, _saveLoadService);
+             Debug.Log("Finish _playerCharacterInitializer();");
+
+             _enemyCharacterInitializer.Initialize(_saveLoadService, this);
+             Debug.Log("Finish _playerCharacterInitializer();");
+
             _waveManager = _enemyCharacterInitializer.GetWaveManager();
+            Debug.Log("Finish _playerCharacterInitializer();");
+
             _waveManager.OnReadySpawning = OnReadySpawning;
+            Debug.Log("Finish _playerCharacterInitializer();");
+
             _playerCharacterInitializer.AreOverHumanoids += _enemyCharacterInitializer.StopSpawning;
+            Debug.Log("Finish _playerCharacterInitializer();");
+
             _movePointController.Initialize(this, _saveLoadService);
+            Debug.Log("Finish _movePointController();");
+  
             store.Initialize(this, _saveLoadService,_moneyData);
          //   _timerDisplay.Initialize(_playerCharacterInitializer);
-            _resursesCanvas.Initialize(_saveLoadService);
+         Debug.Log("Finish store();");
+            
+         _resursesCanvas.Initialize(_saveLoadService);
 //_loadingCurtain.OnLoaded();
+            Debug.Log("Finish _resursesCanvas();");
 
             _timeManager.Initialize();
+            Debug.Log("Finish _timeManager();");
+
             _menuPanel.Initialize(_saveLoadService,_stateMachine);
+            Debug.Log("finish _menuPanel().Initialize");
         }
 
         private void OnReadySpawning()
@@ -114,10 +144,6 @@ namespace Infrastructure.Logic.Inits
         public MovePointController GetMovePointController() => _movePointController;
         public SaveLoadService GetSaveLoad() => _saveLoadService;
         public AudioManager GetAudioController() => _audioManager;
-        
-        
-            
-           
         
         
         private void LoadCharacters()

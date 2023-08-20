@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Agava.YandexGames;
 using Humanoids.AbstractLevel;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
@@ -7,6 +8,7 @@ using Infrastructure.Location;
 using Infrastructure.Logic.Inits;
 using Service;
 using Service.SaveLoad;
+using UI.Buttons;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -15,11 +17,20 @@ namespace UI.HUD.StorePanel
 {
     public class Store : MonoCache
     {
+        [SerializeField] private GameObject _storePanel;
+        
         [SerializeField] private CharacterStore _characterStore;
+        [SerializeField] private CharacterStore _eliteCharacterStore;
         
         [SerializeField] private Button _buttonStorePanel;
         [SerializeField] private Button _buttonRightPanel;
         [SerializeField] private Button _closeButton;
+        
+            //[SerializeField] private Button _mercButton;
+        //[SerializeField] private Button _exchangerButton;
+       // [SerializeField] private Button _eliteButton;
+        
+        
         
         [SerializeField] private GameObject _controlPanel;
         [SerializeField] private GameObject _buttonPanel;
@@ -32,6 +43,8 @@ namespace UI.HUD.StorePanel
         [SerializeField] private Camera _cameraUI;
         [SerializeField] private Camera _characterVisual;
 
+        [SerializeField] CharacterStoreRotation _characterStoreRotation;
+        
         private bool isButtonPanelOpen = true;
         private WorkPoint _selectedWorkPoint;
         private List<Humanoid> _characters = new();
@@ -48,10 +61,12 @@ namespace UI.HUD.StorePanel
 
         public void Initialize(SceneInitializer initializer, SaveLoadService saveLoadService, MoneyData moneyData)
         {
+            _storePanel.gameObject.SetActive(!_storePanel.activeSelf);
             _saveLoadService = saveLoadService;
             _sceneInitializer = initializer;
             _moneyData=moneyData;
             SetCharacterInitializer();
+            _storePanel.gameObject.SetActive(!_storePanel.activeSelf);
         }
 
         private void SetCharacterInitializer()
@@ -60,8 +75,13 @@ namespace UI.HUD.StorePanel
             //_characterInitializer.OnClickWorkpoint += CheckPointInfo;
             _characters = _saveLoadService.GetAvailableCharacters();
             _saveLoadService.OnSelectedNewPoint += CheckPointInfo;
+            
             _characterStore.Initialize(_saveLoadService,this,_moneyData);
             _characterStore.OnCharacterBought += OnCharacterBought;
+            
+            _eliteCharacterStore.Initialize(_saveLoadService,this,_moneyData);
+            _eliteCharacterStore.OnCharacterBought += OnCharacterBought;
+            
             InitializeButton();
             //_characterStore.BuyCharacter += OnBuyCharacter;
             _movePointController = _sceneInitializer.GetMovePointController();
@@ -81,8 +101,8 @@ namespace UI.HUD.StorePanel
 
         private void InitializeButton()
         {
-            _closeButton.onClick.AddListener(SwitchStorePanel);
             _buttonStorePanel.onClick.AddListener(SwitchStorePanel);
+            _closeButton.onClick.AddListener(SwitchStorePanel);
             _buttonRightPanel.onClick.AddListener(ChangeStateButtonPanel);
         }
 
@@ -176,6 +196,12 @@ namespace UI.HUD.StorePanel
         private void SwitchPanels(bool isActive)
         {
             IsStoreActive(isActive);
+            _storePanel.gameObject.SetActive(!_storePanel.activeSelf);
+            _characterStore.gameObject.SetActive(isActive);
+            _eliteCharacterStore.gameObject.SetActive(!isActive);
+
+            _characterStoreRotation.gameObject.SetActive(isActive);
+            
             _dimImage.gameObject.SetActive(isActive);
             isActive = !isActive;
             _controlPanel.gameObject.SetActive(isActive);
@@ -184,6 +210,11 @@ namespace UI.HUD.StorePanel
         public CharacterStore GetCharacterStore()
         {
             return _characterStore;
+        }
+
+        public CharacterStore GetVipCharacterStore()
+        {
+            return _eliteCharacterStore;
         }
     }
 }

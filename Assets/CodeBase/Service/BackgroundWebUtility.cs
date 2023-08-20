@@ -34,12 +34,12 @@ namespace Service
         
         protected override void OnEnabled()
         {
-            WebApplication.InBackgroundChangeEvent += OnInBackgroundChange;
+            //WebApplication.InBackgroundChangeEvent += OnInBackgroundChange;
         }
 
         protected override void OnDisabled()
         {
-            WebApplication.InBackgroundChangeEvent -= OnInBackgroundChange;
+          //  WebApplication.InBackgroundChangeEvent -= OnInBackgroundChange;
         }
 
         public void SetPaused(bool isPaused)
@@ -76,7 +76,7 @@ namespace Service
         
         private void OnApplicationFocus(bool hasFocus)
         {
-            OnInBackgroundChange(!hasFocus);
+ //           OnInBackgroundChange(!hasFocus);
         }
     }
 }

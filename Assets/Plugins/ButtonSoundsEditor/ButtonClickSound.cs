@@ -3,6 +3,7 @@ using UnityEngine.EventSystems;
 
 namespace Plugins.ButtonSoundsEditor
 {
+    [DisallowMultipleComponent]
     public class ButtonClickSound : MonoBehaviour , IPointerEnterHandler, IPointerClickHandler
     {
         public AudioSource AudioSource;

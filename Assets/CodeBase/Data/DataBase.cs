@@ -31,6 +31,8 @@ namespace Data
         [NonSerialized] 
         public Camera CameraPhysical;
         
+        private bool _isAuthorized = false;
+        public bool IsAuthorized => _isAuthorized;
         public bool IsBattleStart = false;
         [NonSerialized] 
         public List<WaveData> _waveDatas;
@@ -48,11 +50,7 @@ namespace Data
         private List<Humanoid> InactiveHumanoids = new();
         [NonSerialized] 
         private List<Enemy> InactiveEnemy = new();
-                
-        
-        private YandexAuthorization _authorization;
-        
-        
+
         private int CountSpins { get;  set; }
 
         public void AddHumanoidAndCount(List<int> levels, List<int> amount)
@@ -192,6 +190,10 @@ namespace Data
         {
             return  CameraUI;
         }
-        
+
+        public void SetStatusAuthorization(bool isAuthorized)
+        {
+           _isAuthorized = isAuthorized;
+        }
     }
 }

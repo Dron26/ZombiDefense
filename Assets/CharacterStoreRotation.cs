@@ -15,7 +15,18 @@ public class CharacterStoreRotation : MonoCache
         _isRotating = false;
     }
 
-    private void OnDisable()
+    protected override void OnEnabled()
+    {
+        Rotate();
+    }
+
+
+    protected override void OnDisabled()
+    {
+        base.OnDisable();
+    }
+
+    void OnDisable()
     {
         StopRotation();
     }
@@ -38,7 +49,7 @@ public class CharacterStoreRotation : MonoCache
         }
     }
 
-    public void Rotate()
+    private void Rotate()
     {
         transform.rotation = _startRotation;
 

@@ -44,6 +44,7 @@ namespace UI.Levels
         
         public void EnterLevel()
         {
+            Debug.Log("EnterLevel()");
             _stateMachine.Enter<LoadLevelState,string>(ConstantsData.Level); 
             Destroy(gameObject);
         } 

@@ -32,7 +32,7 @@ namespace UI.HUD.StorePanel
         
         [SerializeField] private CharacterGroupContent _characterGroupContent;
         [SerializeField] private CharacterSkinnedMeshesGroup _characterSkinnedMeshesGroup;
-        [SerializeField] CharacterStoreRotation _characterStoreRotation;
+        
        
         public Action<Humanoid> OnCharacterBought;
 
@@ -122,7 +122,6 @@ namespace UI.HUD.StorePanel
             if (OnTryBuy(_selectedHumanoid.GetPrice()))
             {
                 OnCharacterBought?.Invoke(_selectedHumanoid);
-                
             }
         }
         
@@ -180,16 +179,12 @@ namespace UI.HUD.StorePanel
             if (isActive)
             {
                 _container.gameObject.SetActive(true);
-                _characterStoreRotation.gameObject.SetActive(true);
-                _characterStoreRotation.Rotate();
                 SetPriceInfo();
                 SetVisual();
                 SetCharacterInfo();
             }
             else
             {
-                _characterStoreRotation.StopRotation();
-                _characterStoreRotation.gameObject.SetActive(false);
                 _container.gameObject.SetActive(false);
                 
             }

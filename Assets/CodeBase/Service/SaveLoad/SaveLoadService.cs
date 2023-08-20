@@ -6,6 +6,7 @@ using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
 using Newtonsoft.Json;
 using Service.Audio;
+using Service.PlayerAuthorization;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -19,8 +20,11 @@ namespace Service.SaveLoad
         public UnityAction OnSetActiveHumanoid;
         public UnityAction<WorkPoint> OnSelectedNewPoint;
         private LoadingCurtain _loadingCurtain;
-        public MoneyData MoneyData => _dataBase.MoneyData;
+        public MoneyData MoneyData => _dataBase.MoneyData; 
+        private YandexAuthorization _authorization=new();
+        private bool IsAuthorized => _authorization.IsAuthorized();
 
+        
         private void Awake()
         {
             if (!PlayerPrefs.HasKey(Key))
@@ -39,7 +43,15 @@ namespace Service.SaveLoad
                 
                 _isFirstStart = false;
             }
+
+            _authorization.OnAuthorizeSuccessCallback += OnAuthorizeSuccess;
         }
+        
+        private void OnAuthorizeSuccess()
+        {
+            _dataBase.SetStatusAuthorization(IsAuthorized);
+        }
+        
 
         private void SetStartParametrs()
         {

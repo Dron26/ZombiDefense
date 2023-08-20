@@ -70,7 +70,7 @@ namespace Plugins.SoundInstance.Core.Scripts
 
             AudioClip audioClip = _storage.GetMusic(name).Song;
             audioSource.clip = audioClip;
-            StartCoroutine(Play(3 / fadeSpeed));
+            StartCoroutine(Play(2 / fadeSpeed));
 
             foreach (GameObject go in FindObjectsOfType<GameObject>())
             {
@@ -140,10 +140,11 @@ namespace Plugins.SoundInstance.Core.Scripts
             audioSource.clip = audioClip;
 
             Static.SoundInstance.CurrentMusic = _storage.GetMusic(name);
-            foreach (GameObject go in FindObjectsOfType<GameObject>())
-            {
-                go.SendMessage("OnMusicStarted", _storage.GetMusic(name), SendMessageOptions.DontRequireReceiver);
-            }
+            
+                //foreach (GameObject go in FindObjectsOfType<GameObject>())
+           // {
+           //     go.SendMessage("OnMusicStarted", _storage.GetMusic(name), SendMessageOptions.DontRequireReceiver);
+           // }
 
             StartCoroutine(Play(1 / fadeSpeed));
             yield break;
@@ -181,20 +182,21 @@ namespace Plugins.SoundInstance.Core.Scripts
             float duration = 1 / fadeSpeed;
             float currentTime = 0;
             float start = audioSource.volume;
-
-            while (currentTime < duration)
-            {
-                currentTime += Time.deltaTime;
-                audioSource.volume = Mathf.Lerp(start, 0, currentTime / duration);
-                yield return null;
-            }
-
+            
+                while (currentTime < duration&&Time.deltaTime!=0)
+                {
+                    currentTime += Time.deltaTime;
+                    audioSource.volume = Mathf.Lerp(start, 0, currentTime / duration);
+                    yield return null;
+                }
+            
+                _needStop = true;
             audioSource.Pause();
 
-            foreach (GameObject go in FindObjectsOfType<GameObject>())
-            {
-                go.SendMessage("OnMusicPaused", SendMessageOptions.DontRequireReceiver);
-            }
+            // foreach (GameObject go in FindObjectsOfType<GameObject>())
+            // {
+            //     go.SendMessage("OnMusicPaused", SendMessageOptions.DontRequireReceiver);
+            // }
 
             yield break;
         }
@@ -205,10 +207,10 @@ namespace Plugins.SoundInstance.Core.Scripts
             float currentTime = 0;
             float start = audioSource.volume;
 
-            foreach (GameObject go in FindObjectsOfType<GameObject>())
-            {
-                go.SendMessage("OnMusicResume", SendMessageOptions.DontRequireReceiver);
-            }
+            // foreach (GameObject go in FindObjectsOfType<GameObject>())
+            // {
+            //     go.SendMessage("OnMusicResume", SendMessageOptions.DontRequireReceiver);
+            // }
 
             audioSource.UnPause();
             while (currentTime < duration)

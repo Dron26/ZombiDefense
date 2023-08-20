@@ -35,18 +35,5 @@ namespace Service.Yandex
             }
             
         }
-
-        // public void LoadCloudData()
-        // {
-        //     Agava.YandexGames.Leaderboard.GetPlayerEntry(LeaderboardConstants.Name, TryCreatePlayerLeaderboardEntity);
-        //     Agava.YandexGames.Leaderboard.GetEntries(LeaderboardConstants.Name, _leaderboardPanel.Init, topPlayersCount: _leaderboardPanel.AmountRecords, competingPlayersCount: _leaderboardPanel.AmountRecords);
-        // }
-
-        // private void TryCreatePlayerLeaderboardEntity(LeaderboardEntryResponse leaderboardEntryResponse)
-        // {
-        //     if (leaderboardEntryResponse == null)
-        //         Agava.YandexGames.Leaderboard.SetScore(LeaderboardConstants.Name, 0);
-        // }
- 
     }
 }
