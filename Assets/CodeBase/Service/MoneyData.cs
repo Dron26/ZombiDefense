@@ -3,26 +3,33 @@ using UnityEngine;
 
 namespace Service
 {
+    [Serializable]
     public class MoneyData
     {
         public event Action MoneyChanged;
-        public int Money => _money;
-        private  int _money;
+        public int Money;
+        
+        public int AllAmountMoney;
+        public int AmountMoneyPerDay;
 
         public void AddMoney(int amountMoney)
         {
-            _money += amountMoney;
+            Money += amountMoney;
+            AllAmountMoney += amountMoney;
+            AmountMoneyPerDay += amountMoney;
+            MoneyChanged?.Invoke();
         }
         
         public void SpendMoney( int amountMoney)
         {
-            _money -= Mathf.Clamp(amountMoney, 0, int.MaxValue);
+            Money -= Mathf.Clamp(amountMoney, 0, int.MaxValue);
+            MoneyChanged?.Invoke();
         }
 
 
         public bool IsMoneyEnough(int price)
         {
-            return _money >= price;
+            return Money >= price;
         }
     }
 }
