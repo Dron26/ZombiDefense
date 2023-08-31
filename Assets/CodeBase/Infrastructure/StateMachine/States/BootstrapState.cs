@@ -5,6 +5,7 @@ using Service;
 using Service.Ads;
 using Service.Localization;
 using Service.PlayerAuthorization;
+using Service.SaveLoad;
 
 namespace Infrastructure.StateMachine.States
 {
@@ -42,6 +43,7 @@ namespace Infrastructure.StateMachine.States
             _services.RegisterSingle<IAdsService>((new YandexAdsService()));
             _services.RegisterSingle<ILeaderboardService>((new YandexLeaderboardService()));
             _services.RegisterSingle<IAuthorization>((new YandexAuthorization()));
+            _services.RegisterSingle<ISaveLoadService>(new SaveLoadService());
         }
     }
 }

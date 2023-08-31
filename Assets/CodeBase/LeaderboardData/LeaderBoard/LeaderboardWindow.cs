@@ -11,14 +11,11 @@ using UnityEngine.UI;
 
 namespace LeaderBoard
 {
-    public class LeaderboardWindow:MonoCache
+    public class LeaderboardWindow:WindowBase
     {
         protected IGameStateMachine GameStateMachine;
         protected IAdsService AdsService;
         protected ILeaderboardService LeaderBoardService;
-        protected AudioSource AudioSource;
-        protected GameObject Hero;
-        protected float Volume;
 
         [SerializeField] private Button _closeButton;
         [SerializeField] private TextMeshProUGUI _rankText;
@@ -53,10 +50,23 @@ namespace LeaderBoard
         protected override void OnDisabled()
         {
             _closeButton.onClick.RemoveListener(Close);
-
+            
+            if (AdsService.IsInitialized())
+            {
+                RequestLeaderboard();
+            }
+            
             if (AdsService != null)
                 AdsService.OnInitializeSuccess -= RequestLeaderBoard;
         }
+        
+        private  void RequestLeaderboard()
+        {
+            base.RequestLeaderBoard();
+            AddLevelResult();
+        }
+        
+       
         
         private void InitializeLeaderBoard()
         {

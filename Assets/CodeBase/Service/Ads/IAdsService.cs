@@ -13,9 +13,9 @@ namespace Service.Ads
         public event Action<string> OnShowInterstitialAdError;
         public event Action OnOfflineInterstitialAd;
 
-        bool IsInitialized();
-        IEnumerator Initialize();
-        void ShowVideoAd();
-        void ShowInterstitialAd();
+        public bool IsInitialized();
+        public IEnumerator Initialize();
+        public void ShowVideoAd();
+        public void ShowInterstitialAd();
     }
 }

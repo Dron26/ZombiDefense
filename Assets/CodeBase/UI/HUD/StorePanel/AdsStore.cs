@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace UI.HUD.StorePanel
 {
-    public class AdsStore:AdsWindow
+    public class AdsStore:WindowBase
     {
         [SerializeField] private Button _addMoneyButton;
         [SerializeField] private GameObject _storePanel;

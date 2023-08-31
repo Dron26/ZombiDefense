@@ -3,6 +3,7 @@ using Data;
 using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Infrastructure.Factories.FactoryGame;
 using Infrastructure.Location;
 using Newtonsoft.Json;
 using Service.Audio;
@@ -13,7 +14,7 @@ using UnityEngine.Events;
 
 namespace Service.SaveLoad
 {
-    public class SaveLoadService :MonoCache
+    public class SaveLoadService :MonoCache,ISaveLoadService
     {
         private const string Key = "Key";
         private DataBase _dataBase;
@@ -23,6 +24,7 @@ namespace Service.SaveLoad
         private LoadingCurtain _loadingCurtain;
         public MoneyData MoneyData => _dataBase.MoneyData; 
         private YandexAuthorization _authorization=new();
+        
         private bool IsAuthorized => _authorization.IsAuthorized();
 
         
@@ -63,8 +65,9 @@ namespace Service.SaveLoad
 
         private void SetStartParametrs()
         {
-            _dataBase.MoneyData.AddMoney(300000); 
-            Debug.Log( MoneyData);
+            int Money = 300000;
+            _dataBase.MoneyData.AddMoney(Money); 
+            Debug.Log("Add"+Money);
             AudioData audioData = new AudioData();
             SetAudioData(audioData);
             Save();
@@ -221,6 +224,21 @@ namespace Service.SaveLoad
         {
             OnGameEnd();
             Save();
+        }
+
+        public void SaveData()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void ClearData()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public DataBase LoadData()
+        {
+            return _dataBase;
         }
     }
 }

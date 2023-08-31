@@ -135,7 +135,8 @@ PlayerSettings:
     16:9: 1
     Others: 1
   bundleVersion: 0.1
-  preloadedAssets: []
+  preloadedAssets:
+  - {fileID: 11400000, guid: ef1499f73b76ea94ab292e905e740445, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -791,10 +792,10 @@ PlayerSettings:
   blurSplashScreenBackground: 1
   spritePackerPolicy: 
   webGLMemorySize: 16
-  webGLExceptionSupport: 1
+  webGLExceptionSupport: 0
   webGLNameFilesAsHashes: 1
   webGLDataCaching: 0
-  webGLDebugSymbols: 0
+  webGLDebugSymbols: 1
   webGLEmscriptenArgs: 
   webGLModulesDirectory: 
   webGLTemplate: PROJECT:ResizeToFill

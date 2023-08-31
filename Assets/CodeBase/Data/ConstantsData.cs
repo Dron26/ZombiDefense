@@ -8,6 +8,8 @@ namespace Data
         public const string Menu = "Menu";
         public const string Level = "Level";
         
+        public const string Leaderboard = "Leaderboard";
+        
         public const float TimeScaleStop = 0.0f;
         public const float TimeScaleResume = 1.0f;
         public const float TimeFirstScale = 0.5f;
