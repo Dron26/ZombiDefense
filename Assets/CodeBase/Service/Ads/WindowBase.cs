@@ -7,7 +7,13 @@ namespace Service.Ads
     {
         
         protected IAdsService AdsService;
-        
+
+        private void OnEnable()
+        {
+            if (AdsService == null)
+                AdsService = AllServices.Container.Single<IAdsService>();
+        }
+
         protected void InitializeAdsSDK()
         {
             Debug.Log("InitializeAdsSDK");
