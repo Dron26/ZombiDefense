@@ -17,7 +17,7 @@ namespace UI.HUD.StorePanel
         
         private  List<List<GameObject>> _characterSkinnedMeshes;
 private bool _isShowed = false;
-private int _selectedIndex;
+private int _selectedIndex=-1;
         public void Awake()
         {
             _characterSkinnedMeshes=new List<List<GameObject>>();
@@ -45,12 +45,9 @@ private int _selectedIndex;
 
         public void ShowCharacter(int index)
         {
-            if (_selectedIndex!=index)
+            if (_selectedIndex!=-1)
             {
-                foreach (GameObject obj in _characterSkinnedMeshes[_selectedIndex])
-                {
-                    obj.SetActive(false);
-                }
+                HideCharacter();
             }
             
             foreach (GameObject obj in _characterSkinnedMeshes[index])
@@ -59,6 +56,14 @@ private int _selectedIndex;
             }
             
             _selectedIndex=index;
+        }
+
+        public void HideCharacter()
+        {
+            foreach (GameObject obj in _characterSkinnedMeshes[_selectedIndex])
+            {
+                obj.SetActive(false);
+            }
         }
     }
 }

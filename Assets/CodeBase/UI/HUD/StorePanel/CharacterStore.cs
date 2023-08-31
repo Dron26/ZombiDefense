@@ -32,9 +32,9 @@ namespace UI.HUD.StorePanel
         
         [SerializeField] private CharacterGroupContent _characterGroupContent;
         [SerializeField] private CharacterSkinnedMeshesGroup _characterSkinnedMeshesGroup;
-        
        
         public Action<Humanoid> OnCharacterBought;
+        public Action OnMoneyEmpty;
 
         private List<int> _indexAvailableHumanoid=new();
         private List<CharacterSlot> _characterSlots=new();
@@ -42,24 +42,28 @@ namespace UI.HUD.StorePanel
         private Humanoid _selectedHumanoid;
         private SaveLoadService _saveLoadService;
         private Store _store;
-        private MoneyData _moneyData;
         public Action OnUpdateBought;
-        
-        public void Initialize( SaveLoadService saveLoadService,Store store ,MoneyData moneyData )
+        private  bool _isInitialized;
+        public void Initialize( SaveLoadService saveLoadService,Store store )
         {
-            _moneyData=moneyData;
             _saveLoadService=saveLoadService;
             _store = store;
             _store.IsStoreActive +=SetCharacterData ;
             SetHumanoid();
             InitializeCharacterSlots();
-           
-                //  InitializeUpgradePanel();
+            //  InitializeUpgradePanel();
             SetCharacterData(false);
-
             InitializeButton();
+            
+            _isInitialized=true;
         }
-
+        
+        protected override void OnEnabled()
+        {
+            if (!_isInitialized) return;
+            SetCharacterData(true);
+        }
+        
         private void InitializeButton()
         {
             _buyButton.onClick.AddListener(OnTryBuyCharacter);
@@ -123,18 +127,21 @@ namespace UI.HUD.StorePanel
             {
                 OnCharacterBought?.Invoke(_selectedHumanoid);
             }
+            else
+            {
+                OnMoneyEmpty?.Invoke();
+            }
         }
         
         private bool OnTryBuy(int price)
         {
-            if (_moneyData.IsMoneyEnough(price))
+            if (_saveLoadService.MoneyData.IsMoneyEnough(price))
             {
-                _moneyData.SpendMoney(price);
+                _saveLoadService.MoneyData.SpendMoney(price);
                 return true;
             }
             else
             {
-                print("должен мигать кошелек");
                 return false;
             }
         }

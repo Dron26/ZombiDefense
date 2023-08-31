@@ -238,8 +238,19 @@ namespace Plugins.SoundInstance.Core.Static
         /// <param name="fadeSpeed">The fading speed between songs, 100 should be instant transition or start</param>
         public static void StartMusic(string name, float fadeSpeed = 1)
         {
-            _MusicHandler.StartMusic(name, fadeSpeed);
+            _MusicHandler.StartGameplayMusic(name, fadeSpeed);
         }
+        
+        public static void StartMenuMusic(string name, float fadeSpeed = 1)
+        {
+            _MusicHandler.StartMenuMusic(name, fadeSpeed);
+        }
+
+        public static void StartLoadingMusic(string name, float fadeSpeed = 1)
+        {
+            _MusicHandler.StartLoadingMusic(name, fadeSpeed);
+        }
+
 
         /// <summary>
         /// Stop the current song with a fading effect

@@ -8,7 +8,6 @@ using Infrastructure.Location;
 using Infrastructure.Logic.Inits;
 using Service;
 using Service.SaveLoad;
-using UI.Buttons;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -21,29 +20,29 @@ namespace UI.HUD.StorePanel
         
         [SerializeField] private CharacterStore _characterStore;
         [SerializeField] private CharacterStore _eliteCharacterStore;
+        [SerializeField] private GameObject _buttonPanel;
+        [SerializeField] private AdsStore _adsStore;
+        [SerializeField] private GameObject _applyAdsMoneyWindow;
+        
+        [SerializeField] CharacterStoreRotation _characterStoreRotation;
         
         [SerializeField] private Button _buttonStorePanel;
         [SerializeField] private Button _buttonRightPanel;
         [SerializeField] private Button _closeButton;
-        
-            //[SerializeField] private Button _mercButton;
-        //[SerializeField] private Button _exchangerButton;
-       // [SerializeField] private Button _eliteButton;
-        
-        
+        [SerializeField] private Button _applyAdsMoneyWindowButton;
+        [SerializeField] private Button _closeAdsMoneyWindowButton;
         
         [SerializeField] private GameObject _controlPanel;
-        [SerializeField] private GameObject _buttonPanel;
+        [SerializeField] private GameObject _rightButtonPanel;
         [SerializeField] private WorkPointUpgradePanel _pointUpgradePanel;
-        [SerializeField] private WorkPointGroup _workPointGroup;
+         private WorkPointGroup _workPointGroup;
         [SerializeField] private int _priceForWorkPointUp;
        
         [SerializeField] private Image _dimImage;
-        [SerializeField] private Camera _cameraPhysical;
-        [SerializeField] private Camera _cameraUI;
+        [SerializeField]private Camera _cameraPhysical;
+        [SerializeField]private Camera _cameraUI;
         [SerializeField] private Camera _characterVisual;
 
-        [SerializeField] CharacterStoreRotation _characterStoreRotation;
         
         private bool isButtonPanelOpen = true;
         private WorkPoint _selectedWorkPoint;
@@ -54,19 +53,19 @@ namespace UI.HUD.StorePanel
         private SaveLoadService _saveLoadService;
         private int maxLevel = 3;
         private bool _isPanelActive=false;
-        private MoneyData _moneyData;
 
         public UnityAction<bool> IsStoreActive;
         public Action<WorkPoint> OnBoughtUpgrade;
 
-        public void Initialize(SceneInitializer initializer, SaveLoadService saveLoadService, MoneyData moneyData)
+        public void Initialize(SceneInitializer initializer, SaveLoadService saveLoadService)
         {
             _storePanel.gameObject.SetActive(!_storePanel.activeSelf);
             _saveLoadService = saveLoadService;
             _sceneInitializer = initializer;
-            _moneyData=moneyData;
+            _workPointGroup = _sceneInitializer.GetPlayerCharacterInitializer().GetWorkPointGroup();
             SetCharacterInitializer();
             _storePanel.gameObject.SetActive(!_storePanel.activeSelf);
+            _adsStore.Initialize(_saveLoadService);
         }
 
         private void SetCharacterInitializer()
@@ -76,10 +75,11 @@ namespace UI.HUD.StorePanel
             _characters = _saveLoadService.GetAvailableCharacters();
             _saveLoadService.OnSelectedNewPoint += CheckPointInfo;
             
-            _characterStore.Initialize(_saveLoadService,this,_moneyData);
+            _characterStore.Initialize(_saveLoadService,this);
             _characterStore.OnCharacterBought += OnCharacterBought;
+            _characterStore.OnMoneyEmpty += ShowPanelAdsForMoney;
             
-            _eliteCharacterStore.Initialize(_saveLoadService,this,_moneyData);
+            _eliteCharacterStore.Initialize(_saveLoadService,this);
             _eliteCharacterStore.OnCharacterBought += OnCharacterBought;
             
             InitializeButton();
@@ -92,11 +92,30 @@ namespace UI.HUD.StorePanel
             //_movePointController.OnClickWorkpoint += OnClickWorkpoint;
             //_movePointController.OnSelectedNewPoint+=OnSelectedNewPoint;
             //_movePointController.OnUnSelectedPoint+=OnUnSelectedPoint;
+            _characterStoreRotation.gameObject.SetActive(!_characterStoreRotation.gameObject.activeSelf);
         }
 
+        protected override void OnDisabled()
+        {
+            _saveLoadService.OnSelectedNewPoint -= CheckPointInfo;
+            _characterStore.OnCharacterBought -= OnCharacterBought;
+            _characterStore.OnMoneyEmpty -= ShowPanelAdsForMoney;
+            _eliteCharacterStore.OnCharacterBought -= OnCharacterBought;
+        }
+        
+        
         private void OnCharacterBought(Humanoid humanoid)
         {
             SwitchStorePanel();
+        }
+        
+        private void ShowPanelAdsForMoney()
+        {
+            _applyAdsMoneyWindow.gameObject.SetActive(!_applyAdsMoneyWindow.gameObject);
+            _characterStore.gameObject.SetActive(!_characterStore.gameObject.activeSelf);
+            _characterStoreRotation.gameObject.SetActive(!_characterStoreRotation.gameObject.activeSelf);
+            _eliteCharacterStore.gameObject.SetActive(!_eliteCharacterStore.gameObject.activeSelf);
+            _buttonPanel.gameObject.SetActive(!_buttonPanel.gameObject.activeSelf);
         }
 
         private void InitializeButton()
@@ -104,6 +123,15 @@ namespace UI.HUD.StorePanel
             _buttonStorePanel.onClick.AddListener(SwitchStorePanel);
             _closeButton.onClick.AddListener(SwitchStorePanel);
             _buttonRightPanel.onClick.AddListener(ChangeStateButtonPanel);
+            _applyAdsMoneyWindowButton.onClick.AddListener(ShowPanelAds);
+            _closeAdsMoneyWindowButton.onClick.AddListener(ShowPanelAdsForMoney);
+        }
+        
+        private void ShowPanelAds()
+        {
+            ShowPanelAdsForMoney();
+            _storePanel.gameObject.SetActive(false);
+            _adsStore.gameObject.SetActive(true);
         }
 
         private void CheckPointInfo(WorkPoint workPoint)
@@ -126,9 +154,9 @@ namespace UI.HUD.StorePanel
         {
             int price = _priceForWorkPointUp;
 
-            if (_moneyData.IsMoneyEnough(price))
+            if (_saveLoadService.MoneyData.IsMoneyEnough(price))
             {
-                _moneyData.SpendMoney(price);
+                _saveLoadService.MoneyData.SpendMoney(price);
                 _workPointGroup.UpLevel(_selectedWorkPoint);
                 
                 OnBoughtUpgrade?.Invoke(_selectedWorkPoint);
@@ -139,11 +167,7 @@ namespace UI.HUD.StorePanel
             }
         }
 
-        private void ShowPanel()
-        {
-            _characterStore.gameObject.SetActive(true);
-            // _characterStore.ShowAvaibleCharacters();
-        }
+        
 
         private void ClosePanel()
         {
@@ -168,7 +192,7 @@ namespace UI.HUD.StorePanel
         private void ChangeStateButtonPanel()
         {
             isButtonPanelOpen = !isButtonPanelOpen;
-            _buttonPanel.gameObject.SetActive(isButtonPanelOpen);
+            _rightButtonPanel.gameObject.SetActive(isButtonPanelOpen);
         }
 
         private void Buy(int price)
@@ -182,7 +206,7 @@ namespace UI.HUD.StorePanel
             SwitchCameras(_isPanelActive);
 
             float timeState = Time.timeScale;
-            Time.timeScale = _isPanelActive ? 1 : timeState;
+           Time.timeScale = _isPanelActive ? 1 : timeState;
         }
 
         private void SwitchCameras(bool isActive)
@@ -196,15 +220,12 @@ namespace UI.HUD.StorePanel
         private void SwitchPanels(bool isActive)
         {
             IsStoreActive(isActive);
-            _storePanel.gameObject.SetActive(!_storePanel.activeSelf);
+            _storePanel.gameObject.SetActive(isActive);
             _characterStore.gameObject.SetActive(isActive);
-            _eliteCharacterStore.gameObject.SetActive(!isActive);
-
             _characterStoreRotation.gameObject.SetActive(isActive);
             
             _dimImage.gameObject.SetActive(isActive);
-            isActive = !isActive;
-            _controlPanel.gameObject.SetActive(isActive);
+            _controlPanel.gameObject.SetActive(!isActive);
         }
 
         public CharacterStore GetCharacterStore()

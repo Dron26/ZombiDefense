@@ -65,13 +65,13 @@ using System;
             minSize = new Vector2(250, 300);
             maxSize = new Vector2(500, 2000);
 
-            EditorGUILayout.LabelField("Game Musics ("+Storage.musics.Count+")", EditorStyles.centeredGreyMiniLabel);
+            EditorGUILayout.LabelField("Game Musics ("+Storage.gameplayMusics.Count+")", EditorStyles.centeredGreyMiniLabel);
             EditorGUILayout.BeginVertical("box");
 
 
             scrollPos = EditorGUILayout.BeginScrollView(scrollPos, GUILayout.Width(position.width - 15), GUILayout.Height(position.height - 100));
 
-            int mscs = Storage.musics.Count;
+            int mscs = Storage.gameplayMusics.Count;
 
             for (int i = 0; i < mscs; i++)
             {
@@ -85,11 +85,11 @@ using System;
 
                 EditorGUILayout.BeginHorizontal();
                 GUILayout.Label("Name: ");
-                Storage.musics[i].name = EditorGUILayout.TextField(Storage.musics[i].name);
+                Storage.gameplayMusics[i].name = EditorGUILayout.TextField(Storage.gameplayMusics[i].name);
                 EditorGUILayout.EndHorizontal();
                 EditorGUILayout.BeginHorizontal();
                 GUILayout.Label("Song: ");
-                Storage.musics[i].Song = (AudioClip)EditorGUILayout.ObjectField(Storage.musics[i].Song, typeof(AudioClip), false);
+                Storage.gameplayMusics[i].Song = (AudioClip)EditorGUILayout.ObjectField(Storage.gameplayMusics[i].Song, typeof(AudioClip), false);
                 EditorGUILayout.EndHorizontal();
 
                 EditorGUILayout.EndVertical();
@@ -97,7 +97,7 @@ using System;
                 GUILayout.Space(7);
                 if (GUILayout.Button("-", GUILayout.Width(35), GUILayout.Height(35)))
                 {
-                    Storage.musics.RemoveAt(i);
+                    Storage.gameplayMusics.RemoveAt(i);
                     return;
                 }
 
@@ -119,7 +119,7 @@ using System;
             GUILayout.FlexibleSpace();   //
             if (GUILayout.Button("Insert", GUILayout.Width(position.width / 1.5f), GUILayout.Height(25)))
             {
-                Storage.musics.Add(new Music());
+                Storage.gameplayMusics.Add(new Music());
             }
             GUILayout.FlexibleSpace(); //
             GUILayout.EndHorizontal(); //

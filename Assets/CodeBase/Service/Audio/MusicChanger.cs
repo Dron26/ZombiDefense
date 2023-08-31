@@ -57,7 +57,7 @@ namespace Service.Audio
             if (isMenuEnabled&&_isMusicEnabled)
             {
                 SoundInstance.StopRandomMusic();
-                SoundInstance.StartMusic(MusicClipAddresses.MenuMusic);
+                SoundInstance.StartMenuMusic(MusicClipAddresses.Menu);
             }
             else if (!_isMusicEnabled)
             {
@@ -92,7 +92,7 @@ namespace Service.Audio
         private void SetLoadingMusic()
         {
             SoundInstance.StopRandomMusic();
-            SoundInstance.StartMusic(MusicClipAddresses.Loading);
+            SoundInstance.StartLoadingMusic(MusicClipAddresses.Loading);
         }
     }
 }

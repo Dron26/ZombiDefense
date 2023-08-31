@@ -6,6 +6,7 @@ using Infrastructure.Location;
 using Service;
 using Service.Audio;
 using Service.PlayerAuthorization;
+using UI.Levels;
 using UnityEngine;
 
 namespace Data
@@ -13,27 +14,25 @@ namespace Data
     [Serializable]
     public class DataBase
     {
-        public MoneyData MoneyData=new ();
-      
+        public MoneyData MoneyData = new MoneyData();
+        public PersonalAchievements PersonalAchievements = new PersonalAchievements();
+        
+        public TimeStatistics TimeStatistics = new TimeStatistics();
         public int Points;
-        
-        public const int WorkTime=1; 
-        
-        public AudioData AudioData;
-        
-        public List<int> LevelHumanoid = new();
-       
-        public List<int> AmountHumanoids = new();
-         
+        public AudioData AudioData = new AudioData();
+        public List<int> LevelHumanoid = new List<int>();
+        public List<int> AmountHumanoids = new List<int>();
+        [NonSerialized]
         public bool IsFirstStart = true;
+        [NonSerialized]
+        public LevelData LevelData=new LevelData();
+        public bool IsAuthorized => _isAuthorized;
         [NonSerialized] 
         public Camera CameraUI;
         [NonSerialized] 
         public Camera CameraPhysical;
         
         private bool _isAuthorized = false;
-        public bool IsAuthorized => _isAuthorized;
-        public bool IsBattleStart = false;
         [NonSerialized] 
         public List<WaveData> _waveDatas;
         [NonSerialized] 
@@ -95,17 +94,6 @@ namespace Data
         public AudioData ReadAudioData() =>
             AudioData;
 
-        public void ChangeMergeSlots(List<GameObject> slots)
-        {
-            
-        }
-
-        public List<GameObject> ReadMergeSlots()
-        {
-
-            return null;
-        }
-
         public void ChangeIsFirstStart()
         {
             IsFirstStart = false;
@@ -113,12 +101,6 @@ namespace Data
 
         public bool ReadIsFirstStart() =>
             IsFirstStart;
-
-        public void ChangeIsStartBattle() =>
-            IsBattleStart = true;
-
-        public bool ReadIsStartBattle() =>
-            IsBattleStart;
 
         public WorkPoint ChangeSelectedPoint(WorkPoint point) =>
             SelectedPoint = point;
@@ -164,17 +146,12 @@ namespace Data
         {
             ActiveEnemy.Remove(inactiveEnemy);
             InactiveEnemy.Add(inactiveEnemy);
+            MoneyData.AllAmountMoney++;
         }
 
         public List<Enemy> ReadInactiveEnemy() =>
             new List<Enemy>(InactiveEnemy);
-
-        public void ChangeLevelPoint(List<WaveData> waveDatas) => 
-            _waveDatas = waveDatas;
         
-        public List<WaveData> ReadLevelPoint() => 
-            _waveDatas;
-
         public void ChangeCameras(Camera cameraPhysical, Camera cameraUI)
         {
             CameraPhysical = cameraPhysical;
@@ -195,5 +172,41 @@ namespace Data
         {
            _isAuthorized = isAuthorized;
         }
+
+        
+        
+        public int ReadAllNumberKilledEnemies() => 
+            PersonalAchievements.AllNumberKilledEnemies;
+
+        public int ReadDayNumberKilledEnemies() => 
+            PersonalAchievements.DayNumberKilledEnemies;
+
+        public int ReadAllAmountMoney() => 
+            MoneyData.AllAmountMoney;
+
+        public int ReadAmountMoneyPerDay() => 
+            MoneyData.AmountMoneyPerDay;
+
+        public void OnGameStart() => 
+            TimeStatistics.OnGameStart();
+
+        public void OnGameEnd() => 
+            TimeStatistics.OnGameEnd();
+
+        public void ReadTotalPlayTime() => 
+            TimeStatistics.GetPlayTimeToday();
+        
+        public void ReadPlayTimeToday()=> 
+            TimeStatistics.GetPlayTimeToday();
+
+        public void ChangeLevelData(Level level)
+        {
+            LevelData.Number=level.Number;
+            LevelData.Path=level.Path;
+            LevelData.WaveDatas=level.GetWaveDataInfo();
+        }
+
+        public LevelData ReadLevelData() => 
+            LevelData;
     }
 }

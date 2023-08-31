@@ -12,7 +12,8 @@ namespace UI.Levels
 {
     public class LevelMap:MonoCache
     {
-        [SerializeField] private List<LevelPoint> _levelGroup;
+        [SerializeField] private List<Level> _levelGroup;
+        private List<Level> _tempLevelGroup;
 
         [SerializeField] private GameObject container;
         [SerializeField] private TMP_Text _cash;
@@ -23,21 +24,34 @@ namespace UI.Levels
         public void Initialize(GameStateMachine stateMachine,SaveLoadService saveLoadService)
         {
             _saveLoadService=saveLoadService;
-            
+            _tempLevelGroup=new List<Level>();
             _stateMachine=stateMachine;
-            foreach (var level in container.transform.GetComponentsInChildren<LevelPoint>())
+            foreach (var level in container.transform.GetComponentsInChildren<Level>())
             {
                 level.GetComponentInChildren<Button>().onClick.AddListener(() =>OnButtonClick(level));
-                _levelGroup.Add(level);
+                _tempLevelGroup.Add(level);
             }
+
+            foreach (var levelGroup in _tempLevelGroup)
+            {
+                for(int i=0;i<_tempLevelGroup.Count;i++)
+                {
+                    if(levelGroup.Number==i)
+                    {
+                        _levelGroup.Add(levelGroup);
+                    }
+                }
+            }
+            
             
             _cash.text="$"+_saveLoadService.ReadAmountMoney().ToString();
         }
 
-        private void OnButtonClick(LevelPoint level)
+        private void OnButtonClick(Level level)
         {
             _selectNumber=level.Number;
-            _saveLoadService.SetLevel(level.GetWaveDataInfo());
+            
+            _saveLoadService.SetLevelData(level);
             EnterLevel();
             
         }

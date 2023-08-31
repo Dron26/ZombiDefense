@@ -19,5 +19,7 @@ namespace Data
         public const float Visible = 1f;
         public const float HalfVisible = 0.5f;
         public const float Invisible = 0f;
+        
+        public const int MoneyForReward = 100;
     }
 }

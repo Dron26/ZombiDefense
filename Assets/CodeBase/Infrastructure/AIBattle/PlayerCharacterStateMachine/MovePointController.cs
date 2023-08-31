@@ -14,7 +14,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
 {
     public class MovePointController : MonoCache
     {
-        PlayerCharacterInitializer _characterInitializer;
+        private PlayerCharacterInitializer _characterInitializer;
         private List<Humanoid> _activeHumanoids;
         private SceneInitializer _sceneInitializer;
         private WorkPointGroup _workPointGroup;
@@ -22,7 +22,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
         private WorkPoint _previousMovePoint;
         private WorkPoint _selectedPoint;
         public WorkPoint SelectedPoint => _selectedPoint;
-        public WorkPoint MovePoint;
+        private WorkPoint _movePoint;
         private Humanoid _selectedHumanoid;
         public UnityAction<WorkPoint> OnClickWorkpoint;
         public UnityAction<WorkPoint> OnUnSelectedPoint;
@@ -94,7 +94,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
                     if (newPoint.IsBusy == false && isHumanoidSelected && isPointToMoveTaked == false)
                     {
                         isPointToMoveTaked = true;
-                        MovePoint = newPoint;
+                        _movePoint = newPoint;
                     }
                 }
                 else if (isHumanoidSelected)
@@ -106,7 +106,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
                             _previousMovePoint.SetBusy(false);
                             newPoint.SetBusy(true);
                             newPoint.SelectedForMove(true);
-                            _previousMovePoint = MovePoint;
+                            _previousMovePoint = _movePoint;
                
                             PlayerCharactersStateMachine stateMachine =
                                 _selectedHumanoid.GetComponent<PlayerCharactersStateMachine>();

@@ -23,11 +23,6 @@ public class CharacterStoreRotation : MonoCache
 
     protected override void OnDisabled()
     {
-        base.OnDisable();
-    }
-
-    void OnDisable()
-    {
         StopRotation();
     }
 

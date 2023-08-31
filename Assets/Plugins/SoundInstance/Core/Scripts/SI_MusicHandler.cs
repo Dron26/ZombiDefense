@@ -9,7 +9,9 @@ namespace Plugins.SoundInstance.Core.Scripts
         private float _fade = 1.5f;
         private MusicsStore _storage;
         private bool _needStop;
-
+        private bool _isActiveMenu;
+        private bool _isActiveGameplay;
+            private bool _isActiveLoading;
         public AudioSource audioSource
         {
             get { return GetComponent<AudioSource>(); }
@@ -34,7 +36,7 @@ namespace Plugins.SoundInstance.Core.Scripts
             if (_isAllowed && !audioSource.isPlaying)
             {
                 if (!_needStop)
-                    StartMusic(GetRandomMusic().name, _fade);
+                    StartGameplayMusic(GetRandomMusic().name, _fade);
                 else
                     StopMusic(_fade, true);
             }
@@ -59,8 +61,12 @@ namespace Plugins.SoundInstance.Core.Scripts
         public void SetStartFade(float fade) =>
             _fade = fade;
 
-        public void StartMusic(string name, float fadeSpeed)
+        public void StartGameplayMusic(string name, float fadeSpeed)
         {
+            _isActiveMenu = false;
+            _isActiveGameplay = true;
+            _isActiveLoading= false;
+            
             if (audioSource.isPlaying)
             {
                 StopAllCoroutines();
@@ -68,15 +74,55 @@ namespace Plugins.SoundInstance.Core.Scripts
                 return;
             }
 
-            AudioClip audioClip = _storage.GetMusic(name).Song;
+            AudioClip audioClip = _storage.GetGameplayMusic(name).Song;
             audioSource.clip = audioClip;
             StartCoroutine(Play(2 / fadeSpeed));
 
             foreach (GameObject go in FindObjectsOfType<GameObject>())
             {
-                Static.SoundInstance.CurrentMusic = _storage.GetMusic(name);
-                go.SendMessage("OnMusicStarted", _storage.GetMusic(name), SendMessageOptions.DontRequireReceiver);
+                Static.SoundInstance.CurrentMusic = _storage.GetGameplayMusic(name);
+                go.SendMessage("OnMusicStarted", _storage.GetGameplayMusic(name), SendMessageOptions.DontRequireReceiver);
             }
+        }
+        
+        public void StartMenuMusic(string name, float fadeSpeed)
+        {
+            _isActiveMenu = true;
+            _isActiveGameplay = false;
+            _isActiveLoading= false;
+            
+            if (audioSource.isPlaying)
+            {
+                StopAllCoroutines();
+                StartCoroutine(Switch(name, fadeSpeed));
+                return;
+            }
+
+            AudioClip audioClip = _storage.GetMenuMusic(name).Song;
+            audioSource.clip = audioClip;
+            StartCoroutine(Play(2 / fadeSpeed));
+
+            // ... (дополнительная логика, если необходимо)
+        }
+
+        public void StartLoadingMusic(string name, float fadeSpeed)
+        {
+            _isActiveMenu = false;
+            _isActiveGameplay = false;
+            _isActiveLoading= true;
+            
+            if (audioSource.isPlaying)
+            {
+                StopAllCoroutines();
+                StartCoroutine(Switch(name, fadeSpeed));
+                return;
+            }
+
+            AudioClip audioClip = _storage.GetLoadingMusic(name).Song;
+            audioSource.clip = audioClip;
+            StartCoroutine(Play(2 / fadeSpeed));
+
+            // ... (дополнительная логика, если необходимо)
         }
 
         public void StopMusic(float fadeSpeed, bool fading)
@@ -131,20 +177,29 @@ namespace Plugins.SoundInstance.Core.Scripts
 
             audioSource.Stop();
 
-            foreach (GameObject go in FindObjectsOfType<GameObject>())
+            if (_isActiveGameplay)
             {
-                go.SendMessage("OnMusicStopped", SendMessageOptions.DontRequireReceiver);
+                AudioClip audioClip = _storage.GetGameplayMusic(name).Song;
+                audioSource.clip = audioClip;
+
+                Static.SoundInstance.CurrentMusic = _storage.GetGameplayMusic(name);
+            }
+            else if (_isActiveMenu)
+            {
+                AudioClip audioClip = _storage.GetMenuMusic(name).Song;
+                audioSource.clip = audioClip;
+                
+                Static.SoundInstance.CurrentMusic = _storage.GetMenuMusic(name);
+            }
+            else if (_isActiveLoading)
+            {
+                AudioClip audioClip = _storage.GetLoadingMusic(name).Song;
+                audioSource.clip = audioClip;
+                
+                Static.SoundInstance.CurrentMusic = _storage.GetLoadingMusic(name);
             }
 
-            AudioClip audioClip = _storage.GetMusic(name).Song;
-            audioSource.clip = audioClip;
 
-            Static.SoundInstance.CurrentMusic = _storage.GetMusic(name);
-            
-                //foreach (GameObject go in FindObjectsOfType<GameObject>())
-           // {
-           //     go.SendMessage("OnMusicStarted", _storage.GetMusic(name), SendMessageOptions.DontRequireReceiver);
-           // }
 
             StartCoroutine(Play(1 / fadeSpeed));
             yield break;
@@ -251,7 +306,12 @@ namespace Plugins.SoundInstance.Core.Scripts
             return _storage.GetRandomMusic();
         }
 
-        public void StartRandomMusic() =>
+        public void StartRandomMusic()
+        {
+            _isActiveMenu = false;
+            _isActiveGameplay = true;
+            _isActiveLoading= false;
             _isAllowed = true;
+        }
     }
 }

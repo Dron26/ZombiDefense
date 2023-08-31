@@ -11,7 +11,6 @@ namespace UI.Audio
     public class AudioBackgraundChanger:MonoCache
     {
         private AudioData _audioData;
-        private bool _isPlayAds;
         private float _time; 
         public void Initialize(SaveLoadService saveLoadService)
         {

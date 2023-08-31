@@ -7,6 +7,7 @@ using Infrastructure.Location;
 using Newtonsoft.Json;
 using Service.Audio;
 using Service.PlayerAuthorization;
+using UI.Levels;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -27,6 +28,8 @@ namespace Service.SaveLoad
         
         private void Awake()
         {
+            
+                
             if (!PlayerPrefs.HasKey(Key))
             {
                 _dataBase = new DataBase();
@@ -45,17 +48,23 @@ namespace Service.SaveLoad
             }
 
             _authorization.OnAuthorizeSuccessCallback += OnAuthorizeSuccess;
+            OnGameStart();
         }
         
         private void OnAuthorizeSuccess()
         {
             _dataBase.SetStatusAuthorization(IsAuthorized);
         }
-        
+
+        public void GetMoneyData()
+        {
+            
+        }
 
         private void SetStartParametrs()
         {
-            _dataBase.MoneyData.AddMoney(10000); 
+            _dataBase.MoneyData.AddMoney(300000); 
+            Debug.Log( MoneyData);
             AudioData audioData = new AudioData();
             SetAudioData(audioData);
             Save();
@@ -149,12 +158,13 @@ namespace Service.SaveLoad
 
         public List<Enemy> GetInactiveEnemy( ) => 
             _dataBase.ReadInactiveEnemy();
+
+
+        public void SetLevelData( Level level) => 
+            _dataBase.ChangeLevelData( level);
         
-        public void SetLevel( List<WaveData> waveDatas) => 
-            _dataBase.ChangeLevelPoint( waveDatas);
-        
-        public List<WaveData> GetLevelPoint() => 
-            _dataBase.ReadLevelPoint();
+        public LevelData GetLevelData() => 
+            _dataBase.ReadLevelData();
 
 
         public void SetCameras(Camera cameraPhysical, Camera cameraUI)
@@ -172,16 +182,6 @@ namespace Service.SaveLoad
             return _dataBase.ReadUICamera();
         }
 
-        public void SaveProgress()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void ClearProgress()
-        {
-            throw new System.NotImplementedException();
-        }
-
         public void SetCurtain(LoadingCurtain loadingCurtain)
         {
             _loadingCurtain=loadingCurtain;
@@ -190,6 +190,37 @@ namespace Service.SaveLoad
         public LoadingCurtain GetCurtain( )
         {
            return  _loadingCurtain;
+        }
+        
+        public void GetAllNumberKilledEnemies() => 
+            _dataBase.ReadAllNumberKilledEnemies();
+
+        public int GetDayNumberKilledEnemies() => 
+            _dataBase.ReadDayNumberKilledEnemies();
+
+        public int GetAllAmountMoney() => 
+            _dataBase.ReadAllAmountMoney();
+
+        public int GetAmountMoneyPerDay() => 
+            _dataBase.ReadAmountMoneyPerDay();
+
+        private void OnGameStart() => 
+            _dataBase.OnGameStart();
+
+        private void OnGameEnd() => 
+            _dataBase.OnGameEnd();
+
+        public void GetTotalPlayTime() => 
+            _dataBase.ReadTotalPlayTime();
+        
+        public void GetPlayTimeToday()=> 
+            _dataBase.ReadPlayTimeToday();
+        
+        
+        protected override void OnDisabled()
+        {
+            OnGameEnd();
+            Save();
         }
     }
 }

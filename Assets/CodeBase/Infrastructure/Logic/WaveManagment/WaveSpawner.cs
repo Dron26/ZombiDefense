@@ -15,7 +15,7 @@ namespace Infrastructure.Logic.WaveManagment
 {
     public class WaveSpawner : MonoCache
     {
-        [SerializeField] private WaveManager _waveManager;
+         private WaveManager _waveManager;
         [SerializeField] private EnemyFactory _enemyFactory;
         [SerializeField] private GameObject _spawnPointGroup;
         public List<float> DelayTimes => _waveData.DelayTimes;
@@ -39,10 +39,10 @@ namespace Infrastructure.Logic.WaveManagment
 
         public UnityAction OnSpawnPointsReady;
         
-        public void Initialize(AudioManager audioManager)
+        public void Initialize(AudioManager audioManager,WaveManager waveManager)
         {
             _audioManager=audioManager;
-            
+            _waveManager=waveManager;
             if (_saveLoadService==null)
             {
                 _saveLoadService=_waveManager.GetSaveLoad();

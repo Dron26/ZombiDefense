@@ -8,14 +8,42 @@ using Random = UnityEngine.Random;
 [System.Serializable]
  public class MusicsStore : ScriptableObject
     {
-        public List<Music> musics;
+        public List<Music> gameplayMusics;
+        public List<Music> menuMusics;
+        public List<Music> loadingMusics;
         public List<S_Effect> soundEffects;
         private HashSet<int> _passedIndices = new HashSet<int>();
         private int _pastIndex = -1;
 
-        public Music GetMusic(string name)
+        public Music GetGameplayMusic(string name)
         {
-            foreach (Music music in musics)
+            foreach (Music music in gameplayMusics)
+            {
+                if (music.name == name)
+                {
+                    return music;
+                }
+            }
+
+            return new Music();
+        }
+
+        public Music GetMenuMusic(string name)
+        {
+            foreach (Music music in menuMusics)
+            {
+                if (music.name == name)
+                {
+                    return music;
+                }
+            }
+
+            return new Music();
+        }
+
+        public Music GetLoadingMusic(string name)
+        {
+            foreach (Music music in loadingMusics)
             {
                 if (music.name == name)
                 {
@@ -29,11 +57,11 @@ using Random = UnityEngine.Random;
 
         public Music GetRandomMusic()
         {
-            if (_passedIndices.Count == musics.Count)
+            if (_passedIndices.Count == gameplayMusics.Count)
                 _passedIndices.Clear();
 
             int i = NextIndexFrom(_passedIndices);
-            return musics[i];
+            return gameplayMusics[i];
         }
 
         public int NextIndexFrom(HashSet<int> set)
@@ -41,7 +69,7 @@ using Random = UnityEngine.Random;
             int i;
             do
             {
-                i = Random.Range(3, musics.Count);
+                i = Random.Range(0, gameplayMusics.Count);
             } while (set.Contains(i) || i == _pastIndex);
 
             set.Add(i);
@@ -51,9 +79,9 @@ using Random = UnityEngine.Random;
 
         public int GetMusicIndex(Music music)
         {
-            for (int i = 3; i < musics.Count; i++)
+            for (int i = 0; i < gameplayMusics.Count; i++)
             {
-                if (musics[i].name == music.name)
+                if (gameplayMusics[i].name == music.name)
                 {
                     return i;
                 }
@@ -64,9 +92,9 @@ using Random = UnityEngine.Random;
 
         public Music GetMusicByIndex(int index)
         {
-            if (index < musics.Count)
+            if (index < gameplayMusics.Count)
             {
-                return musics[index];
+                return gameplayMusics[index];
             }
             else
             {

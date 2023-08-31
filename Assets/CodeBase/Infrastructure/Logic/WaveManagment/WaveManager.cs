@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Data;
 using Enemies.AbstractEntity;
+using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Service.Audio;
 using Service.SaveLoad;
 using UnityEngine;
@@ -9,7 +10,7 @@ using UnityEngine.Events;
 
 namespace Infrastructure.Logic.WaveManagment
 {
-    public class WaveManager : MonoBehaviour
+    public class WaveManager : MonoCache
     {
         private List<WaveData> _waveDatas=new();
         [SerializeField] private WaveSpawner _waveSpawner;
@@ -32,10 +33,11 @@ namespace Infrastructure.Logic.WaveManagment
             _saveLoadService=saveLoadService;
             ReadWaveDatas();
             InitializeWaveData();
-            _waveSpawner.Initialize(audioManager);
+            _waveSpawner.Initialize(audioManager,this);
             _waveSpawner.OnSpawnPointsReady += OnWaveSpawningCompleted;
             _waveSpawner.OnSpawnPointsReady+= OnWaveSpawnerReady;
-            StartCoroutine(SpawnWaves());
+            gameObject.SetActive(true);
+     //       StartCoroutine(SpawnWaves());
         }
 
         private void OnWaveSpawnerReady()
@@ -43,7 +45,7 @@ namespace Infrastructure.Logic.WaveManagment
             OnReadySpawning?.Invoke();
         }
 
-        private IEnumerator SpawnWaves()
+        public IEnumerator SpawnWaves()
         {
             yield return new WaitForSeconds(TimeBetweenWaves);
 
@@ -62,7 +64,7 @@ namespace Infrastructure.Logic.WaveManagment
 
         private void ReadWaveDatas()
         {
-            foreach (var wave in _saveLoadService.GetLevelPoint())
+            foreach (var wave in _saveLoadService.GetLevelData().WaveDatas)
             {
                 _waveDatas.Add(wave);
             }
