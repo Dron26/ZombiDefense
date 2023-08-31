@@ -40,11 +40,14 @@ namespace LeaderBoard
             if (Application.isEditor || LeaderBoardService == null )
             {
                 AddTestData();
-                return;
             }
-
-            LeaderBoardService.OnInitializeSuccess += RequestLeaderBoard;
-            InitializeLeaderBoard();
+            else
+            {
+                LeaderBoardService.OnInitializeSuccess += RequestLeaderBoard;
+                AdsService.OnInitializeSuccess += AdsServiceInitializedSuccess;
+                InitializeLeaderBoard();
+                InitializeAdsSDK();
+            }
         }
 
         protected override void OnDisabled()
@@ -54,7 +57,33 @@ namespace LeaderBoard
             if (AdsService != null)
                 AdsService.OnInitializeSuccess -= RequestLeaderBoard;
         }
+        
+        private void InitializeLeaderBoard()
+        {
+            if (LeaderBoardService.IsInitialized())
+                RequestLeaderBoard();
+            else
+                StartCoroutine(CoroutineInitializeLeaderBoard());
+        }
+        
+        private  void RequestLeaderBoard() =>
+            LeaderBoardService.OnInitializeSuccess -= RequestLeaderBoard;
 
+        private void InitializeAdsSDK()
+        {
+            Debug.Log("InitializeAdsSDK");
+            
+            if (AdsService.IsInitialized())
+                AdsServiceInitializedSuccess();
+            else
+                StartCoroutine(AdsService.Initialize());
+        }
+        
+        private void AdsServiceInitializedSuccess() =>
+            AdsService.OnInitializeSuccess -= AdsServiceInitializedSuccess;
+
+        
+        
         private void ClearLeaderBoard()
         {
             foreach (GameObject player in _players)
@@ -169,30 +198,8 @@ namespace LeaderBoard
             Time.timeScale = ConstantsData.TimeScaleResume;
         }
         
-        private void InitializeAdsSDK()
-        {
-            Debug.Log("InitializeAdsSDK");
-            
-            if (AdsService.IsInitialized())
-                AdsServiceInitializedSuccess();
-            else
-                StartCoroutine(AdsService.Initialize());
-        }
+       
         
-        private void AdsServiceInitializedSuccess() =>
-            AdsService.OnInitializeSuccess -= AdsServiceInitializedSuccess;
-        
-        private void InitializeLeaderBoard()
-        {
-            if (LeaderBoardService.IsInitialized())
-                RequestLeaderBoard();
-            else
-                StartCoroutine(CoroutineInitializeLeaderBoard());
-        }
-        
-        private  void RequestLeaderBoard() =>
-            LeaderBoardService.OnInitializeSuccess -= RequestLeaderBoard;
-
         private IEnumerator CoroutineInitializeLeaderBoard()
         {
             yield return LeaderBoardService.Initialize();
