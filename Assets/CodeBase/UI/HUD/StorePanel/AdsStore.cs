@@ -70,7 +70,6 @@ namespace UI.HUD.StorePanel
                 AddMoney();
                 return;
             }
-
             SoundInstance.PauseMusic();
             _adsService.ShowVideoAd();
         }
@@ -78,21 +77,18 @@ namespace UI.HUD.StorePanel
         private void ShowClosed()
         {
             Debug.Log("OnClosedVideoAd");
-            _adsService.OnClosedVideoAd -= ShowClosed;
             SoundInstance.ResumeMusic();
         }
 
         private void ShowError(string message)
         {
             Debug.Log($"OnErrorFullScreenAd: {message}");
-            _adsService.OnShowVideoAdError -= ShowError;
             SoundInstance.ResumeMusic();
         }
 
         private void AddMoneyAfterAds()
         {
             AddMoney();
-            _adsService.OnRewardedAd -= AddMoneyAfterAds;
         }
 
         private void AddMoney()
@@ -100,7 +96,6 @@ namespace UI.HUD.StorePanel
             Debug.Log("AddMoney");
             
             _saveLoadService.MoneyData.AddMoney(_moneyCount);
-            _addMoneyButton.enabled = false;
         }
 
         public void Initialize(SaveLoadService saveLoadService)

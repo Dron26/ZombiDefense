@@ -54,14 +54,17 @@ namespace LeaderBoard
 
         protected override void OnDisabled()
         {
-            RequestLeaderboard();
-        }
-        
-        private  void RequestLeaderboard()
-        {
+            if (Application.isEditor) return;
             RequestLeaderBoard();
             AddLevelResult();
         }
+        
+        private void RequestLeaderBoard()
+        {
+            GetLeaderBoardData();
+            LeaderBoardService.OnInitializeSuccess -= RequestLeaderBoard;
+        }
+
 
         private void ClearLeaderBoard()
         {
@@ -183,12 +186,7 @@ namespace LeaderBoard
                 StartCoroutine(CoroutineInitializeLeaderBoard());
         }
 
-        private void RequestLeaderBoard()
-        {
-            GetLeaderBoardData();
-            LeaderBoardService.OnInitializeSuccess -= RequestLeaderBoard;
-        }
-        
+       
         private void GetLeaderBoardData()
         {
             LeaderBoardService.OnSuccessGetEntries += FillLeaderBoard;
