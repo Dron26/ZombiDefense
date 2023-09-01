@@ -3,7 +3,9 @@ using Agava.YandexGames;
 using Data;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.StateMachine;
+using Service;
 using Service.Ads;
+using Service.SaveLoad;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -11,13 +13,8 @@ using UnityEngine.UI;
 
 namespace LeaderBoard
 {
-    public class LeaderboardWindow:WindowBase
+    public class LeaderboardWindow:MonoCache
     {
-        protected IGameStateMachine GameStateMachine;
-        protected IAdsService AdsService;
-        protected ILeaderboardService LeaderBoardService;
-
-        [SerializeField] private Button _closeButton;
         [SerializeField] private TextMeshProUGUI _rankText;
         [SerializeField] private RawImage _iconImage;
         [SerializeField] private TextMeshProUGUI _nameText;
@@ -25,75 +22,47 @@ namespace LeaderBoard
         [SerializeField] private GameObject[] _players;
         [SerializeField] private GameObject _playerDataContainer;
         
-        
-        private bool _isCurrentScene = true;
+        private ISaveLoadService SaveLoadService;
+        private ILeaderboardService LeaderBoardService;
         
         protected override void OnEnabled()
         {
             ClearLeaderBoard();
             ClearPlayerData();
-            _closeButton.onClick.AddListener(Close);
 
-            if (Application.isEditor || LeaderBoardService == null )
+            if (Application.isEditor  )
             {
+                
+                Debug.Log("AddTestData()");
                 AddTestData();
             }
             else
             {
+                if (LeaderBoardService == null)
+                    LeaderBoardService = AllServices.Container.Single<ILeaderboardService>();
+                
+                if (SaveLoadService == null)
+                    SaveLoadService = AllServices.Container.Single<ISaveLoadService>();
+                
                 LeaderBoardService.OnInitializeSuccess += RequestLeaderBoard;
-                AdsService.OnInitializeSuccess += AdsServiceInitializedSuccess;
+                
+                Debug.Log("LeaderBoardService");
                 InitializeLeaderBoard();
-                InitializeAdsSDK();
             }
         }
 
+
         protected override void OnDisabled()
         {
-            _closeButton.onClick.RemoveListener(Close);
-            
-            if (AdsService.IsInitialized())
-            {
-                RequestLeaderboard();
-            }
-            
-            if (AdsService != null)
-                AdsService.OnInitializeSuccess -= RequestLeaderBoard;
+            RequestLeaderboard();
         }
         
         private  void RequestLeaderboard()
         {
-            base.RequestLeaderBoard();
+            RequestLeaderBoard();
             AddLevelResult();
         }
-        
-       
-        
-        private void InitializeLeaderBoard()
-        {
-            if (LeaderBoardService.IsInitialized())
-                RequestLeaderBoard();
-            else
-                StartCoroutine(CoroutineInitializeLeaderBoard());
-        }
-        
-        private  void RequestLeaderBoard() =>
-            LeaderBoardService.OnInitializeSuccess -= RequestLeaderBoard;
 
-        private void InitializeAdsSDK()
-        {
-            Debug.Log("InitializeAdsSDK");
-            
-            if (AdsService.IsInitialized())
-                AdsServiceInitializedSuccess();
-            else
-                StartCoroutine(AdsService.Initialize());
-        }
-        
-        private void AdsServiceInitializedSuccess() =>
-            AdsService.OnInitializeSuccess -= AdsServiceInitializedSuccess;
-
-        
-        
         private void ClearLeaderBoard()
         {
             foreach (GameObject player in _players)
@@ -108,10 +77,6 @@ namespace LeaderBoard
             _scoreText.text = "";
             _playerDataContainer.SetActive(false);
         }
-        
-        private void Close() =>
-            Hide();
-
 
         private void AddTestData()
         {
@@ -204,23 +169,70 @@ namespace LeaderBoard
         
         private void Hide()
         {
-            gameObject.SetActive(false);
             Time.timeScale = ConstantsData.TimeScaleResume;
+            gameObject.SetActive(false);
         }
         
-       
         
+        private void InitializeLeaderBoard()
+        {
+            Debug.Log("InitializeLeaderBoard()");
+            if (LeaderBoardService.IsInitialized())
+                RequestLeaderBoard();
+            else
+                StartCoroutine(CoroutineInitializeLeaderBoard());
+        }
+
+        private void RequestLeaderBoard()
+        {
+            GetLeaderBoardData();
+            LeaderBoardService.OnInitializeSuccess -= RequestLeaderBoard;
+        }
+        
+        private void GetLeaderBoardData()
+        {
+            LeaderBoardService.OnSuccessGetEntries += FillLeaderBoard;
+            LeaderBoardService.OnSuccessGetEntry += FillPlayerInfo;
+            LeaderBoardService.OnGetEntriesError += ShowGetEntriesError;
+            LeaderBoardService.OnGetEntryError += ShowGetEntryError;
+
+            
+                LeaderBoardService.GetEntries(ConstantsData.Leaderboard);
+                LeaderBoardService.GetPlayerEntry(ConstantsData.Leaderboard);
+            
+        }
+        
+        private void ShowGetEntriesError(string error)
+        {
+            Debug.Log($"ShowGetEntriesError {error}");
+            LeaderBoardService.OnGetEntriesError -= ShowGetEntriesError;
+        }
+
+        private void ShowGetEntryError(string error)
+        {
+            Debug.Log($"ShowGetEntryError {error}");
+            LeaderBoardService.OnGetEntryError -= ShowGetEntryError;
+        }
+
         private IEnumerator CoroutineInitializeLeaderBoard()
         {
             yield return LeaderBoardService.Initialize();
         }
         
-        protected void ShowSetValueError(string error)
+        private void ShowSetValueError(string error)
         {
             Debug.Log($"ShowSetValueError {error}");
             LeaderBoardService.OnSetValueError -= ShowSetValueError;
         }
 
+        private void AddLevelResult()
+        {
+            Debug.Log($"AddLevelResult {ConstantsData.Leaderboard} {SaveLoadService.LoadData().ReadAmountMoney.ToString()}");
+            LeaderBoardService.OnSetValueError += ShowSetValueError;
+            SubscribeSetValueSuccess();
+            LeaderBoardService.SetValue(ConstantsData.Leaderboard,
+                SaveLoadService.LoadData().ReadAmountMoney);
+        }
         private void SuccessSetValue()
         {
             Debug.Log("SuccessSetValue");
@@ -229,5 +241,6 @@ namespace LeaderBoard
 
         private  void SubscribeSetValueSuccess() =>
             LeaderBoardService.OnSetValueSuccess += SuccessSetValue;
+
     }
 }

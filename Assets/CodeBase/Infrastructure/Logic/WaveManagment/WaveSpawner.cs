@@ -86,8 +86,8 @@ namespace Infrastructure.Logic.WaveManagment
             int i = 0;
             foreach (SpawnPoint point in _spawnPointGroup.transform.GetComponentsInChildren<SpawnPoint>())
             {
-                point.Initialize(i, 0,_saveLoadService,_audioManager);
                 point.FillCompleted+=OnFillCompleted;
+                point.Initialize(i, 0,_saveLoadService,_audioManager);
                 _spawnPoints.Add(point);
                 i++;
             }
@@ -97,7 +97,7 @@ namespace Infrastructure.Logic.WaveManagment
         {
             _countCompleted++;
             
-            if (_countCompleted==_groupWave.Count*_spawnPoints.Count)
+            if (_countCompleted==_spawnPoints.Count)
             {
                 OnSpawnPointsReady?.Invoke();
             }

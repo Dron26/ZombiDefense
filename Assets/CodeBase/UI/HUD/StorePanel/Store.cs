@@ -39,8 +39,8 @@ namespace UI.HUD.StorePanel
         [SerializeField] private int _priceForWorkPointUp;
        
         [SerializeField] private Image _dimImage;
-        [SerializeField]private Camera _cameraPhysical;
-        [SerializeField]private Camera _cameraUI;
+        [SerializeField] private Camera _cameraPhysical;
+        [SerializeField] private Camera _cameraUI;
         [SerializeField] private Camera _characterVisual;
 
         

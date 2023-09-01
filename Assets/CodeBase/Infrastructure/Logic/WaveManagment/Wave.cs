@@ -6,7 +6,7 @@ namespace Infrastructure.Logic.WaveManagment
 {
     public class Wave:MonoCache
     {
-        private List<Enemy> _enemiesToSpawn = new ();
+        private List<Enemy> _enemiesToSpawn ;
         public int  Count=>_enemiesToSpawn.Count;
         public float DelayTime;
         public int Level=>_level;
@@ -14,6 +14,7 @@ namespace Infrastructure.Logic.WaveManagment
         
         public void AddEnemy(Enemy enemy)
         {
+            _enemiesToSpawn = new ();
             _enemiesToSpawn.Add(enemy);
         }
 

@@ -1,5 +1,7 @@
 using Data;
+using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Plugins.SoundInstance.Core.Static;
+using Service;
 using Service.Ads;
 using Service.SaveLoad;
 using UnityEngine;
@@ -7,15 +9,15 @@ using UnityEngine.UI;
 
 namespace UI.HUD.StorePanel
 {
-    public class AdsStore:WindowBase
+    public class AdsStore:MonoCache
     {
         [SerializeField] private Button _addMoneyButton;
         [SerializeField] private GameObject _storePanel;
         private int _moneyCount=> ConstantsData.MoneyForReward;
         private  IAdsService _adsService;
         private SaveLoadService _saveLoadService;
+        private ISaveLoadService SaveLoadService;
 
-        
         private void Awake()
         {
             _storePanel.SetActive(false);
@@ -30,7 +32,10 @@ namespace UI.HUD.StorePanel
                 return;
 
             if (_adsService == null)
-                return;
+                _adsService = AllServices.Container.Single<IAdsService>();
+            
+            if (SaveLoadService == null)
+                SaveLoadService = AllServices.Container.Single<ISaveLoadService>();
 
             _adsService.OnInitializeSuccess += AdsServiceInitializedSuccess;
             _adsService.OnShowVideoAdError += ShowError;
@@ -52,9 +57,9 @@ namespace UI.HUD.StorePanel
             _adsService.OnRewardedAd -= AddMoneyAfterAds;
         }
 
-        protected override void AdsServiceInitializedSuccess()
+        private void AdsServiceInitializedSuccess()
         {
-            base.AdsServiceInitializedSuccess();
+            _adsService.OnInitializeSuccess -= AdsServiceInitializedSuccess;
             _addMoneyButton.enabled = true;
         }
 
@@ -67,27 +72,27 @@ namespace UI.HUD.StorePanel
             }
 
             SoundInstance.PauseMusic();
-            AdsService.ShowVideoAd();
+            _adsService.ShowVideoAd();
         }
 
         private void ShowClosed()
         {
             Debug.Log("OnClosedVideoAd");
-            AdsService.OnClosedVideoAd -= ShowClosed;
+            _adsService.OnClosedVideoAd -= ShowClosed;
             SoundInstance.ResumeMusic();
         }
 
         private void ShowError(string message)
         {
             Debug.Log($"OnErrorFullScreenAd: {message}");
-            AdsService.OnShowVideoAdError -= ShowError;
+            _adsService.OnShowVideoAdError -= ShowError;
             SoundInstance.ResumeMusic();
         }
 
         private void AddMoneyAfterAds()
         {
             AddMoney();
-            AdsService.OnRewardedAd -= AddMoneyAfterAds;
+            _adsService.OnRewardedAd -= AddMoneyAfterAds;
         }
 
         private void AddMoney()
@@ -102,5 +107,15 @@ namespace UI.HUD.StorePanel
         {
              _saveLoadService=saveLoadService;
         }
+        
+        private void InitializeAdsSDK()
+        {
+            Debug.Log("InitializeAdsSDK");
+            if (_adsService.IsInitialized())
+                AdsServiceInitializedSuccess();
+            else
+                StartCoroutine(_adsService.Initialize());
+        }
+
     }
 }
