@@ -10,6 +10,7 @@ namespace UI.Levels
         [SerializeField] List<WaveData> _waveDatas;
         [SerializeField] public int Number;
         [SerializeField] public string Path;
+        [SerializeField] public bool IsTutorial;
         
         public List<WaveData> GetWaveDataInfo()
         {

@@ -1,9 +1,13 @@
+using System;
 using System.Collections.Generic;
+using Data;
 using Humanoids.AbstractLevel;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WaveManagment;
 using Infrastructure.StateMachine;
+using Infrastructure.StateMachine.States;
+using Infrastructure.Tutorial;
 using Service;
 using Service.Audio;
 using Service.SaveLoad;
@@ -12,6 +16,7 @@ using UI.Resurse;
 using UI.SettingsPanel;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 namespace Infrastructure.Logic.Inits
 {
@@ -26,6 +31,7 @@ namespace Infrastructure.Logic.Inits
         [SerializeField] private ResursesCanvas _resursesCanvas;
         [SerializeField] private TimeManager _timeManager;
         [SerializeField] private MenuPanel _menuPanel;
+        [SerializeField] private List<Image> _images;
         
         private SaveLoadService _saveLoadService;
         private PlayerCharacterInitializer _playerCharacterInitializer;
@@ -42,7 +48,9 @@ namespace Infrastructure.Logic.Inits
         public UnityAction SetInfoCompleted;
         
         public List<Humanoid> availableCharacters = new ();
+        private bool _isTutorialLevel;
 
+        public Action OnLoaded;
         public void Initialize(GameStateMachine stateMachine)
         {
             
@@ -102,13 +110,17 @@ namespace Infrastructure.Logic.Inits
             Debug.Log("finish _menuPanel().Initialize");
 
             StartCoroutine(_waveManager.SpawnWaves());
-            
-            _timerDisplay.StartTimer(_saveLoadService);
-            _timerDisplay.OnClickStartSpawn+=_enemyCharacterInitializer.StartSpawning;
 
-
+            StartTimer();
         }
 
+        private void StartTimer()
+        {
+            if (_isTutorialLevel) return;
+            _timerDisplay.StartTimer(_saveLoadService);
+            _timerDisplay.OnClickStartSpawn+=_enemyCharacterInitializer.StartSpawning;
+        }
+        
         private void OnReadySpawning()
         {
             _loadingCurtain.OnLoaded();
@@ -116,7 +128,7 @@ namespace Infrastructure.Logic.Inits
         
         private void OnClikedCurtain()
         {
-            Debug.Log("Cliked Curve");
+            OnLoaded?.Invoke();
         }
 
         public PlayerCharacterInitializer GetPlayerCharacterInitializer() => _playerCharacterInitializer;
@@ -159,6 +171,20 @@ namespace Infrastructure.Logic.Inits
             _cameraUI=location.GetComponentInChildren<Camera>();
             _location=location;
             tempLocation=null;
+            
+            if (_saveLoadService.GetLevelData().IsTutorial)
+            {
+                _isTutorialLevel=true;
+                TutorialLevel tutorialLevel = location.GetComponent<TutorialLevel>();
+                tutorialLevel.SetImages(GetImages());
+                OnLoaded+=()=> tutorialLevel.Initialize(this);
+                tutorialLevel.OnEndTutorial+=SwicthScene;
+                //   location.GetComponent<TutorialLevel>().Initialize();
+            }
+            else
+            {
+                _isTutorialLevel = false;
+            }
         }
 
          protected override void OnDisabled()
@@ -168,6 +194,16 @@ namespace Infrastructure.Logic.Inits
             _timerDisplay.OnClickStartSpawn-=_enemyCharacterInitializer.StartSpawning;
             _waveManager.OnReadySpawning -= OnReadySpawning;
         }
-        
-    }
+
+         public List<Image> GetImages()
+         {
+             return _images;
+         }
+         
+         private void SwicthScene()
+         {
+             _saveLoadService.Save();
+             _stateMachine.Enter<LoadLevelState,string>(ConstantsData.Menu); 
+             Destroy(gameObject);
+         }    }
 }

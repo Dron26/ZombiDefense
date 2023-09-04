@@ -65,7 +65,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
             _saveLoadService.SetSelectedPoint(_selectedPoint);
         }
 
-        private void OnSelectedPoint(WorkPoint newPoint)
+        public void OnSelectedPoint(WorkPoint newPoint)
         {
             isHumanoidSelected = _saveLoadService.GetSelectedHumanoid();
             _selectedHumanoid = _saveLoadService.GetSelectedHumanoid();

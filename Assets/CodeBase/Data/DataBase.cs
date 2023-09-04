@@ -204,6 +204,7 @@ namespace Data
             LevelData.Number=level.Number;
             LevelData.Path=level.Path;
             LevelData.WaveDatas=level.GetWaveDataInfo();
+            LevelData.IsTutorial=level.IsTutorial;
         }
 
         public LevelData ReadLevelData() => 

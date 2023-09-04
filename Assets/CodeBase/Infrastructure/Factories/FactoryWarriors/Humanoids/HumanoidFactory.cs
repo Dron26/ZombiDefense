@@ -6,25 +6,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 namespace Infrastructure.Factories.FactoryWarriors.Humanoids
-{ 
-    enum Level
-    {
-        Soldier = 1,
-        Archer = 2,
-        Knight = 3,
-        King = 4,
-        
-        CyberSoldier = 5,
-        CyberArcher = 6,
-        CyberKnight = 7,
-        CyberKing = 8,
-        
-        CrazyTractor = 9,
-        CyberZombie = 10,
-        GunGrandmother = 11,
-        Virus = 12
-    }
-    
+{
     public class HumanoidFactory : MonoCache, IServiceFactory
     {
         private AudioManager _audioManager;
