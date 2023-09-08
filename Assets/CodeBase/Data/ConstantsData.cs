@@ -23,5 +23,6 @@ namespace Data
         public const float Invisible = 0f;
         
         public const int MoneyForReward = 100;
+        
     }
 }

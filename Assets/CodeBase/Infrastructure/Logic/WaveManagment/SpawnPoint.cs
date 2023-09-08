@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -31,6 +32,7 @@ namespace Infrastructure.Logic.WaveManagment
         private EnemyFactory _enemyFactory= new ();
         private AudioManager _audioManager;
         public  UnityAction FillCompleted;
+        public Action OnEnemyStarted;
         
         public void Initialize(int number, int priority, SaveLoadService saveLoadService ,AudioManager audioManager)
         {
@@ -127,6 +129,7 @@ namespace Infrastructure.Logic.WaveManagment
             enemy.gameObject.transform.position = transform.position;
             enemy.gameObject.SetActive(true);
             _saveLoadService.SetActiveEnemy(enemy);
+            OnEnemyStarted?.Invoke();
         }
 
 

@@ -161,7 +161,7 @@ namespace Infrastructure.Logic.Inits
 
         private void LoadLevelPrefab()
         {
-            string path = _saveLoadService.GetLevelData().Path;
+            string path = _saveLoadService.GetSelectedLocation().Path;
             GameObject tempLocation = Resources.Load<GameObject>(path);
             GameObject location =Instantiate(tempLocation);
             
@@ -172,7 +172,7 @@ namespace Infrastructure.Logic.Inits
             _location=location;
             tempLocation=null;
             
-            if (_saveLoadService.GetLevelData().IsTutorial)
+            if (_saveLoadService.GetSelectedLocation().IsTutorial)
             {
                 _isTutorialLevel=true;
                 TutorialLevel tutorialLevel = location.GetComponent<TutorialLevel>();

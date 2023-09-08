@@ -15,7 +15,7 @@ namespace Infrastructure.Logic.WaveManagment
         private List<WaveData> _waveDatas=new();
         [SerializeField] private WaveSpawner _waveSpawner;
         [SerializeField] public float TimeBetweenWaves;
-        
+
         private List<Enemy> enemies = new List<Enemy>();
         private int currentWaveIndex = 0;
         private bool isSpawningWave = false;
@@ -37,6 +37,7 @@ namespace Infrastructure.Logic.WaveManagment
             _waveSpawner.OnSpawnPointsReady += OnWaveSpawningCompleted;
             _waveSpawner.OnSpawnPointsReady+= OnWaveSpawnerReady;
             gameObject.SetActive(true);
+
      //       StartCoroutine(SpawnWaves());
         }
 
@@ -64,7 +65,7 @@ namespace Infrastructure.Logic.WaveManagment
 
         private void ReadWaveDatas()
         {
-            foreach (var wave in _saveLoadService.GetLevelData().WaveDatas)
+            foreach (var wave in _saveLoadService.GetSelectedLocation().WaveDatas)
             {
                 _waveDatas.Add(wave);
             }
@@ -101,7 +102,7 @@ namespace Infrastructure.Logic.WaveManagment
         {
             yield return new WaitForSeconds(TimeBetweenWaves);
             isWaitingForNextWave = false;
-            canStartNextWave = true; // Устанавливаем флаг canStartNextWave, чтобы разрешить начало новой волны
+            canStartNextWave = true;
         }
 
         public WaveSpawner GetWaveSpawner() => _waveSpawner;

@@ -18,6 +18,7 @@ namespace Service.SaveLoad
     {
         private const string Key = "Key";
         private DataBase _dataBase;
+        public bool IsFirstStart => _isFirstStart;      
         private bool _isFirstStart=true;
         public UnityAction OnSetActiveHumanoid;
         public UnityAction<WorkPoint> OnSelectedNewPoint;
@@ -69,6 +70,7 @@ namespace Service.SaveLoad
             _dataBase.MoneyData.AddMoney(Money); 
             Debug.Log("Add"+Money);
             AudioData audioData = new AudioData();
+            LocationsData locationsData = new LocationsData(new List<LocationData>());
             SetAudioData(audioData);
             Save();
         }
@@ -163,11 +165,7 @@ namespace Service.SaveLoad
             _dataBase.ReadInactiveEnemy();
 
 
-        public void SetLevelData( Level level) => 
-            _dataBase.ChangeLevelData( level);
-        
-        public LevelData GetLevelData() => 
-            _dataBase.ReadLevelData();
+       
 
 
         public void SetCameras(Camera cameraPhysical, Camera cameraUI)
@@ -219,7 +217,6 @@ namespace Service.SaveLoad
         public void GetPlayTimeToday()=> 
             _dataBase.ReadPlayTimeToday();
         
-        
         protected override void OnDisabled()
         {
             OnGameEnd();
@@ -240,5 +237,29 @@ namespace Service.SaveLoad
         {
             return _dataBase;
         }
+        
+        
+        public void SetCompletedLocation()
+        {
+            _dataBase.SetCompletedLevel();
+        }
+        
+        public void SetLocationsDatas(List<LocationData> locationDatas)
+        {
+           
+            _dataBase.ChangeLocationsDatas(locationDatas);
+        }
+        public LocationsData GetLocationsDatas()
+        {
+            return _dataBase.LocationsData;
+        }
+        
+        public void SetSelectedLocation( Location location)
+        {
+            _dataBase.SetSelectedLocation(location);
+        }
+
+        public LocationData GetSelectedLocation() =>
+            _dataBase.SelectedLocation;
     }
 }

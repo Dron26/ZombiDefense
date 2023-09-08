@@ -23,7 +23,7 @@ namespace UI.GeneralMenu
         [SerializeField]private  SettingPanel _settingPanel;
         [SerializeField] private GameObject _menuPanel;
         [SerializeField]private AudioManager _audioManager;
-        [SerializeField]private LevelMap _levelMap;
+        [SerializeField]private LocationMap _locationMap;
         private MoneyData _moneyData;
         
         public  void Initialize( GameStateMachine stateMachine)
@@ -40,7 +40,7 @@ namespace UI.GeneralMenu
             
             LoadAudioController();
             _settingPanel.Initialize(_audioManager,_saveLoadService);
-            _levelMap.Initialize(_stateMachine,_saveLoadService);
+            _locationMap.Initialize(_stateMachine,_saveLoadService);
         }
         
         private  void  LoadAudioController()

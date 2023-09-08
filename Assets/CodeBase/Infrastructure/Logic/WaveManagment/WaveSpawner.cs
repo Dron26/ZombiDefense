@@ -36,7 +36,8 @@ namespace Infrastructure.Logic.WaveManagment
        // private float _cycleDuration;
         private AudioManager _audioManager;
         private int _countCompleted;
-
+        private int _maxEnemyOnLevel;
+        private int _startedEnemyOnLevel;
         public UnityAction OnSpawnPointsReady;
         
         public void Initialize(AudioManager audioManager,WaveManager waveManager)
@@ -47,6 +48,8 @@ namespace Infrastructure.Logic.WaveManagment
             {
                 _saveLoadService=_waveManager.GetSaveLoad();
             }
+            
+            _maxEnemyOnLevel = _saveLoadService.GetSelectedLocation().MaxEnemyOnLevel;
         }
 
         public  void CreateWave(WaveData waveData)
@@ -88,8 +91,20 @@ namespace Infrastructure.Logic.WaveManagment
             {
                 point.FillCompleted+=OnFillCompleted;
                 point.Initialize(i, 0,_saveLoadService,_audioManager);
+                point.OnEnemyStarted+=OnEnemyStarted;
                 _spawnPoints.Add(point);
                 i++;
+            }
+        }
+
+        private void OnEnemyStarted()
+        {
+            _startedEnemyOnLevel++;
+            
+            if (_startedEnemyOnLevel==_maxEnemyOnLevel)
+            {
+                StopSpawn();
+                _saveLoadService.SetCompletedLocation();
             }
         }
 

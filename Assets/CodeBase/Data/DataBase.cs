@@ -25,12 +25,14 @@ namespace Data
         [NonSerialized]
         public bool IsFirstStart = true;
         [NonSerialized]
-        public LevelData LevelData=new LevelData();
+        public LocationsData LocationsData=new LocationsData(new List<LocationData>());
         public bool IsAuthorized => _isAuthorized;
         [NonSerialized] 
         public Camera CameraUI;
         [NonSerialized] 
         public Camera CameraPhysical;
+        [NonSerialized] 
+        public LocationData SelectedLocation=new LocationData();
         
         private bool _isAuthorized = false;
         [NonSerialized] 
@@ -199,15 +201,25 @@ namespace Data
         public void ReadPlayTimeToday()=> 
             TimeStatistics.GetPlayTimeToday();
 
-        public void ChangeLevelData(Level level)
+        public void SetSelectedLocation(Location location)
         {
-            LevelData.Number=level.Number;
-            LevelData.Path=level.Path;
-            LevelData.WaveDatas=level.GetWaveDataInfo();
-            LevelData.IsTutorial=level.IsTutorial;
+            SelectedLocation.Id = location.Id;
+            SelectedLocation.Path = location.Path;
+            SelectedLocation.IsCompleted = location.IsCompleted;
+            SelectedLocation.IsLocked = location.IsLocked;
+            SelectedLocation.MaxEnemyOnLevel = location.MaxEnemyOnLevel;
+            SelectedLocation.WaveDatas=location.GetWaveDataInfo();
         }
 
-        public LevelData ReadLevelData() => 
-            LevelData;
+        public void SetCompletedLevel()
+        {
+            SelectedLocation.IsCompleted=true;
+            LocationsData.LocationsDatas[SelectedLocation.Id].IsCompleted = true;
+        }
+
+        public void ChangeLocationsDatas(List<LocationData> locationsDatas)
+        {
+            LocationsData = new LocationsData(locationsDatas);
+        }
     }
 }

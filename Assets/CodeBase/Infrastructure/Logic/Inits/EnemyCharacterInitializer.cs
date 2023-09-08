@@ -8,14 +8,12 @@ namespace Infrastructure.Logic.Inits
     public  class EnemyCharacterInitializer:MonoCache
     {
         [SerializeField] private WaveManager _waveManager;
-        
         private  PlayerCharacterInitializer _playerCharacterInitializer;
         private SaveLoadService _saveLoadService;
 
         public void Initialize(SaveLoadService saveLoadService,SceneInitializer sceneInitializer)
         {
             _playerCharacterInitializer=sceneInitializer.GetPlayerCharacterInitializer();
-            
             _saveLoadService = saveLoadService;
             _waveManager.Initialize(saveLoadService,sceneInitializer.GetAudioController());
         }
