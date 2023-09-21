@@ -1,3 +1,4 @@
+using System;
 using Data;
 using Infrastructure;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
@@ -37,10 +38,12 @@ namespace UI.SettingsPanel
         private GameStateMachine _stateMachine;
         private SaveLoadService _saveLoadService;
         private GameBootstrapper _gameBootstrapper;
+
+        public Action OnClickExitToMenu;
         
-        public void Initialize(SaveLoadService saveLoadService,GameStateMachine stateMachine)
+        public void Initialize(SaveLoadService saveLoadService)
         {
-            _stateMachine = stateMachine;
+            _stateMachine = saveLoadService.GetGameBootstrapper().GetStateMachine();
             _panel.SetActive(true);
             _gameBootstrapper=FindObjectOfType<GameBootstrapper>();
             _saveLoadService = saveLoadService;
@@ -52,11 +55,6 @@ namespace UI.SettingsPanel
             _leaderboardWindow.SetActive(false);
         }
 
-        private void Start()
-        {
-            //    _yandexLeaderboard.Initialize(CreateLeaderboard());
-        }
-        
         private void InitializeButton()
         {
             _power.onClick.AddListener(SwitchState);
@@ -101,9 +99,7 @@ namespace UI.SettingsPanel
 
         private void SwicthScene()
         {
-            _saveLoadService.Save();
-            _stateMachine.Enter<LoadLevelState,string>(ConstantsData.Menu); 
-            Destroy(gameObject);
+            OnClickExitToMenu?.Invoke();
         }
     }
 }

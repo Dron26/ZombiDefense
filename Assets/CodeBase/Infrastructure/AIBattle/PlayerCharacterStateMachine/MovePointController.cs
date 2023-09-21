@@ -44,7 +44,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
             _workPointGroup = _characterInitializer.GetWorkPointGroup();
             FillWorkPoints();
             _workPointGroup.OnSelectedPoint += OnSelectedPoint;
-            store = _sceneInitializer.GetStoreOnPlay();
+            store = _sceneInitializer.Window.GetStoreOnPlay();
             OnSelectedStartPoint();
             _workPoints[0].SetStartPointer();
             

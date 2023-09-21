@@ -40,7 +40,7 @@ namespace Infrastructure.Logic.Inits
             _humanoidFactory.Initialize(audioManager);
             _workPointsGroup.Initialize(_saveLoadService);
             FillWorkPoints();
-            _store = sceneInitializer.GetStoreOnPlay();
+            _store = sceneInitializer.Window.GetStoreOnPlay();
             
             _characterStore = _store.GetCharacterStore();
             _characterStore.OnCharacterBought += SetCreatHumanoid;
@@ -50,7 +50,6 @@ namespace Infrastructure.Logic.Inits
             
             _movePointController = sceneInitializer.GetMovePointController();
         }
-
         private void FillWorkPoints()
         {
             foreach (WorkPoint workPoint in _workPointsGroup.GetWorkPoints())
@@ -77,6 +76,7 @@ namespace Infrastructure.Logic.Inits
         public void SetCreatHumanoid(Humanoid humanoid)
         {
             Transform transform = _movePointController.SelectedPoint.transform;
+            
             if (humanoid != null && humanoid.GetComponent<Humanoid>())
             {
                 _countOrdered++;

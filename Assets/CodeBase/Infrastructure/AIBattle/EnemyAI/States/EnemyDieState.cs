@@ -57,13 +57,11 @@ namespace Infrastructure.AIBattle.EnemyAI.States
             yield return  new WaitForSeconds(2f);
             _enemy.gameObject.SetActive(false);
             _enemy.gameObject.transform.position = _enemy.StartPosition;
-
             
-            AfterDie();
             yield break;
         }
         
-        private void AfterDie()
+        public void AfterDie()
         {
             _enemy.GetComponent<Collider>().enabled = true;
             _enemy.GetComponent<NavMeshAgent>().enabled = true;
@@ -72,7 +70,6 @@ namespace Infrastructure.AIBattle.EnemyAI.States
             _isDeath=false;
             _agent.isStopped = false;
             StateMachine.EnterBehavior<EnemySearchTargetState>();
-            
         }
         
         

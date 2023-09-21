@@ -29,27 +29,43 @@ namespace Infrastructure.Logic.WaveManagment
         private Wave _wave = new();
         private IEnumerator _spawnCoroutine;
         public UnityAction SpawningCompleted;
-        private int _totalNumber;
+        private int _countActivPoint;
+        private int NumberKilledEnemies=>_saveLoadService.GetNumberKilledEnemies();
+        private int _numberKilledEnemies;
+        
         private SaveLoadService _saveLoadService;
         private WaveData _waveData;
         //private float _cycleTimer;
        // private float _cycleDuration;
         private AudioManager _audioManager;
         private int _countCompleted;
-        private int _maxEnemyOnLevel;
+        private int _maxEnemyOnLevel=> _saveLoadService.GetSelectedLocation().MaxEnemyOnLevel;
         private int _startedEnemyOnLevel;
         public UnityAction OnSpawnPointsReady;
+        private bool _isStopSpawn;
         
         public void Initialize(AudioManager audioManager,WaveManager waveManager)
         {
             _audioManager=audioManager;
             _waveManager=waveManager;
+            
             if (_saveLoadService==null)
             {
                 _saveLoadService=_waveManager.GetSaveLoad();
             }
             
-            _maxEnemyOnLevel = _saveLoadService.GetSelectedLocation().MaxEnemyOnLevel;
+            _saveLoadService.OnSetInactiveEnemy+= OnSetInactiveEnemy;
+            _saveLoadService.OnClearSpawnData+= ClearData;
+        }
+
+        private void OnSetInactiveEnemy()
+        {
+            _numberKilledEnemies++;
+            
+            if (_numberKilledEnemies==_maxEnemyOnLevel)
+            {
+                _saveLoadService.OnCompleteLocation();
+            }
         }
 
         public  void CreateWave(WaveData waveData)
@@ -57,6 +73,19 @@ namespace Infrastructure.Logic.WaveManagment
             Create(waveData);
             InitializeSpawnPoint();
             FillWave();
+            FillPoint();
+        }
+
+        private void FillPoint()
+        {
+            foreach (SpawnPoint point in _spawnPoints)
+            {
+                if (!_isStopSpawn)
+                {
+                    point.FillPool();
+                    _countActivPoint++;
+                }
+            }
         }
 
         private void Create(WaveData waveData)
@@ -80,12 +109,12 @@ namespace Infrastructure.Logic.WaveManagment
             foreach (int count in pair.Value)
             {
                 enemyCounts.Add(count);
-                _totalNumber += count;
             }
         }
         
         private void InitializeSpawnPoint()
         {
+
             int i = 0;
             foreach (SpawnPoint point in _spawnPointGroup.transform.GetComponentsInChildren<SpawnPoint>())
             {
@@ -104,7 +133,7 @@ namespace Infrastructure.Logic.WaveManagment
             if (_startedEnemyOnLevel==_maxEnemyOnLevel)
             {
                 StopSpawn();
-                _saveLoadService.SetCompletedLocation();
+                _isStopSpawn=true;
             }
         }
 
@@ -112,7 +141,7 @@ namespace Infrastructure.Logic.WaveManagment
         {
             _countCompleted++;
             
-            if (_countCompleted==_spawnPoints.Count)
+            if (_countCompleted==_countActivPoint)
             {
                 OnSpawnPointsReady?.Invoke();
             }
@@ -144,8 +173,9 @@ namespace Infrastructure.Logic.WaveManagment
                             wave.AddEnemy(newEnemy);
                     }
                 }
+
                 
-                point.SetWave(wave);
+                    point.SetWave(wave);
             }
         }
 
@@ -159,6 +189,18 @@ namespace Infrastructure.Logic.WaveManagment
                 }
             }
         }
+
+        private void ClearData()
+        {
+            _spawnPoints.Clear();
+            _enemys.Clear();
+            enemyCounts.Clear();
+            _groupWave.Clear();
+            _countActivPoint=0;
+            _countCompleted = 0;
+            _isStopSpawn=false;
+        }
+        
 
         // public async Task StartTimer()
         // {

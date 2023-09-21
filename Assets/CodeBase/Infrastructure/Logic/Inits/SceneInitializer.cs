@@ -8,12 +8,9 @@ using Infrastructure.Logic.WaveManagment;
 using Infrastructure.StateMachine;
 using Infrastructure.StateMachine.States;
 using Infrastructure.Tutorial;
-using Service;
+using Service.Ads;
 using Service.Audio;
 using Service.SaveLoad;
-using UI.HUD.StorePanel;
-using UI.Resurse;
-using UI.SettingsPanel;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -23,16 +20,18 @@ namespace Infrastructure.Logic.Inits
     public class SceneInitializer : MonoCache
     {
        
-        [SerializeField] private Store store;
         [SerializeField] private AudioManager _audioManager;
         [SerializeField] private List<Humanoid> _avaibelCharacters;
         [SerializeField] private MovePointController _movePointController;
-        [SerializeField] private TimerDisplay _timerDisplay;
-        [SerializeField] private ResursesCanvas _resursesCanvas;
-        [SerializeField] private TimeManager _timeManager;
-        [SerializeField] private MenuPanel _menuPanel;
         [SerializeField] private List<Image> _images;
         
+        [SerializeField] private WindowBase _windowBase;
+        
+       
+       
+        
+        private LoadingCurtain _loadingCurtain;
+        public WindowBase Window=>_windowBase;
         private SaveLoadService _saveLoadService;
         private PlayerCharacterInitializer _playerCharacterInitializer;
         private EnemyCharacterInitializer _enemyCharacterInitializer;
@@ -41,13 +40,14 @@ namespace Infrastructure.Logic.Inits
          private Camera _cameraUI;
 
         private GameBootstrapper _gameBootstrapper;
-        private LoadingCurtain _loadingCurtain;
         private WaveManager _waveManager;
         private GameStateMachine _stateMachine;
         private int ordered = 1;
         public UnityAction SetInfoCompleted;
         
         public List<Humanoid> availableCharacters = new ();
+
+        public bool IsStartedTutorial => _isTutorialLevel;
         private bool _isTutorialLevel;
 
         public Action OnLoaded;
@@ -57,7 +57,7 @@ namespace Infrastructure.Logic.Inits
             Debug.Log("SceneInitializer().Initialize");
             _stateMachine = stateMachine;
             _gameBootstrapper = FindObjectOfType<GameBootstrapper>();
-            _saveLoadService = _gameBootstrapper.GetSAaveLoad();
+            _saveLoadService = _gameBootstrapper.GetSaveLoad();
 
             LoadLevelPrefab();
             
@@ -68,7 +68,8 @@ namespace Infrastructure.Logic.Inits
             Debug.Log("Finish SetAvailableCharacters();");
             _saveLoadService.SetCameras(_cameraPhysical, _cameraUI);
             Debug.Log("Finish SetCameras();");
-
+            
+            
             _loadingCurtain = _gameBootstrapper.GetLoadingCurtain();
 
             _loadingCurtain.OnClicked = OnClikedCurtain;
@@ -76,50 +77,39 @@ namespace Infrastructure.Logic.Inits
             _playerCharacterInitializer.CreatedHumanoid += SetInfo;
             Debug.Log("Finish _playerCharacterInitializer();");
              _audioManager.Initialize(_saveLoadService);
-            
+
+             _windowBase.Init(_saveLoadService,this );
+             _windowBase.OnClickStartSpawn+=_enemyCharacterInitializer.StartSpawning;
+             _windowBase.OnClickContinueStartSpawn+=OnClickContinueStartSpawn;
+
+             
              _playerCharacterInitializer.Initialize(_audioManager, this, _saveLoadService);
              Debug.Log("Finish _playerCharacterInitializer();");
 
-             _enemyCharacterInitializer.Initialize(_saveLoadService, this);
-             Debug.Log("Finish _playerCharacterInitializer();");
-
-            _waveManager = _enemyCharacterInitializer.GetWaveManager();
-            Debug.Log("Finish _playerCharacterInitializer();");
-
-            _waveManager.OnReadySpawning += OnReadySpawning;
-            Debug.Log("Finish _playerCharacterInitializer();");
+             InitializeEnemy();
 
             _playerCharacterInitializer.AreOverHumanoids += _enemyCharacterInitializer.StopSpawning;
             Debug.Log("Finish _playerCharacterInitializer();");
 
             _movePointController.Initialize(this, _saveLoadService);
             Debug.Log("Finish _movePointController();");
-  
-            store.Initialize(this, _saveLoadService);
-         //   _timerDisplay.Initialize(_playerCharacterInitializer);
-         Debug.Log("Finish store();");
-            
-         _resursesCanvas.Initialize(_saveLoadService);
-//_loadingCurtain.OnLoaded();
-            Debug.Log("Finish _resursesCanvas();");
-
-            _timeManager.Initialize();
-            Debug.Log("Finish _timeManager();");
-
-            _menuPanel.Initialize(_saveLoadService,_stateMachine);
-            Debug.Log("finish _menuPanel().Initialize");
 
             StartCoroutine(_waveManager.SpawnWaves());
-
-            StartTimer();
         }
 
-        private void StartTimer()
+
+        private void InitializeEnemy()
         {
-            if (_isTutorialLevel) return;
-            _timerDisplay.StartTimer(_saveLoadService);
-            _timerDisplay.OnClickStartSpawn+=_enemyCharacterInitializer.StartSpawning;
+            _enemyCharacterInitializer.Initialize(_saveLoadService, this);
+            Debug.Log("Finish _playerCharacterInitializer();");
+
+            _waveManager = _enemyCharacterInitializer.GetWaveManager();
+            Debug.Log("Finish _playerCharacterInitializer();");
+
+            _waveManager.OnReadySpawning += OnReadySpawning;
+            Debug.Log("Finish _playerCharacterInitializer();");
         }
+       
         
         private void OnReadySpawning()
         {
@@ -142,7 +132,7 @@ namespace Infrastructure.Logic.Inits
             }
         }
 
-        public Store GetStoreOnPlay() => store;
+        
         public MovePointController GetMovePointController() => _movePointController;
         public SaveLoadService GetSaveLoad() => _saveLoadService;
         public AudioManager GetAudioController() => _audioManager;
@@ -191,8 +181,8 @@ namespace Infrastructure.Logic.Inits
         {
             _playerCharacterInitializer.CreatedHumanoid -= SetInfo;
             _playerCharacterInitializer.AreOverHumanoids -= _enemyCharacterInitializer.StopSpawning;
-            _timerDisplay.OnClickStartSpawn-=_enemyCharacterInitializer.StartSpawning;
             _waveManager.OnReadySpawning -= OnReadySpawning;
+            _windowBase.OnClickStartSpawn-=_enemyCharacterInitializer.StartSpawning;
         }
 
          public List<Image> GetImages()
@@ -205,5 +195,19 @@ namespace Infrastructure.Logic.Inits
              _saveLoadService.Save();
              _stateMachine.Enter<LoadLevelState,string>(ConstantsData.Menu); 
              Destroy(gameObject);
-         }    }
+         }
+
+
+         public void OnClickContinueStartSpawn()
+         {
+            
+            _saveLoadService.ClearSpawnData();
+            InitializeEnemy();
+            int number = 100;
+            _saveLoadService.ChangeMaxEnemyOnLevel(number);
+            StartCoroutine(_waveManager.SpawnWaves());
+            _enemyCharacterInitializer.StartSpawning();
+         }
+
+    }
 }

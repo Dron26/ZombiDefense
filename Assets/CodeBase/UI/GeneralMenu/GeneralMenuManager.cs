@@ -30,7 +30,7 @@ namespace UI.GeneralMenu
         {
             _stateMachine = stateMachine;
             _gameBootstrapper=FindObjectOfType<GameBootstrapper>();
-            _saveLoadService = _gameBootstrapper.GetSAaveLoad();
+            _saveLoadService = _gameBootstrapper.GetSaveLoad();
             _moneyData=_saveLoadService.MoneyData;
             
             _loadingCurtain=_gameBootstrapper.GetLoadingCurtain();

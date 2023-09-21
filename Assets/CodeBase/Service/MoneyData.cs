@@ -8,15 +8,13 @@ namespace Service
     {
         public event Action MoneyChanged;
         public int Money;
-        
+        public int MoneyForEnemy;
         public int AllAmountMoney;
-        public int AmountMoneyPerDay;
 
         public void AddMoney(int amountMoney)
         {
             Money += amountMoney;
             AllAmountMoney += amountMoney;
-            AmountMoneyPerDay += amountMoney;
             MoneyChanged?.Invoke();
         }
         
@@ -30,6 +28,19 @@ namespace Service
         public bool IsMoneyEnough(int price)
         {
             return Money >= price;
+        }
+        
+        public void AddMoneyForKilledEnemy(int amountMoney)
+        {
+            Money += amountMoney;
+            AllAmountMoney += amountMoney;
+            MoneyForEnemy += amountMoney;
+            MoneyChanged?.Invoke();
+        }
+
+        public void ClearMoneyForKilledEnemy()
+        {
+            MoneyForEnemy = 0;
         }
     }
 }

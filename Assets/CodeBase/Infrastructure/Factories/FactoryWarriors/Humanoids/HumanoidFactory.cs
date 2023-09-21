@@ -18,7 +18,7 @@ namespace Infrastructure.Factories.FactoryWarriors.Humanoids
             Humanoid humanoidComponent = newHumanoid.GetComponent<Humanoid>();
             humanoidComponent.SetAudioController(_audioManager);
             humanoidComponent.transform.localPosition = Vector3.zero;
-            humanoidComponent.OnDataLoad = Created;
+            humanoidComponent.OnDataLoad += Created;
             float randomAngle = Random.Range(0f, 360f);
             newHumanoid.transform.rotation = Quaternion.Euler(0f, randomAngle, 0f);
             humanoidComponent.Initialize();

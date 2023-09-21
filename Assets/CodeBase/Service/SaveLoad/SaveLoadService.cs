@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Data;
 using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
+using Infrastructure;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Factories.FactoryGame;
 using Infrastructure.Location;
+using Infrastructure.StateMachine;
 using Newtonsoft.Json;
 using Service.Audio;
 using Service.PlayerAuthorization;
@@ -20,13 +23,19 @@ namespace Service.SaveLoad
         private DataBase _dataBase;
         public bool IsFirstStart => _isFirstStart;      
         private bool _isFirstStart=true;
-        public UnityAction OnSetActiveHumanoid;
-        public UnityAction<WorkPoint> OnSelectedNewPoint;
+        public Action OnSetActiveHumanoid;
+        public Action OnCompleteLocation;
+        public Action OnSetInactiveEnemy;
+        public Action<WorkPoint> OnSelectedNewPoint;
         private LoadingCurtain _loadingCurtain;
         public MoneyData MoneyData => _dataBase.MoneyData; 
         private YandexAuthorization _authorization=new();
+        public event Action OnClearSpawnData;
+        private GameBootstrapper _gameBootstrapper;
         
         private bool IsAuthorized => _authorization.IsAuthorized();
+        public bool IsSelectContinueGame => _isSelectContinueGame;
+        private bool _isSelectContinueGame;
 
         
         private void Awake()
@@ -70,7 +79,6 @@ namespace Service.SaveLoad
             _dataBase.MoneyData.AddMoney(Money); 
             Debug.Log("Add"+Money);
             AudioData audioData = new AudioData();
-            LocationsData locationsData = new LocationsData(new List<LocationData>());
             SetAudioData(audioData);
             Save();
         }
@@ -158,8 +166,11 @@ namespace Service.SaveLoad
         public List<Enemy> GetActiveEnemy( ) => 
             _dataBase.ReadActiveEnemy();
 
-        public void SetInactiveEnemy(Enemy inactiveEnemy) => 
-            _dataBase.ChangeInactiveEnemy( inactiveEnemy);
+        public void SetInactiveEnemy(Enemy inactiveEnemy)
+        {
+            _dataBase.ChangeInactiveEnemy(inactiveEnemy);
+            OnSetInactiveEnemy?.Invoke();
+        }
 
         public List<Enemy> GetInactiveEnemy( ) => 
             _dataBase.ReadInactiveEnemy();
@@ -193,8 +204,7 @@ namespace Service.SaveLoad
            return  _loadingCurtain;
         }
         
-        public void GetAllNumberKilledEnemies() => 
-            _dataBase.ReadAllNumberKilledEnemies();
+       
 
         public int GetDayNumberKilledEnemies() => 
             _dataBase.ReadDayNumberKilledEnemies();
@@ -202,8 +212,6 @@ namespace Service.SaveLoad
         public int GetAllAmountMoney() => 
             _dataBase.ReadAllAmountMoney();
 
-        public int GetAmountMoneyPerDay() => 
-            _dataBase.ReadAmountMoneyPerDay();
 
         private void OnGameStart() => 
             _dataBase.OnGameStart();
@@ -242,6 +250,7 @@ namespace Service.SaveLoad
         public void SetCompletedLocation()
         {
             _dataBase.SetCompletedLevel();
+            OnCompleteLocation?.Invoke();
         }
         
         public void SetLocationsDatas(List<LocationData> locationDatas)
@@ -249,17 +258,69 @@ namespace Service.SaveLoad
            
             _dataBase.ChangeLocationsDatas(locationDatas);
         }
-        public LocationsData GetLocationsDatas()
+        public List<LocationData> GetLocationsDatas()
         {
-            return _dataBase.LocationsData;
+            return _dataBase.LocationsDatas;
         }
         
         public void SetSelectedLocation( Location location)
         {
             _dataBase.SetSelectedLocation(location);
+            _isSelectContinueGame = false;
         }
 
         public LocationData GetSelectedLocation() =>
             _dataBase.SelectedLocation;
+        
+        public void SetNumberKilledEnemies()
+        {
+            _dataBase.ChangeNumberKilledEnemies() ;
+        }
+        public int GetNumberKilledEnemies() => 
+            _dataBase.PersonalAchievements.NumberKilledEnemies;
+
+        public int GetAllNumberKilledEnemies() => 
+            _dataBase.ReadAllNumberKilledEnemies();
+        
+        public void ClearNumberKilledEnemies()
+        {
+            _dataBase.ClearNumberKilledEnemies();
+        }
+
+
+        public int GetSurvivalsCount()
+        {
+            _dataBase.ChangeSurvivalCount();
+            return _dataBase.PersonalAchievements.NumberSurvivals;
+        }
+
+        public int GetDeadMercenaryCount()
+        {
+            _dataBase.ChangeDeadMercenaryCount();
+            return _dataBase.PersonalAchievements.NumberDeadMercenary;;
+        }
+
+        public void SetGameBootstrapper(GameBootstrapper gameBootstrapper)
+        {
+            _gameBootstrapper=gameBootstrapper;
+        }
+
+        public GameBootstrapper GetGameBootstrapper()
+        {
+            return _gameBootstrapper;
+        }
+        
+        public void ChangeMaxEnemyOnLevel(int number)
+        {
+            _dataBase.ChangeMaxEnemyOnLevel(number);
+            _isSelectContinueGame=true;
+        }
+
+        public void ClearSpawnData()
+        {
+            OnClearSpawnData?.Invoke();
+        }
+
+        
     }
 }

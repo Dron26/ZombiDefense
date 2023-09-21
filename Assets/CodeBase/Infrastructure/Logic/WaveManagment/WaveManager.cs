@@ -37,6 +37,7 @@ namespace Infrastructure.Logic.WaveManagment
             _waveSpawner.OnSpawnPointsReady += OnWaveSpawningCompleted;
             _waveSpawner.OnSpawnPointsReady+= OnWaveSpawnerReady;
             gameObject.SetActive(true);
+            _saveLoadService.OnClearSpawnData+= ClearData;
 
      //       StartCoroutine(SpawnWaves());
         }
@@ -120,6 +121,15 @@ namespace Infrastructure.Logic.WaveManagment
         public SaveLoadService GetSaveLoad()
         {
             return _saveLoadService;
+        }
+
+        private void ClearData()
+        {
+            _waveDatas.Clear();
+            canStartNextWave = true;
+            currentWaveIndex = 0;
+            isWaitingForNextWave = false;
+            isSpawningWave = false;
         }
     }
 }

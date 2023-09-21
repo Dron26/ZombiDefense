@@ -60,6 +60,11 @@ namespace UI.Levels
             _isCompleted = isCompleted;
         }
 
+        public void ChangeMaxEnemyOnLevel(int number)
+        {
+            _maxEnemyOnLevel = number;
+        }
+
         public void Initialize( int id, string path, bool isTutorial, bool isLocked, int maxEnemyOnLevel)
         {
             _id = id;

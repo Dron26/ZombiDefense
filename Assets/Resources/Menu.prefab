@@ -294,7 +294,7 @@ MonoBehaviour:
   _isLocked: 0
   _locked: {fileID: 1291487871398571169}
   _unlocked: {fileID: 5268777954617192808}
-  maxEnemyOnLevel: 5
+  _maxEnemyOnLevel: 0
 --- !u!114 &4700524686947377586
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1329,6 +1329,7 @@ MonoBehaviour:
   - {fileID: 3845892347450543472}
   - {fileID: 5497675382779813477}
   - {fileID: 3692124443876697076}
+  _tutorial: {fileID: 507912144318253037}
   container: {fileID: 4494453572270877708}
   _cash: {fileID: 4024403188743304187}
 --- !u!1 &3409719606631618396
@@ -1546,7 +1547,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 28.7
+  m_fontSize: 29.1
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -23206,6 +23207,10 @@ PrefabInstance:
       propertyPath: maxEnemyOnLevel
       value: 25
       objectReference: {fileID: 0}
+    - target: {fileID: 1797458259692338035, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
+      propertyPath: _maxEnemyOnLevel
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 2674547278711987057, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -23294,6 +23299,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Level (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 6177566432666388448, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
+      propertyPath: m_fontSize
+      value: 28.95
+      objectReference: {fileID: 0}
     - target: {fileID: 7358063225214821973, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -23367,6 +23376,10 @@ PrefabInstance:
       objectReference: {fileID: 6314446676330656839}
     - target: {fileID: 1797458259692338035, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: maxEnemyOnLevel
+      value: 240
+      objectReference: {fileID: 0}
+    - target: {fileID: 1797458259692338035, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
+      propertyPath: _maxEnemyOnLevel
       value: 240
       objectReference: {fileID: 0}
     - target: {fileID: 2674547278711987057, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
@@ -23459,7 +23472,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6177566432666388448, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: m_fontSize
-      value: 28.25
+      value: 28.65
       objectReference: {fileID: 0}
     - target: {fileID: 7358063225214821973, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: m_IsActive
@@ -23524,6 +23537,10 @@ PrefabInstance:
     - target: {fileID: 1797458259692338035, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: maxEnemyOnLevel
       value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 1797458259692338035, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
+      propertyPath: _maxEnemyOnLevel
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 2674547278711987057, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: m_Pivot.x
@@ -23615,7 +23632,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6177566432666388448, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: m_fontSize
-      value: 28.65
+      value: 29
       objectReference: {fileID: 0}
     - target: {fileID: 7358063225214821973, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: m_IsActive
@@ -23675,6 +23692,10 @@ PrefabInstance:
       objectReference: {fileID: 4311142305041319422}
     - target: {fileID: 1797458259692338035, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: maxEnemyOnLevel
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1797458259692338035, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
+      propertyPath: _maxEnemyOnLevel
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1797458259692338035, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
@@ -23776,6 +23797,10 @@ PrefabInstance:
     - target: {fileID: 5630911684212668292, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: m_Name
       value: Level
+      objectReference: {fileID: 0}
+    - target: {fileID: 6177566432666388448, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
+      propertyPath: m_fontSize
+      value: 28.9
       objectReference: {fileID: 0}
     - target: {fileID: 8237509392310709477, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: AudioSource
@@ -23977,6 +24002,10 @@ PrefabInstance:
       propertyPath: maxEnemyOnLevel
       value: 120
       objectReference: {fileID: 0}
+    - target: {fileID: 1797458259692338035, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
+      propertyPath: _maxEnemyOnLevel
+      value: 120
+      objectReference: {fileID: 0}
     - target: {fileID: 2674547278711987057, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -24067,7 +24096,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6177566432666388448, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: m_fontSize
-      value: 28.25
+      value: 28.65
       objectReference: {fileID: 0}
     - target: {fileID: 7358063225214821973, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: m_IsActive
@@ -24210,6 +24239,10 @@ PrefabInstance:
       propertyPath: maxEnemyOnLevel
       value: 50
       objectReference: {fileID: 0}
+    - target: {fileID: 1797458259692338035, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
+      propertyPath: _maxEnemyOnLevel
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 2674547278711987057, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -24300,7 +24333,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6177566432666388448, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: m_fontSize
-      value: 28.15
+      value: 28.55
       objectReference: {fileID: 0}
     - target: {fileID: 7358063225214821973, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: m_IsActive

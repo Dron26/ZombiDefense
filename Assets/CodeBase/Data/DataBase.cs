@@ -16,16 +16,23 @@ namespace Data
     {
         public MoneyData MoneyData = new MoneyData();
         public PersonalAchievements PersonalAchievements = new PersonalAchievements();
-        
         public TimeStatistics TimeStatistics = new TimeStatistics();
-        public int Points;
         public AudioData AudioData = new AudioData();
+      //  public int NumberKilledEnemies;
+      //  public int AllNumberKilledEnemies;
+        
+        
+        public int TotalPlayTime;
+        public int PlayTimeToday;
+        public int CompletedLevel;
+        
+        public int Points;
         public List<int> LevelHumanoid = new List<int>();
         public List<int> AmountHumanoids = new List<int>();
         [NonSerialized]
         public bool IsFirstStart = true;
-        [NonSerialized]
-        public LocationsData LocationsData=new LocationsData(new List<LocationData>());
+        
+        public List<LocationData> LocationsDatas=new List<LocationData>();
         public bool IsAuthorized => _isAuthorized;
         [NonSerialized] 
         public Camera CameraUI;
@@ -178,16 +185,13 @@ namespace Data
         
         
         public int ReadAllNumberKilledEnemies() => 
-            PersonalAchievements.AllNumberKilledEnemies;
+            PersonalAchievements.NumberKilledEnemies;
 
         public int ReadDayNumberKilledEnemies() => 
             PersonalAchievements.DayNumberKilledEnemies;
 
         public int ReadAllAmountMoney() => 
             MoneyData.AllAmountMoney;
-
-        public int ReadAmountMoneyPerDay() => 
-            MoneyData.AmountMoneyPerDay;
 
         public void OnGameStart() => 
             TimeStatistics.OnGameStart();
@@ -214,12 +218,47 @@ namespace Data
         public void SetCompletedLevel()
         {
             SelectedLocation.IsCompleted=true;
-            LocationsData.LocationsDatas[SelectedLocation.Id].IsCompleted = true;
+            LocationsDatas[SelectedLocation.Id].IsCompleted = true;
         }
 
         public void ChangeLocationsDatas(List<LocationData> locationsDatas)
         {
-            LocationsData = new LocationsData(locationsDatas);
+            LocationsDatas = new List<LocationData>(locationsDatas);
+        }
+        
+        public void ChangeNumberKilledEnemies()
+        {
+            PersonalAchievements.AddKilledEnemy();
+        }
+        
+        public void ClearNumberKilledEnemies()
+        {
+            PersonalAchievements=new PersonalAchievements();
+        }
+        
+        public void ChangeSurvivalCount()
+        {
+            PersonalAchievements.SetSurvival(ActiveHumanoids.Count);
+        }
+        
+        public void ChangeDeadMercenaryCount()
+        {
+            PersonalAchievements.SetDeadMercenary(InactiveHumanoids.Count);
+        }
+
+        public LocationData GetLocation()
+        {
+            return SelectedLocation;
+        }
+
+        public void ChangeMaxEnemyOnLevel(int number)
+        {
+            SelectedLocation.MaxEnemyOnLevel = number;
         }
     }
+}
+
+public class StatisticsData
+{
+    
 }

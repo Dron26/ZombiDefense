@@ -24,7 +24,7 @@ namespace Infrastructure.Tutorial
         private Image _currentImage;
         private LeanLocalizedTextMeshProUGUI _localizedTextMesh;
         private int currentDialogIndex = 0;
-        private List<string> dialogTexts;
+        private List<string> _dialogTexts;
         private Color _currentColor;
         private Coroutine tutorialCoroutine;
         private int _numberForStartChangeColor=2;
@@ -53,12 +53,12 @@ private MovePointController _movePointController;
 
         public void Initialize(SceneInitializer sceneInitializer)
         {
-            dialogTexts = new List<string>();
+            _dialogTexts = new List<string>();
             _movePointController = sceneInitializer.GetMovePointController();
             
-            foreach (TutorialDialog dialog in Enum.GetValues(typeof(TutorialDialog)))
+            foreach (TutorialDialogKey dialog in Enum.GetValues(typeof(TutorialDialogKey)))
             {
-                dialogTexts.Add(dialog.ToString());
+                _dialogTexts.Add(dialog.ToString());
             }
 
             tutorialCoroutine = StartCoroutine(RunTutorial());
@@ -69,7 +69,7 @@ private MovePointController _movePointController;
         {
             yield return  new WaitForSeconds(1f);
             
-            foreach (string dialogText in dialogTexts)
+            foreach (string dialogText in _dialogTexts)
             {
                 _keyPressed = false;
                 _localizedTextMesh.TranslationName = dialogText;
@@ -206,7 +206,7 @@ private MovePointController _movePointController;
     }
 }
 
-public enum TutorialDialog
+public enum TutorialDialogKey
 {
     WelcomeToTheTutorial,
     WarningTutorial,

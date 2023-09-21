@@ -1,6 +1,7 @@
 using Data.Settings;
 using Data.Settings.Language;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Infrastructure.StateMachine;
 using Infrastructure.StateMachine.States;
 using Service.SaveLoad;
 using Service.Yandex;
@@ -20,7 +21,7 @@ namespace Infrastructure
         {
             DontDestroyOnLoad(this);
             _saveLoadService = GetComponent<SaveLoadService>();
-
+            _saveLoadService.SetGameBootstrapper(this);
             _saveLoadService.SetCurtain(_loadingCurtain);
         }
 
@@ -40,13 +41,14 @@ namespace Infrastructure
         public YandexInitializer GetYandexInitializer() => 
             _yandexInitializer;
         
-        public SaveLoadService GetSAaveLoad() => 
+        public SaveLoadService GetSaveLoad() => 
             _saveLoadService;
 
         public LoadingCurtain GetLoadingCurtain() =>
             _loadingCurtain;
 
-
+        public GameStateMachine GetStateMachine() =>
+        _game.StateMashine;
         private Language GetLanguage()
         {
             switch (Application.systemLanguage)

@@ -67,19 +67,13 @@ namespace Enemies.AbstractEntity
             EnemyStateMachine stateMachine = GetComponent<EnemyStateMachine>();
             stateMachine.EnterBehavior<EnemyDieState>();
         }
-
-        
-        
-        
         
         public void LoadPrefab()
         {
-            
-                    Initialize();
+            Initialize();
                     SetSkin();
                     SetNavMeshSpeed();
                     OnDataLoad?.Invoke(this);
-                
         }
 
 

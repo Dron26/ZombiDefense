@@ -43,8 +43,14 @@ namespace Infrastructure.Logic.WaveManagment
             _saveLoadService = saveLoadService;
             _moneyData=saveLoadService.MoneyData;
             _enemyFactory.CreatedEnemy += OnCreatedEnemy;
-            
+            _saveLoadService.OnClearSpawnData+= ClearData;
             _audioManager=audioManager;
+        }
+
+        private void ClearData()
+        {
+            _groupWave.Clear();
+            _activeEnemys.Clear();
         }
 
         public void SetWave(Wave wave)
@@ -52,7 +58,13 @@ namespace Infrastructure.Logic.WaveManagment
             _groupWave.Add(wave);
             isStopSpawn = false;
             
+            
+        }
+
+        public void FillPool()
+        {
             StartCoroutine(StartFillPool());
+            
         }
 
         public void OnStartSpawn()
@@ -68,6 +80,7 @@ namespace Infrastructure.Logic.WaveManagment
             {
                 float randomDelayTime = Random.Range(0.57f, 5.33f);
                 yield return new WaitForSeconds(delayTime + randomDelayTime);
+                
                 Activated(enemy);
             }
         }
@@ -113,15 +126,24 @@ namespace Infrastructure.Logic.WaveManagment
             enemy.transform.localPosition = Vector3.zero;
             
             enemy.GetComponent<EnemyDieState>().OnRevival += OnEnemyRevival;
-            enemy.OnDataLoad += OnCreatedEnemy;
             enemy.OnDeath += OnEnemyDeath;
             _activeEnemys.Add(enemy);
+            OnEnemyStarted?.Invoke();
         }
         
         private void OnEnemyDeath(Enemy enemy)
         {
-            _moneyData.AddMoney(enemy.GetPrice());
-            _saveLoadService.SetInactiveEnemy(enemy);
+            _moneyData.AddMoneyForKilledEnemy(enemy.GetPrice());
+            _saveLoadService.SetNumberKilledEnemies();
+            
+            if (isStopSpawn)
+            {
+                enemy.GetComponent<EnemyDieState>().OnRevival -= OnEnemyRevival;
+            }
+            else
+            {
+                enemy.GetComponent<EnemyDieState>().AfterDie();
+            }
         }
 
         private void Activated(Enemy enemy)
@@ -129,7 +151,6 @@ namespace Infrastructure.Logic.WaveManagment
             enemy.gameObject.transform.position = transform.position;
             enemy.gameObject.SetActive(true);
             _saveLoadService.SetActiveEnemy(enemy);
-            OnEnemyStarted?.Invoke();
         }
 
 
@@ -143,6 +164,7 @@ namespace Infrastructure.Logic.WaveManagment
             isStopSpawn = true;
             _cancellationTokenSource.Cancel();
             _cancellationTokenSource = new CancellationTokenSource();
+            StopCoroutine(StartFillPool());
         }
 
         protected override void OnDisable()

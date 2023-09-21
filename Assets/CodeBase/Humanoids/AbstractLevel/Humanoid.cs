@@ -81,9 +81,9 @@ public string GetName() => _name;
 
         public void NotifyObservers(object data)
         {
+            OnDataLoad?.Invoke(this);
                 foreach (var observer in observers)
                 {
-                    OnDataLoad?.Invoke(this);
                     observer.NotifyFromHumanoid(data);
                 }
         }
