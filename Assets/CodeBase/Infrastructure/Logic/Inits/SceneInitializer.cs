@@ -27,9 +27,6 @@ namespace Infrastructure.Logic.Inits
         
         [SerializeField] private WindowBase _windowBase;
         
-       
-       
-        
         private LoadingCurtain _loadingCurtain;
         public WindowBase Window=>_windowBase;
         private SaveLoadService _saveLoadService;
@@ -49,6 +46,7 @@ namespace Infrastructure.Logic.Inits
 
         public bool IsStartedTutorial => _isTutorialLevel;
         private bool _isTutorialLevel;
+        private bool _isInfinity;
 
         public Action OnLoaded;
         public void Initialize(GameStateMachine stateMachine)
@@ -86,19 +84,20 @@ namespace Infrastructure.Logic.Inits
              _playerCharacterInitializer.Initialize(_audioManager, this, _saveLoadService);
              Debug.Log("Finish _playerCharacterInitializer();");
 
-             InitializeEnemy();
+             InitializeEnemies();
+          
 
             _playerCharacterInitializer.AreOverHumanoids += _enemyCharacterInitializer.StopSpawning;
             Debug.Log("Finish _playerCharacterInitializer();");
 
             _movePointController.Initialize(this, _saveLoadService);
             Debug.Log("Finish _movePointController();");
-
-            StartCoroutine(_waveManager.SpawnWaves());
+            
+            
         }
 
 
-        private void InitializeEnemy()
+        private void InitializeEnemies()
         {
             _enemyCharacterInitializer.Initialize(_saveLoadService, this);
             Debug.Log("Finish _playerCharacterInitializer();");
@@ -108,17 +107,26 @@ namespace Infrastructure.Logic.Inits
 
             _waveManager.OnReadySpawning += OnReadySpawning;
             Debug.Log("Finish _playerCharacterInitializer();");
+            
+            StartCoroutine(_waveManager.SetWaveData());
         }
        
         
         private void OnReadySpawning()
         {
             _loadingCurtain.OnLoaded();
+            
+            if (_isInfinity)
+            {
+                _enemyCharacterInitializer.StartSpawning();
+                _isInfinity = false;
+            }
         }
         
         private void OnClikedCurtain()
         {
             OnLoaded?.Invoke();
+            
         }
 
         public PlayerCharacterInitializer GetPlayerCharacterInitializer() => _playerCharacterInitializer;
@@ -132,7 +140,6 @@ namespace Infrastructure.Logic.Inits
             }
         }
 
-        
         public MovePointController GetMovePointController() => _movePointController;
         public SaveLoadService GetSaveLoad() => _saveLoadService;
         public AudioManager GetAudioController() => _audioManager;
@@ -202,11 +209,9 @@ namespace Infrastructure.Logic.Inits
          {
             
             _saveLoadService.ClearSpawnData();
-            InitializeEnemy();
-            int number = 100;
-            _saveLoadService.ChangeMaxEnemyOnLevel(number);
-            StartCoroutine(_waveManager.SpawnWaves());
-            _enemyCharacterInitializer.StartSpawning();
+            InitializeEnemies();
+            StartCoroutine(_waveManager.SetWaveData());
+            _isInfinity=true;
          }
 
     }

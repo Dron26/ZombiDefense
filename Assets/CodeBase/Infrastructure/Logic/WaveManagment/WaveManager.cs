@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Data;
 using Enemies.AbstractEntity;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Infrastructure.Factories.FactoryWarriors.Enemies;
 using Service.Audio;
 using Service.SaveLoad;
 using UnityEngine;
@@ -10,85 +11,77 @@ using UnityEngine.Events;
 
 namespace Infrastructure.Logic.WaveManagment
 {
+    [RequireComponent(typeof(WaveManager))]
+    [RequireComponent(typeof(WaveSpawner))]
+    [RequireComponent(typeof(EnemyFactory))]
     public class WaveManager : MonoCache
     {
-        private List<WaveData> _waveDatas=new();
-        [SerializeField] private WaveSpawner _waveSpawner;
-        [SerializeField] public float TimeBetweenWaves;
-
-        private List<Enemy> enemies = new List<Enemy>();
+        private WaveSpawner _waveSpawner;
+        [SerializeField] List<Wave> _waves = new();
         private int currentWaveIndex = 0;
         private bool isSpawningWave = false;
         private bool isWaitingForNextWave = false;
-        private bool canStartNextWave = true; // Флаг, разрешающий начало новой волны
-        public WaveData CurrentWave => _waveDatas[currentWaveIndex];
+        private bool canStartNextWave = true;
+
+        [SerializeField] public float TimeBetweenWaves;
+
+        private List<Enemy> enemies = new List<Enemy>();
+
+        // Флаг, разрешающий начало новой волны
+        public Wave CurrentWave => _waves[currentWaveIndex];
         public int CurrentWaveIndex => currentWaveIndex;
-        public int TotalWaves => _waveDatas.Count;
+        public int TotalWaves => _waves.Count;
         public UnityAction OnReadySpawning;
-        public UnityAction SpawningCompleted;
         private SaveLoadService _saveLoadService;
-        
-        public void Initialize(SaveLoadService saveLoadService,AudioManager audioManager)
+
+
+        public void Initialize(SaveLoadService saveLoadService, AudioManager audioManager)
         {
-            _saveLoadService=saveLoadService;
-            ReadWaveDatas();
-            InitializeWaveData();
-            _waveSpawner.Initialize(audioManager,this);
+            _saveLoadService = saveLoadService;
+            
+            _waveSpawner = GetComponent<WaveSpawner>();
+            _waveSpawner.Initialize(audioManager);
             _waveSpawner.OnSpawnPointsReady += OnWaveSpawningCompleted;
-            _waveSpawner.OnSpawnPointsReady+= OnWaveSpawnerReady;
-            gameObject.SetActive(true);
-            _saveLoadService.OnClearSpawnData+= ClearData;
-
-     //       StartCoroutine(SpawnWaves());
+            _waveSpawner.OnSpawnPointsReady += OnWaveSpawnerReady;
+            _saveLoadService.OnClearSpawnData += ClearData;
         }
-
-        private void OnWaveSpawnerReady()
-        {
-            OnReadySpawning?.Invoke();
-        }
-
-        public IEnumerator SpawnWaves()
+        
+        public IEnumerator SetWaveData()
         {
             yield return new WaitForSeconds(TimeBetweenWaves);
 
-            while (currentWaveIndex <= _waveDatas.Count)
+            while (currentWaveIndex <= _waves.Count)
             {
-                if (!isSpawningWave && !isWaitingForNextWave && canStartNextWave) // Добавлено условие canStartNextWave
+                if (!isSpawningWave && !isWaitingForNextWave && canStartNextWave)
                 {
                     isSpawningWave = true;
-                    _waveSpawner.CreateWave(CurrentWave);
-                    canStartNextWave = false; // Сбрасываем флаг canStartNextWave
+                    _waveSpawner.SetWaveData(CurrentWave);
+                    canStartNextWave = false;
                 }
 
                 yield return null;
             }
         }
 
-        private void ReadWaveDatas()
+        public void StartSpawn()
         {
-            foreach (var wave in _saveLoadService.GetSelectedLocation().WaveDatas)
-            {
-                _waveDatas.Add(wave);
-            }
-            
+            _waveSpawner.OnStartSpawn();
         }
-        
-        private void InitializeWaveData()
+
+
+        private void OnWaveSpawnerReady()
         {
-            foreach (WaveData waveData in _waveDatas)
-            {
-                waveData.Initialize();
-            }
+            OnReadySpawning?.Invoke();
         }
-        
+
+
         private void OnWaveSpawningCompleted()
         {
-            SpawningCompleted?.Invoke();
-            
             isSpawningWave = false;
             currentWaveIndex++;
+            
             Debug.Log(currentWaveIndex);
-            if (currentWaveIndex >= _waveDatas.Count)
+            if (currentWaveIndex >= _waves.Count)
             {
                 Debug.Log("All in Queue completed!");
             }
@@ -113,11 +106,7 @@ namespace Infrastructure.Logic.WaveManagment
             _waveSpawner.StopSpawn();
         }
 
-        public void StartSpawn()
-        {
-            _waveSpawner.OnStartSpawn();
-        }
-        
+
         public SaveLoadService GetSaveLoad()
         {
             return _saveLoadService;
@@ -125,11 +114,12 @@ namespace Infrastructure.Logic.WaveManagment
 
         private void ClearData()
         {
-            _waveDatas.Clear();
             canStartNextWave = true;
             currentWaveIndex = 0;
             isWaitingForNextWave = false;
             isSpawningWave = false;
+            List<int> countEnemies = new List<int>(){200};
+            CurrentWave.AddData(CurrentWave.GetEnemies(),countEnemies);
         }
     }
 }

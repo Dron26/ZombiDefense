@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 425892922750338325}
-  - component: {fileID: 3843306858493470376}
+  - component: {fileID: 1852706454523480768}
   m_Layer: 0
-  m_Name: WaweM1
+  m_Name: WaweF1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -32,7 +32,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3843306858493470376
+--- !u!114 &1852706454523480768
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,11 +41,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 8273799436481399887}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 583054fa3d014366b5c181cd1303b3a5, type: 3}
+  m_Script: {fileID: 11500000, guid: c33b73b3c252474e9fecec1ba50301a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _enemys:
-  - {fileID: 8883447220592190602, guid: 61ca29cb7d60dd2478d26ad6521e5fa8, type: 3}
-  _enemyCounts: 32000000
-  _delayTimes:
-  - 2
+  _enemies:
+  - {fileID: 9066399932413476149, guid: 017f4c399b6a1df4b93c4c15e26ef7c0, type: 3}
+  _enemyCount: 1e000000

@@ -10,7 +10,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 {
     public class AttackState : State
     {
-        private readonly WaitForSeconds _waitForSeconds = new(1f);
+        private readonly WaitForSeconds _waitForSeconds = new(0.1f);
 
         private Enemy _enemy = null;
 
@@ -55,20 +55,29 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 
         protected override void OnEnabled()
         {
-            _coroutine=StartCoroutine(Attack());
+            if (_coroutine == null)
+            {
+                _coroutine = StartCoroutine(Attack());
+            }
         }
 
         public void InitEnemy(Enemy targetEnemy)
         {
             _enemy = targetEnemy;
             _isGoalSet = true;
+            
+            if (_coroutine != null)
+            {
+                StopCoroutine(_coroutine);
+                _coroutine = StartCoroutine(Attack());
+            }
         }
 
         private IEnumerator Attack()
         {
-            while ( _enemy.IsLife()&&enabled)
+            while ( enabled)
             {
-                if (_ammoCount <= 0 && _isReloading == false)
+                if (_ammoCount == 0 && _isReloading == false)
                 {
                     Reload();
                 }
@@ -86,12 +95,10 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
                     }
                 }
 
-                yield return null;
+                yield return _waitForSeconds;
             }
 
-            ChangeState<SearchTargetState>();
         }
-
 
         public void Fire()
         {
@@ -117,20 +124,15 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         public void FinishAnimationAttackPlay()
         {
             _ammoCount--;
-
             if (_isShotgun)
+            {
                 ApplyDamageToEnemiesInRange();
+            }
             else
                 _enemy.ApplyDamage(_damage, _weaponController.WeaponWeaponType);
 
             if (!_enemy.IsLife())
             {
-                // if (_isShotgun)
-                // {
-                //     await Task.Delay(TimeSpan.FromSeconds(_fireRate));
-                // }
-
-
                 ChangeState<SearchTargetState>();
             }
 
@@ -138,13 +140,12 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
             {
                 Reload();
             }
-
-            return;
         }
         
 
         private void ChangeState<TState>() where TState : State
         {
+            OnDisable();
             PlayerCharactersStateMachine.EnterBehavior<TState>();
         }
 
@@ -215,17 +216,18 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 
         public override void ExitBehavior()
         {
-            enabled = false;
+           enabled=false;
+            
         }
        
         protected override void OnDisable()
         {
             if (_coroutine != null)
                 StopCoroutine(_coroutine);
-
             _isAttacking = false;
             _isGoalSet = false;
             _playerCharacterAnimController.OnShoot(false);
+            enabled = false;
         }
     }
-}
+} 

@@ -23,7 +23,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         private Enemy _enemy;
         private bool _isStopping;
         private Dictionary<int, float> _animInfo=new();
-        private bool _isHumanoidInstalled = false;
+        private bool _isTargetSet = false;
         private float _trackingProbability = 0.5f;
         private Vector3 _humanoidPosition ;
         
@@ -59,7 +59,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
 
         protected override void FixedUpdateCustom()
         {
-            if (_isHumanoidInstalled==false)
+            if (_isTargetSet==false)
             {
                 Move();
             }
@@ -74,7 +74,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
                 if (_agent.isOnNavMesh)
                     {
                         _agent.SetDestination(_humanoidPosition);
-                        _isHumanoidInstalled = true;
+                        _isTargetSet = true;
                         Movement();
                     }
             }
@@ -94,15 +94,15 @@ namespace Infrastructure.AIBattle.EnemyAI.States
 
         private void ChangeState()
         {
-            
             _agent.isStopped = true;
             _animator.SetBool(_enemyAnimController.Walk, false);
+            SetTarget(false);
             StateMachine.EnterBehavior<EnemySearchTargetState>();
         }
         
         private IEnumerator CheckDistance()
         {
-            while (_isHumanoidInstalled &&_humanoid.IsLife())
+            while (_isTargetSet &&_humanoid.IsLife())
             {
                 _distance = Vector3.Distance(transform.position, _humanoid.transform.position);
 
@@ -115,12 +115,15 @@ namespace Infrastructure.AIBattle.EnemyAI.States
                 if (!_humanoid.IsLife())
                 {
                     _animator.SetBool(_enemyAnimController.Walk, false);
+                    SetTarget(false);
                     StateMachine.EnterBehavior<EnemySearchTargetState>();
                 }
                
            
                 yield return new WaitForSeconds(0.5f);
             }
+
+            ChangeState();
         }
         
        private void OnTargetChangePoint()
@@ -150,9 +153,9 @@ namespace Infrastructure.AIBattle.EnemyAI.States
 
        private bool ShouldTrackSoldier() {     return Random.value <= _trackingProbability; }
 
-        public void SetHumanoidInstalled(bool isHumanoidInstalled)
+        public void SetTarget(bool isTargetSet)
        {
-           _isHumanoidInstalled = isHumanoidInstalled;
+           _isTargetSet = isTargetSet;
        }
         
         

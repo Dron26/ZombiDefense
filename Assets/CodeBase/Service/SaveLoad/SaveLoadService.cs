@@ -253,19 +253,19 @@ namespace Service.SaveLoad
             OnCompleteLocation?.Invoke();
         }
         
-        public void SetLocationsDatas(List<LocationData> locationDatas)
+        public void SetLocationsDatas(List<Data.LocationData> locationDatas)
         {
            
             _dataBase.ChangeLocationsDatas(locationDatas);
         }
-        public List<LocationData> GetLocationsDatas()
+        public List<Data.LocationData> GetLocationsDatas()
         {
             return _dataBase.LocationsDatas;
         }
         
-        public void SetSelectedLocation( Location location)
+        public void SetSelectedLocation( LocationDataUI locationDataUI)
         {
-            _dataBase.SetSelectedLocation(location);
+            _dataBase.SetSelectedLocation(locationDataUI);
             _isSelectContinueGame = false;
         }
 

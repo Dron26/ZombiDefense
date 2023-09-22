@@ -63,7 +63,7 @@ namespace Infrastructure.Logic.WeaponManagment
             _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
             _animator = GetComponent<Animator>();
 
-            SetWeapons();
+            
             SetAnimInfo();
             SetWeaponParametrs();
             ChangeWeapon?.Invoke();
@@ -73,17 +73,8 @@ namespace Infrastructure.Logic.WeaponManagment
 
         private void SetWeapons()
         {
-            if (_weapon==null)
-            {
-                _weapon = new();
+            _weapon = new();
                 print("Send null weapon");
-            }
-            else
-            {
-                _isGranade = _weapon.IsGranade is true and true;
-
-                _isShotgun = _weapon.IsShotgun is true and true;
-            }
         }
         
         private void SetAnimInfo()

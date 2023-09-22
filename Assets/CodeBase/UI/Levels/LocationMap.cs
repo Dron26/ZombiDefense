@@ -12,17 +12,15 @@ namespace UI.Levels
 {
     public class LocationMap:MonoCache
     {
-        [SerializeField] private List<Location> _locations;
-        [SerializeField] private Location _tutorial;
+        [SerializeField] private List<LocationDataUI> _locations;
+        [SerializeField] private LocationDataUI _tutorial;
 
-        [SerializeField] private GameObject container;
         [SerializeField] private TMP_Text _cash;
         private int _selectNumber;
         private GameStateMachine _stateMachine;
         private SaveLoadService _saveLoadService;
         private bool _isFirstStarted=>_saveLoadService.IsFirstStart;
-        [SerializeField] List<LocationData> _locationData=new List<LocationData>();
-        private Dictionary<int,bool> LocationsLocked=new Dictionary<int,bool>();
+         List<LocationData> _locationData=new ();
         
         public void Initialize(GameStateMachine stateMachine,SaveLoadService saveLoadService)
         {
@@ -31,22 +29,21 @@ namespace UI.Levels
             _saveLoadService=saveLoadService;
             _stateMachine=stateMachine;
 
-            foreach (var level in _locations)
+            foreach (var location in _locations)
             {
-                level.GetComponent<Button>().onClick.AddListener(() =>OnButtonClick(level));
-                level.SetLocked(true);
+                location.GetComponent<Button>().onClick.AddListener(() =>OnButtonClick(location));
+                location.SetLocked(true);
             }
             
             if (_isFirstStarted)
             {
-                foreach (var level in _locations)
+                foreach (var location in _locations)
                 {
                     LocationData data = new LocationData();
-                    data.Id=level.Id;
-                    data.Path=level.Path;
-                    data.IsTutorial=level.IsTutorial;
-                    data.IsLocked=level.IsLocked;
-                    data.MaxEnemyOnLevel=level.MaxEnemyOnLevel;
+                    data.Id=location.Id;
+                    data.Path=location.Path;
+                    data.IsTutorial=location.IsTutorial;
+                    data.IsLocked=location.IsLocked;
                     _locationData.Add(data);
                 }
                 
@@ -70,11 +67,11 @@ namespace UI.Levels
             _cash.text="$"+_saveLoadService.ReadAmountMoney().ToString();
         }
 
-        private void OnButtonClick(Location location)
+        private void OnButtonClick(LocationDataUI locationDataUI)
         {
-            _selectNumber=location.Id;
+            _selectNumber=locationDataUI.Id;
             
-            _saveLoadService.SetSelectedLocation(location);
+            _saveLoadService.SetSelectedLocation(locationDataUI);
             EnterLevel();
             
         }

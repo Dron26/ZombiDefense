@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
 using Infrastructure.Location;
+using Infrastructure.Logic.WaveManagment;
 using Service;
 using Service.Audio;
 using Service.PlayerAuthorization;
@@ -43,7 +44,7 @@ namespace Data
         
         private bool _isAuthorized = false;
         [NonSerialized] 
-        public List<WaveData> _waveDatas;
+        public List<Wave> _waves;
         [NonSerialized] 
         private List<Humanoid> AvaibelCharacters;
         [NonSerialized] 
@@ -205,14 +206,14 @@ namespace Data
         public void ReadPlayTimeToday()=> 
             TimeStatistics.GetPlayTimeToday();
 
-        public void SetSelectedLocation(Location location)
+        public void SetSelectedLocation(UI.Levels.LocationDataUI locationDataUI)
         {
-            SelectedLocation.Id = location.Id;
-            SelectedLocation.Path = location.Path;
-            SelectedLocation.IsCompleted = location.IsCompleted;
-            SelectedLocation.IsLocked = location.IsLocked;
-            SelectedLocation.MaxEnemyOnLevel = location.MaxEnemyOnLevel;
-            SelectedLocation.WaveDatas=location.GetWaveDataInfo();
+            SelectedLocation.Id = locationDataUI.Id;
+            SelectedLocation.Path = locationDataUI.Path;
+            SelectedLocation.IsCompleted = locationDataUI.IsCompleted;
+            SelectedLocation.IsLocked = locationDataUI.IsLocked;
+           // SelectedLocation.MaxEnemyOnLevel = locationDataUI.MaxEnemyOnLevel;
+           // SelectedLocation.Waves=locationDataUI.GetWaveDataInfo();
         }
 
         public void SetCompletedLevel()

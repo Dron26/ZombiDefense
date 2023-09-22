@@ -16,12 +16,20 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         public delegate void EnemyRevivalHandler(Enemy enemy);
         public event EnemyRevivalHandler OnRevival;
         private Enemy _enemy;
-        private bool _isDeath;
         private NavMeshAgent _agent;
-
-        private void Awake()
+        private Collider _collider;
+        private bool _isDeath;
+        private FXController _fxController;
+        private WaitForSeconds _wait;
+        private bool _isInfinityOn = false;
+        private int _waitTime=1;
+        private void Start()
         {
+            _enemy=GetComponent<Enemy>();
             _agent = GetComponent<NavMeshAgent>();
+            _collider=GetComponent<Collider>();
+            _fxController = GetComponent<FXController>();
+            _wait = new WaitForSeconds(_waitTime);
         }
 
         protected override void FixedUpdateCustom()
@@ -35,36 +43,44 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         
         private  IEnumerator WaitBeforeDie()
         {
-            _enemy=GetComponent<Enemy>();
-            _enemy.GetComponent<NavMeshAgent>().enabled = false;
+            _waitTime=1;
+            _agent.enabled = false;
             _isDeath=true;
             
             if (_enemy.Level == 2)
             {
-                FXController _fxController = GetComponent<FXController>();
                 _fxController.OnTankDeathFX();
-                yield return  new WaitForSeconds(1f);
+                yield return  _wait;
                 _enemy.gameObject.SetActive(false);
                 _enemy.gameObject.transform.position = _enemy.StartPosition;
             }
             
-            _enemy.GetComponent<Collider>().enabled = false;
-            _enemy.GetComponent<NavMeshAgent>().enabled = false;
-            
-            yield return  new WaitForSeconds(4f);
+            _collider.enabled = false;
+            _waitTime = 4;
+            yield return  _wait;
             
             StartCoroutine(Fall());
-            yield return  new WaitForSeconds(2f);
+            
+            _waitTime = 2;
+            yield return  _waitTime;
+            
             _enemy.gameObject.SetActive(false);
             _enemy.gameObject.transform.position = _enemy.StartPosition;
+
+            if (_isInfinityOn)
+            {
+                
+                    AfterDie();
+
+            }
             
             yield break;
         }
         
         public void AfterDie()
         {
-            _enemy.GetComponent<Collider>().enabled = true;
-            _enemy.GetComponent<NavMeshAgent>().enabled = true;
+            _collider.enabled = true;
+            _agent.enabled = true;
             
             OnRevival?.Invoke(_enemy);
             _isDeath=false;
@@ -82,8 +98,12 @@ namespace Infrastructure.AIBattle.EnemyAI.States
                 yield return null;
             }
             
-            yield break;
+            yield break;    
         }
-        
+
+        public void SetInfinity()
+        {
+            _isInfinityOn = true;
+        }
     }
 }

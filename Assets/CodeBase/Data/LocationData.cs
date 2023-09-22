@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Infrastructure.Logic.WaveManagment;
 
 namespace Data
 {
@@ -10,6 +11,5 @@ namespace Data
         public bool IsTutorial;
         public bool IsLocked;
         public bool IsCompleted;
-        public List<WaveData> WaveDatas;
     }
 }

@@ -54,7 +54,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
                     _attackState.InitHumanoid(_targetHumanoid);
                 
                     EnemyMovementState _enemyMovement = GetComponent<EnemyMovementState>();
-                    _enemyMovement.SetHumanoidInstalled(false);
+                    _enemyMovement.SetTarget(false);
                     agent.speed = 1;
                     StateMachine.EnterBehavior<EnemyMovementState>();
                 }

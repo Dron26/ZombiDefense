@@ -1,41 +1,53 @@
 using System.Collections.Generic;
+using Data;
 using Enemies.AbstractEntity;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using UnityEngine;
 
 namespace Infrastructure.Logic.WaveManagment
 {
-    public class Wave:MonoCache
+    public class Wave : MonoCache
     {
-        private List<Enemy> _enemiesToSpawn ;
-        public int  Count=>_enemiesToSpawn.Count;
-        public float DelayTime;
-        public int Level=>_level;
-        private int _level;
+        [SerializeField] private List<Enemy> _enemies;
+        [SerializeField] private List<int> _enemyCount;
         
-        public void AddEnemy(Enemy enemy)
+        public void AddData(List<Enemy> enemies, List<int> enemyCount)
         {
-            _enemiesToSpawn = new ();
-            _enemiesToSpawn.Add(enemy);
-        }
-
-        public void SetTime(float delayTime)
-        {
-            DelayTime = delayTime;
-        }
-
-        public Enemy GetEnemy(int index)
-        {
-            if (index >= 0 && index < _enemiesToSpawn.Count)
+            _enemies = new List<Enemy>();
+            _enemyCount = new List<int>();
+            foreach (var value in enemies)
             {
-                return _enemiesToSpawn[index];
+                _enemies.Add(value);
             }
-            
-            return null;
+
+            foreach (var value in enemyCount)
+            {
+                _enemyCount.Add(value);
+            }
+        }
+        
+        public List<Enemy> GetEnemies()
+        {
+            return new List<Enemy>(_enemies);
+        }
+        
+        public List<int> GetEnemyCount()
+        {
+            return new List<int>(_enemyCount);
+        }
+        
+        private int _delayTimes;
+        public int Level => _level;
+        private int _level;
+
+        public void SetTime(int delayTime)
+        {
+            _delayTimes=delayTime;
         }
 
-        public bool IsEmpty()
+        public int GetTime(int index)
         {
-            return _enemiesToSpawn.Count == 0;
+            return _delayTimes;
         }
     }
 }

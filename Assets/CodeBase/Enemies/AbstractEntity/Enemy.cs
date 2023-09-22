@@ -63,9 +63,10 @@ namespace Enemies.AbstractEntity
 
         protected virtual void Die()
         {
-            OnDeath?.Invoke(this);
+            
             EnemyStateMachine stateMachine = GetComponent<EnemyStateMachine>();
             stateMachine.EnterBehavior<EnemyDieState>();
+            OnDeath?.Invoke(this);
         }
         
         public void LoadPrefab()
