@@ -25,6 +25,7 @@ namespace Service.SaveLoad
         private bool _isFirstStart=true;
         public Action OnSetActiveHumanoid;
         public Action OnCompleteLocation;
+        public Action LastHumanoidDie;
         public Action OnSetInactiveEnemy;
         public Action<WorkPoint> OnSelectedNewPoint;
         private LoadingCurtain _loadingCurtain;
@@ -321,6 +322,10 @@ namespace Service.SaveLoad
             OnClearSpawnData?.Invoke();
         }
 
-        
+
+        public void OnLastHumanoidDie()
+        {
+            LastHumanoidDie?.Invoke();
+        }
     }
 }

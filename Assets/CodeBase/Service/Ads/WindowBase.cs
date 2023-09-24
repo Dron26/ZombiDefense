@@ -51,9 +51,10 @@ namespace Service.Ads
             _reportPanel.OnClickExitToMenu+= SwicthScene;
             _reportPanel.OnClickContinue += StartContinueSpawn;
             _saveLoadService.OnCompleteLocation+=_reportPanel.ShowReport;
+            _saveLoadService.LastHumanoidDie+=_reportPanel.OnLastHumanoidDie;
             StartTimer();
         }
-       
+
         private void StartTimer()
         {
             if (_sceneInitializer.IsStartedTutorial) return;

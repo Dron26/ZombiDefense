@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.Inits;
+using Lean.Localization;
 using Service.SaveLoad;
 using TMPro;
 using UnityEngine;
@@ -13,14 +14,15 @@ namespace UI.Report
     {
         private SaveLoadService _saveLoadService;
         
-        [SerializeField] private TMP_Text _infoKilledEnemies;
+        [SerializeField] private LeanLocalizedTextMeshProUGUI _infoKilledEnemies;
         [SerializeField] private TMP_Text _infoKilledEnemiesValue;
-        [SerializeField] private TMP_Text _infoProfit;
+        [SerializeField] private LeanLocalizedTextMeshProUGUI _infoProfit;
         [SerializeField] private TMP_Text _infoProfitValue;
-        [SerializeField] private TMP_Text _infoSurvival;
+        [SerializeField] private LeanLocalizedTextMeshProUGUI _infoSurvival;
         [SerializeField] private TMP_Text _infoSurvivalValue;
-        [SerializeField] private TMP_Text _infoDeadMercenary;
+        [SerializeField] private LeanLocalizedTextMeshProUGUI _infoDeadMercenary;
         [SerializeField] private TMP_Text _infoDeadMercenaryValue;
+        [SerializeField] private LeanLocalizedTextMeshProUGUI _infoOffer;
 
         [SerializeField] private Button _buttonApply;
         [SerializeField] private Button _buttonExit;
@@ -34,6 +36,8 @@ namespace UI.Report
         private int _profit;
         public Action OnClickExitToMenu;
         public Action OnClickContinue;
+
+        private bool _isLastHumanoidDie;
 
         public void Initialize(SaveLoadService saveLoadService)
         {
@@ -52,13 +56,19 @@ namespace UI.Report
 
         public void ShowReport()
         {
+            
             StartCoroutine(Show());
         }
 
         private IEnumerator Show()
         {
-            
             yield return new WaitForSeconds(2f);
+            
+            if (_isLastHumanoidDie)
+            {
+                _buttonApply.enabled = false;
+            }
+            
             _panel.SetActive(true);
             _numberKilledEnemies = _saveLoadService.GetNumberKilledEnemies();
             _allNumberKilledEnemies = _saveLoadService.GetAllNumberKilledEnemies();
@@ -66,13 +76,14 @@ namespace UI.Report
             _deadMercenary = _saveLoadService.GetDeadMercenaryCount();
             _profit = _saveLoadService.MoneyData.MoneyForEnemy;
             
-            _infoSurvival.text = ReportKey.Survival.ToString();
+            _infoOffer.TranslationName = ReportKey.DeadOffer.ToString();
+            _infoSurvival.TranslationName = ReportKey.Survivors.ToString();
             _infoSurvivalValue.text = _survival.ToString();
-            _infoDeadMercenary.text = ReportKey.DeadMercenary.ToString();
+            _infoDeadMercenary.TranslationName = ReportKey.Dead.ToString();
             _infoDeadMercenaryValue.text = _deadMercenary.ToString();
-            _infoKilledEnemies.text = ReportKey.KilledEnemies.ToString();
+            _infoKilledEnemies.TranslationName = ReportKey.Killed.ToString();
             _infoKilledEnemiesValue.text = _numberKilledEnemies.ToString();
-            _infoProfit.text = ReportKey.Profit.ToString();
+            _infoProfit.TranslationName = ReportKey.Profit.ToString();
             _infoProfitValue.text = _profit.ToString();
         }
 
@@ -81,15 +92,22 @@ namespace UI.Report
             _panel.SetActive(false);
             OnClickExitToMenu?.Invoke();
         }
-        
+
+
+        public void OnLastHumanoidDie()
+        {
+            _isLastHumanoidDie=true;
+            ShowReport();
+        }
         
     }
 }
 
 public enum ReportKey
 {
-    Survival,
-    DeadMercenary,
-    KilledEnemies,
-    Profit
+    Survivors,
+    Dead,
+    Killed,
+    Profit,
+    DeadOffer
 }

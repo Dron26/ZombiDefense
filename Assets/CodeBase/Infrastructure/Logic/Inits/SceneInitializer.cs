@@ -85,15 +85,21 @@ namespace Infrastructure.Logic.Inits
              Debug.Log("Finish _playerCharacterInitializer();");
 
              InitializeEnemies();
-          
 
-            _playerCharacterInitializer.AreOverHumanoids += _enemyCharacterInitializer.StopSpawning;
+
+             _playerCharacterInitializer.LastHumanoidDie += OnLastHumanoidDie;
             Debug.Log("Finish _playerCharacterInitializer();");
 
             _movePointController.Initialize(this, _saveLoadService);
             Debug.Log("Finish _movePointController();");
             
             
+        }
+
+        private void OnLastHumanoidDie()
+        {
+            _saveLoadService.OnLastHumanoidDie();
+            _enemyCharacterInitializer.StopSpawning();
         }
 
 
@@ -187,7 +193,7 @@ namespace Infrastructure.Logic.Inits
          protected override void OnDisabled()
         {
             _playerCharacterInitializer.CreatedHumanoid -= SetInfo;
-            _playerCharacterInitializer.AreOverHumanoids -= _enemyCharacterInitializer.StopSpawning;
+            _playerCharacterInitializer.LastHumanoidDie -= _enemyCharacterInitializer.StopSpawning;
             _waveManager.OnReadySpawning -= OnReadySpawning;
             _windowBase.OnClickStartSpawn-=_enemyCharacterInitializer.StartSpawning;
         }
