@@ -94,7 +94,10 @@ namespace Infrastructure.AIBattle.EnemyAI.States
 
         private void ChangeState()
         {
-            _agent.isStopped = true;
+            if (_agent.isOnNavMesh)
+            {
+                _agent.isStopped = true;
+            }
             _animator.SetBool(_enemyAnimController.Walk, false);
             SetTarget(false);
             StateMachine.EnterBehavior<EnemySearchTargetState>();

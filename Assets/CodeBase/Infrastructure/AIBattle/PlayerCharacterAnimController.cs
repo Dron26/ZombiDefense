@@ -51,9 +51,9 @@ namespace Infrastructure.AIBattle
             _animator.SetBool(Run,satate);
         }
         
-        public void OnReload()
+        public void OnReload(bool satate)
         {
-            _animator.SetTrigger(Reload);
+            _animator.SetBool(Reload,satate);
         }
         
         public void OnIdle()
