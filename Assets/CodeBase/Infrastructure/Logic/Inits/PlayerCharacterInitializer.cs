@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Humanoids.AbstractLevel;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine;
@@ -20,7 +21,6 @@ namespace Infrastructure.Logic.Inits
         private List<WorkPoint> _workPoints = new();
         private static readonly List<Humanoid> _activeHumanoids = new();
         private static readonly List<Humanoid> _inactiveHumanoids = new();
-        public UnityAction AreOverHumanoids;
         public UnityAction CreatedHumanoid;
         private Humanoid _selectedHumanoid;
         private Store _store;
@@ -32,6 +32,8 @@ namespace Infrastructure.Logic.Inits
         public int CoutnOrdered => _countOrdered;
         private int _countOrdered;
         private SaveLoadService _saveLoadService;
+
+        public Action LastHumanoidDie;
 
         public void Initialize(AudioManager audioManager, SceneInitializer sceneInitializer, SaveLoadService saveLoadService)
         {
@@ -93,11 +95,11 @@ namespace Infrastructure.Logic.Inits
 
         public List<Humanoid> GetAllHumanoids() => _activeHumanoids;
 
-        private void CheckRemaningHumanoids()
+        private void CheckRemainingHumanoids()
         {
             if (_activeHumanoids.Count == 0)
             {
-                AreOverHumanoids?.Invoke();
+                LastHumanoidDie?.Invoke();
             }
         }
 
@@ -106,7 +108,7 @@ namespace Infrastructure.Logic.Inits
             _inactiveHumanoids.Add(humanoid);
             _activeHumanoids.Remove(humanoid);
             SetLocalParametrs();
-            CheckRemaningHumanoids();
+            CheckRemainingHumanoids();
         }
 
         protected override void OnDisable()

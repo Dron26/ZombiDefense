@@ -29,6 +29,8 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
         private SceneInitializer _sceneInitializer;
         private SaveLoadService _saveLoadService;
         private Humanoid _humanoid;
+        public Action OnStartMove;
+        
         private void Awake()
         {
             
@@ -80,5 +82,9 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
             throw new NotImplementedException();
         }
 
+        public void MoveTo()
+        {
+            OnStartMove?.Invoke();
+        }
     }
 }

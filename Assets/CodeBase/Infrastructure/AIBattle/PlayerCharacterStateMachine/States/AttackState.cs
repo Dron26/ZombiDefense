@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Threading.Tasks;
 using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
 using Infrastructure.Logic.WeaponManagment;
@@ -17,7 +15,6 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         private float _currentRange;
 
         private PlayerCharacterAnimController _playerCharacterAnimController;
-        private Coroutine _coroutine;
         private FXController _fxController;
         private Humanoid _humanoid;
         private WeaponController _weaponController;
@@ -42,8 +39,8 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         private float[] _radiusList;
         private float[] _damageList;
         private float _maxRadius;
-        private bool _isGoalSet;
-
+        private bool _isTargetSet;
+        
         private void Awake()
         {
             _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
@@ -53,56 +50,86 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
             _weaponController.ChangeWeapon += OnWeaponChanged;
         }
 
+        private void Start()
+        { 
+            PlayerCharactersStateMachine.OnStartMove += StartMove;
+        }
+
         protected override void OnEnabled()
         {
-            if (_coroutine == null)
+            if (_isAttacking == false & _isReloading == false)
             {
-                _coroutine = StartCoroutine(Attack());
+                Debug.Log(" ");
+                Attack();
             }
         }
 
         public void InitEnemy(Enemy targetEnemy)
         {
             _enemy = targetEnemy;
-            _isGoalSet = true;
-            
-            if (_coroutine != null)
+            _isTargetSet = true;
+
+            if (_isAttacking == false & _isReloading == false)
             {
-                StopCoroutine(_coroutine);
-                _coroutine = StartCoroutine(Attack());
+                Debug.Log(" ");
+                Attack();
             }
         }
 
-        private IEnumerator Attack()
+        private void Attack()
         {
-            while ( enabled)
+            if (_enemy.IsLife())
             {
+                Debug.Log(" ");
                 if (_ammoCount == 0 && _isReloading == false)
                 {
+                    Debug.Log(" ");
                     Reload();
                 }
-
+                Debug.Log(" ");
                 if (_isAttacking == false & _isReloading == false)
                 {
+                    Debug.Log(" ");
                     _currentRange = Vector3.Distance(transform.position, _enemy.transform.position);
                     float rangeAttack = _weaponController.GetRangeAttack();
 
                     if (_currentRange <= rangeAttack & _ammoCount > 0)
-                    {
+                    {Debug.Log(" ");
                         _isAttacking = true;
-                        _isGoalSet = false;
-                        Fire();
+                        _isTargetSet = false;
+
+                        _playerCharacterAnimController.OnShoot(true);
                     }
                 }
-
-                yield return _waitForSeconds;
             }
-
+            else
+            {
+                Debug.Log(" ");
+                ChangeState<SearchTargetState>();
+            }
         }
 
-        public void Fire()
+        public void FinishAnimationAttackPlay()
         {
-            _playerCharacterAnimController.OnShoot(true);
+            _isAttacking = false;
+            _ammoCount--;
+
+            if (_isShotgun)
+            {
+                ApplyDamageToEnemiesInRange();
+            }
+            else
+                _enemy.ApplyDamage(_damage, _weaponController.WeaponWeaponType);
+
+            if (_ammoCount == 0 & _isReloading == false)
+            {
+                Reload();
+            }
+            else
+            {
+                Attack();
+            }
+
         }
 
         private void Reload()
@@ -111,41 +138,19 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
             _isAttacking = false;
 
             _playerCharacterAnimController.OnShoot(false);
-            _playerCharacterAnimController.OnReload();
+            _playerCharacterAnimController.OnReload(true);
         }
-
 
         public void OnReloadEnd()
         {
             _ammoCount = _maxAmmo;
             _isReloading = false;
+            _playerCharacterAnimController.OnReload(false);
+            Attack();
         }
-
-        public void FinishAnimationAttackPlay()
-        {
-            _ammoCount--;
-            if (_isShotgun)
-            {
-                ApplyDamageToEnemiesInRange();
-            }
-            else
-                _enemy.ApplyDamage(_damage, _weaponController.WeaponWeaponType);
-
-            if (!_enemy.IsLife())
-            {
-                ChangeState<SearchTargetState>();
-            }
-
-            if (_ammoCount == 0 & _isReloading == false)
-            {
-                Reload();
-            }
-        }
-        
 
         private void ChangeState<TState>() where TState : State
         {
-            OnDisable();
             PlayerCharactersStateMachine.EnterBehavior<TState>();
         }
 
@@ -188,8 +193,6 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
             }
         }
 
-
-
         private void OnWeaponChanged()
         {
             _activeWeapon = _weaponController.GetActiveWeapon();
@@ -216,18 +219,26 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 
         public override void ExitBehavior()
         {
-           enabled=false;
-            
+            enabled = false;
         }
-       
+
         protected override void OnDisable()
         {
-            if (_coroutine != null)
-                StopCoroutine(_coroutine);
             _isAttacking = false;
-            _isGoalSet = false;
+            _isTargetSet = false;
             _playerCharacterAnimController.OnShoot(false);
             enabled = false;
+        }
+
+        private void StartMove()
+        {
+            if (_isAttacking == true||_isReloading==true)
+            {
+                _playerCharacterAnimController.OnReload(false);
+                _isReloading = false;
+                _playerCharacterAnimController.OnShoot(false);
+                OnDisable();
+            }
         }
     }
 } 

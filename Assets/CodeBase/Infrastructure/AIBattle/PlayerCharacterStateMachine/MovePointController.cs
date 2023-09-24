@@ -110,6 +110,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
                
                             PlayerCharactersStateMachine stateMachine =
                                 _selectedHumanoid.GetComponent<PlayerCharactersStateMachine>();
+                            stateMachine.MoveTo();
                             stateMachine.EnterBehavior<MovementState>();
                             MovementState movementState = _selectedHumanoid.GetComponent<MovementState>();
                             movementState.SetNewPoint(newPoint);
