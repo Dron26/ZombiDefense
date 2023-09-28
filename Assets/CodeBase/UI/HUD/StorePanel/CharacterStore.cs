@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Data.Upgrades;
 using Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Infrastructure.Logic.WeaponManagment;
 using Service;
 using Service.SaveLoad;
 using UnityEngine;
@@ -123,7 +124,7 @@ namespace UI.HUD.StorePanel
         
         private void OnTryBuyCharacter()
         {
-            if (OnTryBuy(_selectedHumanoid.GetPrice()))
+            if (OnTryBuy(_selectedHumanoid.Price))
             {
                 OnCharacterBought?.Invoke(_selectedHumanoid);
             }
@@ -149,7 +150,9 @@ namespace UI.HUD.StorePanel
         private void UpdateParametrs(UpgradeData upgradeData,int level)
         {
             _selectedHumanoid.SetUpgrade(upgradeData, level);
-            OnUpdateBought?.Invoke();
+           WeaponController weaponController=_selectedHumanoid.GetComponent<WeaponController>(); 
+           weaponController.SetUpgrade(upgradeData, level);
+           OnUpdateBought?.Invoke();
         }
 
         private void SetHumanoid()

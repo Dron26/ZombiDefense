@@ -19,9 +19,9 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         private Humanoid _targetHumanoid;
 
         private NavMeshAgent agent;
-        private Enemy _enemy;
         private Transform[] _humanoidTransforms;
         private bool _isSearhing;
+
         private void Awake()
         {
             _movementState = GetComponent<EnemyMovementState>();
@@ -30,41 +30,40 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         }
 
         protected override void UpdateCustom()
-        { 
-            if (_isSearhing==false) Search();
+        {
+            if (_isSearhing == false) Search();
         }
-        
+
         private void Search()
         {
             agent.speed = 0;
-                _isSearhing = true;
-                _humanoidTransforms = saveLoadService.GetActiveHumanoids()
-                    .Where(humanoid => humanoid.IsLife() == true)
-                    .Select(humanoid => humanoid.transform)
-                    .ToArray();
+            _isSearhing = true;
+            _humanoidTransforms = saveLoadService.GetActiveHumanoids()
+                .Where(humanoid => humanoid.IsLife == true)
+                .Select(humanoid => humanoid.transform)
+                .ToArray();
             
-                _enemy = GetComponent<Enemy>();
-            
-                int closestIndex = GetClosestIndex(transform.position,_humanoidTransforms);
-                
-                if (closestIndex != -1)
-                {
-                    _targetHumanoid = saveLoadService.GetActiveHumanoids()[closestIndex];
-                    _movementState.InitHumanoid(_targetHumanoid);
-                    _attackState.InitHumanoid(_targetHumanoid);
-                
-                    EnemyMovementState _enemyMovement = GetComponent<EnemyMovementState>();
-                    _enemyMovement.SetTarget(false);
-                    agent.speed = 1;
-                    StateMachine.EnterBehavior<EnemyMovementState>();
-                }
-                
-                _isSearhing = false;
+            int closestIndex = GetClosestIndex(transform.position, _humanoidTransforms);
+
+            if (closestIndex != -1)
+            {
+                _targetHumanoid = saveLoadService.GetActiveHumanoids()[closestIndex];
+                _movementState.InitHumanoid(_targetHumanoid);
+                _attackState.InitHumanoid(_targetHumanoid);
+
+                EnemyMovementState _enemyMovement = GetComponent<EnemyMovementState>();
+                _enemyMovement.SetTarget(false);
+                agent.speed = 1;
+                StateMachine.EnterBehavior<EnemyMovementState>();
+            }
+
+            _isSearhing = false;
         }
-        
-         private int GetClosestIndex(Vector3 soldierPosition,Transform[] humanoidTransforms)
+
+        private int GetClosestIndex(Vector3 soldierPosition, Transform[] humanoidTransforms)
         {
-            NativeArray<EnemyPositionData> enemyPositionDataArray = new NativeArray<EnemyPositionData>(humanoidTransforms.Length, Allocator.TempJob);
+            NativeArray<EnemyPositionData> enemyPositionDataArray =
+                new NativeArray<EnemyPositionData>(humanoidTransforms.Length, Allocator.TempJob);
 
             for (int i = 0; i < humanoidTransforms.Length; i++)
             {
@@ -80,7 +79,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
             {
                 enemyPositionDataArray = enemyPositionDataArray
             };
-            
+
             job.SetResultArraySize(humanoidTransforms.Length);
 
             // Schedule the job and wait for it to complete.
@@ -105,13 +104,13 @@ namespace Infrastructure.AIBattle.EnemyAI.States
 
             return closestEnemyIndex;
         }
-         
+
         private struct EnemyPositionData
         {
             public Vector3 soldierPosition;
             public Vector3 enemyPosition;
         }
-        
+
         private struct GetClosestEnemyJob : IJobParallelFor
         {
             [ReadOnly] public NativeArray<EnemyPositionData> enemyPositionDataArray;

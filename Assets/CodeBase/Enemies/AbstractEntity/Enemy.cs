@@ -1,91 +1,99 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using Animation;
+using Infrastructure.AIBattle;
 using Infrastructure.AIBattle.EnemyAI;
 using Infrastructure.AIBattle.EnemyAI.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
-using Infrastructure.Observer;
 using Service.Audio;
 using Service.SaveLoad;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using UnityEngine.AI;
-using UnityEngine.Events;
-using UnityEngine.ResourceManagement.AsyncOperations;
+using Random = UnityEngine.Random;
 
 namespace Enemies.AbstractEntity
 {
     [RequireComponent(typeof(EnemyStateMachine))]
-    public abstract class Enemy : MonoCache, IObservableHumanoid
+    public abstract class Enemy : MonoCache
     {
-        [SerializeField] private float _maxHealth = 40f;
+        [SerializeField] private float _maxHealth;
         [SerializeField] private float _rangeAttack = 1.2f;
-        [SerializeField] private int _damage = 15;
-        [SerializeField] private int _level = 1;
-        [SerializeField] private int _minLevelForHumanoid = 0;
+        [SerializeField] private int _damage;
+        [SerializeField] private int _level;
+        [SerializeField] private int _price;
 
+        public event Action<EnemyEventType> OnEnemyEvent;
         
-        public int MinLevelForHumanoid =>_minLevelForHumanoid;
-
-        
-        
-        private List<IObserverByHumanoid> observers = new List<IObserverByHumanoid>();
-        private List<SkinGroup> _skinGroups = new();
-
-        private AudioManager _audioManager;
-        public delegate void EnemyDeathHandler(Enemy enemy);
-
-        public event EnemyDeathHandler OnDeath;
-
-
-            // public int MinLevelForHumanoid => enemyData.MinLevelForHumanoid;
-        
-        public float MaxHealth => _maxHealth;
-        public float RangeAttack => _rangeAttack;
-        public int Damage => _damage;
-        public int Level => _level;
-        public abstract int GetLevel();
-        public abstract float GetRangeAttack();
-        public abstract int GetDamage();
-        public abstract float GetHealth();
-        public abstract bool IsLife();
-        public abstract int GetPrice();
-        public UnityAction<Enemy> OnDataLoad;
-
-        private NavMeshAgent _agent;
+        public Action<Enemy> OnInitialized;
+        public Action<Enemy> OnDeath; 
+        //public Action<WeaponType> OnTakeDamage;
+        public Animator Animator=>_animator;
+        public EnemyAnimController EnemyAnimController=>_enemyAnimController;
         public Vector3 StartPosition;
+        public float MaxHealth => _maxHealth;
+        public int Level => _level;
+        public int IndexInWave => _indexInWave;
+        
+        private List<SkinGroup> _skinGroups = new();
+        private AudioManager _audioManager;
+        private Animator _animator;
+        private EnemyAnimController _enemyAnimController;
+        private EnemyFXController _fxController;
+        private SaveLoadService _saveLoadService;
+        private NavMeshAgent _agent;
+        private EnemyDieState _enemyDieState;
+        
+        private readonly float _minHealth = 0;
+        private float _health;
+        private bool _isLife = true;
+        private int _indexInWave;
 
-        public abstract void ApplyDamage(float getDamage, WeaponType weaponWeaponType);
-
-        public abstract void SetAttacments();
-
-        public float GetRadiusSearch() => 25f;
-
-        protected virtual void Die()
+        private void Awake()
         {
-            
-            EnemyStateMachine stateMachine = GetComponent<EnemyStateMachine>();
-            stateMachine.EnterBehavior<EnemyDieState>();
-            OnDeath?.Invoke(this);
+            _animator = GetComponent<Animator>();
+            _enemyAnimController = GetComponent<EnemyAnimController>();
+            _fxController = GetComponent<EnemyFXController>();
+            _enemyDieState = GetComponent<EnemyDieState>();
         }
         
-        public void LoadPrefab()
+        public void Initialize(SaveLoadService saveLoadService, AudioManager audioManager)
         {
-            Initialize();
-                    SetSkin();
-                    SetNavMeshSpeed();
-                    OnDataLoad?.Invoke(this);
+            _saveLoadService=saveLoadService;
+            _audioManager = audioManager;
+            _enemyDieState.OnRevival += OnRevival;
+
+            SetStartData();
         }
+        
+        private void SetStartData()
+        {
+            _isLife = true;
+            _health = _maxHealth;
+           
+            SetSkin();
+            SetNavMeshSpeed();
 
+            OnInitialized?.Invoke(this);
+        }
+        
+        public float GetRangeAttack() => _rangeAttack;
 
-        public abstract void SetSaveLoad(SaveLoadService saveLoadService);
+        public int GetDamage() => _damage;
 
+        public bool IsLife() => _isLife;
 
-        public abstract void Initialize();
+        public AudioManager GetAudioController() => _audioManager;
+        
+        private void OnRevival(Enemy enemy) => SetStartData();
 
+        public int GetPrice() => _price;
+        
         private void SetSkin()
         {
-            foreach (SkinGroup group in transform.GetComponentsInChildren<SkinGroup>())
+            SkinGroup[] skinsGroup = GetComponentsInChildren<SkinGroup>();
+
+            foreach (SkinGroup group in skinsGroup)
             {
                 group.Initialize();
                 group.SetMesh(Random.Range(0, group.GetCountMeshes()));
@@ -107,33 +115,49 @@ namespace Enemies.AbstractEntity
                 _agent.speed = Random.Range(minSpeed, maxSpeed);
             }
         }
-
-        public void AddObserver(IObserverByHumanoid observerByHumanoid)
+        
+        public  void ApplyDamage(float getDamage, WeaponType weaponWeaponType)
         {
-            observers.Add(observerByHumanoid);
-        }
-
-        public void RemoveObserver(IObserverByHumanoid observerByHumanoid)
-        {
-            observers.Remove(observerByHumanoid);
-        }
-
-        public void NotifyObservers(object data)
-        {
-            foreach (var observer in observers)
+            if (_health >= 0)
             {
-                observer.NotifyFromHumanoid(data);
+                    AdditionalDamage(getDamage, weaponWeaponType);
+                
+                _health -= Mathf.Clamp(getDamage, _minHealth, MaxHealth);
+            }
+        
+            if (_health <= 0)
+            {
+                _saveLoadService.SetInactiveEnemy(this);
+                Die();
+                _isLife = false;
             }
         }
-        
-        public void SetAudioController(AudioManager audioManager)
+
+        public abstract void AdditionalDamage(float getDamage,WeaponType weaponWeaponType);
+
+        private void Die()
         {
-            _audioManager = audioManager;
-        }
-        public AudioManager GetAudioController()
-        {
-            return _audioManager;
+            EnemyStateMachine stateMachine = GetComponent<EnemyStateMachine>();
+            stateMachine.EnterBehavior<EnemyDieState>();
+            OnDeath?.Invoke(this);
         }
 
+        public void OnAction(EnemyEventType action)
+        {
+            OnEnemyEvent?.Invoke(action);
+        }
+
+        public void SetIndex(int index)
+        {
+            _indexInWave = index;
+        }
     }
+}
+
+public enum EnemyEventType
+{
+    TakeDamage,
+    Death,
+    TakeSmokerDamage,
+    TakeSimpleWalkerDamage
 }

@@ -13,7 +13,7 @@ namespace UI.HUD.StorePanel
        //[SerializeField] private  TMP_Text _name;
         public Humanoid Humanoid => _humanoid;
         public bool IsSelected => _isSelected;
-        public int Price => _humanoid.GetPrice();
+        public int Price => _humanoid.Price;
         public int Index => _humanoid.ID;
 
         private Humanoid _humanoid;
@@ -38,7 +38,7 @@ namespace UI.HUD.StorePanel
         {
             _store=store;
             _humanoid = humanoid;
-            _icon.sprite = _humanoid.GetSprite();
+            _icon.sprite = _humanoid.Sprite;
       //      _name.text = humanoid.GetName();
         }
         

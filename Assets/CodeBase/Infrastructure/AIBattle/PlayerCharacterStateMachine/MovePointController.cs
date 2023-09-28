@@ -76,7 +76,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
                 {
                     if (isHumanoidSelected)
                     {
-                        if (_selectedHumanoid.IsLife() && !_selectedHumanoid.IsMove)
+                        if (_selectedHumanoid.IsLife && !_selectedHumanoid.IsMove)
                         {
                             isPointToMoveTaked = false;
                         }
@@ -99,7 +99,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
                 }
                 else if (isHumanoidSelected)
                 {
-                    if (_selectedHumanoid.IsLife()&&!_selectedHumanoid.IsMove)
+                    if (_selectedHumanoid.IsLife&&!_selectedHumanoid.IsMove)
                     {
                         if (newPoint.IsBusy == false && isPointToMoveTaked == true)
                         {

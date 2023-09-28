@@ -1523,6 +1523,65 @@ MonoBehaviour:
   - Language: English
     Text: Buy
     Object: {fileID: 0}
+--- !u!1 &1536317018
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1536317019}
+  - component: {fileID: 1536317020}
+  m_Layer: 0
+  m_Name: TasksCompleted
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1536317019
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1536317018}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1992244176145147117}
+  m_RootOrder: 100
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1536317020
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1536317018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb15fa0e7301ff849bf4d6dcede7c12b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data: 0
+  entries:
+  - Language: Turkey
+    Text: "G\xF6revler tamamlanm\u0131\u015Ft\u0131r. Konumda kalabilir veya men\xFCden
+      \xE7\u0131kabilirsiniz"
+    Object: {fileID: 0}
+  - Language: Russian
+    Text: "\u0417\u0430\u0434\u0430\u0447\u0438 \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D\u044B.
+      \u0412\u044B \u043C\u043E\u0436\u0435\u0442\u0435 \u043E\u0441\u0442\u0430\u0442\u044C\u0441\u044F
+      \u043D\u0430 \u043B\u043E\u043A\u0430\u0446\u0438\u0438 \u0438\u043B\u0438
+      \u0432\u044B\u0439\u0442\u0438 \u0432 \u043C\u0435\u043D\u044E"
+    Object: {fileID: 0}
+  - Language: English
+    Text: Tasks are completed. You can stay at the location or exit to the menu
+    Object: {fileID: 0}
 --- !u!1 &1891547903
 GameObject:
   m_ObjectHideFlags: 0
@@ -2936,6 +2995,8 @@ Transform:
   - {fileID: 5073625392345347476}
   - {fileID: 6701554642686877553}
   - {fileID: 4326668142657698636}
+  - {fileID: 1812018140350667654}
+  - {fileID: 1536317019}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5729,3 +5790,65 @@ MonoBehaviour:
   - Language: English
     Text: Language
     Object: {fileID: 0}
+--- !u!1001 &482642439296755160
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1992244176145147117}
+    m_Modifications:
+    - target: {fileID: 2262712989787163615, guid: c90078e555ad03c4cb9eb7738a389e8e, type: 3}
+      propertyPath: m_Name
+      value: BackToMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 2276328097670626910, guid: c90078e555ad03c4cb9eb7738a389e8e, type: 3}
+      propertyPath: m_RootOrder
+      value: 99
+      objectReference: {fileID: 0}
+    - target: {fileID: 2276328097670626910, guid: c90078e555ad03c4cb9eb7738a389e8e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2276328097670626910, guid: c90078e555ad03c4cb9eb7738a389e8e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2276328097670626910, guid: c90078e555ad03c4cb9eb7738a389e8e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2276328097670626910, guid: c90078e555ad03c4cb9eb7738a389e8e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2276328097670626910, guid: c90078e555ad03c4cb9eb7738a389e8e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2276328097670626910, guid: c90078e555ad03c4cb9eb7738a389e8e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2276328097670626910, guid: c90078e555ad03c4cb9eb7738a389e8e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2276328097670626910, guid: c90078e555ad03c4cb9eb7738a389e8e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2276328097670626910, guid: c90078e555ad03c4cb9eb7738a389e8e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2276328097670626910, guid: c90078e555ad03c4cb9eb7738a389e8e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c90078e555ad03c4cb9eb7738a389e8e, type: 3}
+--- !u!4 &1812018140350667654 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2276328097670626910, guid: c90078e555ad03c4cb9eb7738a389e8e, type: 3}
+  m_PrefabInstance: {fileID: 482642439296755160}
+  m_PrefabAsset: {fileID: 0}

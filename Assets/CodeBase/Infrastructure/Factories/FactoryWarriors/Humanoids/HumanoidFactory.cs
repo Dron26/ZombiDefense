@@ -1,5 +1,6 @@
 ﻿using Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Infrastructure.Logic.WeaponManagment;
 using Service.Audio;
 using Service.GeneralFactory;
 using UnityEngine;
@@ -16,15 +17,18 @@ namespace Infrastructure.Factories.FactoryWarriors.Humanoids
         {
             GameObject newHumanoid = Instantiate(prefab, transform);
             Humanoid humanoidComponent = newHumanoid.GetComponent<Humanoid>();
-            humanoidComponent.SetAudioController(_audioManager);
+            WeaponController weaponController  = newHumanoid.GetComponent<WeaponController>();
+            
             humanoidComponent.transform.localPosition = Vector3.zero;
-            humanoidComponent.OnDataLoad += Created;
+            humanoidComponent.OnInitialize += OnInitialized;
             float randomAngle = Random.Range(0f, 360f);
             newHumanoid.transform.rotation = Quaternion.Euler(0f, randomAngle, 0f);
-            humanoidComponent.Initialize();
+            humanoidComponent.Initialize(_audioManager);
+            weaponController.Initialize();
+
         }
 
-        private void Created( Humanoid humanoidComponent)
+        private void OnInitialized( Humanoid humanoidComponent)
         {
             CreatedHumanoid?.Invoke(humanoidComponent);
         }

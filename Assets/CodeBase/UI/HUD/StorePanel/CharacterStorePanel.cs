@@ -46,9 +46,9 @@ namespace UI.HUD.StorePanel
             _characterSprites = new List<Sprite>();
             foreach (Humanoid humanoid in _availableCharacters)
             {
-                if (!_characterSprites.Contains(humanoid.GetSprite()))
+                if (!_characterSprites.Contains(humanoid.Sprite))
                 {
-                    _characterSprites.Add(humanoid.GetSprite());
+                    _characterSprites.Add(humanoid.Sprite);
                 }
             }
             
@@ -79,7 +79,7 @@ namespace UI.HUD.StorePanel
             {
                 foreach (Image image in characterImages)
                 {
-                    if (image.sprite == humanoid.GetSprite())
+                    if (image.sprite == humanoid.Sprite)
                     {
                         Button button = image.GetComponent<Button>();
                         button.onClick.AddListener(() => BuyCharacters(humanoid));

@@ -38,7 +38,7 @@ namespace Service.SaveLoad
         public bool IsSelectContinueGame => _isSelectContinueGame;
         private bool _isSelectContinueGame;
 
-        
+
         private void Awake()
         {
             

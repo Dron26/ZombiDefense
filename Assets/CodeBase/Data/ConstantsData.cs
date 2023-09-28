@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Data
 {
     public static class ConstantsData
@@ -22,7 +24,17 @@ namespace Data
         public const float HalfVisible = 0.5f;
         public const float Invisible = 0f;
         
-        public const int MoneyForReward = 100;
+        public  const  int MoneyForReward = 100;
+
+        static readonly List<string> Name = new List<string>()
+        {
+            "Soldier",
+            "Sergeant",
+            "Grenadier",
+            "Scout",
+            "Sniper"
+        };
         
+        public static string GetName(int index) => Name[index];
     }
 }

@@ -68,7 +68,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         private void Move()
         {
     
-            if (_humanoid != null && _humanoid.IsLife())
+            if (_humanoid != null && _humanoid.IsLife)
             {
                 
                 if (_agent.isOnNavMesh)
@@ -105,7 +105,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         
         private IEnumerator CheckDistance()
         {
-            while (_isTargetSet &&_humanoid.IsLife())
+            while (_isTargetSet &&_humanoid.IsLife)
             {
                 _distance = Vector3.Distance(transform.position, _humanoid.transform.position);
 
@@ -115,7 +115,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
                     StateMachine.EnterBehavior<EnemyAttackState>();
                 }
 
-                if (!_humanoid.IsLife())
+                if (!_humanoid.IsLife)
                 {
                     _animator.SetBool(_enemyAnimController.Walk, false);
                     SetTarget(false);
@@ -165,58 +165,3 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         
     }
 }
-// private void SetAnimInfo()
-// {
-//     foreach (KeyValuePair<int, float> info in _enemyAnimController.GetAnimInfo())
-//     {
-//         _animInfo.Add(info.Key, info.Value);
-//         _stoppingTime = _animInfo[_enemyAnimController.Walk];
-//     }
-// }
-// private async void StopRandomly()
-// {
-//     int minTime = 6;
-//     int maxTime = 15;
-//     int sec = 1000;
-//     
-//     
-//     
-//     while (isActiveAndEnabled)
-//     {
-//         await Task.Delay(Random.Range(minTime, maxTime) * sec);
-//
-//         if (!_isStopping)
-//         {
-//             _isStopping = true;
-//             StopMovement();
-//            // PlayScream();
-//             
-//             await Task.Delay(TimeSpan.FromSeconds(_stoppingTime));
-//             _isStopping = false;
-//             ResumeMovement();
-//         }
-//     }
-// }
-
-// private void PlayScream()
-// {
-//     AnimatorClipInfo[] currentClipInfo = _animator.GetCurrentAnimatorClipInfo(0);
-//     AnimationClip currentClip = currentClipInfo.Length > 0 ? currentClipInfo[0].clip : null;
-//     int randomIndex = Random.Range(0, _enemyAnimController.GetScreamAnimationClips().Length);
-//     AnimationClip newClip = _enemyAnimController.GetScreamAnimationClips()[randomIndex];
-//      _stoppingTime = newClip.length;
-//      _enemyAnimController.SetRandomAnimation();
-//     _animator.CrossFade(newClip.name, 0.2f);
-// }
-        
-// private void StopMovement()
-// {
-//     _agent.isStopped = true;
-//     _animator.SetBool("Walk", false); 
-// }
-//
-// private void ResumeMovement()
-// {
-//     _agent.isStopped = false;
-//     _animator.SetBool("Walk", true); 
-// }

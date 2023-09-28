@@ -55,7 +55,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         {
             Vector3 ourPosition = transform.position;
             
-            while (_isAttack&&_humanoid.IsLife())
+            while (_isAttack&&_humanoid.IsLife)
             {
 
                 _currentRange = Vector3.Distance(transform.position, _humanoid.transform.position);
@@ -68,7 +68,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
                     _humanoid.ApplyDamage(_enemy.GetDamage());
                 }
 
-                if (_currentRange >= _enemy.GetRangeAttack()||_humanoid.IsLife()==false)
+                if (_currentRange >= _enemy.GetRangeAttack()||_humanoid.IsLife==false)
                 {
                     ChangeState();
                 }

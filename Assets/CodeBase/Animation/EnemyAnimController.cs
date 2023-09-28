@@ -1,6 +1,9 @@
+using System;
 using System.Collections.Generic;
+using Enemies.AbstractEntity;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Animation
 {
@@ -30,12 +33,42 @@ namespace Animation
         private AnimatorOverrideController animatorOverrideController;
         private Dictionary<int, float> _animInfo = new();
         private RuntimeAnimatorController animatorController;
+
         
         public void Awake( )
         {
-            _animator = GetComponent<Animator>();
-            SetAnimInfo();
+            if (TryGetComponent(out Enemy enemy))
+            {
+                enemy.OnEnemyEvent += HandleEnemyEvent;
+                _animator = GetComponent<Animator>();
+                    //enemy.OnTakeDamage += OnHitFX;
+                // enemy.OnDeath += OnDieFX;
+                SetAnimInfo();
+            }
+            
         }
+        
+        private void HandleEnemyEvent(EnemyEventType eventType)
+        {
+            switch (eventType)
+            {
+                case EnemyEventType.Death:
+                    OnDie();
+                    break;
+                case EnemyEventType.TakeDamage:
+                    break;
+                case EnemyEventType.TakeSmokerDamage:
+                    break;
+                case EnemyEventType.TakeSimpleWalkerDamage:
+                    break;
+            }
+        }
+
+        private void OnDie()
+        {
+            _animator.SetTrigger(Die);
+        }
+        
         // поставить смерть и падение под землю  по событию в анимации
         public void SetRandomAnimation()
         {
@@ -128,6 +161,12 @@ namespace Animation
         public Dictionary<int, float> GetAnimInfo()
         {
             return _animInfo;
+        }
+
+        public void SmokerDmage()
+        {
+            _animator.SetBool(Walk, false);
+            _animator.SetTrigger(IsHit);
         }
     }
 }

@@ -15,7 +15,7 @@ namespace UI.SettingsPanel
 {
     public class MenuPanel: MonoCache
     {
-        [SerializeField] private Button _power;
+        [SerializeField] private Button _menu;
         [SerializeField] private Button _continue;
         [SerializeField] private Button _setting;
         [SerializeField] private Button _leaderboard;
@@ -40,9 +40,11 @@ namespace UI.SettingsPanel
         private GameBootstrapper _gameBootstrapper;
 
         public Action OnClickExitToMenu;
+        private TimeManager _timeManager;
         
-        public void Initialize(SaveLoadService saveLoadService)
+        public void Initialize(SaveLoadService saveLoadService, TimeManager timeManager)
         {
+            _timeManager=timeManager;
             _stateMachine = saveLoadService.GetGameBootstrapper().GetStateMachine();
             _panel.SetActive(true);
             _gameBootstrapper=FindObjectOfType<GameBootstrapper>();
@@ -57,7 +59,7 @@ namespace UI.SettingsPanel
 
         private void InitializeButton()
         {
-            _power.onClick.AddListener(SwitchState);
+            _menu.onClick.AddListener(SwitchState);
             _continue.onClick.AddListener(Continue);
             _setting.onClick.AddListener(ShowSettingPanel);
             _leaderboard.onClick.AddListener(ShowLeaderboardPanel);
@@ -69,6 +71,7 @@ namespace UI.SettingsPanel
 
         private void SwitchState()
         {
+            _timeManager.SetPaused(!_panel.activeSelf);
             _audioManager.SetMenuEnabled(!_panel.activeSelf);
             _panel.SetActive(!_panel.activeSelf);
             _resursePanel.SetActive(!_resursePanel.activeSelf); 

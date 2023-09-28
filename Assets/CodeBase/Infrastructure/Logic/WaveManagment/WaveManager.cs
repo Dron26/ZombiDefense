@@ -16,6 +16,7 @@ namespace Infrastructure.Logic.WaveManagment
     [RequireComponent(typeof(EnemyFactory))]
     public class WaveManager : MonoCache
     {
+        private EnemyFactory _enemyFactory;
         private WaveSpawner _waveSpawner;
         [SerializeField] List<Wave> _waves = new();
         private int currentWaveIndex = 0;
@@ -38,11 +39,11 @@ namespace Infrastructure.Logic.WaveManagment
         public void Initialize(SaveLoadService saveLoadService, AudioManager audioManager)
         {
             _saveLoadService = saveLoadService;
-            
+            _enemyFactory= GetComponent<EnemyFactory>();
+            _enemyFactory.Initialize(_saveLoadService, audioManager);
             _waveSpawner = GetComponent<WaveSpawner>();
-            _waveSpawner.Initialize(audioManager);
+            _waveSpawner.Initialize(audioManager,_enemyFactory);
             _waveSpawner.OnSpawnPointsReady += OnWaveSpawningCompleted;
-            _waveSpawner.OnSpawnPointsReady += OnWaveSpawnerReady;
             _saveLoadService.OnClearSpawnData += ClearData;
         }
         
@@ -67,14 +68,7 @@ namespace Infrastructure.Logic.WaveManagment
         {
             _waveSpawner.OnStartSpawn();
         }
-
-
-        private void OnWaveSpawnerReady()
-        {
-            OnReadySpawning?.Invoke();
-        }
-
-
+        
         private void OnWaveSpawningCompleted()
         {
             isSpawningWave = false;
@@ -84,6 +78,7 @@ namespace Infrastructure.Logic.WaveManagment
             if (currentWaveIndex >= _waves.Count)
             {
                 Debug.Log("All in Queue completed!");
+                OnReadySpawning?.Invoke();
             }
             else
             {
@@ -98,9 +93,7 @@ namespace Infrastructure.Logic.WaveManagment
             isWaitingForNextWave = false;
             canStartNextWave = true;
         }
-
-        public WaveSpawner GetWaveSpawner() => _waveSpawner;
-
+        
         public void StopSpawn()
         {
             _waveSpawner.StopSpawn();

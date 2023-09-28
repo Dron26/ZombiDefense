@@ -31,7 +31,7 @@ public class CharacterStoreRotation : MonoCache
         while (_isRotating)
         {
             Vector3 currentRotation = transform.rotation.eulerAngles;
-            float newYRotation = currentRotation.y - rotationSpeed * Time.deltaTime;
+            float newYRotation = currentRotation.y - rotationSpeed * 0.1f; //* Time.deltaTime;
 
             if (newYRotation < 0)
             {

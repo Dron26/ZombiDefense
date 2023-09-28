@@ -1,80 +1,67 @@
+using System;
 using System.Collections.Generic;
+using Data.Upgrades;
 using Humanoids.AbstractLevel;
 using Infrastructure.AIBattle;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.Observer;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace Infrastructure.Logic.WeaponManagment
 {
-    public class WeaponController : MonoCache, IWeapon, IObservableWeapon
+    public class WeaponController : MonoCache
     {
         private GameObject _weaponPrefab;
 
         [SerializeField] private Weapon _weapon;
         [SerializeField] private Weapon _granade;
-        
         [SerializeField] private Sprite shootingRadiusSprite;
-
         [SerializeField] private ParticleSystem _ring;
-        //  [SerializeField]private GameObject _granadeGameObject;
-        //  [SerializeField] private Type _garnadeType;
 
-        private List<IObserverByWeaponController> observers = new List<IObserverByWeaponController>();
+        public Action ChangeWeapon;
+        public Action<Weapon> OnInitialized;
+        
+        public int Damage => _damage;
+
         private PlayerCharacterAnimController _playerCharacterAnimController;
-
         private Animator _animator;
-
         private Humanoid _humanoid;
-        private int _totalReceivedDamage;
         private Dictionary<int, float> _weaponAnimInfo = new();
         private WeaponType _weaponWeaponType;
+        
         private int _damage;
         private int _maxAmmo;
         private float _reloadTime;
         private float _fireRate;
         private float _range;
-
-
-        public UnityAction ChangeWeapon;
         public float ReloadTime => _reloadTime;
         public bool _isShotgun;
         private bool _isGranade;
-        
+
         public WeaponType WeaponWeaponType => _weaponWeaponType;
         public Weapon GetWeapon() => _weapon;
-
         public Weapon GetGranads() => _granade;
-
-
-        public int DamageReceived() => _totalReceivedDamage;
-
+        
         public float GetRangeAttack() => _range;
 
         public Weapon GetActiveWeapon() => _weapon;
 
         public void SetWeapon(Transform weaponTransform) =>
             _weaponPrefab.transform.parent = weaponTransform;
-        
-        public void SetWeaponData()
+
+        private void Awake()
         {
             _humanoid = GetComponent<Humanoid>();
             _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
             _animator = GetComponent<Animator>();
+        }
 
-            
+        public void Initialize()
+        {
             SetAnimInfo();
             SetWeaponParametrs();
             ChangeWeapon?.Invoke();
             SetShootingRadius();
-            NotifyObserverWeaponController(_weapon);
-        }
-
-        private void SetWeapons()
-        {
-            _weapon = new();
-                print("Send null weapon");
+            OnInitialized?.Invoke(_weapon);
         }
         
         private void SetAnimInfo()
@@ -98,7 +85,7 @@ namespace Infrastructure.Logic.WeaponManagment
                 _reloadTime = _weaponAnimInfo[_playerCharacterAnimController.Reload];
             }
         }
-        
+
         private void SetShootingRadius()
         {
             GameObject radiusObject = new GameObject("ShootingRadius");
@@ -110,22 +97,9 @@ namespace Infrastructure.Logic.WeaponManagment
             radiusObject.transform.localScale = new Vector3(_range * 2f, _range * 2f, 1f);
             radiusObject.SetActive(false);
         }
-        
-        
-        public void NotifyObserverWeaponController(Weapon weapon)
-        {
-            foreach (var observer in observers)
-            {
-                observer.NotifyFromWeaponController(weapon);
-            }
-        }
-        
-        
-        public int GetDamage()
-        {
-            _totalReceivedDamage += _damage;
-            return _damage;
-        }
+
+
+        public int GetDamage() => _damage;
 
         public float GetSpread()
         {
@@ -133,38 +107,12 @@ namespace Infrastructure.Logic.WeaponManagment
             return spread;
         }
         
-        public void NotifySelection(bool isSelected)
-        {
-            if (isSelected)
-            {
-                _ring.Play();
-            }
-            else
-            {
-                _ring.Stop();
-            }
-        }
-        
-        public void AddObserver(IObserverByWeaponController observerByWeapon)
-        {
-            observers.Add(observerByWeapon);
-            int c = observers.Count;
-        }
+        public float GetSpreadAngle() =>_weapon.SpreadAngle;
 
-        public void RemoveObserver(IObserverByWeaponController observerByWeapon) =>
-            observers.Remove(observerByWeapon);
-
-        
-        public float GetSpreadAngle() =>
-            _weapon.SpreadAngle;
-
-        public void SetDamage(int damage)
+        public void SetDamage(int damage) => _damage += damage;
+        public void SetUpgrade(UpgradeData upgradeData, int level)
         {
-            _damage += damage;
-        }
-
-        protected override void OnDisable()
-        {
+            SetDamage(upgradeData.Damage);
         }
     }
 

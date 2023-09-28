@@ -1,5 +1,6 @@
 using Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Infrastructure.Logic.WeaponManagment;
 using Lean.Localization;
 using TMPro;
 using UnityEngine;
@@ -22,8 +23,10 @@ namespace UI.HUD.StorePanel
         {
             _name = humanoid.GetName();
             _health = humanoid.GetMaxHealth();
-            _damage = humanoid.GetWeaponController().GetWeapon().Damage;
-            _info = humanoid.GetInfoName();
+            WeaponController _weaponController = humanoid.GetComponent<WeaponController>();
+            
+            _damage = _weaponController.Damage;
+            _info = humanoid.GetName()+"Info";
 
             ShowName();
         }

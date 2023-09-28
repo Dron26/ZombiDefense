@@ -1,25 +1,29 @@
 using Enemies.AbstractEntity;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Service.Audio;
+using Service.SaveLoad;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace Infrastructure.Factories.FactoryWarriors.Enemies
 {
     public class EnemyFactory : MonoCache
     {
-        public UnityAction<Enemy> CreatedEnemy;
         
-        public void Create(GameObject enemy)
+        private SaveLoadService _saveLoadService;
+        private AudioManager _audioManager;
+        
+        public Enemy Create(GameObject enemy)
         {
             GameObject newEnemy = Instantiate(enemy);
             Enemy enemyComponent = newEnemy.GetComponent<Enemy>();
-            enemyComponent.OnDataLoad = Created; 
-            enemyComponent.LoadPrefab();
+            enemyComponent.Initialize(_saveLoadService,_audioManager);
+            return enemyComponent;
         }
 
-        private void Created(Enemy enemyComponent)
+        public void Initialize(SaveLoadService saveLoadService, AudioManager audioManager)
         {
-            CreatedEnemy?.Invoke(enemyComponent);
+            _saveLoadService=saveLoadService;
+            _audioManager=audioManager;
         }
     }
 }

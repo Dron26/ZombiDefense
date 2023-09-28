@@ -9,9 +9,14 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         public delegate void HumanoidDeathHandler(Humanoid humanoid);
         public event HumanoidDeathHandler OnDeath;
         private Humanoid _humanoid;
+        private WaitForSeconds _wait;
+        private float _waitTime=5f;
+
+
         private void Start()
         {
             StartCoroutine(WaitAfterDie());
+            _wait = new WaitForSeconds(_waitTime);
         }
         private  IEnumerator WaitAfterDie()
         {
@@ -20,10 +25,10 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
             
             _humanoid.GetComponent<Rigidbody>().useGravity=false;
             _humanoid.GetComponent<Collider>().enabled = false;
-            yield return  new WaitForSeconds(4f);
+            yield return  _wait;
             
             StartCoroutine(Fall());
-            yield return  new WaitForSeconds(6f);
+            yield return  _wait;
             
             _humanoid.gameObject.SetActive(false);
             _humanoid.gameObject.transform.position = _humanoid.StartPosition;

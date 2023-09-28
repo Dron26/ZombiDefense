@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Infrastructure;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.Inits;
 using Lean.Localization;
@@ -36,19 +37,21 @@ namespace UI.Report
         private int _profit;
         public Action OnClickExitToMenu;
         public Action OnClickContinue;
-
+        private TimeManager _timeManager;
         private bool _isLastHumanoidDie;
 
-        public void Initialize(SaveLoadService saveLoadService)
+        public void Initialize(SaveLoadService saveLoadService, TimeManager timeManager)
         {
             _saveLoadService = saveLoadService;
-            _buttonApply.onClick.AddListener(СontinueGame);
+            _timeManager=timeManager;
+            _buttonApply.GetComponentInChildren<Button>().onClick.AddListener(СontinueGame);
             _buttonExit.onClick.AddListener(SwicthScene);
             _panel.SetActive(false);
         }
 
         private void СontinueGame()
         {
+            _timeManager.SetPaused(false);
             OnClickContinue?.Invoke();
             _panel.SetActive(false);
             Debug.Log("Entered СontinueGame()");
@@ -64,11 +67,20 @@ namespace UI.Report
         {
             yield return new WaitForSeconds(2f);
             
+            _timeManager.SetPaused(true);
+            
             if (_isLastHumanoidDie)
             {
-                _buttonApply.enabled = false;
+                _buttonApply.gameObject.SetActive(false);
+                _infoOffer.TranslationName = ReportKey.DeadOffer.ToString();
             }
-            
+            else
+            {
+                _buttonApply.gameObject.SetActive(true);
+                _infoOffer.TranslationName = ReportKey.TasksCompleted.ToString();
+            }
+
+            Time.timeScale = 1;
             _panel.SetActive(true);
             _numberKilledEnemies = _saveLoadService.GetNumberKilledEnemies();
             _allNumberKilledEnemies = _saveLoadService.GetAllNumberKilledEnemies();
@@ -76,7 +88,6 @@ namespace UI.Report
             _deadMercenary = _saveLoadService.GetDeadMercenaryCount();
             _profit = _saveLoadService.MoneyData.MoneyForEnemy;
             
-            _infoOffer.TranslationName = ReportKey.DeadOffer.ToString();
             _infoSurvival.TranslationName = ReportKey.Survivors.ToString();
             _infoSurvivalValue.text = _survival.ToString();
             _infoDeadMercenary.TranslationName = ReportKey.Dead.ToString();
@@ -89,6 +100,7 @@ namespace UI.Report
 
         private void SwicthScene()
         {
+            _timeManager.SetPaused(false);
             _panel.SetActive(false);
             OnClickExitToMenu?.Invoke();
         }
@@ -109,5 +121,6 @@ public enum ReportKey
     Dead,
     Killed,
     Profit,
-    DeadOffer
+    DeadOffer,
+    TasksCompleted
 }

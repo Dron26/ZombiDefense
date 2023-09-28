@@ -21,8 +21,9 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         private bool _isDeath;
         private FXController _fxController;
         private WaitForSeconds _wait;
-        private bool _isInfinityOn = false;
-        private int _waitTime=1;
+        private bool _isStopRevival = false;
+        private float _waitTime=5f;
+        
         private void Start()
         {
             _enemy=GetComponent<Enemy>();
@@ -43,9 +44,12 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         
         private  IEnumerator WaitBeforeDie()
         {
-            _waitTime=1;
-            _agent.enabled = false;
             _isDeath=true;
+            _enemy.OnAction(EnemyEventType.Death);
+            _collider.enabled = false;
+            _agent.enabled = false;
+            
+            yield return  _wait;
             
             if (_enemy.Level == 2)
             {
@@ -55,23 +59,16 @@ namespace Infrastructure.AIBattle.EnemyAI.States
                 _enemy.gameObject.transform.position = _enemy.StartPosition;
             }
             
-            _collider.enabled = false;
-            _waitTime = 4;
-            yield return  _wait;
             
             StartCoroutine(Fall());
-            
-            _waitTime = 2;
-            yield return  _waitTime;
-            
             _enemy.gameObject.SetActive(false);
             _enemy.gameObject.transform.position = _enemy.StartPosition;
 
-            if (_isInfinityOn)
+            yield return  _wait;
+            
+            if (!_isStopRevival)
             {
-                
-                    AfterDie();
-
+                AfterDie();
             }
             
             yield break;
@@ -91,6 +88,8 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         
         private  IEnumerator Fall()
         {
+            _enemy.OnAction(EnemyEventType.Death);
+            
             while (isActiveAndEnabled!=false)
             {
                 float newPosition=_enemy.transform.position.y-0.008f;
@@ -101,9 +100,9 @@ namespace Infrastructure.AIBattle.EnemyAI.States
             yield break;    
         }
 
-        public void SetInfinity()
+        public void StopRevival(bool isStopRevival)
         {
-            _isInfinityOn = true;
+            _isStopRevival = isStopRevival;
         }
     }
 }

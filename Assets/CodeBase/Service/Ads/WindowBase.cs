@@ -7,6 +7,7 @@ using Infrastructure.Logic.Inits;
 using Infrastructure.Logic.WaveManagment;
 using Infrastructure.StateMachine.States;
 using Service.SaveLoad;
+using UI;
 using UI.HUD.StorePanel;
 using UI.Report;
 using UI.Resurse;
@@ -32,22 +33,11 @@ namespace Service.Ads
         {
             _saveLoadService = saveLoadService;
             _sceneInitializer = sceneInitializer;
-            store.Initialize(_sceneInitializer, _saveLoadService);
-            Debug.Log("Finish store();");
-            
-            _menuPanel.Initialize(_saveLoadService);
+             store.Initialize(_sceneInitializer, _saveLoadService,_timeManager);
+            _menuPanel.Initialize(_saveLoadService,_timeManager);
             _menuPanel.OnClickExitToMenu+= SwicthScene;
-            Debug.Log("finish _menuPanel().Initialize");
-            
-            _timeManager.Initialize();
-            Debug.Log("Finish _timeManager();");
-            
-            
             _resursesCanvas.Initialize(_saveLoadService);
-//_loadingCurtain.OnLoaded();
-            Debug.Log("Finish _resursesCanvas();");
-
-            _reportPanel.Initialize(_saveLoadService);
+            _reportPanel.Initialize(_saveLoadService,_timeManager);
             _reportPanel.OnClickExitToMenu+= SwicthScene;
             _reportPanel.OnClickContinue += StartContinueSpawn;
             _saveLoadService.OnCompleteLocation+=_reportPanel.ShowReport;

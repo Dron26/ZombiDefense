@@ -58,9 +58,11 @@ namespace UI.HUD.StorePanel
 
         public UnityAction<bool> IsStoreActive;
         public Action<WorkPoint> OnBoughtUpgrade;
+        private TimeManager _timeManager;
 
-        public void Initialize(SceneInitializer initializer, SaveLoadService saveLoadService)
+        public void Initialize(SceneInitializer initializer, SaveLoadService saveLoadService, TimeManager timeManager)
         {
+            _timeManager = timeManager;
             _storePanel.gameObject.SetActive(!_storePanel.activeSelf);
             _saveLoadService = saveLoadService;
             _sceneInitializer = initializer;
@@ -204,11 +206,10 @@ namespace UI.HUD.StorePanel
         public void SwitchStorePanel()
         {
             _isPanelActive=!_isPanelActive;
+            _timeManager.SetPaused(_isPanelActive);
             SwitchPanels(_isPanelActive);
             SwitchCameras(_isPanelActive);
-
-            float timeState = Time.timeScale;
-           Time.timeScale = _isPanelActive ? 1 : timeState;
+            
         }
 
         private void SwitchCameras(bool isActive)

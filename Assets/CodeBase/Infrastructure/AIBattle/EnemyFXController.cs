@@ -1,112 +1,120 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using Enemies.AbstractEntity;
-using Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
-using Infrastructure.Observer;
 using Service.Audio;
 using UnityEngine;
 
 namespace Infrastructure.AIBattle
 {
-    public class EnemyFXController : MonoCache,IObserverByHumanoid,IObserverByWeaponController
+    public class EnemyFXController : MonoCache
     {
-       
         [SerializeField] private List<ParticleSystem> _particlesHit;
-        
         [SerializeField] private List<ParticleSystem> _particlesHitLite;
         [SerializeField] private List<ParticleSystem> _particlesHitSniperRifle;
-        
-        [SerializeField] private  List< List<ParticleSystem> >  _particlesGroup=new();
-        
+        [SerializeField] private List<List<ParticleSystem>> _particlesGroup = new();
         [SerializeField] private ParticleSystem _particleTankDie;
         [SerializeField] private ParticleSystem _particleTankDie1;
         [SerializeField] private List<WeaponType> _weaponNames;
-        [SerializeField] private ParticleSystem _bloodFlowing ;
-        [SerializeField] private Dictionary<WeaponType,List<ParticleSystem> > _particleByType=new();
-        
+        [SerializeField] private ParticleSystem _bloodFlowing;
+        [SerializeField] private Dictionary<WeaponType, List<ParticleSystem>> _particleByType = new();
         [SerializeField] private float _areaWidth = 0.1f;
         [SerializeField] private float _areaHeight = 0.1f;
         [SerializeField] private float _minParticleScale = 1f;
         [SerializeField] private float _maxParticleScale = 1f;
-        
-        
-         private AudioClip _shoot;
-         private AudioClip _reload;
+
+        private AudioClip _shoot;
+        private AudioClip _reload;
         private Weapon _weapon;
         private AudioManager _audioManager;
-        private WeaponController _weaponController;
 
         private void Awake()
         {
             if (TryGetComponent(out Enemy enemy))
             {
-                enemy.AddObserver(this);
+                enemy.OnEnemyEvent += HandleEnemyEvent;
+                enemy.OnInitialized += SetAudio; 
+                //enemy.OnTakeDamage += OnHitFX;
+               // enemy.OnDeath += OnDieFX;
+                
+            }
+            
+           
+
+            if (TryGetComponent(out WeaponController weaponController))
+            {
+                weaponController.OnInitialized += SetWeapon;
             }
 
             _particlesGroup.Add(_particlesHitLite);
             _particlesGroup.Add(_particlesHitSniperRifle);
-            
+
             for (int i = 0; i < _weaponNames.Count; i++)
             {
-                _particleByType.Add(_weaponNames[i],_particlesGroup[i]);
+                _particleByType.Add(_weaponNames[i], _particlesGroup[i]);
             }
-
         }
         
-        
+        private void HandleEnemyEvent(EnemyEventType eventType)
+        {
+            switch (eventType)
+            {
+                case EnemyEventType.Death:
+                    OnDieFX();
+                    break;
+                case EnemyEventType.TakeDamage:
+                    break;
+                case EnemyEventType.TakeSmokerDamage:
+                    break;
+                case EnemyEventType.TakeSimpleWalkerDamage:
+                    OnSimpleWalkerDamage();
+                    break;
+            }
+        }
+
+        public void SetWeapon(Weapon weapon)
+        {
+            _weapon = weapon;
+            _shoot = _weapon.Shoot;
+            _reload = _weapon.Reload;
+        }
+
+        private void SetAudio(Enemy enemy)
+        {
+            _audioManager = enemy.GetAudioController();
+        }
+
         public void OnTankDeathFX()
         {
             ParticleSystem particleTankDie = Instantiate(_particleTankDie, transform.position, Quaternion.identity);
             ParticleSystem particleTankDie1 = Instantiate(_particleTankDie1, transform.position, Quaternion.identity);
-            
+
             particleTankDie.Play();
             particleTankDie1.Play();
         }
 
-        public void OnHitFX(WeaponType weaponWeaponType)
+        public void OnSimpleWalkerDamage()
         {
-            PlayRandomParticleEffect(weaponWeaponType);
+            PlayRandomParticleEffect();
         }
 
         public void OnDieFX()
         {
-            _bloodFlowing.Play();
-        }
-        
-
-        public void NotifyFromHumanoid(object data)
-        {
-            Humanoid humanoid = GetComponent<Humanoid>();
-            _audioManager=humanoid.GetAudioController();
-            _weaponController=humanoid.GetComponent<WeaponController>();
-            _weaponController.AddObserver(this);
-        }
-
-        public void NotifySelection(bool isSelected)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override void  OnDisable()
-        {
-            if (TryGetComponent(out Enemy enemy))
+            if (_bloodFlowing)
             {
-                enemy.RemoveObserver(this);
+                _bloodFlowing.Stop();
+            }
+            else
+            {
+                _bloodFlowing.Play();
             }
         }
 
-        public void NotifyFromWeaponController(Weapon weapon)
+
+        public void PlayRandomParticleEffect()
         {
-            _weapon = weapon;
-            _shoot=_weapon.Shoot;
-            _reload=_weapon.Reload;
-        }
-        
-        public void PlayRandomParticleEffect(WeaponType weaponWeaponType)
-        {
+            WeaponType weaponWeaponType = _weapon.GetWeaponType();
+            
             if (_particleByType.TryGetValue(weaponWeaponType, out List<ParticleSystem> effect))
             {
                 if (effect.Count > 0)
@@ -115,7 +123,7 @@ namespace Infrastructure.AIBattle
                     ParticleSystem particleSystem = effect[randomIndex];
 
                     //SetRandomParticlePosition(particleSystem);
-                        //SetRandomParticleScale(particleSystem);
+                    //SetRandomParticleScale(particleSystem);
 
                     particleSystem.Play();
                 }
@@ -150,14 +158,21 @@ namespace Infrastructure.AIBattle
         {
             int maxChance = 20;
             int chance = 14;
-            
-            float randomNumber = UnityEngine.Random.Range(0,maxChance);
-            
+
+            float randomNumber = UnityEngine.Random.Range(0, maxChance);
+
             if (randomNumber == chance)
             {
                 _bloodFlowing.Play();
             }
         }
 
+        protected override void OnDisable()
+        {
+            if (TryGetComponent(out Enemy enemy))
+            {
+                enemy.OnInitialized -= SetAudio;
+            }
+        }
     }
 }

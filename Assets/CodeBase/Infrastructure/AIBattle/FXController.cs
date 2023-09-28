@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
-using Infrastructure.Observer;
 using Service.Audio;
 using UnityEngine;
 
 namespace Infrastructure.AIBattle
 {
-    public class FXController : MonoCache,IObserverByHumanoid,IObserverByWeaponController
+    public class FXController : MonoCache
     {
         [SerializeField] private ParticleSystem _particleHit;
         [SerializeField] private ParticleSystem _particleGunshotSingle;
@@ -26,13 +23,23 @@ namespace Infrastructure.AIBattle
         private AudioManager _audioManager;
         private WeaponController _weaponController;
         private Humanoid _humanoid;
+        
         private void Awake()
         {
-             _humanoid = GetComponent<Humanoid>();
-             _humanoid.AddObserver(this);
+            if (TryGetComponent(out Humanoid humanoid))
+            { 
+                _humanoid=humanoid;
+                _humanoid.OnInitialize+=SetAudio;
+            }
+             
              _weaponController= GetComponent<WeaponController>();
-             _weaponController.AddObserver(this);
             
+        }
+
+        private void SetAudio(Humanoid _humanoid)
+        {
+            _audioManager=_humanoid.GetAudioController();
+            _audioSource= _audioManager.GetSoundSource();
         }
 
         public void OnAttackFX()
@@ -78,8 +85,7 @@ namespace Infrastructure.AIBattle
 
         public void NotifyFromHumanoid(object data)
         {
-            _audioManager=_humanoid.GetAudioController();
-            _audioSource= _audioManager.GetSoundSource();
+           
         }
 
         public void NotifySelection(bool isSelected)
@@ -96,8 +102,8 @@ namespace Infrastructure.AIBattle
         
         protected override void  OnDisable()
         {
-            _humanoid.RemoveObserver(this);
-            _weaponController.RemoveObserver(this);
+           // _humanoid.RemoveObserver(this);
+          //  _weaponController.RemoveObserver(this);
         }
     }
 }
