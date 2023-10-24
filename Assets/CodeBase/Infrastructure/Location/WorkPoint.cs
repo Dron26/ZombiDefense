@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Infrastructure.Logic.WeaponManagment;
 using Service.SaveLoad;
 using UnityEngine;
 using UnityEngine.Events;
@@ -23,6 +24,10 @@ namespace Infrastructure.Location
         public bool IsSelected => _isSelected;
         public int Level => _level;
         public int UpPrecent=>_upPrecent;
+        public bool IsHaveMedicineBox => _isHaveMedicineBox;
+        public bool IsHaveWeaponBox => _isHaveWeaponBox; 
+        public bool  _isHaveMedicineBox;
+
         private SpriteRenderer _currentCircle=new ();
         private List<GameObject> _selectedCircles = new();
         private Humanoid _humanoid;
@@ -33,6 +38,10 @@ namespace Infrastructure.Location
         private int _level;
         private int _upPrecent;
         SaveLoadService _saveLoadService;
+        
+        private MedicineBox _medicineBox;
+        private WeaponBox _weaponBox;
+        private bool _isHaveWeaponBox;
 
         private void Awake()
         {
@@ -86,6 +95,8 @@ namespace Infrastructure.Location
         {
             _humanoid=humanoid;
             _humanoid.transform.parent=transform;
+            _humanoid.SetPoint(this);
+            _humanoid.GetComponent<WeaponController>().SetPoint(this);
             CheckState();
         }
 
@@ -114,6 +125,31 @@ namespace Infrastructure.Location
             _saveLoadService=saveLoadService;
         }
 
+        public void SetMedicineBox(MedicineBox medicineBox)
+        {
+            _medicineBox = medicineBox;
+            _isHaveMedicineBox=true;
+        }
+
+        public MedicineBox GetMedicineBox()
+        { 
+            _isHaveMedicineBox=false;
+            return _medicineBox;
+        }
+        
+        public void SetWeaponBox(WeaponBox weaponBox)
+        {
+            _weaponBox=weaponBox;
+            _isHaveWeaponBox=true;
+        }
+        
+        public WeaponBox GetWeaponBox()
+        { 
+            _isHaveWeaponBox=false;
+            _weaponBox = null;
+            return _weaponBox;
+        }
+        
         public void SelectedForMove(bool isSelected)
         {
             _isSelectedForMove=isSelected;
@@ -128,7 +164,6 @@ namespace Infrastructure.Location
 
         public void RemoveHumanoid()
         {
-            
             _humanoid.transform.parent=transform.parent;
             CheckState();
         }

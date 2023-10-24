@@ -4,12 +4,12 @@ using Agava.YandexGames;
 using Humanoids.AbstractLevel;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Infrastructure.Factories.FactoriesBox;
 using Infrastructure.Location;
 using Infrastructure.Logic.Inits;
 using Service;
 using Service.Ads;
 using Service.SaveLoad;
-using UnityEditor.PackageManager.UI;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -37,6 +37,11 @@ namespace UI.HUD.StorePanel
         [SerializeField] private GameObject _controlPanel;
         [SerializeField] private GameObject _rightButtonPanel;
         [SerializeField] private WorkPointUpgradePanel _pointUpgradePanel;
+
+        private AdditionalEquipment _additionalEquipmentButton;
+         private MedicineBoxButton _medicineBoxButton;
+         private WeaponBoxButton weaponBoxButton;
+        
          private WorkPointGroup _workPointGroup;
         [SerializeField] private int _priceForWorkPointUp;
        
@@ -55,10 +60,11 @@ namespace UI.HUD.StorePanel
         private SaveLoadService _saveLoadService;
         private int maxLevel = 3;
         private bool _isPanelActive=false;
-
         public UnityAction<bool> IsStoreActive;
         public Action<WorkPoint> OnBoughtUpgrade;
         private TimeManager _timeManager;
+        
+        private BoxFactory _boxFactory;
 
         public void Initialize(SceneInitializer initializer, SaveLoadService saveLoadService, TimeManager timeManager)
         {
@@ -78,11 +84,13 @@ namespace UI.HUD.StorePanel
             //_characterInitializer.OnClickWorkpoint += CheckPointInfo;
             _characters = _saveLoadService.GetAvailableCharacters();
             _saveLoadService.OnSelectedNewPoint += CheckPointInfo;
-            
+                        
+
             _characterStore.Initialize(_saveLoadService,this);
             _characterStore.OnCharacterBought += OnCharacterBought;
             _characterStore.OnMoneyEmpty += ShowPanelAdsForMoney;
-            
+            _medicineBoxButton.OnSelected+=OnSelectMedicineBox;
+            weaponBoxButton.OnSelected+=OnSelectWeaponBox;
             _eliteCharacterStore.Initialize(_saveLoadService,this);
             _eliteCharacterStore.OnCharacterBought += OnCharacterBought;
             
@@ -90,8 +98,9 @@ namespace UI.HUD.StorePanel
             //_characterStore.BuyCharacter += OnBuyCharacter;
             _movePointController = _sceneInitializer.GetMovePointController();
            
-            _pointUpgradePanel.Initialize(_characterInitializer, _saveLoadService);
-            _pointUpgradePanel.GetButton().onClick.AddListener(BuyPointUp);
+            _pointUpgradePanel.Initialize();
+            _pointUpgradePanel.Initialize();
+            _pointUpgradePanel.OnSelectedButton+=(BuyPointUp);
             
             //_movePointController.OnClickWorkpoint += OnClickWorkpoint;
             //_movePointController.OnSelectedNewPoint+=OnSelectedNewPoint;
@@ -99,6 +108,18 @@ namespace UI.HUD.StorePanel
             _characterStoreRotation.gameObject.SetActive(!_characterStoreRotation.gameObject.activeSelf);
         }
 
+        private void OnSelectMedicineBox()
+        {
+            if (!_selectedWorkPoint.IsHaveMedicineBox)
+                _selectedWorkPoint.SetMedicineBox(_boxFactory.CreateMedicine());
+        }
+        
+        private void OnSelectWeaponBox()
+        {
+            if (!_selectedWorkPoint.IsHaveWeaponBox)
+                _selectedWorkPoint.SetWeaponBox(_boxFactory.CreateWeapon());
+        }
+        
         protected override void OnDisabled()
         {
             _saveLoadService.OnSelectedNewPoint -= CheckPointInfo;
@@ -140,8 +161,6 @@ namespace UI.HUD.StorePanel
 
         private void CheckPointInfo(WorkPoint workPoint)
         {
-           // bool isStartPoint = false;
-
                 _selectedWorkPoint = workPoint;
 
                 if (_selectedWorkPoint.Level <=maxLevel )
@@ -151,6 +170,11 @@ namespace UI.HUD.StorePanel
                 else
                 {
                     _pointUpgradePanel.SwitchStateButton(false);
+                }
+
+                if (!_selectedWorkPoint.IsHaveWeaponBox)
+                {
+                    
                 }
         }
 

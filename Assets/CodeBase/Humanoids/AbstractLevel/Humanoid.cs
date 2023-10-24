@@ -6,6 +6,7 @@ using Infrastructure.AIBattle;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Infrastructure.Location;
 using Infrastructure.Logic.WeaponManagment;
 using Service.Audio;
 using UnityEngine;
@@ -45,7 +46,7 @@ namespace Humanoids.AbstractLevel
 
        // public  int GetLevel();
        // public  int GetHealth();
-       // public abstract void Initialize();
+       // public abmstract void Initialize();
          public  Sprite Sprite=>_sprite;
          public  bool IsLife=>_isLife;
        // public  int GetPrice();
@@ -106,10 +107,10 @@ namespace Humanoids.AbstractLevel
             return _audioManager;
         }
 
-        public void SetSelected(bool isSelected)
+        public void SetSelected(bool isSelected) 
         {
             _isSelected = isSelected;
-
+            
             if (_isSelected == true)
             {
                 _ring.gameObject.SetActive(true);
@@ -121,8 +122,9 @@ namespace Humanoids.AbstractLevel
         }
 
 
-        public void SetPontInfo()
+        private void SetUpgradeFromPoint(int upPrecent)
         {
+            _maxHealth+=(_maxHealth*upPrecent)/100;
         }
 
         public void IsMoving(bool isMoving)
@@ -144,5 +146,25 @@ namespace Humanoids.AbstractLevel
             _currentHealth+=_maxHealth;
         }
 
+        public void SetPoint(WorkPoint workPoint)
+        {
+            if (workPoint.IsHaveMedicineBox)
+            {
+                OpenMedicineBox(workPoint.GetMedicineBox());
+            }
+
+        }
+
+        private void OpenMedicineBox(MedicineBox medicineBox)
+        {
+            AddHealth(((_maxHealth*medicineBox.RecoveryRate)/100));
+            
+        }
+        
+        private void AddHealth(int health)
+        {
+            _currentHealth+=_maxHealth;
+        }
+        
     }
 }

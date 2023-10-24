@@ -9,9 +9,8 @@ namespace Infrastructure.Location
 {
     public class WorkPointGroup : MonoCache
     {
-        [SerializeField] public List<float> persentUp=new();
+        [SerializeField] public List<int> persentUp=new();
         private  List<WorkPoint> _workPoints = new();
-        private  List<int> _workPointsPercent = new();
         public UnityAction<WorkPoint> OnSelectPointToMove;
         public UnityAction<WorkPoint> OnSelectedPoint;
         public UnityAction<WorkPoint> OnSelectedStartPoint;
@@ -49,7 +48,7 @@ namespace Infrastructure.Location
             
             if (index!=-1)
             {
-                workPoint.UpLevel(_workPointsPercent[workPoint.Level]);
+                workPoint.UpLevel(persentUp[workPoint.Level]);
                 print("Up Level " + workPoint.Level);
             }
             else

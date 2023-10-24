@@ -1,27 +1,32 @@
+using System;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.Inits;
 using Service.SaveLoad;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace UI.HUD.StorePanel
 {
     public class WorkPointUpgradePanel:MonoCache
     {
-        private PlayerCharacterInitializer _characterInitializer;
-        private SaveLoadService _saveLoadService;
-        private Button _button;
+         private Button _button;
+        public Action OnSelectedButton; 
         
-        public void Initialize(PlayerCharacterInitializer characterInitializer, SaveLoadService saveLoadService)
+        public void Initialize()
         {
-            _characterInitializer=characterInitializer;
-            _saveLoadService= saveLoadService;
-            _button=GetComponentInChildren<Button>();
+            _button=GetComponent<Button>();
             _button.gameObject.SetActive(true);
+            _button.onClick.AddListener(OnSelectUpgrade);
         }
 
         public void ShowInfo()
         {
             print("ShowInfo");
+        }
+
+        private void OnSelectUpgrade()
+        {
+            OnSelectedButton?.Invoke();
         }
 
         public void SwitchStateButton(bool isActive)

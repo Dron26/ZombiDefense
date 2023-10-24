@@ -4,6 +4,7 @@ using Data.Upgrades;
 using Humanoids.AbstractLevel;
 using Infrastructure.AIBattle;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Infrastructure.Location;
 using UnityEngine;
 
 namespace Infrastructure.Logic.WeaponManagment
@@ -21,13 +22,14 @@ namespace Infrastructure.Logic.WeaponManagment
         public Action<Weapon> OnInitialized;
         
         public int Damage => _damage;
-
+        private List<Granade> _granades = new();
         private PlayerCharacterAnimController _playerCharacterAnimController;
         private Animator _animator;
         private Humanoid _humanoid;
         private Dictionary<int, float> _weaponAnimInfo = new();
         private WeaponType _weaponWeaponType;
-        
+        private GameObject _radiusObject;
+        private SpriteRenderer _spriteRenderer;
         private int _damage;
         private int _maxAmmo;
         private float _reloadTime;
@@ -60,7 +62,7 @@ namespace Infrastructure.Logic.WeaponManagment
             SetAnimInfo();
             SetWeaponParametrs();
             ChangeWeapon?.Invoke();
-            SetShootingRadius();
+            SetShootingRadiusSprite();
             OnInitialized?.Invoke(_weapon);
         }
         
@@ -86,16 +88,21 @@ namespace Infrastructure.Logic.WeaponManagment
             }
         }
 
+        private void SetShootingRadiusSprite()
+        {
+            _radiusObject= new GameObject("ShootingRadius");
+            _radiusObject.SetActive(true);
+            _radiusObject.transform.position = transform.position;
+            _spriteRenderer= _radiusObject.AddComponent<SpriteRenderer>();
+            _spriteRenderer.sprite = shootingRadiusSprite;
+            SetShootingRadius();
+        }
+
         private void SetShootingRadius()
         {
-            GameObject radiusObject = new GameObject("ShootingRadius");
-            radiusObject.SetActive(true);
-            radiusObject.transform.position = transform.position;
-            SpriteRenderer spriteRenderer = radiusObject.AddComponent<SpriteRenderer>();
-            spriteRenderer.sprite = shootingRadiusSprite;
-            spriteRenderer.color = new Color(1f, 1f, 1f, 0.5f);
-            radiusObject.transform.localScale = new Vector3(_range * 2f, _range * 2f, 1f);
-            radiusObject.SetActive(false);
+            _spriteRenderer.color = new Color(1f, 1f, 1f, 0.5f);
+            _radiusObject.transform.localScale = new Vector3(_range * 2f, _range * 2f, 1f);
+            _radiusObject.SetActive(false);
         }
 
 
@@ -113,6 +120,43 @@ namespace Infrastructure.Logic.WeaponManagment
         public void SetUpgrade(UpgradeData upgradeData, int level)
         {
             SetDamage(upgradeData.Damage);
+        }
+
+        public void SetPoint(WorkPoint workPoint)
+        {
+            _damage = (_damage * workPoint.UpPrecent) / 100;
+            _range=(_range * workPoint.UpPrecent) / 100;
+            SetShootingRadius();
+        }
+
+        public void TakeGranade()
+        {
+            
+        }
+        public void AddGranade(Granade granade)
+        {
+            _granades.Add(granade);
+        }
+        
+        public bool TryGetGranade(out Granade granade)
+        {
+            bool canGet = false;
+            granade = null;
+            if (_granades.Count > 0)
+            {
+                canGet = true;
+                return canGet;
+                granade = GetGranade();
+            }
+
+            return canGet;
+        }
+        
+        private Granade GetGranade()
+        {
+            Granade granade=_granades[0];
+                _granades.RemoveAt(0);
+                return granade;
         }
     }
 
