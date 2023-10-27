@@ -50,7 +50,7 @@ namespace UI.SettingsPanel
             _gameBootstrapper=FindObjectOfType<GameBootstrapper>();
             _saveLoadService = saveLoadService;
             _settingPanel.Initialize(_audioManager,_saveLoadService);
-            
+            _buttonPanel.Initialize(_saveLoadService);
             InitializeButton();
             _panel.SetActive(false);
             _exitPanel.SetActive(false);

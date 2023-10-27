@@ -46,6 +46,8 @@ namespace UI.Levels
             }
         }
         
+        public void SetCompleted(bool isCompleted)=>_isCompleted=isCompleted;
+
         public void Initialize( int id, string path, bool isTutorial, bool isLocked, int maxEnemyOnLevel)
         {
             _id = id;

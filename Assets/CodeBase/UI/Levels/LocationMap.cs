@@ -19,7 +19,6 @@ namespace UI.Levels
         private int _selectNumber;
         private GameStateMachine _stateMachine;
         private SaveLoadService _saveLoadService;
-        private bool _isFirstStarted=>_saveLoadService.IsFirstStart;
          List<LocationData> _locationData=new ();
         
         public void Initialize(GameStateMachine stateMachine,SaveLoadService saveLoadService)
@@ -28,17 +27,17 @@ namespace UI.Levels
             
             _saveLoadService=saveLoadService;
             _stateMachine=stateMachine;
-
-            foreach (var location in _locations)
-            {
-                location.GetComponent<Button>().onClick.AddListener(() =>OnButtonClick(location));
-                location.SetLocked(true);
-            }
             
-            if (_isFirstStarted)
+            _locationData =  new List<LocationData>(_saveLoadService.GetLocationsDatas()) ;
+            
+            
+            
+            if (_locationData.Count==0)
             {
                 foreach (var location in _locations)
                 {
+                    location.SetLocked(true);
+                    
                     LocationData data = new LocationData();
                     data.Id=location.Id;
                     data.Path=location.Path;
@@ -50,15 +49,32 @@ namespace UI.Levels
             }
             else
             {
-                _locationData =  new List<LocationData>(_saveLoadService.GetLocationsDatas()) ;
                 
-                foreach (var location in _locationData)
+                _locationData[0].IsLocked = false;
+                _locations[0].SetLocked(false);
+                
+                for (int i = 0; i < _locationData.Count; i++)
                 {
-                    location.IsLocked = !location.IsCompleted;
+                   
+
+                    bool completed = _locationData[i].IsCompleted;
+                    bool finished = i != _locationData.Count - 1;
+                    
+                    if (_locationData[i].IsCompleted&&i!=_locationData.Count-1)
+                    {
+                        _locations[i].SetCompleted( _locationData[i].IsCompleted);
+                        
+                        _locationData[i + 1].IsLocked=false;
+                        _locations[i + 1].SetLocked(false);
+                    }
                 }
             }
-            
-            
+
+            foreach (var location in _locations)
+            {
+                location.GetComponentInChildren<Button>().onClick.AddListener(() => OnButtonClick(location));
+            }
+
             _locationData[0].IsLocked = false;
             _locations[0].SetLocked(false);
                 

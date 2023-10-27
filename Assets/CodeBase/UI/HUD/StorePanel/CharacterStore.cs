@@ -5,6 +5,7 @@ using Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
 using Service;
+using Service.Audio;
 using Service.SaveLoad;
 using UnityEngine;
 using UnityEngine.UI;
@@ -53,17 +54,17 @@ namespace UI.HUD.StorePanel
             SetHumanoid();
             InitializeCharacterSlots();
             //  InitializeUpgradePanel();
-            SetCharacterData(false);
+           // SetCharacterData(false);
             InitializeButton();
             
             _isInitialized=true;
         }
         
-        protected override void OnEnabled()
-        {
-            if (!_isInitialized) return;
-            SetCharacterData(true);
-        }
+        // protected override void OnEnabled()
+        // {
+        //     if (!_isInitialized) return;
+        //     SetCharacterData(true);
+        // }
         
         private void InitializeButton()
         {
@@ -161,6 +162,9 @@ namespace UI.HUD.StorePanel
             {
                 if (character.TryGetComponent(out Humanoid humanoid))
                 {
+                    humanoid.UIInitialize();
+                    WeaponController weaponController=humanoid.GetComponent<WeaponController>(); 
+                    weaponController.UIInitialize();
                     _allHumanoid.Add(humanoid);
                     
                     if (humanoid.IsBuyed)

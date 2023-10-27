@@ -1,8 +1,11 @@
 using System;
 using System.Collections;
+using Data;
 using Infrastructure;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.Inits;
+using Infrastructure.StateMachine;
+using Infrastructure.StateMachine.States;
 using Lean.Localization;
 using Service.SaveLoad;
 using TMPro;
@@ -14,7 +17,8 @@ namespace UI.Report
     public class ReportPanel:MonoCache
     {
         private SaveLoadService _saveLoadService;
-        
+        [SerializeField] private LeanLocalizedTextMeshProUGUI _infoSurvivalEnemies;
+        [SerializeField] private TMP_Text _infoSurvivalEnemiesValue;
         [SerializeField] private LeanLocalizedTextMeshProUGUI _infoKilledEnemies;
         [SerializeField] private TMP_Text _infoKilledEnemiesValue;
         [SerializeField] private LeanLocalizedTextMeshProUGUI _infoProfit;
@@ -27,11 +31,13 @@ namespace UI.Report
 
         [SerializeField] private Button _buttonApply;
         [SerializeField] private Button _buttonExit;
+        [SerializeField] private Button _buttonReset;
         
         [SerializeField] private GameObject _panel;
         
         private int _numberKilledEnemies;
         private int _allNumberKilledEnemies;
+        private int _numberSurvivalEnemies;
         private int _survival;
         private int _deadMercenary;
         private int _profit;
@@ -39,6 +45,7 @@ namespace UI.Report
         public Action OnClickContinue;
         private TimeManager _timeManager;
         private bool _isLastHumanoidDie;
+        private GameStateMachine _stateMachine;
 
         public void Initialize(SaveLoadService saveLoadService, TimeManager timeManager)
         {
@@ -46,20 +53,21 @@ namespace UI.Report
             _timeManager=timeManager;
             _buttonApply.GetComponentInChildren<Button>().onClick.AddListener(СontinueGame);
             _buttonExit.onClick.AddListener(SwicthScene);
+            _buttonReset.onClick.AddListener(ResetLevel);
             _panel.SetActive(false);
+            _stateMachine = saveLoadService.GetGameBootstrapper().GetStateMachine();
         }
 
         private void СontinueGame()
         {
+            Debug.Log("Entered СontinueGame()");
             _timeManager.SetPaused(false);
             OnClickContinue?.Invoke();
             _panel.SetActive(false);
-            Debug.Log("Entered СontinueGame()");
         }
 
         public void ShowReport()
         {
-            
             StartCoroutine(Show());
         }
 
@@ -87,7 +95,10 @@ namespace UI.Report
             _survival = _saveLoadService.GetSurvivalsCount();
             _deadMercenary = _saveLoadService.GetDeadMercenaryCount();
             _profit = _saveLoadService.MoneyData.MoneyForEnemy;
+            _numberSurvivalEnemies=_saveLoadService.GetActiveEnemy().Count;
             
+            _infoSurvivalEnemies.TranslationName = ReportKey.SurvivorsEnemies.ToString();
+            _infoSurvivalEnemiesValue.text = _numberSurvivalEnemies.ToString();
             _infoSurvival.TranslationName = ReportKey.Survivors.ToString();
             _infoSurvivalValue.text = _survival.ToString();
             _infoDeadMercenary.TranslationName = ReportKey.Dead.ToString();
@@ -112,11 +123,18 @@ namespace UI.Report
             ShowReport();
         }
         
+        private void ResetLevel()
+        {
+            Debug.Log("ResetLevel()");
+            _stateMachine.Enter<LoadLevelState,string>(ConstantsData.Level); 
+        } 
+        
     }
 }
 
 public enum ReportKey
 {
+    SurvivorsEnemies,
     Survivors,
     Dead,
     Killed,

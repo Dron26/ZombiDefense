@@ -24,6 +24,7 @@ namespace Service.Ads
         [SerializeField] private TimeManager _timeManager;
         [SerializeField] private ResursesCanvas _resursesCanvas;
         [SerializeField] private ReportPanel _reportPanel;
+        public Action OnClickExitToMenu;
         private SaveLoadService _saveLoadService;
         private SceneInitializer _sceneInitializer;
 
@@ -33,16 +34,16 @@ namespace Service.Ads
         {
             _saveLoadService = saveLoadService;
             _sceneInitializer = sceneInitializer;
+            _sceneInitializer.OnReadySpawning=StartTimer;
              store.Initialize(_sceneInitializer, _saveLoadService,_timeManager);
             _menuPanel.Initialize(_saveLoadService,_timeManager);
-            _menuPanel.OnClickExitToMenu+= SwicthScene;
+            _menuPanel.OnClickExitToMenu+= OnClickExit;
             _resursesCanvas.Initialize(_saveLoadService);
             _reportPanel.Initialize(_saveLoadService,_timeManager);
-            _reportPanel.OnClickExitToMenu+= SwicthScene;
+            _reportPanel.OnClickExitToMenu+= OnClickExit;
             _reportPanel.OnClickContinue += StartContinueSpawn;
             _saveLoadService.OnCompleteLocation+=_reportPanel.ShowReport;
             _saveLoadService.LastHumanoidDie+=_reportPanel.OnLastHumanoidDie;
-            StartTimer();
         }
 
         private void StartTimer()
@@ -69,12 +70,10 @@ namespace Service.Ads
         }
         
         public Store GetStoreOnPlay() => store;
-        
-        private void SwicthScene()
+
+        private void OnClickExit()
         {
-            _saveLoadService.Save();
-            _saveLoadService.GetGameBootstrapper().GetStateMachine().Enter<LoadLevelState,string>(ConstantsData.Menu); 
-            Destroy(gameObject);
+            OnClickExitToMenu?.Invoke();
         }
     }
 }

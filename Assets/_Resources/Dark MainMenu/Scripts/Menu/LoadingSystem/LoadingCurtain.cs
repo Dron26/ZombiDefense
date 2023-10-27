@@ -24,6 +24,7 @@ public class LoadingCurtain : MonoBehaviour
 
     public void StartLoading()
     {
+        Debug.Log("Loading");
         OnStartLoading?.Invoke();
         _panel.SetActive(true);
         _canvasGroup.blocksRaycasts = true;

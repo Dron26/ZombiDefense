@@ -23,7 +23,7 @@ namespace Enemies.AbstractEntity
         [SerializeField] private int _level;
         [SerializeField] private int _price;
 
-        public event Action<EnemyEventType> OnEnemyEvent;
+        public event Action<EnemyEventType,WeaponType> OnEnemyEvent;
         
         public Action<Enemy> OnInitialized;
         public Action<Enemy> OnDeath; 
@@ -128,23 +128,24 @@ namespace Enemies.AbstractEntity
             if (_health <= 0)
             {
                 _saveLoadService.SetInactiveEnemy(this);
-                Die();
+                Die(weaponWeaponType);
                 _isLife = false;
             }
         }
 
         public abstract void AdditionalDamage(float getDamage,WeaponType weaponWeaponType);
 
-        private void Die()
+        private void Die( WeaponType weaponWeaponType)
         {
             EnemyStateMachine stateMachine = GetComponent<EnemyStateMachine>();
             stateMachine.EnterBehavior<EnemyDieState>();
             OnDeath?.Invoke(this);
+            OnAction(EnemyEventType.Death, weaponWeaponType);
         }
 
-        public void OnAction(EnemyEventType action)
+        public void OnAction(EnemyEventType action,WeaponType weaponType)
         {
-            OnEnemyEvent?.Invoke(action);
+            OnEnemyEvent?.Invoke(action,weaponType);
         }
 
         public void SetIndex(int index)

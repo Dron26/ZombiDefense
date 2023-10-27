@@ -28,10 +28,10 @@ namespace UI.HUD.StorePanel
             _damage = _weaponController.Damage;
             _info = humanoid.GetName()+"Info";
 
-            ShowName();
+            ShowInfo();
         }
 
-        public void ShowName()
+        public void ShowInfo()
         {
             _nameWindow.text = LeanLocalization.GetTranslationText(_name);
             _healthWindow.text = _health.ToString();

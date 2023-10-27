@@ -24,12 +24,9 @@ private bool _isHumanoidReady=> _saveLoadService.GetActiveHumanoids().Count > 0;
         private bool _isStartClick = true;
         public Action OnClickStartSpawn;
         
-        private void Start()
+        private void StartTimer()
         {
-            countdownText.text = "";
-            _timerPanel.SetActive(true);
-            skipButton.gameObject.SetActive(true);
-            countdownText.gameObject.SetActive(false);
+           
         }
         protected override void OnEnabled()
         {
@@ -44,7 +41,11 @@ private bool _isHumanoidReady=> _saveLoadService.GetActiveHumanoids().Count > 0;
         public void StartTimer(SaveLoadService saveLoadService)
         {
              _saveLoadService = saveLoadService;
-            StartCoroutine(CheckZombieCountAndSpawn());
+            //StartCoroutine(CheckZombieCountAndSpawn());
+            countdownText.text = "";
+            _timerPanel.SetActive(true);
+            skipButton.gameObject.SetActive(true);
+            countdownText.gameObject.SetActive(false);
         }
 
         private IEnumerator CheckZombieCountAndSpawn()
@@ -80,7 +81,7 @@ private bool _isHumanoidReady=> _saveLoadService.GetActiveHumanoids().Count > 0;
        
         private void SkipTimer()
         {
-            if (!_isHumanoidReady) return;
+            if (_isHumanoidReady==false) return;
             if (_isStartClick==false)
             {
                 StopCoroutine(ShowSpawnTimer());

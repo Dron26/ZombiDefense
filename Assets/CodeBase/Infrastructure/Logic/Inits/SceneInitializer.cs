@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using CameraMain;
 using Data;
 using Humanoids.AbstractLevel;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine;
@@ -24,7 +25,7 @@ namespace Infrastructure.Logic.Inits
         [SerializeField] private List<Humanoid> _avaibelCharacters;
         [SerializeField] private MovePointController _movePointController;
         [SerializeField] private List<Image> _images;
-        
+        [SerializeField] private MultiInputMovement _cameraInputMovement;
         [SerializeField] private WindowBase _windowBase;
         
         private LoadingCurtain _loadingCurtain;
@@ -40,7 +41,8 @@ namespace Infrastructure.Logic.Inits
         private WaveManager _waveManager;
         private GameStateMachine _stateMachine;
         private int ordered = 1;
-        public UnityAction SetInfoCompleted;
+        public Action SetInfoCompleted;
+        public Action OnReadySpawning;
         
         public List<Humanoid> availableCharacters = new ();
 
@@ -79,6 +81,7 @@ namespace Infrastructure.Logic.Inits
              _windowBase.Init(_saveLoadService,this );
              _windowBase.OnClickStartSpawn+=_enemyCharacterInitializer.StartSpawning;
              _windowBase.OnClickContinueStartSpawn+=OnClickContinueStartSpawn;
+             _windowBase.OnClickExitToMenu+=OnClickExitToMenu;
 
              
              _playerCharacterInitializer.Initialize(_audioManager, this, _saveLoadService);
@@ -111,16 +114,17 @@ namespace Infrastructure.Logic.Inits
             _waveManager = _enemyCharacterInitializer.GetWaveManager();
             Debug.Log("Finish _playerCharacterInitializer();");
 
-            _waveManager.OnReadySpawning += OnReadySpawning;
+            _waveManager.OnReadySpawning += ReadyToSpawning;
             Debug.Log("Finish _playerCharacterInitializer();");
             
             StartCoroutine(_waveManager.SetWaveData());
         }
        
         
-        private void OnReadySpawning()
+        private void ReadyToSpawning()
         {
             _loadingCurtain.OnLoaded();
+            OnReadySpawning?.Invoke();
             
             if (_isInfinity)
             {
@@ -170,8 +174,8 @@ namespace Infrastructure.Logic.Inits
             
             _playerCharacterInitializer=location.GetComponentInChildren<PlayerCharacterInitializer>();
             _enemyCharacterInitializer=location.GetComponentInChildren<EnemyCharacterInitializer>();
-            _cameraPhysical=location.GetComponentInChildren<Camera>();
-            _cameraUI=location.GetComponentInChildren<Camera>();
+            CameraData cameraData = location.GetComponentInChildren<CameraData>();
+            _cameraInputMovement.SetPosition(cameraData); 
             _location=location;
             tempLocation=null;
             
@@ -194,7 +198,7 @@ namespace Infrastructure.Logic.Inits
         {
             _playerCharacterInitializer.CreatedHumanoid -= SetInfo;
             _playerCharacterInitializer.LastHumanoidDie -= _enemyCharacterInitializer.StopSpawning;
-            _waveManager.OnReadySpawning -= OnReadySpawning;
+            _waveManager.OnReadySpawning -= ReadyToSpawning;
             _windowBase.OnClickStartSpawn-=_enemyCharacterInitializer.StartSpawning;
         }
 
@@ -213,11 +217,19 @@ namespace Infrastructure.Logic.Inits
 
          public void OnClickContinueStartSpawn()
          {
-            
-            _saveLoadService.ClearSpawnData();
+             _saveLoadService.ClearSpawnData();
             InitializeEnemies();
             StartCoroutine(_waveManager.SetWaveData());
             _isInfinity=true;
+            
+         }
+         
+         private void OnClickExitToMenu()
+         {
+             _saveLoadService.Save();
+             _saveLoadService.GetGameBootstrapper().GetStateMachine().Enter<LoadLevelState,string>(ConstantsData.Menu); 
+             Destroy(_location.gameObject);
+             Destroy(transform.parent.gameObject);
          }
 
     }

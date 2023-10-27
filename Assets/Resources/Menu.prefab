@@ -802,8 +802,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 166.55142, y: -60.76806}
-  m_SizeDelta: {x: 333.10284, y: 81.53612}
+  m_AnchoredPosition: {x: 157.83496, y: -62.80442}
+  m_SizeDelta: {x: 315.66992, y: 85.60884}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1348802859054077192
 CanvasRenderer:
@@ -1544,7 +1544,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 28.5
+  m_fontSize: 27
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2532,8 +2532,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 166.55142, y: -114.10418}
-  m_SizeDelta: {x: 333.10284, y: 25.13612}
+  m_AnchoredPosition: {x: 157.83496, y: -120.213264}
+  m_SizeDelta: {x: 315.66992, y: 29.208843}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7760708239044010826
 CanvasRenderer:
@@ -20300,7 +20300,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 108.7
+  m_fontSize: 105.35
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -23278,7 +23278,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2674547278711987057, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 1.2910004
+      value: 1.2909851
       objectReference: {fileID: 0}
     - target: {fileID: 2674547278711987057, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -23292,13 +23292,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4634321010830102065, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5630911684212668292, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: m_Name
       value: Level (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 6072422491200567025, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6177566432666388448, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: m_fontSize
-      value: 28.3
+      value: 26.75
       objectReference: {fileID: 0}
     - target: {fileID: 7358063225214821973, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: m_IsActive
@@ -23308,6 +23316,10 @@ PrefabInstance:
       propertyPath: AudioSource
       value: 
       objectReference: {fileID: 2631611901465381972}
+    - target: {fileID: 8966031988034546880, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
 --- !u!224 &59776706817832082 stripped
@@ -23332,7 +23344,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 2722909817795882979}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -23343,7 +23355,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 2722909817795882979}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -23463,13 +23475,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4634321010830102065, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5630911684212668292, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: m_Name
       value: Level (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 6072422491200567025, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6177566432666388448, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: m_fontSize
-      value: 28.05
+      value: 26.6
       objectReference: {fileID: 0}
     - target: {fileID: 7358063225214821973, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: m_IsActive
@@ -23479,6 +23499,10 @@ PrefabInstance:
       propertyPath: AudioSource
       value: 
       objectReference: {fileID: 2631611901465381972}
+    - target: {fileID: 8966031988034546880, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
 --- !u!224 &1067691526636602358 stripped
@@ -23503,7 +23527,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 3156132035299580039}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -23530,7 +23554,7 @@ PrefabInstance:
     - target: {fileID: 1797458259692338035, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: _unlocked
       value: 
-      objectReference: {fileID: 308120634971825983}
+      objectReference: {fileID: 5891621886205745859}
     - target: {fileID: 1797458259692338035, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: maxEnemyOnLevel
       value: 80
@@ -23623,13 +23647,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4634321010830102065, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5630911684212668292, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: m_Name
       value: Level (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 6072422491200567025, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6177566432666388448, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: m_fontSize
-      value: 28.45
+      value: 27
       objectReference: {fileID: 0}
     - target: {fileID: 7358063225214821973, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: m_IsActive
@@ -23639,6 +23671,10 @@ PrefabInstance:
       propertyPath: AudioSource
       value: 
       objectReference: {fileID: 2631611901465381972}
+    - target: {fileID: 8966031988034546880, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
 --- !u!224 &626957890883612018 stripped
@@ -23657,13 +23693,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89ec04dcb71b4b82864c1d22e89da720, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5891621886205745859 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8966031988034546880, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
+  m_PrefabInstance: {fileID: 3291709618285409795}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &8785137900929499378 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6072422491200567025, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
   m_PrefabInstance: {fileID: 3291709618285409795}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -23799,18 +23846,30 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4634321010830102065, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5630911684212668292, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: m_Name
       value: Level
       objectReference: {fileID: 0}
+    - target: {fileID: 6072422491200567025, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6177566432666388448, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: m_fontSize
-      value: 28.3
+      value: 26.8
       objectReference: {fileID: 0}
     - target: {fileID: 8237509392310709477, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: AudioSource
       value: 
       objectReference: {fileID: 2631611901465381972}
+    - target: {fileID: 8966031988034546880, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
 --- !u!114 &1440144273472823247 stripped
@@ -23819,7 +23878,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 5168442985753553214}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -23830,7 +23889,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 5168442985753553214}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -24095,13 +24154,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4634321010830102065, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5630911684212668292, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: m_Name
       value: Level (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 6072422491200567025, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6177566432666388448, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: m_fontSize
-      value: 28
+      value: 26.5
       objectReference: {fileID: 0}
     - target: {fileID: 7358063225214821973, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: m_IsActive
@@ -24111,6 +24178,10 @@ PrefabInstance:
       propertyPath: AudioSource
       value: 
       objectReference: {fileID: 2631611901465381972}
+    - target: {fileID: 8966031988034546880, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
 --- !u!114 &72027320299787239 stripped
@@ -24119,7 +24190,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 6105315812985120022}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -24130,7 +24201,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 6105315812985120022}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -24332,13 +24403,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4634321010830102065, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5630911684212668292, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: m_Name
       value: Level (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 6072422491200567025, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6177566432666388448, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: m_fontSize
-      value: 27.95
+      value: 26.45
       objectReference: {fileID: 0}
     - target: {fileID: 7358063225214821973, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
       propertyPath: m_IsActive
@@ -24348,6 +24427,10 @@ PrefabInstance:
       propertyPath: AudioSource
       value: 
       objectReference: {fileID: 2631611901465381972}
+    - target: {fileID: 8966031988034546880, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b7d46b8404c71784d8b94892b3149133, type: 3}
 --- !u!114 &308120634971825983 stripped
@@ -24356,7 +24439,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 8659037261572082687}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -24367,7 +24450,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 8659037261572082687}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 

@@ -41,6 +41,7 @@ namespace UI.GeneralMenu
             LoadAudioController();
             _settingPanel.Initialize(_audioManager,_saveLoadService);
             _locationMap.Initialize(_stateMachine,_saveLoadService);
+            _saveLoadService.SetFirstStart();
         }
         
         private  void  LoadAudioController()

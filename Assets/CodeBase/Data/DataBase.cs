@@ -6,7 +6,6 @@ using Infrastructure.Location;
 using Infrastructure.Logic.WaveManagment;
 using Service;
 using Service.Audio;
-using Service.PlayerAuthorization;
 using UI.Levels;
 using UnityEngine;
 
@@ -30,6 +29,7 @@ namespace Data
         public int Points;
         public List<int> LevelHumanoid = new List<int>();
         public List<int> AmountHumanoids = new List<int>();
+
         [NonSerialized]
         public bool IsFirstStart = true;
         
@@ -159,8 +159,8 @@ namespace Data
             MoneyData.AllAmountMoney++;
         }
 
-        public List<Enemy> ReadInactiveEnemy() =>
-            new List<Enemy>(InactiveEnemy);
+        public int ReadCountEnemy() =>
+            ActiveEnemy.Count;
         
         public void ChangeCameras(Camera cameraPhysical, Camera cameraUI)
         {
@@ -206,7 +206,7 @@ namespace Data
         public void ReadPlayTimeToday()=> 
             TimeStatistics.GetPlayTimeToday();
 
-        public void SetSelectedLocation(UI.Levels.LocationDataUI locationDataUI)
+        public void SetSelectedLocation(LocationDataUI locationDataUI)
         {
             SelectedLocation.Id = locationDataUI.Id;
             SelectedLocation.Path = locationDataUI.Path;
@@ -255,6 +255,12 @@ namespace Data
         public void ChangeMaxEnemyOnLevel(int number)
         {
             SelectedLocation.MaxEnemyOnLevel = number;
+        }
+
+        public void ClearSpawnLocationData()
+        {
+        ActiveEnemy= new();
+        InactiveEnemy= new();
         }
     }
 }

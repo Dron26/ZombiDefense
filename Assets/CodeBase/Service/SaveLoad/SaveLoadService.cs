@@ -5,15 +5,12 @@ using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
 using Infrastructure;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.Factories.FactoryGame;
 using Infrastructure.Location;
-using Infrastructure.StateMachine;
 using Newtonsoft.Json;
 using Service.Audio;
 using Service.PlayerAuthorization;
 using UI.Levels;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace Service.SaveLoad
 {
@@ -21,15 +18,15 @@ namespace Service.SaveLoad
     {
         private const string Key = "Key";
         private DataBase _dataBase;
-        public bool IsFirstStart => _isFirstStart;      
-        private bool _isFirstStart=true;
         public Action OnSetActiveHumanoid;
         public Action OnCompleteLocation;
         public Action LastHumanoidDie;
         public Action OnSetInactiveEnemy;
         public Action<WorkPoint> OnSelectedNewPoint;
+        public Action<int> OnChangeEnemiesCountOnWave;
         private LoadingCurtain _loadingCurtain;
         public MoneyData MoneyData => _dataBase.MoneyData; 
+        public int MaxEnemiesOnWave=>_maxEnemiesOnWave;
         private YandexAuthorization _authorization=new();
         public event Action OnClearSpawnData;
         private GameBootstrapper _gameBootstrapper;
@@ -37,6 +34,7 @@ namespace Service.SaveLoad
         private bool IsAuthorized => _authorization.IsAuthorized();
         public bool IsSelectContinueGame => _isSelectContinueGame;
         private bool _isSelectContinueGame;
+        private int _maxEnemiesOnWave;
 
 
         private void Awake()
@@ -51,13 +49,6 @@ namespace Service.SaveLoad
             else
             {
                 _dataBase = JsonConvert.DeserializeObject<DataBase>(PlayerPrefs.GetString(Key));
-                
-                if (_isFirstStart)
-                {
-                    SetFirstStart();
-                }
-                
-                _isFirstStart = false;
             }
 
             _authorization.OnAuthorizeSuccessCallback += OnAuthorizeSuccess;
@@ -172,13 +163,9 @@ namespace Service.SaveLoad
             _dataBase.ChangeInactiveEnemy(inactiveEnemy);
             OnSetInactiveEnemy?.Invoke();
         }
-
-        public List<Enemy> GetInactiveEnemy( ) => 
-            _dataBase.ReadInactiveEnemy();
-
-
-       
-
+        
+        public int GetCountEnemy() => 
+            _dataBase.ReadCountEnemy();
 
         public void SetCameras(Camera cameraPhysical, Camera cameraUI)
         {
@@ -234,12 +221,12 @@ namespace Service.SaveLoad
 
         public void SaveData()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public void ClearData()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public DataBase LoadData()
@@ -254,12 +241,12 @@ namespace Service.SaveLoad
             OnCompleteLocation?.Invoke();
         }
         
-        public void SetLocationsDatas(List<Data.LocationData> locationDatas)
+        public void SetLocationsDatas(List<LocationData> locationDatas)
         {
            
             _dataBase.ChangeLocationsDatas(locationDatas);
         }
-        public List<Data.LocationData> GetLocationsDatas()
+        public List<LocationData> GetLocationsDatas()
         {
             return _dataBase.LocationsDatas;
         }
@@ -320,12 +307,25 @@ namespace Service.SaveLoad
         public void ClearSpawnData()
         {
             OnClearSpawnData?.Invoke();
+            _dataBase.ClearSpawnLocationData();
         }
 
 
         public void OnLastHumanoidDie()
         {
             LastHumanoidDie?.Invoke();
+        }
+
+        public void SetMaxEnemyOnWave(int number)
+        {
+            _maxEnemiesOnWave = number;
+            OnChangeEnemiesCountOnWave?.Invoke(_maxEnemiesOnWave);
+        }
+
+        public void SetKilledEnemiesOnWave(int number)
+        {
+            int count=_maxEnemiesOnWave-number;
+            OnChangeEnemiesCountOnWave?.Invoke(count);
         }
     }
 }
