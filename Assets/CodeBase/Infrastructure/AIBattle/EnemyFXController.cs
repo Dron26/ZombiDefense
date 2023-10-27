@@ -22,10 +22,8 @@ namespace Infrastructure.AIBattle
         [SerializeField] private float _areaHeight = 0.1f;
         [SerializeField] private float _minParticleScale = 1f;
         [SerializeField] private float _maxParticleScale = 1f;
-
-        private AudioClip _shoot;
-        private AudioClip _reload;
-        private Weapon _weapon;
+        
+        private WeaponType _weapon;
         private AudioManager _audioManager;
 
         private void Awake()
@@ -38,25 +36,12 @@ namespace Infrastructure.AIBattle
                // enemy.OnDeath += OnDieFX;
                 
             }
-            
-           
-
-            if (TryGetComponent(out WeaponController weaponController))
-            {
-                weaponController.OnInitialized += SetWeapon;
-            }
-
-            _particlesGroup.Add(_particlesHitLite);
-            _particlesGroup.Add(_particlesHitSniperRifle);
-
-            for (int i = 0; i < _weaponNames.Count; i++)
-            {
-                _particleByType.Add(_weaponNames[i], _particlesGroup[i]);
-            }
         }
         
-        private void HandleEnemyEvent(EnemyEventType eventType)
+        private void HandleEnemyEvent(EnemyEventType eventType,WeaponType weaponType)
         {
+            _weapon=weaponType;
+            
             switch (eventType)
             {
                 case EnemyEventType.Death:
@@ -70,13 +55,6 @@ namespace Infrastructure.AIBattle
                     OnSimpleWalkerDamage();
                     break;
             }
-        }
-
-        public void SetWeapon(Weapon weapon)
-        {
-            _weapon = weapon;
-            _shoot = _weapon.Shoot;
-            _reload = _weapon.Reload;
         }
 
         private void SetAudio(Enemy enemy)
@@ -109,32 +87,41 @@ namespace Infrastructure.AIBattle
                 _bloodFlowing.Play();
             }
         }
-
-
+        
         public void PlayRandomParticleEffect()
         {
-            WeaponType weaponWeaponType = _weapon.GetWeaponType();
             
-            if (_particleByType.TryGetValue(weaponWeaponType, out List<ParticleSystem> effect))
+            // if (_particleByType.TryGetValue(_weapon, out List<ParticleSystem> effect))
+            // {
+            //     if (effect.Count > 0)
+            //     {
+            //         int randomIndex = UnityEngine.Random.Range(0, effect.Count);
+            //         ParticleSystem particleSystem = effect[randomIndex];
+            //
+            //         //SetRandomParticlePosition(particleSystem);
+            //         //SetRandomParticleScale(particleSystem);
+            //
+            //         particleSystem.Play();
+            //     }
+            //     else
+            //     {
+            //         Debug.LogWarning($"No particle effects found for weapon name '{_weapon}'.");
+            //     }
+            // }
+            // else
+            // {
+            //     Debug.LogWarning($"No particle effects found for weapon name '{_weapon}'.");
+            // }
+
+            if (_weapon!=WeaponType.SniperRifle)
             {
-                if (effect.Count > 0)
-                {
-                    int randomIndex = UnityEngine.Random.Range(0, effect.Count);
-                    ParticleSystem particleSystem = effect[randomIndex];
-
-                    //SetRandomParticlePosition(particleSystem);
-                    //SetRandomParticleScale(particleSystem);
-
-                    particleSystem.Play();
-                }
-                else
-                {
-                    Debug.LogWarning($"No particle effects found for weapon name '{weaponWeaponType}'.");
-                }
+                int randomIndex = Random.Range(0, _particlesHitLite.Count);
+                _particlesHitLite[randomIndex].Play();
             }
             else
             {
-                Debug.LogWarning($"No particle effects found for weapon name '{weaponWeaponType}'.");
+                int randomIndex = Random.Range(0, _particlesHitSniperRifle.Count);
+                _particlesHitSniperRifle[randomIndex].Play();
             }
         }
 

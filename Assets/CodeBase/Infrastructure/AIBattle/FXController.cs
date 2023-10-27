@@ -1,5 +1,6 @@
 ﻿using System;
 using Humanoids.AbstractLevel;
+using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
 using Service.Audio;
@@ -33,7 +34,7 @@ namespace Infrastructure.AIBattle
             }
              
              _weaponController= GetComponent<WeaponController>();
-            
+             _weaponController.OnInitialized += SetWeapon;
         }
 
         private void SetAudio(Humanoid _humanoid)
@@ -77,23 +78,7 @@ namespace Infrastructure.AIBattle
         {
             _audioSource.PlayOneShot(_reload);
         }
-
-        public void SetAudioSource(AudioSource audioSource)
-        {
-            _audioSource=audioSource;
-        }
-
-        public void NotifyFromHumanoid(object data)
-        {
-           
-        }
-
-        public void NotifySelection(bool isSelected)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void NotifyFromWeaponController(Weapon weapon)
+        public void SetWeapon(Weapon weapon)
         {
             _weapon = weapon;
             _shoot=_weapon.Shoot;
