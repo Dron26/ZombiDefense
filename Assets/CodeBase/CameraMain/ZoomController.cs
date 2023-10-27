@@ -1,3 +1,4 @@
+using Data;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using UnityEngine;
 
@@ -8,8 +9,8 @@ namespace CameraMain
         public Camera mainCamera;
         public float zoomSpeed = 0.5f;
         public float mouseZoomSpeed = 30f;
-        public float minZoomDistance = 10f;
-        public float maxZoomDistance = 10f;
+        public float minZoomDistance;
+        public float maxZoomDistance;
 
         private Vector2 initialTouchPosition;
         private float initialCameraDistance;
@@ -76,6 +77,12 @@ namespace CameraMain
             Vector3 cameraPosition = mainCamera.transform.position;
             cameraPosition.y = newCameraHeight;
             mainCamera.transform.position = cameraPosition;
+        }
+
+        public void SetData(CameraData data)
+        {
+            minZoomDistance=data.minZoomDistance;
+            maxZoomDistance=data.maxZoomDistance;
         }
     }
 }

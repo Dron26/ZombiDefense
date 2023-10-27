@@ -1,3 +1,4 @@
+using Data;
 using UnityEngine;
 
 namespace CameraMain
@@ -80,6 +81,15 @@ namespace CameraMain
         private void MoveTo(Vector3 position)
         {
             transform.position = position;
+        }
+
+        public void SetPosition(CameraData data )
+        {
+            minBounds = new Vector2(data.minBoundsX, data.minBoundsY);
+            maxBounds = new Vector2(data.maxBoundsX, data.maxBoundsY);
+            
+            ZoomController controller= GetComponentInChildren<ZoomController>();
+            controller.SetData(data);
         }
     }
 }
