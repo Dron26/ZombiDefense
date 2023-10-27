@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Enemies.AbstractEntity;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Infrastructure.Logic.WeaponManagment;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -48,7 +49,7 @@ namespace Animation
             
         }
         
-        private void HandleEnemyEvent(EnemyEventType eventType)
+        private void HandleEnemyEvent(EnemyEventType eventType, WeaponType weaponType)
         {
             switch (eventType)
             {
