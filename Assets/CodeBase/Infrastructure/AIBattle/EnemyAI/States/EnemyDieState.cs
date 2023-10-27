@@ -1,11 +1,5 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using Enemies.AbstractEntity;
-using Humanoids.AbstractLevel;
-using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
-using Infrastructure.BaseMonoCache.Code.System;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -45,7 +39,6 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         private  IEnumerator WaitBeforeDie()
         {
             _isDeath=true;
-            _enemy.OnAction(EnemyEventType.Death);
             _collider.enabled = false;
             _agent.enabled = false;
             
@@ -88,8 +81,6 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         
         private  IEnumerator Fall()
         {
-            _enemy.OnAction(EnemyEventType.Death);
-            
             while (isActiveAndEnabled!=false)
             {
                 float newPosition=_enemy.transform.position.y-0.008f;
@@ -104,5 +95,8 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         {
             _isStopRevival = isStopRevival;
         }
+
+        public override void Disable()
+        {}
     }
 }

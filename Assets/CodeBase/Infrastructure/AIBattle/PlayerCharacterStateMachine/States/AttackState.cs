@@ -59,7 +59,6 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         {
             if (_isAttacking == false & _isReloading == false)
             {
-                Debug.Log(" ");
                 Attack();
             }
         }
@@ -71,7 +70,6 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 
             if (_isAttacking == false & _isReloading == false)
             {
-                Debug.Log(" ");
                 Attack();
             }
         }
@@ -80,21 +78,17 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         {
             if (_enemy.IsLife())
             {
-                Debug.Log(" ");
                 if (_ammoCount == 0 && _isReloading == false)
                 {
-                    Debug.Log(" ");
                     Reload();
                 }
-                Debug.Log(" ");
                 if (_isAttacking == false & _isReloading == false)
                 {
-                    Debug.Log(" ");
                     _currentRange = Vector3.Distance(transform.position, _enemy.transform.position);
                     float rangeAttack = _weaponController.GetRangeAttack();
 
                     if (_currentRange <= rangeAttack & _ammoCount > 0)
-                    {Debug.Log(" ");
+                    {
                         _isAttacking = true;
                         _isTargetSet = false;
 
@@ -104,7 +98,6 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
             }
             else
             {
-                Debug.Log(" ");
                 ChangeState<SearchTargetState>();
             }
         }

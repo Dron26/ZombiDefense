@@ -19,5 +19,8 @@ namespace Infrastructure.AIBattle.EnemyAI.States
             StateMachine = enemyStateMachine;
             this.saveLoadService = saveLoadService;
         }
+
+        public abstract void Disable();
+
     }
 }

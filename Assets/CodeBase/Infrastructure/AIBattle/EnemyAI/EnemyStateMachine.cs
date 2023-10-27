@@ -57,5 +57,13 @@ namespace Infrastructure.AIBattle.EnemyAI{
             behavior.EnterBehavior();
             _currentBehavior = behavior;
         }
+
+        protected  override void OnDisable()
+        {
+            foreach (var behavior in _allBehaviors)
+            {
+                behavior.Value.Disable();
+            }
+        }
     }
 }

@@ -139,5 +139,8 @@ namespace Infrastructure.AIBattle.EnemyAI.States
                 resultArray = new NativeArray<EnemyDistanceData>(size, Allocator.TempJob);
             }
         }
+
+        public override void Disable()
+        {}
     }
 }

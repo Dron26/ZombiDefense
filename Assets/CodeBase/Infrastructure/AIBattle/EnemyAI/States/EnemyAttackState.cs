@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Animation;
 using DG.Tweening;
@@ -23,13 +24,17 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         private Enemy _enemy;
         private bool _isAttacked;
 
-        private void Start()
+        private void Awake()
         {
             _animator = GetComponent<Animator>();
             _enemyAnimController = GetComponent<EnemyAnimController>();
             _fxController = GetComponent<FXController>();
             _enemy = GetComponent<Enemy>();
-            saveLoadService.OnSetActiveHumanoid=OnSetActiveHumanoid;
+        }
+
+        private void Start()
+        {
+            saveLoadService.OnSetActiveHumanoid+=OnSetActiveHumanoid;
         }
 
         private void OnSetActiveHumanoid()
@@ -83,6 +88,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         {
             _isAttack = false;
             _enemyAnimController.OnAttack(false);
+            saveLoadService.OnSetActiveHumanoid-=OnSetActiveHumanoid;
             StateMachine.EnterBehavior<EnemySearchTargetState>();
         }
         
@@ -90,7 +96,11 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         {
             _isAttacked = false;
         }
-        
-        
+
+
+        public override void Disable()
+        {
+            saveLoadService.OnSetActiveHumanoid-=OnSetActiveHumanoid;
+        }
     }
 }

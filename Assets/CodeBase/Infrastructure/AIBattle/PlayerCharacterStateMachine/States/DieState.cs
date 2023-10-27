@@ -1,6 +1,7 @@
 using System.Collections;
 using Humanoids.AbstractLevel;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 {
@@ -11,12 +12,13 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         private Humanoid _humanoid;
         private WaitForSeconds _wait;
         private float _waitTime=5f;
-
+        private NavMeshAgent _agent;
 
         private void Start()
         {
-            StartCoroutine(WaitAfterDie());
             _wait = new WaitForSeconds(_waitTime);
+            _agent = GetComponent<NavMeshAgent>();
+            StartCoroutine(WaitAfterDie());
         }
         private  IEnumerator WaitAfterDie()
         {
@@ -25,6 +27,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
             
             _humanoid.GetComponent<Rigidbody>().useGravity=false;
             _humanoid.GetComponent<Collider>().enabled = false;
+            _agent.enabled = false;
             yield return  _wait;
             
             StartCoroutine(Fall());

@@ -74,6 +74,8 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
             
                 if (_selectedPoint != newPoint)
                 {
+                    _selectedPoint.SelectedForMove(false);
+                    
                     if (isHumanoidSelected)
                     {
                         if (_selectedHumanoid.IsLife && !_selectedHumanoid.IsMove)

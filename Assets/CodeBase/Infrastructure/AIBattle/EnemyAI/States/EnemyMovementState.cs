@@ -31,18 +31,20 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         {
             _animator = GetComponent<Animator>();
             _enemyAnimController = GetComponent<EnemyAnimController>();
-            _agent = GetComponent<NavMeshAgent>();
+            
             _enemy = GetComponent<Enemy>();
-            _agent.speed = 1;
+            
         }
 
         private void Start()
         {
+            _agent = GetComponent<NavMeshAgent>();
+            _agent.speed = 1;
             _stoppingDistance = _enemy.GetRangeAttack();
             _agent.stoppingDistance=_stoppingDistance;
             _isStopping = false;
            // StopRandomly();
-           saveLoadService.OnSetActiveHumanoid=OnSetActiveHumanoid;
+           saveLoadService.OnSetActiveHumanoid+=OnSetActiveHumanoid;
         }
         
         public void InitHumanoid(Humanoid targetHumanoid)
@@ -94,6 +96,10 @@ namespace Infrastructure.AIBattle.EnemyAI.States
 
         private void ChangeState()
         {
+            if (_agent==null )
+            {
+                _agent = GetComponent<NavMeshAgent>();
+            }
             if (_agent.isOnNavMesh)
             {
                 _agent.isStopped = true;
@@ -150,6 +156,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
                yield return new WaitForSeconds(1.5f);
            }
            
+           Debug.Log(_agent.isOnNavMesh);
            _agent.isStopped = false;
            _animator.SetBool(_enemyAnimController.Walk, true);
        }
@@ -160,8 +167,11 @@ namespace Infrastructure.AIBattle.EnemyAI.States
        {
            _isTargetSet = isTargetSet;
        }
-        
-        
-        
+
+
+        public override void Disable()
+        {
+            saveLoadService.OnSetActiveHumanoid-=OnSetActiveHumanoid;
+        }
     }
 }
