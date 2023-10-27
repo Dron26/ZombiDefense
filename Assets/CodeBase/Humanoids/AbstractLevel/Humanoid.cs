@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using Data;
 using Data.Upgrades;
 using Infrastructure.AIBattle;
+using Infrastructure.AIBattle.AdditionalEquipment;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Infrastructure.Location;
 using Infrastructure.Logic.WeaponManagment;
 using Service.Audio;
 using UnityEngine;
@@ -52,7 +54,7 @@ namespace Humanoids.AbstractLevel
 
         public  int GetMaxHealth()
         {
-            return _minHealth;
+            return _maxHealth;
         }
 
       
@@ -70,6 +72,7 @@ namespace Humanoids.AbstractLevel
         public void ApplyDamage(int getDamage)
         {
             Debug.Log(_currentHealth);
+            
             if (_currentHealth <= 0)
             {
                 _animator.SetTrigger(_playerCharacterAnimController.Die);
@@ -98,6 +101,10 @@ namespace Humanoids.AbstractLevel
         public void Initialize(AudioManager audioManager)
         {
             _audioManager = audioManager;
+            _currentHealth=_maxHealth;
+            _animator = GetComponent<Animator>();
+            _playerCharacterAnimController=GetComponent<PlayerCharacterAnimController>();
+            _fxController=GetComponent<FXController>();
             OnInitialize?.Invoke(this);
         }
 
@@ -120,7 +127,11 @@ namespace Humanoids.AbstractLevel
             }
         }
 
-
+        private void SetUpgradeFromPoint(int upPrecent)
+        {
+            _maxHealth+=(_maxHealth*upPrecent)/100;
+        }
+        
         public void SetPontInfo()
         {
         }
@@ -144,5 +155,27 @@ namespace Humanoids.AbstractLevel
             _currentHealth+=_maxHealth;
         }
 
+        public void UIInitialize()
+        {
+            _currentHealth=_maxHealth;
+        }
+        
+        public void SetPoint(WorkPoint workPoint)
+        {
+            if (workPoint.IsHaveMedicineBox&&_currentHealth<_maxHealth)
+            {
+                OpenMedicineBox(workPoint.GetMedicineBox());
+            }
+        }
+
+        private void OpenMedicineBox(MedicineBox medicineBox)
+        {
+            AddHealth(((_maxHealth*medicineBox.GetRecoveryRate())/100));
+        }
+
+        private void AddHealth(int health)
+        {
+            _currentHealth+=_maxHealth;
+        }
     }
 }

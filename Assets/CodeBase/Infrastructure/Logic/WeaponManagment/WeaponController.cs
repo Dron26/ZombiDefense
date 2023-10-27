@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using Data.Upgrades;
 using Humanoids.AbstractLevel;
 using Infrastructure.AIBattle;
+using Infrastructure.AIBattle.AdditionalEquipment;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using UnityEngine;
+using Infrastructure.Location;
 
 namespace Infrastructure.Logic.WeaponManagment
 {
@@ -27,7 +29,7 @@ namespace Infrastructure.Logic.WeaponManagment
         private Humanoid _humanoid;
         private Dictionary<int, float> _weaponAnimInfo = new();
         private WeaponType _weaponWeaponType;
-        
+        private List<Granade> _granades = new();
         private int _damage;
         private int _maxAmmo;
         private float _reloadTime;
@@ -48,6 +50,9 @@ namespace Infrastructure.Logic.WeaponManagment
         public void SetWeapon(Transform weaponTransform) =>
             _weaponPrefab.transform.parent = weaponTransform;
 
+        private GameObject _radiusObject;
+        private SpriteRenderer _spriteRenderer;
+        
         private void Awake()
         {
             _humanoid = GetComponent<Humanoid>();
@@ -60,10 +65,20 @@ namespace Infrastructure.Logic.WeaponManagment
             SetAnimInfo();
             SetWeaponParametrs();
             ChangeWeapon?.Invoke();
+            SetShootingRadiusSprite();
             SetShootingRadius();
             OnInitialized?.Invoke(_weapon);
         }
-        
+
+        private void SetGranadeParametrs()
+        {
+            if (!_isGranade)
+            {
+                _fireRate = _weaponAnimInfo[_playerCharacterAnimController.IsShoot];
+                _reloadTime = _weaponAnimInfo[_playerCharacterAnimController.Reload];
+            }
+        }
+
         private void SetAnimInfo()
         {
             foreach (KeyValuePair<int, float> info in _playerCharacterAnimController.GetAnimInfo())
@@ -78,26 +93,23 @@ namespace Infrastructure.Logic.WeaponManagment
             _damage = _weapon.Damage;
             _maxAmmo = _weapon.MaxAmmo;
             _range = _weapon.Range;
-
-            if (!_isGranade)
-            {
-                _fireRate = _weaponAnimInfo[_playerCharacterAnimController.IsShoot];
-                _reloadTime = _weaponAnimInfo[_playerCharacterAnimController.Reload];
-            }
         }
 
+        private void SetShootingRadiusSprite()
+        {
+            _radiusObject= new GameObject("ShootingRadius");
+            _radiusObject.SetActive(true);
+            _radiusObject.transform.position = transform.position;
+            _spriteRenderer= _radiusObject.AddComponent<SpriteRenderer>();
+            _spriteRenderer.sprite = shootingRadiusSprite;
+            SetShootingRadius();
+        }
         private void SetShootingRadius()
         {
-            GameObject radiusObject = new GameObject("ShootingRadius");
-            radiusObject.SetActive(true);
-            radiusObject.transform.position = transform.position;
-            SpriteRenderer spriteRenderer = radiusObject.AddComponent<SpriteRenderer>();
-            spriteRenderer.sprite = shootingRadiusSprite;
-            spriteRenderer.color = new Color(1f, 1f, 1f, 0.5f);
-            radiusObject.transform.localScale = new Vector3(_range * 2f, _range * 2f, 1f);
-            radiusObject.SetActive(false);
+            _spriteRenderer.color = new Color(1f, 1f, 1f, 0.5f);
+            _radiusObject.transform.localScale = new Vector3(_range * 2f, _range * 2f, 1f);
+            _radiusObject.SetActive(false);
         }
-
 
         public int GetDamage() => _damage;
 
@@ -113,6 +125,58 @@ namespace Infrastructure.Logic.WeaponManagment
         public void SetUpgrade(UpgradeData upgradeData, int level)
         {
             SetDamage(upgradeData.Damage);
+        }
+
+        public void UIInitialize()
+        {
+            SetWeaponParametrs();
+        }
+        
+        public void SetPoint(WorkPoint workPoint)
+        {
+            _damage = (_damage * workPoint.UpPrecent) / 100;
+            _range=(_range * workPoint.UpPrecent) / 100;
+            SetShootingRadius();
+            
+            if (workPoint.IsHaveWeaponBox)
+            {
+                OpenWeaponBox(workPoint.GetWeaponBox());
+            }
+        }
+
+        private void OpenWeaponBox(WeaponBox weaponBox)
+        {
+            if (weaponBox.GetGranades().Count > 0)
+            {
+                weaponBox.GetGranades().ForEach(granade => AddGranade(granade));
+            }
+            
+        }
+
+        public void AddGranade(Granade granade)
+        {
+            _granades.Add(granade);
+        }
+
+        public bool TryGetGranade(out Granade granade)
+        {
+            bool canGet = false;
+            granade = null;
+            if (_granades.Count > 0)
+            {
+                canGet = true;
+                return canGet;
+                granade = GetGranade();
+            }
+
+            return canGet;
+        }
+
+        private Granade GetGranade()
+        {
+            Granade granade=_granades[0];
+            _granades.RemoveAt(0);
+            return granade;
         }
     }
 
