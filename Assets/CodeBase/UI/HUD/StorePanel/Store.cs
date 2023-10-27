@@ -1,18 +1,15 @@
 using System;
 using System.Collections.Generic;
-using Agava.YandexGames;
 using Humanoids.AbstractLevel;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
 using Infrastructure.Logic.Inits;
-using Service;
-using Service.Ads;
 using Service.SaveLoad;
-using UnityEditor.PackageManager.UI;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Infrastructure.Factories.FactoriesBox;
 
 namespace UI.HUD.StorePanel
 {
@@ -40,6 +37,8 @@ namespace UI.HUD.StorePanel
          private WorkPointGroup _workPointGroup;
         [SerializeField] private int _priceForWorkPointUp;
        
+        [SerializeField] private AdditionalEquipment _additionalEquipmentButton;
+        
         [SerializeField] private Image _dimImage;
         [SerializeField] private Camera _cameraPhysical;
         [SerializeField] private Camera _cameraUI;
@@ -60,6 +59,12 @@ namespace UI.HUD.StorePanel
         public Action<WorkPoint> OnBoughtUpgrade;
         private TimeManager _timeManager;
 
+        private int _medicineBoxPrice = 100;
+        private int _weaponBoxPrice = 200;
+        
+   
+        private BoxFactory _boxFactory;
+        
         public void Initialize(SceneInitializer initializer, SaveLoadService saveLoadService, TimeManager timeManager)
         {
             _timeManager = timeManager;
@@ -70,6 +75,9 @@ namespace UI.HUD.StorePanel
             SetCharacterInitializer();
             _storePanel.gameObject.SetActive(!_storePanel.activeSelf);
             _adsStore.Initialize(_saveLoadService);
+            _additionalEquipmentButton.Initialize(_saveLoadService);
+
+            _boxFactory=GetComponent<BoxFactory>();
         }
 
         private void SetCharacterInitializer()
@@ -83,20 +91,51 @@ namespace UI.HUD.StorePanel
             _characterStore.OnCharacterBought += OnCharacterBought;
             _characterStore.OnMoneyEmpty += ShowPanelAdsForMoney;
             
+            _additionalEquipmentButton.OnSelectedMedicineBox+=OnSelectMedicineBox;
+            _additionalEquipmentButton.OnSelectedWeaponBox+=OnSelectWeaponBox;
+            
             _eliteCharacterStore.Initialize(_saveLoadService,this);
             _eliteCharacterStore.OnCharacterBought += OnCharacterBought;
             
             InitializeButton();
             //_characterStore.BuyCharacter += OnBuyCharacter;
             _movePointController = _sceneInitializer.GetMovePointController();
-           
-            _pointUpgradePanel.Initialize(_characterInitializer, _saveLoadService);
-            _pointUpgradePanel.GetButton().onClick.AddListener(BuyPointUp);
+
+            _pointUpgradePanel.Initialize();
+            _pointUpgradePanel.OnSelectedButton+=(BuyPointUp);
             
             //_movePointController.OnClickWorkpoint += OnClickWorkpoint;
             //_movePointController.OnSelectedNewPoint+=OnSelectedNewPoint;
             //_movePointController.OnUnSelectedPoint+=OnUnSelectedPoint;
             _characterStoreRotation.gameObject.SetActive(!_characterStoreRotation.gameObject.activeSelf);
+        }
+
+        private void OnSelectMedicineBox()
+        {
+            if (!_selectedWorkPoint.IsHaveMedicineBox&&!_selectedWorkPoint.IsHaveWeaponBox)
+            {
+                if (_saveLoadService.MoneyData.IsMoneyEnough(_medicineBoxPrice))
+                {
+                    _saveLoadService.MoneyData.SpendMoney(_medicineBoxPrice);
+                    _selectedWorkPoint.SetMedicineBox(_boxFactory.CreateMedicine());
+                    _additionalEquipmentButton.SwitchStateButton(false);
+                }
+
+            }
+        }
+
+        private void OnSelectWeaponBox()
+        {
+            if (!_selectedWorkPoint.IsHaveWeaponBox&&!_selectedWorkPoint.IsHaveMedicineBox)
+            {
+                if (_saveLoadService.MoneyData.IsMoneyEnough(_weaponBoxPrice))
+                {
+                    _saveLoadService.MoneyData.SpendMoney(_weaponBoxPrice);
+                    _selectedWorkPoint.SetWeaponBox(_boxFactory.CreateWeapon());
+                    _additionalEquipmentButton.SwitchStateButton(false);
+                }
+
+            }
         }
 
         protected override void OnDisabled()
@@ -140,8 +179,6 @@ namespace UI.HUD.StorePanel
 
         private void CheckPointInfo(WorkPoint workPoint)
         {
-           // bool isStartPoint = false;
-
                 _selectedWorkPoint = workPoint;
 
                 if (_selectedWorkPoint.Level <=maxLevel )
@@ -152,6 +189,7 @@ namespace UI.HUD.StorePanel
                 {
                     _pointUpgradePanel.SwitchStateButton(false);
                 }
+                
         }
 
         private void BuyPointUp()
@@ -170,9 +208,7 @@ namespace UI.HUD.StorePanel
                 print("должен мигать кошелек");
             }
         }
-
         
-
         private void ClosePanel()
         {
            
