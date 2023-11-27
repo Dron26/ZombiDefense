@@ -1,14 +1,12 @@
-using System;
 using System.Collections.Generic;
 using Humanoids.AbstractLevel;
 using Infrastructure.AIBattle.AdditionalEquipment;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Infrastructure.Logic.WeaponManagment;
 using Service.SaveLoad;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
-using Infrastructure.Logic.WeaponManagment;
 
 namespace Infrastructure.Location
 {
@@ -69,7 +67,7 @@ namespace Infrastructure.Location
         public MedicineBox GetMedicineBox()
         {
             _isHaveMedicineBox = false;
-            Destroy(_medicineBox, 0.1f);
+            Destroy(_medicineBox.gameObject, 0.1f);
             return _medicineBox;
         }
 
@@ -81,16 +79,17 @@ namespace Infrastructure.Location
         public void SetWeaponBox(WeaponBox weaponBox)
         {
             _weaponBox = weaponBox;
-            Transform weaponTransform = weaponBox.transform;
+            Transform weaponTransform = _weaponBox.transform;
             weaponTransform.parent = transform;
             weaponTransform.position = transform.position;
             _isHaveWeaponBox = true;
+            CheckState();
         }
 
         public WeaponBox GetWeaponBox()
         {
             _isHaveWeaponBox = false;
-            Destroy(_weaponBox, 0.1f);
+            Destroy(_weaponBox.gameObject, 0.1f);
             return _weaponBox;
         }
 
@@ -123,7 +122,7 @@ namespace Infrastructure.Location
                 _humanoid.SetPoint(this);
                 _humanoid.GetComponent<WeaponController>().SetPoint(this);
                 _isBusy = true;
-                CheckBoxes();
+               // CheckBoxes();
             }
             else
             {
@@ -184,21 +183,21 @@ namespace Infrastructure.Location
             OnSelected?.Invoke(this);
         }
 
-        private void CheckBoxes()
-        {
-            bool isActive = _humanoid == null;
-
-            if (_isHaveMedicineBox)
-                SetActiveMedicineBox(isActive);
-            if (_isHaveWeaponBox)
-                SetActiveWeaponBox(isActive);
-        }
+        // private void CheckBoxes()
+        // {
+        //     bool isActive = _humanoid == null;
+        //
+        //     if (_isHaveMedicineBox)
+        //         SetActiveMedicineBox(isActive);
+        //     if (_isHaveWeaponBox)
+        //         SetActiveWeaponBox(isActive);
+        // }
 
         public void RemoveHumanoid()
         {
             _humanoid.transform.parent = transform.parent;
             _humanoid = null;
-            CheckBoxes();
+            //CheckBoxes();
             CheckState();
         }
     }

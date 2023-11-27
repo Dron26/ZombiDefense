@@ -10,6 +10,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using Infrastructure.Factories.FactoriesBox;
+using Infrastructure.Points;
 
 namespace UI.HUD.StorePanel
 {
@@ -54,15 +55,11 @@ namespace UI.HUD.StorePanel
         private SaveLoadService _saveLoadService;
         private int maxLevel = 3;
         private bool _isPanelActive=false;
-
         public UnityAction<bool> IsStoreActive;
         public Action<WorkPoint> OnBoughtUpgrade;
         private TimeManager _timeManager;
-
         private int _medicineBoxPrice = 100;
         private int _weaponBoxPrice = 200;
-        
-   
         private BoxFactory _boxFactory;
         
         public void Initialize(SceneInitializer initializer, SaveLoadService saveLoadService, TimeManager timeManager)
@@ -76,7 +73,6 @@ namespace UI.HUD.StorePanel
             _storePanel.gameObject.SetActive(!_storePanel.activeSelf);
             _adsStore.Initialize(_saveLoadService);
             _additionalEquipmentButton.Initialize(_saveLoadService);
-
             _boxFactory=GetComponent<BoxFactory>();
         }
 
@@ -120,7 +116,6 @@ namespace UI.HUD.StorePanel
                     _selectedWorkPoint.SetMedicineBox(_boxFactory.CreateMedicine());
                     _additionalEquipmentButton.SwitchStateButton(false);
                 }
-
             }
         }
 
@@ -134,7 +129,6 @@ namespace UI.HUD.StorePanel
                     _selectedWorkPoint.SetWeaponBox(_boxFactory.CreateWeapon());
                     _additionalEquipmentButton.SwitchStateButton(false);
                 }
-
             }
         }
 
@@ -145,8 +139,7 @@ namespace UI.HUD.StorePanel
             _characterStore.OnMoneyEmpty -= ShowPanelAdsForMoney;
             _eliteCharacterStore.OnCharacterBought -= OnCharacterBought;
         }
-        
-        
+
         private void OnCharacterBought(Humanoid humanoid)
         {
             SwitchStorePanel();
@@ -189,7 +182,6 @@ namespace UI.HUD.StorePanel
                 {
                     _pointUpgradePanel.SwitchStateButton(false);
                 }
-                
         }
 
         private void BuyPointUp()

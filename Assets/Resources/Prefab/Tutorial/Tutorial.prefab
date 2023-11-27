@@ -231,7 +231,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.27725133}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.4796753, y: -0.42336273}
+  m_AnchoredPosition: {x: 0.4796753, y: -0.42337036}
   m_SizeDelta: {x: -0.6394043, y: -0.15079498}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6325141555987218055
@@ -12316,7 +12316,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.0508285, y: 0.18300001}
   m_AnchorMax: {x: 0.43848553, y: 0.81328607}
-  m_AnchoredPosition: {x: -0.2199707, y: -1.9477997}
+  m_AnchoredPosition: {x: -0.2199707, y: -1.947815}
   m_SizeDelta: {x: -1.7399902, y: 1.8800049}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &4374014424699960023
@@ -30148,6 +30148,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8076596285790849959}
   - component: {fileID: 6190229336744898907}
+  - component: {fileID: 4505060828588614728}
   m_Layer: 0
   m_Name: Tutorial
   m_TagString: Untagged
@@ -30199,6 +30200,24 @@ MonoBehaviour:
   _humanoid: {fileID: -8651523625067826391, guid: 2363b43423741054f8b835a29b53da64, type: 3}
   _firstPoint: {fileID: 4814874999572254483}
   _secondPoint: {fileID: 4814875000279021067}
+--- !u!114 &4505060828588614728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8076596285790849958}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1af120f93e234438958b7801b9591a98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minBoundsX: 46
+  minBoundsY: -6
+  maxBoundsX: 62
+  maxBoundsY: -0.5
+  minZoomDistance: 8
+  maxZoomDistance: 16
 --- !u!1 &8076596285860833841
 GameObject:
   m_ObjectHideFlags: 0
@@ -35954,6 +35973,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5317183988784593843, guid: 9f7f3d93f380e1b429254071c0796925, type: 3}
+      propertyPath: _waves.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5317183988784593843, guid: 9f7f3d93f380e1b429254071c0796925, type: 3}
+      propertyPath: _waves.Array.data[0]
+      value: 
+      objectReference: {fileID: 1852706454523480768, guid: c9b840820d58da148b8195eb4e86720d, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9f7f3d93f380e1b429254071c0796925, type: 3}
 --- !u!4 &8821925330930690097 stripped

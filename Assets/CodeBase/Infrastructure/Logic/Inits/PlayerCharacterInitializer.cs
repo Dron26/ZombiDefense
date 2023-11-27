@@ -6,6 +6,7 @@ using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Factories.FactoryWarriors.Humanoids;
 using Infrastructure.Location;
+using Infrastructure.Points;
 using Service.Audio;
 using Service.SaveLoad;
 using UI.HUD.StorePanel;

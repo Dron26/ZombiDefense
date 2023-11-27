@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Humanoids.AbstractLevel;
+using Infrastructure.AIBattle.PlayerCharacterStateMachine;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
@@ -10,7 +11,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
+namespace Infrastructure.Points
 {
     public class MovePointController : MonoCache
     {
@@ -28,8 +29,6 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
         public UnityAction<WorkPoint> OnUnSelectedPoint;
         private bool isHumanoidSelected = false;
         private bool isPointToMoveTaked;
-        private List<Button> _workPointButtons = new();
-        public List<Button> GetWorkPointButtons => new List<Button>(_workPointButtons);
         [SerializeField] private WorkPoint _startPoint;
         private Store store;
         private SaveLoadService _saveLoadService;
@@ -103,7 +102,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
                 {
                     if (_selectedHumanoid.IsLife&&!_selectedHumanoid.IsMove)
                     {
-                        if (newPoint.IsBusy == false && isPointToMoveTaked == true)
+                        if (newPoint.IsBusy == false && isPointToMoveTaked )
                         {
                             _previousMovePoint.SetBusy(false);
                             newPoint.SetBusy(true);
@@ -116,9 +115,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
                             stateMachine.EnterBehavior<MovementState>();
                             MovementState movementState = _selectedHumanoid.GetComponent<MovementState>();
                             movementState.SetNewPoint(newPoint);
-                    
-                        
-                        
+                            
                             isPointToMoveTaked = false;
                         }
                     }

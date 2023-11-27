@@ -21,7 +21,8 @@ namespace Infrastructure.Logic.WeaponManagment
 
         public Action ChangeWeapon;
         public Action<Weapon> OnInitialized;
-        
+        public Action OnAddGranade;
+        public int CountGranade => _granades.Count;
         public int Damage => _damage;
 
         private PlayerCharacterAnimController _playerCharacterAnimController;
@@ -41,7 +42,6 @@ namespace Infrastructure.Logic.WeaponManagment
 
         public WeaponType WeaponWeaponType => _weaponWeaponType;
         public Weapon GetWeapon() => _weapon;
-        public Weapon GetGranads() => _granade;
         
         public float GetRangeAttack() => _range;
 
@@ -148,7 +148,9 @@ namespace Infrastructure.Logic.WeaponManagment
         {
             if (weaponBox.GetGranades().Count > 0)
             {
+                gameObject.AddComponent<GrenadeThrower>();
                 weaponBox.GetGranades().ForEach(granade => AddGranade(granade));
+                OnAddGranade?.Invoke();
             }
             
         }
@@ -156,17 +158,23 @@ namespace Infrastructure.Logic.WeaponManagment
         public void AddGranade(Granade granade)
         {
             _granades.Add(granade);
+            
         }
 
         public bool TryGetGranade(out Granade granade)
         {
             bool canGet = false;
             granade = null;
+            
             if (_granades.Count > 0)
             {
                 canGet = true;
-                return canGet;
                 granade = GetGranade();
+                return canGet;
+            }
+            else
+            {
+                Destroy(gameObject.GetComponent<GrenadeThrower>());
             }
 
             return canGet;

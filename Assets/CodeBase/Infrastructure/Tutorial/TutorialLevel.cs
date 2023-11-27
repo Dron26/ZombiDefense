@@ -6,6 +6,7 @@ using Infrastructure.AIBattle.PlayerCharacterStateMachine;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
 using Infrastructure.Logic.Inits;
+using Infrastructure.Points;
 using Lean.Localization;
 using TMPro;
 using UnityEngine;

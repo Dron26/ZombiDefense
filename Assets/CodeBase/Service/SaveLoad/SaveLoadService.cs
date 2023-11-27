@@ -23,6 +23,7 @@ namespace Service.SaveLoad
         public Action LastHumanoidDie;
         public Action OnSetInactiveEnemy;
         public Action<WorkPoint> OnSelectedNewPoint;
+        public Action<Humanoid> OnSelectedNewHumanoid;
         public Action<int> OnChangeEnemiesCountOnWave;
         private LoadingCurtain _loadingCurtain;
         public MoneyData MoneyData => _dataBase.MoneyData; 
@@ -124,6 +125,7 @@ namespace Service.SaveLoad
             }
             
             _dataBase.ChangeSelectedHumanoid(humanoid);
+            OnSelectedNewHumanoid?.Invoke(humanoid);
         }
 
         public Humanoid GetSelectedHumanoid()=>
