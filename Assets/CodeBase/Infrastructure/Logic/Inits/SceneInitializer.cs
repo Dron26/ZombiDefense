@@ -109,6 +109,7 @@ namespace Infrastructure.Logic.Inits
 
         private void InitializeEnemies()
         {
+            Debug.Log("+++InitializeEnemies++++");
             _enemyCharacterInitializer.Initialize(_saveLoadService, this);
             Debug.Log("Finish _playerCharacterInitializer();");
 

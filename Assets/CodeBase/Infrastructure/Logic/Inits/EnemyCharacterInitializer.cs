@@ -13,6 +13,7 @@ namespace Infrastructure.Logic.Inits
 
         public void Initialize(SaveLoadService saveLoadService,SceneInitializer sceneInitializer)
         {
+            Debug.Log("Initialize+EnemyCharacterInitializer");
             _playerCharacterInitializer=sceneInitializer.GetPlayerCharacterInitializer();
             _saveLoadService = saveLoadService;
             _waveManager.Initialize(saveLoadService,sceneInitializer.GetAudioController());

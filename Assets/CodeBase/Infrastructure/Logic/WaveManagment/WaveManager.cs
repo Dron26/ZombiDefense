@@ -49,8 +49,16 @@ namespace Infrastructure.Logic.WaveManagment
         
         public IEnumerator SetWaveData()
         {
-            yield return new WaitForSeconds(TimeBetweenWaves);
+            Debug.Log("SetWaveData"+"WaitForSeconds(TimeBetweenWaves);"+TimeBetweenWaves);
 
+            if (currentWaveIndex>0)
+            {
+                yield return new WaitForSeconds(TimeBetweenWaves);
+            }
+            
+
+            Debug.Log("SetWaveData");
+            
             while (currentWaveIndex <= _waves.Count)
             {
                 if (!isSpawningWave && !isWaitingForNextWave && canStartNextWave)

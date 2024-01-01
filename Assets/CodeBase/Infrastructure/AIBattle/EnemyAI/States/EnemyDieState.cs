@@ -98,5 +98,8 @@ namespace Infrastructure.AIBattle.EnemyAI.States
 
         public override void Disable()
         {}
+
+        public override void OnTakeGranadeDamage()
+        {}
     }
 }

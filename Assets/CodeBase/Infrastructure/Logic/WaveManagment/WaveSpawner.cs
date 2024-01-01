@@ -68,6 +68,7 @@ namespace Infrastructure.Logic.WaveManagment
 
         public void SetWaveData(Wave waveData)
         {
+            Debug.Log("SetWaveData");
             SetWave(waveData);
             SetSpawnPoint();
             SetMaxEnemyOnWave();
@@ -107,6 +108,8 @@ namespace Infrastructure.Logic.WaveManagment
 
         private void StartFillPool(Wave wave)
         {
+         
+            Debug.Log("StartFillPool");
             
             for (int i = 0; i < wave.GetEnemies().Count; i++)
             {
@@ -138,7 +141,6 @@ namespace Infrastructure.Logic.WaveManagment
         private void PreparEnemy(Enemy enemy, SpawnPoint spawnPoint)
         {
             Debug.Log("CreatedEnemy");
-            enemy.gameObject.SetActive(false);
             enemy.gameObject.layer = LayerMask.NameToLayer("Enemy");
             enemy.GetComponent<EnemyDieState>().OnRevival += OnEnemyRevival;
             enemy.gameObject.transform.parent = spawnPoint.transform;
@@ -146,6 +148,7 @@ namespace Infrastructure.Logic.WaveManagment
             enemy.transform.position =enemy.StartPosition;
             enemy.OnDeath += OnEnemyDeath;
             enemy.SetIndex(_currentIndexEnemyNumber);
+            enemy.gameObject.SetActive(false);
         }
 
         public void OnStartSpawn()

@@ -14,40 +14,39 @@ namespace Infrastructure.StateMachine
     {
         private readonly Dictionary<Type,IExitebleState> _states;
         private IExitebleState _activeState;
-        private LoadingCurtain _loadingCurtain;
         
         
         public GameStateMachine(SceneLoader sceneLoader, AllServices services, LoadingCurtain loadingCurtain,
             Language language )
         {
-            _loadingCurtain=loadingCurtain;
             List<string> sceneNames = GetSceneNames();
 
             _states = new Dictionary<Type, IExitebleState>
             {
                 [typeof(BootstrapState)] = new BootstrapState(this,sceneLoader, services,language),
                 [typeof(LoadLevelState)] = new LoadLevelState(this,sceneLoader, services.Single<IGameFactory>(),sceneNames),
-                [typeof(GameLoopState)] = new GameLoopState(this),
+                [typeof(GameLoopState)] = new GameLoopState(this,loadingCurtain),
             };
 
         }
 
         public void Enter<TState>() where TState : class, IState
         {
-            _loadingCurtain.StartLoading();
+            Debug.Log("Enter<TState>"+typeof(TState));
             IState state = ChangeState<TState>();
             state.Enter();
         }
 
         public void Enter<TState,TPayload>(TPayload payload) where TState : class, IPayloadState<TPayload>
         {
-            _loadingCurtain.StartLoading();
+            Debug.Log("Enter<TState,TPayload>"+typeof(TState)+payload);
             TState state = ChangeState<TState>();
             state.Enter(payload);
         }
 
         private TState ChangeState<TState>() where TState : class, IExitebleState
         {
+            Debug.Log("ChangeState"+typeof(TState));
             _activeState?.Exit();
             TState state = GetState<TState>();
             _activeState = state;

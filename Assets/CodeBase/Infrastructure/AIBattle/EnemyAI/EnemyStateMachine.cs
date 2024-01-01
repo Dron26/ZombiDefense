@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Animation;
+using Enemies.AbstractEntity;
 using Infrastructure.AIBattle.EnemyAI.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.Location;
 using Infrastructure.Logic.Inits;
 using Service.SaveLoad;
 using UnityEngine;
@@ -16,17 +16,20 @@ namespace Infrastructure.AIBattle.EnemyAI{
     [RequireComponent(typeof(EnemyMovementState))]
     [RequireComponent(typeof(EnemyAttackState))]
     [RequireComponent(typeof(EnemyDieState))]
+    [RequireComponent(typeof(EnemyStunningState))]
     public class EnemyStateMachine : MonoCache
     {
         private Dictionary<Type, IEnemySwitcherState> _allBehaviors;
         private IEnemySwitcherState _currentBehavior;
         private SceneInitializer _sceneInitializer;
         private SaveLoadService _saveLoadService;
-
+        private Enemy _enemy;
 
         private void Awake()
         {
-            _sceneInitializer=FindObjectOfType<SceneInitializer>();   
+            _enemy = GetComponent<Enemy>();
+            _enemy.OnTakeGranadeDamage += OnTriggerEnterGranade;
+            _sceneInitializer=FindObjectOfType<SceneInitializer>(); 
             _saveLoadService=_sceneInitializer.GetSaveLoad();
             _allBehaviors = new Dictionary<Type, IEnemySwitcherState>
             {
@@ -34,6 +37,7 @@ namespace Infrastructure.AIBattle.EnemyAI{
                 [typeof(EnemyMovementState)] = GetComponent<EnemyMovementState>(),
                 [typeof(EnemyAttackState)] = GetComponent<EnemyAttackState>(),
                 [typeof(EnemyDieState)] = GetComponent<EnemyDieState>(),
+                [typeof(EnemyStunningState)] = GetComponent<EnemyStunningState>(),
             };
 
             foreach (var behavior in _allBehaviors)
@@ -43,7 +47,12 @@ namespace Infrastructure.AIBattle.EnemyAI{
             }
 
         }
-        
+
+        private void OnTriggerEnterGranade()
+        {
+                _currentBehavior.OnTakeGranadeDamage();
+        }
+
         private void Start()
         {
             _currentBehavior = _allBehaviors[typeof(EnemySearchTargetState)];

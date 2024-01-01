@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Animation;
 using Enemies.AbstractEntity;
 using Humanoids.AbstractLevel;
+using Infrastructure.AIBattle.EnemyAI.States;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
@@ -33,9 +34,15 @@ namespace Infrastructure.AIBattle.EnemyAI.States
             _enemyAnimController = GetComponent<EnemyAnimController>();
             
             _enemy = GetComponent<Enemy>();
-            
         }
-
+        
+        public override void OnTakeGranadeDamage()
+        {
+            _agent.speed = 0;
+            _isStopping = true;
+            StateMachine.EnterBehavior<EnemyStunningState>();
+        }
+        
         private void Start()
         {
             _agent = GetComponent<NavMeshAgent>();
@@ -151,12 +158,15 @@ namespace Infrastructure.AIBattle.EnemyAI.States
            while ( _humanoid.IsMove)
            {
                Vector3 soldierPosition = _humanoid.transform.position;
-               _agent.SetDestination(soldierPosition);
+               if (_agent.isOnNavMesh)
+               {
+                   _agent.SetDestination(soldierPosition);
+               }
+               
                
                yield return new WaitForSeconds(1.5f);
            }
            
-           Debug.Log(_agent.isOnNavMesh);
            _agent.isStopped = false;
            _animator.SetBool(_enemyAnimController.Walk, true);
        }
@@ -168,10 +178,10 @@ namespace Infrastructure.AIBattle.EnemyAI.States
            _isTargetSet = isTargetSet;
        }
 
-
         public override void Disable()
         {
             saveLoadService.OnSetActiveHumanoid-=OnSetActiveHumanoid;
         }
     }
 }
+

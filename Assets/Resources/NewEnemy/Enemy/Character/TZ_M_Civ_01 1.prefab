@@ -4901,6 +4901,7 @@ GameObject:
   - component: {fileID: 7340528756976096325}
   - component: {fileID: 3221073516369906226}
   - component: {fileID: 4922507636866892101}
+  - component: {fileID: 973853342731968889}
   m_Layer: 7
   m_Name: TZ_M_Civ_01 1
   m_TagString: Untagged
@@ -5043,6 +5044,7 @@ MonoBehaviour:
   - {fileID: 7400000, guid: f63fedb0f6b1a614cbce3ebfc3793c68, type: 2}
   _takeDamageClips:
   - {fileID: 7400000, guid: 55503ddd23e59ee48934ea562cfd9047, type: 2}
+  _takeGranadeClips: []
 --- !u!114 &8208559072945827710
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5119,9 +5121,8 @@ MonoBehaviour:
   _rangeAttack: 1.2
   _damage: 15
   _level: 1
-  _minLevelForHumanoid: 0
-  StartPosition: {x: 0, y: 0, z: 0}
   _price: 5
+  StartPosition: {x: 0, y: 0, z: 0}
 --- !u!136 &7340528756976096325
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -5184,6 +5185,18 @@ MonoBehaviour:
   _areaHeight: 1
   _minParticleScale: 0.8
   _maxParticleScale: 1.2
+--- !u!114 &973853342731968889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2019735356311216218}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29e0e1e81dbb44c29e2e30e848a7e150, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2284764471984423007
 GameObject:
   m_ObjectHideFlags: 0

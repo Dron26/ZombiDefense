@@ -1,5 +1,7 @@
+using System;
 using Humanoids.AbstractLevel;
 using Humanoids.People;
+using Infrastructure.AIBattle;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
 using Service.SaveLoad;
@@ -8,19 +10,20 @@ using UnityEngine.UI;
 
 namespace UI.Buttons
 {
-    class AdditionalWeaponButton : MonoCache
+    public class AdditionalWeaponButton : MonoCache
     {
         [SerializeField] private Image _granade;
         [SerializeField] private Button _weapon;
 
         private Humanoid _humanoid;
         private GrenadeThrower _grenadeThrower;
-        
-        
+        private WeaponController _weaponController;
+        public Action OnClickButton;
+
         public void Initialize(SaveLoadService saveLoadService)
         {
             saveLoadService.OnSelectedNewHumanoid+=OnSelectedNewHumanoid;
-            _weapon.onClick.AddListener(() =>TryGetGranade());
+            _weapon.onClick.AddListener(() =>TryThrowGranade());
         }
        private void Start()
         {
@@ -28,20 +31,26 @@ namespace UI.Buttons
         }
 
     
-       private void SwitchPanelState(bool state)
+       private void SwitchPanelState()
         {
-            if (_humanoid.gameObject.TryGetComponent(out GrenadeThrower grenadeThrower))
+            if (_weaponController.IsCanThrowGranade)
             {
-                _grenadeThrower=grenadeThrower;
-                _weapon.interactable=state;
+                _grenadeThrower = _humanoid.gameObject.GetComponent<GrenadeThrower>();
+                _weapon.interactable=true;
             }
-            
-            _weapon.interactable=state;
+            else
+            {
+                _grenadeThrower = null;
+                _weapon.interactable=false;
+            }
         }
+
+       
     
-        public void TryGetGranade()
+        public void TryThrowGranade()
         {
-            _grenadeThrower.Throw();
+            _weapon.interactable=false;
+            OnClickButton?.Invoke();
         }
 
         private void OnSelectedNewHumanoid(Humanoid humanoid)
@@ -49,8 +58,10 @@ namespace UI.Buttons
             if (_humanoid==null & _humanoid != humanoid)
             {
                 _humanoid=humanoid;
-                _humanoid.GetComponent<WeaponController>().OnAddGranade+=() => SwitchPanelState(true);
-                SwitchPanelState(false);
+                _weaponController = _humanoid.GetComponent<WeaponController>();
+                _weaponController.OnChangeGranade+=() => SwitchPanelState();
+                _weaponController.SetAdditionalWeaponButton(this);
+                SwitchPanelState();
             }
         }
     

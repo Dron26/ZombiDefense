@@ -15,9 +15,8 @@ namespace Infrastructure.AIBattle.EnemyAI.States
     {
         private EnemyMovementState _movementState;
         private EnemyAttackState _attackState;
-
         private Humanoid _targetHumanoid;
-
+        private Enemy _enemy;
         private NavMeshAgent agent;
         private Transform[] _humanoidTransforms;
         private bool _isSearhing;
@@ -27,6 +26,14 @@ namespace Infrastructure.AIBattle.EnemyAI.States
             _movementState = GetComponent<EnemyMovementState>();
             _attackState = GetComponent<EnemyAttackState>();
             agent = GetComponent<NavMeshAgent>();
+            _enemy = GetComponent<Enemy>();
+        }
+
+        public override void OnTakeGranadeDamage()
+        {
+            agent.speed = 0;
+            StateMachine.EnterBehavior<EnemyStunningState>();
+            _isSearhing = false;
         }
 
         protected override void UpdateCustom()

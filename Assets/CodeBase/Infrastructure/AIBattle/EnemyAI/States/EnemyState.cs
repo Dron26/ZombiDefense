@@ -21,6 +21,6 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         }
 
         public abstract void Disable();
-
+        public abstract void OnTakeGranadeDamage();
     }
 }

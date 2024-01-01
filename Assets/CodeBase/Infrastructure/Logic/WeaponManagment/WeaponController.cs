@@ -7,6 +7,7 @@ using Infrastructure.AIBattle.AdditionalEquipment;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using UnityEngine;
 using Infrastructure.Location;
+using UI.Buttons;
 
 namespace Infrastructure.Logic.WeaponManagment
 {
@@ -21,10 +22,11 @@ namespace Infrastructure.Logic.WeaponManagment
 
         public Action ChangeWeapon;
         public Action<Weapon> OnInitialized;
-        public Action OnAddGranade;
+        public Action OnChangeGranade;
         public int CountGranade => _granades.Count;
         public int Damage => _damage;
-
+        public bool IsCanThrowGranade => _isCanThrowGranade;
+        private GrenadeThrower _grenadeThrower;
         private PlayerCharacterAnimController _playerCharacterAnimController;
         private Animator _animator;
         private Humanoid _humanoid;
@@ -39,7 +41,7 @@ namespace Infrastructure.Logic.WeaponManagment
         public float ReloadTime => _reloadTime;
         public bool _isShotgun;
         private bool _isGranade;
-
+        private bool _isCanThrowGranade;
         public WeaponType WeaponWeaponType => _weaponWeaponType;
         public Weapon GetWeapon() => _weapon;
         
@@ -149,42 +151,52 @@ namespace Infrastructure.Logic.WeaponManagment
             if (weaponBox.GetGranades().Count > 0)
             {
                 gameObject.AddComponent<GrenadeThrower>();
-                weaponBox.GetGranades().ForEach(granade => AddGranade(granade));
-                OnAddGranade?.Invoke();
+                _grenadeThrower= GetComponent<GrenadeThrower>();
+                _grenadeThrower.OnThrowed+= OnThrowedGranade;
+                AddGranade(weaponBox.GetGranades());
+                _isCanThrowGranade = true;
+                OnChangeGranade?.Invoke();
             }
             
         }
 
-        public void AddGranade(Granade granade)
+        private void OnThrowedGranade()
         {
-            _granades.Add(granade);
             
-        }
-
-        public bool TryGetGranade(out Granade granade)
-        {
-            bool canGet = false;
-            granade = null;
+            _granades.RemoveAt(0);
             
-            if (_granades.Count > 0)
+            if (_granades.Count != 0)
             {
-                canGet = true;
-                granade = GetGranade();
-                return canGet;
+                _isCanThrowGranade = true;
             }
             else
             {
-                Destroy(gameObject.GetComponent<GrenadeThrower>());
+                _isCanThrowGranade = false;
+                Destroy(gameObject.GetComponent<GrenadeThrower>(),3f);
             }
-
-            return canGet;
+            
+            OnChangeGranade?.Invoke();
+            
+           
         }
 
-        private Granade GetGranade()
+        public void AddGranade( List<Granade>  granades)
         {
-            Granade granade=_granades[0];
-            _granades.RemoveAt(0);
-            return granade;
+            _granades= new List<Granade>(granades);
+        }
+
+        public  void ThrowGranade( )
+        {
+            if (_granades.Count > 0)
+            {
+                _isCanThrowGranade = false;
+                _grenadeThrower.ThrowGrenade(_granades[0]);
+            }
+        }
+
+        public void SetAdditionalWeaponButton(AdditionalWeaponButton additionalWeaponButton)
+        {
+            additionalWeaponButton.OnClickButton += ThrowGranade;
         }
     }
 

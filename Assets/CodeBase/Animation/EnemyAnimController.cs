@@ -19,6 +19,8 @@ namespace Animation
         public readonly int IsHit = Animator.StringToHash("IsHit");
         public readonly int Die = Animator.StringToHash("Die");
         public readonly int Threw = Animator.StringToHash("Threw");
+        public readonly int GranadeTakeDamage = Animator.StringToHash("GranadeTakeDamage");
+        public readonly int WakeUp = Animator.StringToHash("WakeUp");
 
         [SerializeField] private AnimationClip[] _walkClips;
         [SerializeField] private AnimationClip[] _runClips;
@@ -29,7 +31,7 @@ namespace Animation
         [SerializeField] private AnimationClip[] _deathClips;
         [SerializeField] private AnimationClip[] _idleClips;
         [SerializeField] private AnimationClip[] _takeDamageClips;
-
+        [SerializeField] private AnimationClip[] _takeGranadeClips;
         private Animator _animator;
         private AnimatorOverrideController animatorOverrideController;
         private Dictionary<int, float> _animInfo = new();
@@ -62,7 +64,15 @@ namespace Animation
                     break;
                 case EnemyEventType.TakeSimpleWalkerDamage:
                     break;
+                case EnemyEventType.TakeGranadeDamage:
+                    OnGranadeDamage();
+                    break;
             }
+        }
+
+        private void OnGranadeDamage()
+        {
+            //_animator.SetTrigger(Die);
         }
 
         private void OnDie()
@@ -99,8 +109,11 @@ namespace Animation
         {
             _animator.SetBool(IsAttack,isActive);
         }
-        
-        
+
+        public void OnGranadeTakeDamage()
+        {
+            _animator.SetBool(GranadeTakeDamage,true);
+        }
         
         
         

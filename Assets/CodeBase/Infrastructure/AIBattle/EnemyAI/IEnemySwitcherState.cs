@@ -11,5 +11,7 @@ namespace Infrastructure.AIBattle.EnemyAI
         public void Init(EnemyStateMachine enemyStateMachine, SaveLoadService saveLoadService);
         
         public void Disable();
+        
+        public void OnTakeGranadeDamage();
     }
 }

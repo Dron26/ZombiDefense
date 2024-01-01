@@ -29,8 +29,17 @@ namespace Infrastructure.AIBattle.EnemyAI.States
             _animator = GetComponent<Animator>();
             _enemyAnimController = GetComponent<EnemyAnimController>();
             _fxController = GetComponent<FXController>();
-            _enemy = GetComponent<Enemy>();
         }
+        
+            
+        public override void OnTakeGranadeDamage()
+        {
+            _isAttack = false;
+            _enemyAnimController.OnAttack(false);
+            saveLoadService.OnSetActiveHumanoid-=OnSetActiveHumanoid;
+            StateMachine.EnterBehavior<EnemyStunningState>();
+        }
+    
 
         private void Start()
         {

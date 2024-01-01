@@ -1,175 +1,87 @@
+using System;
+using UnityEngine;
 using System.Collections;
 using Infrastructure.AIBattle;
-using Infrastructure.BaseMonoCache.Code.MonoCache;
-using UnityEngine;
 
-public class GrenadeThrower : MonoCache
+public class GrenadeThrower : MonoBehaviour
 {
-    private ParticleSystem _particleSystem;
-    private ParticleSystem.Particle[] particles;
-    private ParticleSystem.MainModule _mainModule;
-    
-    public GameObject GrenadePrefab;
-    private float _maxDistance = 15f;
-    private string _path = "Prefab/Grenade/SM_Wep_Grenade_01";
-    private GameObject aimingSphere;
+    public float _throwForce;
+    public float proc = 0.50f;
+    public Action OnThrowed;
     private Vector3 targetPoint;
-    private bool _aiming;
-    public float minDistance=2f; 
-    public float maxDistance=15f;
-    public float minSpeed=4f;
-    public float maxSpeed=11f;
-    
-    private void Start()
+    private float _maxDistance = 15f;
+    private bool _isThrowed;
+
+    public void ThrowGrenade(Granade granade)
     {
-        GameObject tempGrenade = Resources.Load<GameObject>(_path);
-        GrenadePrefab= Instantiate(tempGrenade);
-        _particleSystem = GrenadePrefab.GetComponent<ParticleSystem>();
-        particles = new ParticleSystem.Particle[1]; // Создаем массив для одной частицы
-        
-        _mainModule= _particleSystem.main;
+        _isThrowed = false;
+        StartCoroutine(Throw(granade));
     }
 
-    // private void Initialize(GranadeData data)
-    // {
-    //     if (data != null)
-    //     {
-    //         minDistance=data.minDistance; 
-    //         maxDistance=data.maxDistance;
-    //         minSpeed=data.minSpeed;
-    //         maxSpeed=data.maxSpeed;
-    //     }
-    // }
-    
-    public void Throw()
+    private IEnumerator Throw(Granade grenade)
     {
-        StartCoroutine(TryThrow());
-    }
-    
-    public IEnumerator TryThrow()
-    {
-        while (true)
+        while (_isThrowed == false)
         {
             if (Input.GetMouseButtonDown(0))
             {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            
+
                 if (Physics.Raycast(ray, out RaycastHit hit))
                 {
                     targetPoint = hit.point;
+
                     float distanceToTarget = Vector3.Distance(transform.position, targetPoint);
 
-                    if (distanceToTarget>=minDistance)
+                    if (distanceToTarget > _maxDistance)
                     {
-                        if (distanceToTarget >= _maxDistance)
-                        {
-                            distanceToTarget=_maxDistance;
-                        }
-                        
-                        _aiming = true;
-            
-                        
-                        // Рассчитываем силу броска пропорционально дистанции
-                        _mainModule.startSpeed = CalculateThrowForce(distanceToTarget);
-            
-                        transform.LookAt(targetPoint);
-                        transform.Rotate(-45, 0, 0);
-            
-                        // Создаем сферу для отображения точки броска
-                        if (aimingSphere == null)
-                        {
-                            aimingSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                            Destroy(aimingSphere.GetComponent<Collider>()); // Убираем коллайдер, чтобы не взаимодействовать с объектами
-                        }
-                        aimingSphere.transform.position = targetPoint;
-                        aimingSphere.transform.localScale = Vector3.one * 0.5f; // Размер сферы
-
-                        StartCoroutine(ThrowerControlling());
+                        distanceToTarget = _maxDistance;
                     }
+
+                    transform.LookAt(targetPoint);
+                    transform.rotation =
+                        new Quaternion(0, transform.rotation.y, transform.rotation.z, transform.rotation.w);
+                    transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, transform.eulerAngles.z);
+
+
+                    GameObject newGrenade = Instantiate(grenade.gameObject, transform.position, transform.rotation);
+
+                    Vector3 pos = newGrenade.transform.position;
+                    newGrenade.transform.position = new Vector3(pos.x, pos.y + 2f, pos.z);
+                    newGrenade.transform.rotation = new Quaternion(-45f, 0, 0, 0);
+
+
+                    Granade granade = newGrenade.GetComponent<Granade>();
+                    Rigidbody rb = newGrenade.GetComponent<Rigidbody>();
+                    _throwForce = CalculateThrowForce(distanceToTarget);
+                    Debug.Log("_throwForce" + _throwForce);
+                    rb.AddForce(transform.forward * _throwForce, ForceMode.VelocityChange);
+                    _isThrowed = true;
+                    granade.transform.parent = null;
+                    granade.Work();
+                    OnThrowed.Invoke();
                 }
             }
-            
+
             yield return null;
         }
     }
-    
+
     private float CalculateThrowForce(float distance)
-    {     
-        print(distance);
-        float throwForce;
-
-        float distanceRatio = (distance - minDistance) / (maxDistance - minDistance);
-
-        // Если дистанция находится в диапазоне 30% - 80% от максимальной дистанции, добавляем 2 к максимальной силе
-        
-        
-            // Иначе, используем обычную интерполяцию
-            throwForce = Mathf.Lerp(minSpeed, maxSpeed, distanceRatio);
-            
-            if (distanceRatio >= 0.1f && distanceRatio <= 0.5f)
-            {
-                throwForce += 1f;
-            }
-            if (distanceRatio >= 0.5f && distanceRatio <= 0.8f)
-            {
-                throwForce += 0.5f;
-            }
-            print(throwForce);
-        return throwForce;
-    }
-
-    private  IEnumerator ThrowerControlling()
     {
-        _particleSystem.Play();
-        Vector3 particlePosition=Vector3.zero;
-        // Получаем частицы из системы частиц
-        
+        float[] distances = { 14f, 12f, 10f, 7.2f, 6f, 5f, 4f, 3f, 2f };
+        float[] forces = { 2.3f, 2.25f, 2.2f, 2f, 1.8f, 1.6f, 1.4f, 1.15f, 1f };
+        float calculatedForce = forces[forces.Length - 1]; // Значение по умолчанию
 
-        bool isTargetSet = false;
-        int numParticles = 0;
-        
-        while ( _particleSystem.isPlaying )
+        for (int i = 0; i < distances.Length; i++)
         {
-            
-            if (numParticles > 0&&!isTargetSet)
+            if (distance >= distances[i])
             {
-                 numParticles = _particleSystem.GetParticles(particles);
-                isTargetSet = true;
-            }
-            if (!isTargetSet)
-            {
-                 numParticles = _particleSystem.GetParticles(particles);
-            }
-           
-
-            yield return null;
-        }
-        
-        particlePosition = particles[0].position;
-
-        Explosion(particlePosition);
-        Debug.Log("rhzr " + particlePosition);
-
-    }
-
-    private void Explosion(Vector3 explosionPosition )
-    {
-        float explosionRadius=0;
-        float maxDamage=0;
-        
-        // Используем слой "Enemies" для поиска только вражеских объектов
-        int enemyLayer = LayerMask.GetMask("Enemies");
-        Collider[] colliders = Physics.OverlapSphere(explosionPosition, explosionRadius, enemyLayer);
-
-        foreach (Collider collider in colliders)
-        {
-            // Тот же код для нанесения урона
-            IDamageable damageable = collider.GetComponent<IDamageable>();
-            if (damageable != null)
-            {
-                // Рассчет урона и вызов TakeDamage
-                // ...
+                calculatedForce = Mathf.Pow(distance, proc) * forces[i];
+                break;
             }
         }
+
+        _throwForce = calculatedForce;
+        return _throwForce;
     }
 }

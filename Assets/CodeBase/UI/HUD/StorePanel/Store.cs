@@ -114,7 +114,7 @@ namespace UI.HUD.StorePanel
                 {
                     _saveLoadService.MoneyData.SpendMoney(_medicineBoxPrice);
                     _selectedWorkPoint.SetMedicineBox(_boxFactory.CreateMedicine());
-                    _additionalEquipmentButton.SwitchStateButton(false);
+                    _additionalEquipmentButton.HideButton();
                 }
             }
         }
@@ -127,7 +127,7 @@ namespace UI.HUD.StorePanel
                 {
                     _saveLoadService.MoneyData.SpendMoney(_weaponBoxPrice);
                     _selectedWorkPoint.SetWeaponBox(_boxFactory.CreateWeapon());
-                    _additionalEquipmentButton.SwitchStateButton(false);
+                    _additionalEquipmentButton.HideButton();
                 }
             }
         }

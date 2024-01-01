@@ -57,17 +57,17 @@ namespace UI.HUD.StorePanel
             
             if (_isSelected)
             {
-                StartCoroutine(StartTimer());
+                StartCoroutine(StartTimer(3));
             }
             else
             {
-                StartCoroutine(StartTimer());
+                StartCoroutine(StartTimer(3));
             }
         }
 
-        private IEnumerator StartTimer()
+        private IEnumerator StartTimer(int time)
         {
-            yield return new WaitForSecondsRealtime(3);
+            yield return new WaitForSecondsRealtime(time);
 
             _isSelected = false;
             _additionalPanelButton.SetActive(false);
@@ -88,9 +88,9 @@ namespace UI.HUD.StorePanel
             }
         }
 
-        public void SwitchStateButton(bool isActive)
+        public void HideButton( )
         {
-            _additionalPanel.SetActive(isActive);
+            StartCoroutine(StartTimer(0));
         }
     }
 }

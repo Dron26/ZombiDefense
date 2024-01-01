@@ -15,7 +15,7 @@ using Random = UnityEngine.Random;
 namespace Enemies.AbstractEntity
 {
     [RequireComponent(typeof(EnemyStateMachine))]
-    public abstract class Enemy : MonoCache
+    public abstract class Enemy : MonoCache, IDamageable
     {
         [SerializeField] private float _maxHealth;
         [SerializeField] private float _rangeAttack = 1.2f;
@@ -24,7 +24,7 @@ namespace Enemies.AbstractEntity
         [SerializeField] private int _price;
 
         public event Action<EnemyEventType,WeaponType> OnEnemyEvent;
-        
+        public event Action OnTakeGranadeDamage;
         public Action<Enemy> OnInitialized;
         public Action<Enemy> OnDeath; 
         //public Action<WeaponType> OnTakeDamage;
@@ -32,6 +32,7 @@ namespace Enemies.AbstractEntity
         public EnemyAnimController EnemyAnimController=>_enemyAnimController;
         public Vector3 StartPosition;
         public float MaxHealth => _maxHealth;
+        public float Health => _health;
         public int Level => _level;
         public int IndexInWave => _indexInWave;
         
@@ -115,23 +116,8 @@ namespace Enemies.AbstractEntity
                 _agent.speed = Random.Range(minSpeed, maxSpeed);
             }
         }
-        
-        public  void ApplyDamage(float getDamage, WeaponType weaponWeaponType)
-        {
-            if (_health >= 0)
-            {
-                    AdditionalDamage(getDamage, weaponWeaponType);
-                
-                _health -= Mathf.Clamp(getDamage, _minHealth, MaxHealth);
-            }
-        
-            if (_health <= 0)
-            {
-                _saveLoadService.SetInactiveEnemy(this);
-                Die(weaponWeaponType);
-                _isLife = false;
-            }
-        }
+
+        public abstract void PushForGranade();
 
         public abstract void AdditionalDamage(float getDamage,WeaponType weaponWeaponType);
 
@@ -152,6 +138,30 @@ namespace Enemies.AbstractEntity
         {
             _indexInWave = index;
         }
+
+
+        public void ApplyDamage(float damage, WeaponType weaponType)
+        {
+            // if (weaponType==WeaponType.Grenade)
+            // {
+            //     OnTakeGranadeDamage?.Invoke();
+            //     PushForGranade();
+            // }
+            
+            if (_health >= 0)
+            {
+                AdditionalDamage(damage, weaponType);
+                
+                _health -= Mathf.Clamp(damage, _minHealth, MaxHealth);
+            }
+        
+            if (_health <= 0)
+            {
+                _saveLoadService.SetInactiveEnemy(this);
+                Die(weaponType);
+                _isLife = false;
+            }
+        }
     }
 }
 
@@ -160,5 +170,6 @@ public enum EnemyEventType
     TakeDamage,
     Death,
     TakeSmokerDamage,
-    TakeSimpleWalkerDamage
+    TakeSimpleWalkerDamage,
+    TakeGranadeDamage
 }
