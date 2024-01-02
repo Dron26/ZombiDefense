@@ -33,7 +33,8 @@ namespace UI.HUD.StorePanel
 
         public void ShowInfo()
         {
-            _nameWindow.text = LeanLocalization.GetTranslationText(_name);
+            _name= LeanLocalization.GetTranslationText(_name);
+            _nameWindow.text = _name;
             _healthWindow.text = _health.ToString();
             _damageWindow.text = _damage.ToString();
             

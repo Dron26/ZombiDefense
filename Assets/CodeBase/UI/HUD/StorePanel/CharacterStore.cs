@@ -24,27 +24,24 @@ namespace UI.HUD.StorePanel
         [SerializeField] private Button _buyButton;
         [SerializeField] private PricePanel _pricePanel;
         [SerializeField]private CharacterInfoPanel _characterInfoPanel;
-
         [SerializeField] private List<GameObject> _characters;
         [SerializeField] private GameObject _characterSlotPrefab;
         [SerializeField] private GameObject _container;
-
-         private List<Humanoid> _allHumanoid=new();
-         private List<Humanoid> _allAvailableHumanoid=new();
-        
-        [SerializeField] private CharacterGroupContent _characterGroupContent;
+        [SerializeField] private GameObject _panelCharacterStore;
+         [SerializeField] private CharacterGroupContent _characterGroupContent;
         [SerializeField] private CharacterSkinnedMeshesGroup _characterSkinnedMeshesGroup;
-       
         public Action<Humanoid> OnCharacterBought;
         public Action OnMoneyEmpty;
-
+        public Action OnUpdateBought;
+        
+        private List<Humanoid> _allHumanoid=new();
+         private List<Humanoid> _allAvailableHumanoid=new();
         private List<int> _indexAvailableHumanoid=new();
         private List<CharacterSlot> _characterSlots=new();
         private CharacterSlot _selectedCharacterSlot;
         private Humanoid _selectedHumanoid;
         private SaveLoadService _saveLoadService;
         private Store _store;
-        public Action OnUpdateBought;
         private  bool _isInitialized;
         public void Initialize( SaveLoadService saveLoadService,Store store )
         {
@@ -106,6 +103,7 @@ namespace UI.HUD.StorePanel
         
         private void SetCharacterInfo()
         {
+            _characterInfoPanel.gameObject.SetActive(true);
             _characterInfoPanel.SetParametrs(_selectedCharacterSlot.Humanoid);
         }
         
@@ -200,7 +198,6 @@ namespace UI.HUD.StorePanel
             else
             {
                 _container.gameObject.SetActive(false);
-                
             }
         }
     }

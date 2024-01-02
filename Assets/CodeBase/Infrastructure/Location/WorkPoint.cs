@@ -148,7 +148,7 @@ namespace Infrastructure.Location
 
         public void UpLevel(int precent)
         {
-            _upPrecent = 0;
+            
             _selectedCircles[_level].gameObject.SetActive(false);
             _upPrecent += precent;
             _level++;

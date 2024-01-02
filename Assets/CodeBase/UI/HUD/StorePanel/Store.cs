@@ -90,8 +90,8 @@ namespace UI.HUD.StorePanel
             _additionalEquipmentButton.OnSelectedMedicineBox+=OnSelectMedicineBox;
             _additionalEquipmentButton.OnSelectedWeaponBox+=OnSelectWeaponBox;
             
-            _eliteCharacterStore.Initialize(_saveLoadService,this);
-            _eliteCharacterStore.OnCharacterBought += OnCharacterBought;
+          //  _eliteCharacterStore.Initialize(_saveLoadService,this);
+          //_eliteCharacterStore.OnCharacterBought += OnCharacterBought;
             
             InitializeButton();
             //_characterStore.BuyCharacter += OnBuyCharacter;
@@ -193,7 +193,7 @@ namespace UI.HUD.StorePanel
                 _saveLoadService.MoneyData.SpendMoney(price);
                 _workPointGroup.UpLevel(_selectedWorkPoint);
                 
-                OnBoughtUpgrade?.Invoke(_selectedWorkPoint);
+                //OnBoughtUpgrade?.Invoke(_selectedWorkPoint);
             }
             else
             {
@@ -250,7 +250,7 @@ namespace UI.HUD.StorePanel
         
         private void SwitchPanels(bool isActive)
         {
-            IsStoreActive(isActive);
+            IsStoreActive.Invoke(isActive);
             _storePanel.gameObject.SetActive(isActive);
             _characterStore.gameObject.SetActive(isActive);
             _characterStoreRotation.gameObject.SetActive(isActive);
