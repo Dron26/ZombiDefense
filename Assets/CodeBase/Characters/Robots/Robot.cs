@@ -14,67 +14,39 @@ using UnityEngine;
 
 namespace Characters.Robots
 {
-    //[RequireComponent(typeof(WeaponController))]
-    //[RequireComponent(typeof(PlayerCharactersStateMachine))]
+    [RequireComponent(typeof(WeaponController))]
+    [RequireComponent(typeof(PlayerCharactersStateMachine))]
     public abstract class Robot : MonoCache
     {
         [SerializeField] private int _id;
         [SerializeField] private int _maxHealth;
-        [SerializeField] private ParticleSystem _ring;
-        [SerializeField] private int _price;
+        [SerializeField] private ParticleSystem _shotRadius;
         [SerializeField] private Sprite _sprite;
         private AudioManager _audioManager;
 
         public Vector3 StartPosition;
         public Action<Humanoid> OnDataLoad;
-        public int Price => _price;
-        
         private Animator _animator;
-        private PlayerCharacterAnimController _playerCharacterAnimController;
-        private FXController _fxController;
-
+        private RobotFXController _fxController;
         public int ID => _id;
         private int _currentHealth;
         private bool _isLife = true;
         private bool _isTakeDamagePlay;
         public int MaxHealth => _maxHealth;
-
         private  int _minHealth = 0;
-        
         private bool _isBuyed = false;
-        public bool IsBuyed => _isBuyed;
-
-       // public  int GetLevel();
-       // public  int GetHealth();
-       // public abstract void Initialize();
-         public  Sprite Sprite=>_sprite;
-         public  bool IsLife=>_isLife;
-       // public  int GetPrice();
-
-        public  int GetMaxHealth()
-        {
-            return _maxHealth;
-        }
-
-      
-
         public Action OnMove;
-        public Action <Humanoid>OnInitialize;
-
+        public Action <Robot>OnInitialize;
         private bool _isSelected;
         private bool _isMoving;
         public bool IsMove => _isMoving;
-
         public string GetName() => ConstantsData.GetName(_id);
-
-
         public void ApplyDamage(int getDamage)
         {
             Debug.Log(_currentHealth);
             
             if (_currentHealth <= 0)
             {
-                _animator.SetTrigger(_playerCharacterAnimController.Die);
                 _isLife = false;
                 Die();
             }
@@ -83,7 +55,6 @@ namespace Characters.Robots
                 if (!_isTakeDamagePlay)
                 {
                     _isTakeDamagePlay = true;
-                    _animator.SetTrigger(_playerCharacterAnimController.IsHit);
                 }
                 
                 _fxController.OnHitFX();
@@ -102,8 +73,7 @@ namespace Characters.Robots
             _audioManager = audioManager;
             _currentHealth=_maxHealth;
             _animator = GetComponent<Animator>();
-            _playerCharacterAnimController=GetComponent<PlayerCharacterAnimController>();
-            _fxController=GetComponent<FXController>();
+            _fxController=GetComponent<RobotFXController>();
             OnInitialize?.Invoke(this);
         }
 
@@ -118,11 +88,11 @@ namespace Characters.Robots
 
             if (_isSelected == true)
             {
-                _ring.gameObject.SetActive(true);
+                _shotRadius.gameObject.SetActive(true);
             }
             else
             {
-                _ring.gameObject.SetActive(false);
+                _shotRadius.gameObject.SetActive(false);
             }
         }
 
