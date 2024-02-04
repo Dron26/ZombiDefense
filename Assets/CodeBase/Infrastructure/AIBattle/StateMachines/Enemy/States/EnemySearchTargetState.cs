@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Characters.Humanoids.AbstractLevel;
 using Enemies.AbstractEntity;
-using Humanoids.AbstractLevel;
 using Unity.Collections;
 using Unity.Jobs;
 using Unity.Mathematics;

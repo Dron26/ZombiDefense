@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
 using Animation;
+using Characters.Humanoids.AbstractLevel;
 using DG.Tweening;
 using Enemies.AbstractEntity;
-using Humanoids.AbstractLevel;
 using UnityEngine;
 using UnityEngine.XR;
 
@@ -29,6 +29,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
             _animator = GetComponent<Animator>();
             _enemyAnimController = GetComponent<EnemyAnimController>();
             _fxController = GetComponent<FXController>();
+            _enemy= GetComponent<Enemy>();
         }
         
             

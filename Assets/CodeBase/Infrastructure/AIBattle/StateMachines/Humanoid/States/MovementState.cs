@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using Humanoids.AbstractLevel;
+using Characters.Humanoids.AbstractLevel;
 using Infrastructure.Location;
 using UnityEngine;
 using UnityEngine.AI;
@@ -28,11 +28,6 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 
         public void SetNewPoint(WorkPoint newPoint)
         {
-            if (_point!=null)
-            {
-                _point.RemoveHumanoid();
-            }
-            
             _point = newPoint;
             _reachedDestination = true;
             _isSetDestination = false;

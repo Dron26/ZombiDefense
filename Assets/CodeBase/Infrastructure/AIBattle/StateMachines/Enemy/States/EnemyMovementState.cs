@@ -1,11 +1,8 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Animation;
+using Characters.Humanoids.AbstractLevel;
 using Enemies.AbstractEntity;
-using Humanoids.AbstractLevel;
-using Infrastructure.AIBattle.EnemyAI.States;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
@@ -134,8 +131,9 @@ namespace Infrastructure.AIBattle.EnemyAI.States
                     SetTarget(false);
                     StateMachine.EnterBehavior<EnemySearchTargetState>();
                 }
-               
-           
+
+                 _animator.SetBool(_enemyAnimController.Walk, true);
+                 
                 yield return new WaitForSeconds(0.5f);
             }
 
@@ -164,10 +162,14 @@ namespace Infrastructure.AIBattle.EnemyAI.States
                }
                
                
-               yield return new WaitForSeconds(1.5f);
+               yield return new WaitForSeconds(0.5f);
            }
+           //
+           // if (_agent.isOnNavMesh)
+           // {
+           //     _agent.isStopped = false;
+           // }
            
-           _agent.isStopped = false;
            _animator.SetBool(_enemyAnimController.Walk, true);
        }
 

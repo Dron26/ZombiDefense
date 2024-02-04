@@ -1,5 +1,5 @@
 using System.Collections;
-using Humanoids.AbstractLevel;
+using Characters.Humanoids.AbstractLevel;
 using UnityEngine;
 using UnityEngine.AI;
 
