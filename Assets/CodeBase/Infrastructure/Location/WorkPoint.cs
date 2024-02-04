@@ -1,5 +1,7 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
-using Humanoids.AbstractLevel;
+using Characters.Humanoids.AbstractLevel;
 using Infrastructure.AIBattle.AdditionalEquipment;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
@@ -7,6 +9,7 @@ using Service.SaveLoad;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.UIElements;
 
 namespace Infrastructure.Location
 {
@@ -18,7 +21,7 @@ namespace Infrastructure.Location
         [SerializeField] private GameObject _selectedCircle;
 
         public UnityAction<WorkPoint> OnSelected;
-        public UnityAction<WorkPoint> OnClick;
+        public Action OnClick;
         public bool IsBusy => _isBusy;
         public bool IsSelected => _isSelected;
         public int Level => _level;
@@ -41,7 +44,10 @@ namespace Infrastructure.Location
         private MedicineBox _medicineBox;
         private WeaponBox _weaponBox;
         private bool _isHaveWeaponBox;
-
+        
+        private Vector3 _startScale;
+        private Vector3 _maxScale;
+        private Vector3 _minScale = new Vector3(0.3f,0.3f,0.3f);
         private void Awake()
         {
             _level = 0;
@@ -52,6 +58,9 @@ namespace Infrastructure.Location
 
             //_currentCircle.gameObject.SetActive(true);
             _collider = GetComponent<Collider>();
+            
+            _startScale = _selectedCircle.transform.localScale;
+            _maxScale =_startScale*2 ;
         }
 
 
@@ -106,14 +115,25 @@ namespace Infrastructure.Location
 
         public void SetSelected(bool isSelected)
         {
+            bool selected=_isSelected;
             _isSelected = isSelected;
-
+            
+            if (selected==false)
+            {
+                StartCoroutine(SelectedCircleActivated());
+            }
+            else 
+            {
+                StopCoroutine(SelectedCircleActivated());
+            }
+            
+           
             _selectedCircle.gameObject.SetActive(_isSelected);
         }
 
         public void CheckState()
         {
-            _humanoid = GetComponentInChildren<Humanoid>();
+            //_humanoid = GetComponentInChildren<Humanoid>();
 
             if (_humanoid != null)
             {
@@ -133,14 +153,10 @@ namespace Infrastructure.Location
             }
         }
 
-        // public void SetState(bool isActive)
-        // {
-        //     _isBusy=isActive;
-        //     _collider.enabled= !isActive;
-        // }
-
         public void SetHumanoid(Humanoid humanoid)
         {
+            Debug.Log("SetHumanoid");
+            
             _humanoid = humanoid;
             _humanoid.transform.parent = transform;
             CheckState();
@@ -161,9 +177,10 @@ namespace Infrastructure.Location
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            SetSelected(true);
-            CheckState();
-            OnSelected?.Invoke(this);
+                SetSelected(true);
+                CheckState();
+                OnSelected?.Invoke(this);
+            
         }
 
         public void SetSaveLoad(SaveLoadService saveLoadService)
@@ -195,10 +212,69 @@ namespace Infrastructure.Location
 
         public void RemoveHumanoid()
         {
+            
+            
+            if (_humanoid==null)
+            {
+                Debug.Log("RemoveHumanoid");
+            }
             _humanoid.transform.parent = transform.parent;
             _humanoid = null;
             //CheckBoxes();
             CheckState();
+        }
+
+
+        private IEnumerator SelectedCircleActivated()
+        {
+            _selectedCircle.transform.localScale = _startScale;
+            bool isUp= true;
+            bool isDown= false;
+            
+            while (_isSelected)
+            {
+                if (isUp)
+                {
+                    while (isUp)
+                    {
+                        if (_selectedCircle.transform.localScale.x<_maxScale.x)
+                        {
+                            float time = Time.deltaTime;
+                            _selectedCircle.transform.localScale+=time*(_selectedCircle.transform.localScale);
+                        }
+                        else
+                        {
+                            isUp=false;
+                            isDown=true;
+                        }
+                        
+                        yield return null;
+                    }
+                   
+                }
+                else
+                {
+                    while (isDown)
+                    {
+                        if (_selectedCircle.transform.localScale.x>_minScale.x)
+                        {
+                            float time = Time.deltaTime;
+                            _selectedCircle.transform.localScale-=time*(_selectedCircle.transform.localScale);
+                        }
+                        else
+                        {
+                            isDown=false;
+                            isUp=true;
+                        }
+                        yield return null;
+                    }
+                }
+               
+                yield return null;
+                
+            }
+            
+            _selectedCircle.transform.localScale = _startScale;
         }
     }
 }

@@ -18,11 +18,11 @@ namespace UI.Audio
             _audioData = saveLoadService.GetAudioData();
         }
 
-        protected override void OnEnabled() =>
-            WebApplication.InBackgroundChangeEvent += OnInBackgroundChange;
+       // protected override void OnEnabled() =>
+          //  WebApplication.InBackgroundChangeEvent += OnInBackgroundChange;
 
-        protected override void OnDisabled() =>
-            WebApplication.InBackgroundChangeEvent -= OnInBackgroundChange;
+       // protected override void OnDisabled() =>
+          //  WebApplication.InBackgroundChangeEvent -= OnInBackgroundChange;
 
         private void OnInBackgroundChange(bool inBackground)
         {
@@ -47,7 +47,7 @@ namespace UI.Audio
         
          private void OnApplicationFocus(bool hasFocus)
          {
-                       OnInBackgroundChange(hasFocus);
+                     //  OnInBackgroundChange(hasFocus);
          }
         
         public void SetPauseWhenAds(bool isPaused)

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Characters.Humanoids.AbstractLevel;
 using Data.Upgrades;
-using Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
 using Service;
@@ -47,7 +47,6 @@ namespace UI.HUD.StorePanel
         {
             _saveLoadService=saveLoadService;
             _store = store;
-            _store.IsStoreActive +=SetCharacterData ;
             SetHumanoid();
             InitializeCharacterSlots();
             //  InitializeUpgradePanel();
@@ -55,6 +54,7 @@ namespace UI.HUD.StorePanel
             InitializeButton();
             
             _isInitialized=true;
+            _store.IsStoreActive +=SetCharacterData ;
         }
         
         // protected override void OnEnabled()
@@ -88,7 +88,7 @@ namespace UI.HUD.StorePanel
             
             _selectedCharacterSlot= _characterSlots[0];
             _selectedHumanoid=_selectedCharacterSlot.Humanoid;
-            
+            _selectedCharacterSlot.Selected.Invoke(_selectedCharacterSlot);
         }
 
         private void SetPriceInfo()
@@ -104,7 +104,7 @@ namespace UI.HUD.StorePanel
         private void SetCharacterInfo()
         {
             _characterInfoPanel.gameObject.SetActive(true);
-            _characterInfoPanel.SetParametrs(_selectedCharacterSlot.Humanoid);
+            _characterInfoPanel.SetParametrs(_selectedHumanoid);
         }
         
         private void InitializeUpgradePanel()

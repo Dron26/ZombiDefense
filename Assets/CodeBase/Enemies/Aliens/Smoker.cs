@@ -1,5 +1,5 @@
+using Characters.Humanoids.AbstractLevel;
 using Enemies.AbstractEntity;
-using Humanoids.AbstractLevel;
 using Infrastructure.Logic.WeaponManagment;
 using UnityEngine;
 

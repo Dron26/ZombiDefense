@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Humanoids.AbstractLevel;
+using Characters.Humanoids.AbstractLevel;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
@@ -68,6 +68,10 @@ namespace Infrastructure.Logic.Inits
             DieState dieState = humanoid.GetComponent<DieState>();
             dieState.OnDeath += OnDeath;
             CreatedHumanoid?.Invoke();
+            _movePointController.SelectedPoint.SetHumanoid(humanoid);
+            _movePointController.SetCurrentPoint(_movePointController.SelectedPoint);
+            _movePointController.SelectedPoint.OnPointerClick(null);
+            _movePointController.SelectedPoint.OnPointerClick(null);
             SetLocalParametrs();
         }
 
@@ -90,7 +94,7 @@ namespace Infrastructure.Logic.Inits
                 print("SetCreatHumanoid error");
             }
 
-            _movePointController.SelectedPoint.CheckState();
+            
             _workPointsGroup.OnSelected(_movePointController.SelectedPoint);
         }
 

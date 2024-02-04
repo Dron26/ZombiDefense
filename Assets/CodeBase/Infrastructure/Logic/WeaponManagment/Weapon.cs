@@ -11,12 +11,14 @@ namespace Infrastructure.Logic.WeaponManagment
         [SerializeField] private float _reloadTime;
         [SerializeField] private float _fireRate;
         [SerializeField] private float _range;
-        [SerializeField] private AudioClip _shoot;
+        [SerializeField] private AudioClip _actionClip;
         [SerializeField] private float _spreadAngle;
-        [SerializeField] private AudioClip _reload;
+        [SerializeField] private AudioClip _reloadClip;
+        [SerializeField] private int IdGranade;
+        [SerializeField] private int  _timeBeforeExplosion;
         
-        public AudioClip Shoot => _shoot;
-        public AudioClip Reload => _reload;
+        public AudioClip ActionClip => _actionClip;
+        public AudioClip ReloadClip => _reloadClip;
         public int Damage => _damage;
         public int MaxAmmo => _maxAmmo;
         public float ReloadTime => _reloadTime;
@@ -28,5 +30,9 @@ namespace Infrastructure.Logic.WeaponManagment
         public float SpreadAngle=>_spreadAngle;
         
         public WeaponType GetWeaponType() => _weaponWeaponTypeEnum;
+        
+        public int GetIdGranade() => IdGranade;
+        
+        public int GetTimeBeforeExplosion() => _timeBeforeExplosion;
     }
 }

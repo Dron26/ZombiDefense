@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Humanoids.AbstractLevel;
+using Characters.Humanoids.AbstractLevel;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
@@ -11,6 +11,7 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using Infrastructure.Factories.FactoriesBox;
 using Infrastructure.Points;
+using UI.Buttons;
 
 namespace UI.HUD.StorePanel
 {
@@ -20,7 +21,7 @@ namespace UI.HUD.StorePanel
         
         [SerializeField] private CharacterStore _characterStore;
         [SerializeField] private CharacterStore _eliteCharacterStore;
-        [SerializeField] private GameObject _buttonPanel;
+        [SerializeField] private GameObject _buttonGroup;
         [SerializeField] private AdsStore _adsStore;
         [SerializeField] private GameObject _applyAdsMoneyWindow;
         
@@ -32,7 +33,7 @@ namespace UI.HUD.StorePanel
         [SerializeField] private Button _applyAdsMoneyWindowButton;
         [SerializeField] private Button _closeAdsMoneyWindowButton;
         
-        [SerializeField] private GameObject _controlPanel;
+        [SerializeField] private ButtonPanel _buttonPanel;
         [SerializeField] private GameObject _rightButtonPanel;
         [SerializeField] private WorkPointUpgradePanel _pointUpgradePanel;
          private WorkPointGroup _workPointGroup;
@@ -55,7 +56,7 @@ namespace UI.HUD.StorePanel
         private SaveLoadService _saveLoadService;
         private int maxLevel = 3;
         private bool _isPanelActive=false;
-        public UnityAction<bool> IsStoreActive;
+        public Action<bool> IsStoreActive;
         public Action<WorkPoint> OnBoughtUpgrade;
         private TimeManager _timeManager;
         private int _medicineBoxPrice = 100;
@@ -151,7 +152,7 @@ namespace UI.HUD.StorePanel
             _characterStore.gameObject.SetActive(!_characterStore.gameObject.activeSelf);
             _characterStoreRotation.gameObject.SetActive(!_characterStoreRotation.gameObject.activeSelf);
             _eliteCharacterStore.gameObject.SetActive(!_eliteCharacterStore.gameObject.activeSelf);
-            _buttonPanel.gameObject.SetActive(!_buttonPanel.gameObject.activeSelf);
+            _buttonGroup.gameObject.SetActive(!_buttonGroup.gameObject.activeSelf);
         }
 
         private void InitializeButton()
@@ -250,13 +251,13 @@ namespace UI.HUD.StorePanel
         
         private void SwitchPanels(bool isActive)
         {
-            IsStoreActive.Invoke(isActive);
             _storePanel.gameObject.SetActive(isActive);
             _characterStore.gameObject.SetActive(isActive);
             _characterStoreRotation.gameObject.SetActive(isActive);
+            IsStoreActive.Invoke(isActive);
             
             _dimImage.gameObject.SetActive(isActive);
-            _controlPanel.gameObject.SetActive(!isActive);
+            _buttonPanel.SwitchPanelState();
         }
 
         public CharacterStore GetCharacterStore()

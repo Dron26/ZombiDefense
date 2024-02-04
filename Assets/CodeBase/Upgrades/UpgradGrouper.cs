@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Characters.Humanoids;
 using Data.Upgrades;
-using Humanoids;
-using Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Service.SaveLoad;
 using TextMesh_Pro.Examples___Extras.Scripts;

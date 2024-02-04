@@ -1,6 +1,5 @@
 using System;
-using Humanoids.AbstractLevel;
-using Humanoids.People;
+using Characters.Humanoids.AbstractLevel;
 using Infrastructure.AIBattle;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;

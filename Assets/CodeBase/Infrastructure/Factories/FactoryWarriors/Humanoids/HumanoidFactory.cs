@@ -1,4 +1,4 @@
-﻿using Humanoids.AbstractLevel;
+﻿using Characters.Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
 using Service.Audio;
@@ -23,8 +23,8 @@ namespace Infrastructure.Factories.FactoryWarriors.Humanoids
             humanoidComponent.OnInitialize += OnInitialized;
             float randomAngle = Random.Range(0f, 360f);
             newHumanoid.transform.rotation = Quaternion.Euler(0f, randomAngle, 0f);
-            humanoidComponent.Initialize(_audioManager);
             weaponController.Initialize();
+            humanoidComponent.Initialize(_audioManager);
 
         }
 

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
+using Characters.Humanoids.AbstractLevel;
 using DG.Tweening;
-using Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
 using Infrastructure.Logic.Inits;

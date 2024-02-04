@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Characters.Humanoids;
 using Data.Upgrades;
-using Humanoids;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using UnityEngine;
 using UnityEngine.UI;

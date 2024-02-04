@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Humanoids.AbstractLevel;
+using Characters.Humanoids.AbstractLevel;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
@@ -22,6 +22,7 @@ namespace Infrastructure.Points
         private List<WorkPoint> _workPoints = new();
         private WorkPoint _previousMovePoint;
         private WorkPoint _selectedPoint;
+        private WorkPoint _currentPoint;
         public WorkPoint SelectedPoint => _selectedPoint;
         private WorkPoint _movePoint;
         private Humanoid _selectedHumanoid;
@@ -60,7 +61,8 @@ namespace Infrastructure.Points
         private void OnSelectedStartPoint()
         {
             _selectedPoint = _workPoints[0];
-            _previousMovePoint =  _workPoints[0]; //  _selectedPoint.SetSelected(true);
+            _previousMovePoint =  _workPoints[0];
+            _currentPoint=_workPoints[0];//  _selectedPoint.SetSelected(true);
             _saveLoadService.SetSelectedPoint(_selectedPoint);
         }
 
@@ -73,6 +75,7 @@ namespace Infrastructure.Points
             
                 if (_selectedPoint != newPoint)
                 {
+                    Debug.Log("selectNewPoint");
                     _selectedPoint.SelectedForMove(false);
                     
                     if (isHumanoidSelected)
@@ -94,6 +97,7 @@ namespace Infrastructure.Points
                 
                     if (newPoint.IsBusy == false && isHumanoidSelected && isPointToMoveTaked == false)
                     {
+                        Debug.Log("setMovePoint");
                         isPointToMoveTaked = true;
                         _movePoint = newPoint;
                     }
@@ -102,8 +106,10 @@ namespace Infrastructure.Points
                 {
                     if (_selectedHumanoid.IsLife&&!_selectedHumanoid.IsMove)
                     {
+                        Debug.Log("selectOldPoint");
                         if (newPoint.IsBusy == false && isPointToMoveTaked )
                         {
+                            Debug.Log("movePoint");
                             _previousMovePoint.SetBusy(false);
                             newPoint.SetBusy(true);
                             newPoint.SelectedForMove(true);
@@ -113,9 +119,7 @@ namespace Infrastructure.Points
                                 _selectedHumanoid.GetComponent<PlayerCharactersStateMachine>();
                             stateMachine.MoveTo();
                             stateMachine.EnterBehavior<MovementState>();
-                            MovementState movementState = _selectedHumanoid.GetComponent<MovementState>();
-                            movementState.SetNewPoint(newPoint);
-                            
+                            SetPoint(newPoint);
                             isPointToMoveTaked = false;
                         }
                     }
@@ -123,6 +127,24 @@ namespace Infrastructure.Points
                 
 
                 store.SetButtonState(_selectedPoint.IsBusy == false);
+        }
+
+        public void SetPoint(WorkPoint newPoint)
+        {
+            MovementState movementState = _selectedHumanoid.GetComponent<MovementState>();
+            movementState.SetNewPoint(newPoint);
+            ChangeCurrentPoint(newPoint);
+        }
+        
+        private void ChangeCurrentPoint(WorkPoint newPoint)
+        {
+            _currentPoint.RemoveHumanoid();
+            _currentPoint = newPoint;
+        }
+
+        public void SetCurrentPoint(WorkPoint point)
+        {
+            _currentPoint = point;
         }
     }
 }

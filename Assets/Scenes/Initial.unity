@@ -178,11 +178,6 @@ MonoBehaviour:
   - Language: Russian
     Text: "\u0410\u0432\u0442\u043E\u0440\u0438\u0437\u0430\u0446\u0438\u044F"
     Object: {fileID: 0}
---- !u!4 &312691364 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1992244176145147117, guid: 53ede33102defff4f92be11ed2d5d66e, type: 3}
-  m_PrefabInstance: {fileID: 1177769895}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &419170884
 GameObject:
   m_ObjectHideFlags: 0
@@ -792,10 +787,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1497151207076113158, guid: 53ede33102defff4f92be11ed2d5d66e, type: 3}
-      propertyPath: m_RootOrder
-      value: 103
-      objectReference: {fileID: 0}
     - target: {fileID: 1992244176145147115, guid: 53ede33102defff4f92be11ed2d5d66e, type: 3}
       propertyPath: m_Name
       value: LeanLocalization
@@ -843,10 +834,6 @@ PrefabInstance:
     - target: {fileID: 1992244176145147117, guid: 53ede33102defff4f92be11ed2d5d66e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3832246001479214742, guid: 53ede33102defff4f92be11ed2d5d66e, type: 3}
-      propertyPath: m_RootOrder
-      value: 102
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 53ede33102defff4f92be11ed2d5d66e, type: 3}
@@ -1249,61 +1236,6 @@ MonoBehaviour:
     Object: {fileID: 0}
   - Language: English
     Text: Log in?
-    Object: {fileID: 0}
---- !u!1 &1761765854
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1761765855}
-  - component: {fileID: 1761765856}
-  m_Layer: 0
-  m_Name: StartOver
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1761765855
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1761765854}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 312691364}
-  m_RootOrder: 101
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1761765856
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1761765854}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb15fa0e7301ff849bf4d6dcede7c12b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  data: 0
-  entries:
-  - Language: Turkey
-    Text: "Ba\u015Ftan ba\u015Fla"
-    Object: {fileID: 0}
-  - Language: Russian
-    Text: "\u041D\u0430\u0447\u0430\u0442\u044C \u0441\u043D\u0430\u0447\u0430\u043B\u0430"
-    Object: {fileID: 0}
-  - Language: English
-    Text: Start over
     Object: {fileID: 0}
 --- !u!1001 &1780173904
 PrefabInstance:

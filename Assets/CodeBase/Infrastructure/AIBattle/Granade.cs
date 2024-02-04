@@ -9,17 +9,20 @@ namespace Infrastructure.AIBattle
 {
     public class Granade : MonoCache
     {
-        [SerializeField] private float _time;
-        private WeaponType _weaponType;
-        [SerializeField] private float _explosionRadius;
-        [SerializeField] private int _damage;
+        private float _time;
+        [SerializeField] private Weapon _weapon;
+         private float _explosionRadius;
+         private int _damage;
         [SerializeField] private ParticleSystem _explosion;
         private Action<bool> isExploded;
-
+        private float _sourceVolume;
+       
         private void Explosion()
         {
             GameObject exploded = Instantiate(_explosion.gameObject, transform.position, Quaternion.identity);
             exploded.GetComponent<ParticleSystem>().Play();
+            
+            SetAudioSource( exploded);
             
             Vector3 explosionPosition = transform.position;
             Debug.Log("точка взрыва explosionPosition");
@@ -37,15 +40,12 @@ namespace Infrastructure.AIBattle
                 // Тот же код для нанесения урона
                 if (collider.TryGetComponent(out Enemy currentEnemy))
                 {
-                }
+                    IDamageable damageable = collider.GetComponent<IDamageable>();
 
-                ;
-                IDamageable damageable = collider.GetComponent<IDamageable>();
-
-                if (damageable != null)
-                {
-                    currentEnemy.gameObject.transform.LookAt(transform.position);
-                    currentEnemy.ApplyDamage(calculatedDamage, _weaponType);
+                    if (damageable != null)
+                    {
+                        currentEnemy.ApplyDamage(calculatedDamage, _weapon.GetWeaponType());
+                    }
                 }
             }
 
@@ -66,10 +66,22 @@ namespace Infrastructure.AIBattle
             Explosion();
         }
 
-        public void Work()
+        public void Work(float volume)
         {
-            _weaponType = WeaponType.Grenade;
+            _explosionRadius = _weapon.Range;
+            _time=_weapon.GetTimeBeforeExplosion();
+            _damage = _weapon.Damage;
+            _sourceVolume = volume;
+            
             StartCoroutine(ThrowerControlling());
+        }
+
+        public void SetAudioSource(GameObject exploded)
+        {
+            exploded.AddComponent<AudioSource>();
+            AudioSource audioSource=exploded.GetComponent<AudioSource>();
+            audioSource.volume = _sourceVolume;
+            audioSource.PlayOneShot(_weapon.ActionClip);
         }
     }
 }

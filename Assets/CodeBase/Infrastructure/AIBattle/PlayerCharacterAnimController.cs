@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Enemies.AbstractEntity;
-using Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using UnityEngine;
 

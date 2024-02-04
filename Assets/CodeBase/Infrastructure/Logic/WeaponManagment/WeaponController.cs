@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Characters.Humanoids.AbstractLevel;
 using Data.Upgrades;
-using Humanoids.AbstractLevel;
 using Infrastructure.AIBattle;
 using Infrastructure.AIBattle.AdditionalEquipment;
 using Infrastructure.BaseMonoCache.Code.MonoCache;

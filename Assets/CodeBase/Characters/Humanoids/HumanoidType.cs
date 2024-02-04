@@ -1,4 +1,4 @@
-namespace Humanoids
+namespace Characters.Humanoids
 {
     public enum HumanoidType
     {

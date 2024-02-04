@@ -25151,11 +25151,12 @@ GameObject:
   - component: {fileID: 4667134088787838568}
   - component: {fileID: 4667134088787838569}
   - component: {fileID: 4667134088787838580}
-  - component: {fileID: 4667134088787838581}
   - component: {fileID: 4667134088787838571}
   - component: {fileID: 4667134088787838582}
   - component: {fileID: 4667134088787838583}
   - component: {fileID: 9030058186205013026}
+  - component: {fileID: 4329077389865777391}
+  - component: {fileID: 7431799534238515448}
   m_Layer: 0
   m_Name: TZ_Tank_01
   m_TagString: Untagged
@@ -25228,15 +25229,86 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48a7ce247ba746f2a71cd3edc398e7af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _walkClips: []
-  _runClips: []
-  _attackClips: []
-  _throwClips: []
-  _jumpClips: []
-  _screamClips: []
-  _deathClips: []
-  _idleClips: []
-  _takeDamageClips: []
+  _walkClips:
+  - {fileID: 7400000, guid: e735691b591a7e248937137bdaa0c578, type: 2}
+  - {fileID: 7400000, guid: 8e088edf678ab594fbfbc7667f7a8687, type: 2}
+  - {fileID: 7400000, guid: 4a4a48880a14ffb48bb87b1c3e8092a3, type: 2}
+  - {fileID: 7400000, guid: e735691b591a7e248937137bdaa0c578, type: 2}
+  - {fileID: 7400000, guid: b4cd3a0dc3a439042b60a7a1060b3f49, type: 2}
+  - {fileID: 7400000, guid: 051543d4ab4d5084c87f20fc16619764, type: 2}
+  - {fileID: 7400000, guid: d21c682275fa9414c83ffe68c728f398, type: 2}
+  - {fileID: 7400000, guid: 0af5fa2caab38e04f9cc4eb7a632ef0d, type: 2}
+  - {fileID: 7400000, guid: 247f6b844c5bf1c4084b0dba8c35175a, type: 2}
+  - {fileID: 7400000, guid: 051543d4ab4d5084c87f20fc16619764, type: 2}
+  - {fileID: 7400000, guid: 5b88700e5e969654e917a1f9b6a2d49e, type: 2}
+  - {fileID: 7400000, guid: 4ddc727845bbf6f4f9fde328b5b7ab27, type: 2}
+  - {fileID: 7400000, guid: b10d754492dadd84f83ae64d1c285951, type: 2}
+  - {fileID: 7400000, guid: 8c672b1f939ffc7469c8fee92118c05d, type: 2}
+  - {fileID: 7400000, guid: d7e189b3a39fb1f44aa95190ba184e89, type: 2}
+  _runClips:
+  - {fileID: 7400000, guid: f24a08919e24b7644a62355840eca400, type: 2}
+  - {fileID: 7400000, guid: 517ad7bb447acf34893bde757eadaaf1, type: 2}
+  - {fileID: 7400000, guid: 4448f9af52dbf7a4cbf37fba47b66feb, type: 2}
+  - {fileID: 7400000, guid: 7e1414a8435ba634cbf10ffadb1f22b3, type: 2}
+  - {fileID: 7400000, guid: 5bf95d76dd5ecde4eb7d0559214d4269, type: 2}
+  - {fileID: 7400000, guid: 8a8905af5725c6340b747e5d1ccda7bf, type: 2}
+  - {fileID: 7400000, guid: c83fb3a0273952e429b90137e538cb0b, type: 2}
+  _attackClips:
+  - {fileID: 7400000, guid: a9b8feb65c0fd3144aeed0a390d35524, type: 2}
+  - {fileID: 7400000, guid: f1c8d6aab575fa24fb1fa1f36d60a903, type: 2}
+  - {fileID: 7400000, guid: 9948e38bd31714546b8eadfbaf0485f4, type: 2}
+  - {fileID: 7400000, guid: c139ba68d9b6e60459d0aab9f2994a17, type: 2}
+  - {fileID: 7400000, guid: 81bd42da2bb81ae4a859f5701e4208c4, type: 2}
+  - {fileID: 7400000, guid: f8b79c0ccacce754694827647e12dceb, type: 2}
+  - {fileID: 7400000, guid: 8448cffed7869b8439875ac5f8f4d217, type: 2}
+  - {fileID: 7400000, guid: 89fb523718f18934c990ded59954a2b5, type: 2}
+  - {fileID: 7400000, guid: 5d47edc39d201074eb591eaf70821c58, type: 2}
+  - {fileID: 7400000, guid: d7ab98a157433874cb78a8301f44e721, type: 2}
+  - {fileID: 7400000, guid: a5f012595f471bb4ca33dd0c067c1046, type: 2}
+  _throwClips:
+  - {fileID: 7400000, guid: 0f934c63d8fa8a24aa1473357d1d347e, type: 2}
+  - {fileID: 7400000, guid: a2cf0cc8c1b06c445840adfadd8a0407, type: 2}
+  - {fileID: 7400000, guid: 7a84a609985d0984498c8731d2a093ec, type: 2}
+  _jumpClips:
+  - {fileID: 7400000, guid: 1b5932e52643a944ea9bdbe91a2b1beb, type: 2}
+  - {fileID: 7400000, guid: 13bd3cb22063ce54ab868cda8adc83bb, type: 2}
+  - {fileID: 7400000, guid: 63f4037a307567c43884bd4612c1eb42, type: 2}
+  _screamClips:
+  - {fileID: 7400000, guid: 01cbb8bf97585e44e9fd8df6f98ae2cc, type: 2}
+  _deathClips:
+  - {fileID: 7400000, guid: 1bf3f93a54788254dbc425c55b52cb7b, type: 2}
+  - {fileID: 7400000, guid: 572653df77368e443bc93c8b8ccb1dfe, type: 2}
+  - {fileID: 7400000, guid: 453d6d6422bd45a4fa3e551287bd7e0f, type: 2}
+  - {fileID: 7400000, guid: 4fc31ba332e4f7e469e74f7744d92c53, type: 2}
+  - {fileID: 7400000, guid: 97b9465a39a81a64a85c40e1b707213e, type: 2}
+  - {fileID: 7400000, guid: 42ca8f89a6524d24b9e24c4e43fbf1d8, type: 2}
+  - {fileID: 7400000, guid: fa8922719b461304abfa1fb9dec2b748, type: 2}
+  - {fileID: 7400000, guid: 69b3c85a6b1880d49804826a64975494, type: 2}
+  - {fileID: 7400000, guid: f16b30c094b90064cb800910657236eb, type: 2}
+  - {fileID: 7400000, guid: c9bb1e19b92fe504a9f63532eee3ad14, type: 2}
+  - {fileID: 7400000, guid: fb285884c63a3724d8fee0ccc2c5216a, type: 2}
+  - {fileID: 7400000, guid: 496688627c1d69a47b5f44563e0d69d0, type: 2}
+  - {fileID: 7400000, guid: b322a603d8f3ea44ba70c6e03f69c131, type: 2}
+  - {fileID: 7400000, guid: 7b5ee87aa5c714c4cb6f4097a10e3ea9, type: 2}
+  - {fileID: 7400000, guid: e1e7ee64c497bac428ac34e4e8ea26fd, type: 2}
+  - {fileID: 7400000, guid: f9666eeb6346b8c4a8eb4d27011f7475, type: 2}
+  - {fileID: 7400000, guid: 91ff6d2b9c607b74dbebca60132ae591, type: 2}
+  - {fileID: 7400000, guid: 1c24498774777364a9cf9eb8bec45326, type: 2}
+  - {fileID: 7400000, guid: f9ffc0c004991c9448aaa58b13f9fb54, type: 2}
+  - {fileID: 7400000, guid: 14bef04ff60057647ba53452734d93a5, type: 2}
+  - {fileID: 7400000, guid: 5c43aac82d98ea84ebcb7dc5d1fd8dbe, type: 2}
+  - {fileID: 7400000, guid: bc2a75b46176df64db6c93e7c4514459, type: 2}
+  - {fileID: 7400000, guid: 076ac05a4b51bfb439f8a7e2ab85fcbe, type: 2}
+  - {fileID: 7400000, guid: 453d6d6422bd45a4fa3e551287bd7e0f, type: 2}
+  _idleClips:
+  - {fileID: 7400000, guid: dc4222d7263f30d47adb378afb21a5bd, type: 2}
+  - {fileID: 7400000, guid: d3bc4b136b3ba8b44ab895932b4aa131, type: 2}
+  - {fileID: 7400000, guid: f3174253dd55c4a4cb6dd9bb92414512, type: 2}
+  - {fileID: 7400000, guid: 8003abc3047bfbe4ab8620da00f0e997, type: 2}
+  - {fileID: 7400000, guid: f63fedb0f6b1a614cbce3ebfc3793c68, type: 2}
+  _takeDamageClips:
+  - {fileID: 7400000, guid: 55503ddd23e59ee48934ea562cfd9047, type: 2}
+  _takeGranadeClips: []
 --- !u!114 &4667134088787838574
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25297,25 +25369,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93ff7a6bff1a4057b4a129fa766649eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &4667134088787838581
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4667134088787838576}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eab47f758ea74c9182186eeeb87a2d42, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _maxHealth: 40
-  _rangeAttack: 1.2
-  _damage: 15
-  _level: 1
-  _minLevelForHumanoid: 0
-  StartPosition: {x: 0, y: 0, z: 0}
-  _price: 50
 --- !u!54 &4667134088787838571
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -25394,6 +25447,38 @@ MonoBehaviour:
   _areaHeight: 1
   _minParticleScale: 0.8
   _maxParticleScale: 1.2
+--- !u!114 &4329077389865777391
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4667134088787838576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29e0e1e81dbb44c29e2e30e848a7e150, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7431799534238515448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4667134088787838576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb2174379e144a5d8601a2b11226659b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxHealth: 80
+  _rangeAttack: 1.2
+  _damage: 10
+  _level: 1
+  _price: 20
+  StartPosition: {x: 0, y: 0, z: 0}
+  _bombDamage: 0
+  _explosionRadius: 4
 --- !u!1 &4667134088787844444
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using Characters.Humanoids.AbstractLevel;
 using Enemies.AbstractEntity;
-using Humanoids.AbstractLevel;
 using Infrastructure.Location;
 using Infrastructure.Logic.WaveManagment;
 using Service;

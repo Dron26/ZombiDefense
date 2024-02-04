@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Data;
 using Data.Upgrades;
 using Infrastructure.AIBattle;
@@ -11,9 +10,8 @@ using Infrastructure.Location;
 using Infrastructure.Logic.WeaponManagment;
 using Service.Audio;
 using UnityEngine;
-using UnityEngine.Events;
 
-namespace Humanoids.AbstractLevel
+namespace Characters.Humanoids.AbstractLevel
 {
     [RequireComponent(typeof(WeaponController))]
     [RequireComponent(typeof(PlayerCharactersStateMachine))]

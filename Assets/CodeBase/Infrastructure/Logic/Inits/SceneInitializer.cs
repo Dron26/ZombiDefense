@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using CameraMain;
+using Characters.Humanoids.AbstractLevel;
 using Data;
-using Humanoids.AbstractLevel;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WaveManagment;

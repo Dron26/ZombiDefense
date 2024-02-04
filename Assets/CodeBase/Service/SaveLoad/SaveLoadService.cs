@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Characters.Humanoids.AbstractLevel;
 using Data;
 using Enemies.AbstractEntity;
-using Humanoids.AbstractLevel;
 using Infrastructure;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;

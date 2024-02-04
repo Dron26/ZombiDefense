@@ -37,20 +37,61 @@ namespace Animation
         private Dictionary<int, float> _animInfo = new();
         private RuntimeAnimatorController animatorController;
 
-        
-        public void Awake( )
+
+        public void Awake()
         {
             if (TryGetComponent(out Enemy enemy))
             {
                 enemy.OnEnemyEvent += HandleEnemyEvent;
                 _animator = GetComponent<Animator>();
-                    //enemy.OnTakeDamage += OnHitFX;
+                //enemy.OnTakeDamage += OnHitFX;
                 // enemy.OnDeath += OnDieFX;
                 SetAnimInfo();
             }
-            
         }
-        
+
+        private void SetAnimInfo()
+        {
+            List<int> animHashNames = new();
+            animHashNames.Add(Walk);
+
+            animatorController = _animator.runtimeAnimatorController;
+
+            foreach (int name in animHashNames)
+            {
+                string animName = GetAnimatorParameterName(name);
+                AnimationClip clip = GetAnimationClip(animName);
+                float animationLength = clip.length;
+                _animInfo.Add(name, animationLength);
+            }
+
+            SetRandomAnimation();
+        }
+
+        public void SetRandomAnimation()
+        {
+            animatorOverrideController = new AnimatorOverrideController(_animator.runtimeAnimatorController);
+            _animator.runtimeAnimatorController = animatorOverrideController;
+
+            Dictionary<string, AnimationClip[]> animationClips = new Dictionary<string, AnimationClip[]>
+            {
+                { "Walk", _walkClips },
+                { "Run", _runClips },
+                { "Attack", _attackClips },
+                { "TakeDamage", _takeDamageClips },
+                // { "Jump", _jumpClips },
+                //{ "Scream", _screamClips },
+                { "Death", _deathClips },
+                { "Idle", _idleClips }
+            };
+
+            foreach (var animationClip in animationClips)
+            {
+                int randomIndex = Random.Range(0, animationClip.Value.Length);
+                animatorOverrideController[animationClip.Key] = animationClip.Value[randomIndex];
+            }
+        }
+
         private void HandleEnemyEvent(EnemyEventType eventType, WeaponType weaponType)
         {
             switch (eventType)
@@ -79,62 +120,21 @@ namespace Animation
         {
             _animator.SetTrigger(Die);
         }
-        
+
         // поставить смерть и падение под землю  по событию в анимации
-        public void SetRandomAnimation()
-        {
-            animatorOverrideController = new AnimatorOverrideController(_animator.runtimeAnimatorController);
-            _animator.runtimeAnimatorController = animatorOverrideController;
 
-            Dictionary<string, AnimationClip[]> animationClips = new Dictionary<string, AnimationClip[]>
-            {
-                { "Walk", _walkClips },
-                { "Run", _runClips },
-                { "Attack", _attackClips },
-                 { "TakeDamage", _takeDamageClips },
-                // { "Jump", _jumpClips },
-                //{ "Scream", _screamClips },
-                { "Death", _deathClips },
-                { "Idle", _idleClips }
-            };
-
-            foreach (var animationClip in animationClips)
-            {
-                int randomIndex = Random.Range(0, animationClip.Value.Length);
-                animatorOverrideController[animationClip.Key] = animationClip.Value[randomIndex];
-            }
-        }
 
         public void OnAttack(bool isActive)
         {
-            _animator.SetBool(IsAttack,isActive);
+            _animator.SetBool(IsAttack, isActive);
         }
 
         public void OnGranadeTakeDamage()
         {
-            _animator.SetBool(GranadeTakeDamage,true);
+            _animator.SetBool(GranadeTakeDamage, true);
         }
-        
-        
-        
-        private void SetAnimInfo()
-        {
-            List<int> animHashNames = new();
-            animHashNames.Add(Walk);
 
-            animatorController = _animator.runtimeAnimatorController;
 
-            foreach (int name in animHashNames)
-            {
-                string animName = GetAnimatorParameterName(name);
-                AnimationClip clip = GetAnimationClip(animName);
-                float animationLength = clip.length;
-                _animInfo.Add(name, animationLength);
-            }
-
-            SetRandomAnimation();
-        }
-        
         private string GetAnimatorParameterName(int nameHash)
         {
             foreach (var parameter in _animator.parameters)
@@ -144,6 +144,7 @@ namespace Animation
                     return parameter.name;
                 }
             }
+
             return string.Empty;
         }
 
@@ -156,6 +157,7 @@ namespace Animation
                     return clip;
                 }
             }
+
             return null;
         }
 

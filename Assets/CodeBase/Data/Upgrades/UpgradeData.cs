@@ -1,4 +1,4 @@
-using Humanoids;
+using Characters.Humanoids;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using UnityEngine;
 

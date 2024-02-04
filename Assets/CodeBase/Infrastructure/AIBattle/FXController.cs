@@ -1,5 +1,5 @@
 ﻿using System;
-using Humanoids.AbstractLevel;
+using Characters.Humanoids.AbstractLevel;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
@@ -81,8 +81,8 @@ namespace Infrastructure.AIBattle
         public void SetWeapon(Weapon weapon)
         {
             _weapon = weapon;
-            _shoot=_weapon.Shoot;
-            _reload=_weapon.Reload;
+            _shoot=_weapon.ActionClip;
+            _reload=_weapon.ReloadClip;
         }
         
         protected override void  OnDisable()

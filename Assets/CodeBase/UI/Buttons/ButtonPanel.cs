@@ -7,7 +7,6 @@ namespace UI.Buttons
 {
     public class ButtonPanel : MonoCache
     {
-        [SerializeField] private Button _menu;
         [SerializeField] private AdditionalWeaponButton _additionalWeapon;
         [SerializeField] private GameObject _rightPanel;
         [SerializeField] private GameObject _leftPanel;
@@ -23,13 +22,6 @@ namespace UI.Buttons
             _countEnemyPanel = _enemyCountPanel.GetComponentInChildren<CountEnemyPanel>();
             _countEnemyPanel.Initialize(saveLoadService);
             _additionalWeapon.Initialize(saveLoadService);
-            InitializeButton();
-        }
-
-        private void InitializeButton()
-        {
-            _menu.onClick.AddListener(SwitchPanelState);
-           
         }
 
         public void SwitchPanelState()

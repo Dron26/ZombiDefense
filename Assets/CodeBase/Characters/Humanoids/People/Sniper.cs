@@ -1,6 +1,6 @@
-using Humanoids.AbstractLevel;
+using Characters.Humanoids.AbstractLevel;
 
-namespace Humanoids.People
+namespace Characters.Humanoids.People
 {
     public class Sniper:Humanoid
     {}

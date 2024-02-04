@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using System.Collections;
+using Characters.Humanoids.AbstractLevel;
 using Infrastructure.AIBattle;
 
 public class GrenadeThrower : MonoBehaviour
@@ -41,23 +42,28 @@ public class GrenadeThrower : MonoBehaviour
                     transform.rotation =
                         new Quaternion(0, transform.rotation.y, transform.rotation.z, transform.rotation.w);
                     transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, transform.eulerAngles.z);
-
-
+                    
                     GameObject newGrenade = Instantiate(grenade.gameObject, transform.position, transform.rotation);
-
                     Vector3 pos = newGrenade.transform.position;
                     newGrenade.transform.position = new Vector3(pos.x, pos.y + 2f, pos.z);
                     newGrenade.transform.rotation = new Quaternion(-45f, 0, 0, 0);
-
-
+                    
                     Granade granade = newGrenade.GetComponent<Granade>();
                     Rigidbody rb = newGrenade.GetComponent<Rigidbody>();
                     _throwForce = CalculateThrowForce(distanceToTarget);
                     Debug.Log("_throwForce" + _throwForce);
                     rb.AddForce(transform.forward * _throwForce, ForceMode.VelocityChange);
                     _isThrowed = true;
+
+                    float volume = 0.4f;
+                    
+                    if (TryGetComponent(out Humanoid humanoid))
+                    {
+                        volume =humanoid.GetAudioController().GetSoundSource().volume;
+                    }
+                    
                     granade.transform.parent = null;
-                    granade.Work();
+                    granade.Work(volume);
                     OnThrowed.Invoke();
                 }
             }
