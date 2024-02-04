@@ -24131,6 +24131,8 @@ GameObject:
   - component: {fileID: 4402024817075074836}
   - component: {fileID: -2586927746879924568}
   - component: {fileID: 971732533139509620}
+  - component: {fileID: -2298331801112282559}
+  - component: {fileID: -1096483089395510625}
   m_Layer: 0
   m_Name: Grenade_
   m_TagString: Untagged
@@ -24238,7 +24240,7 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.08
+  m_Radius: 0.07
   m_Center: {x: -0.000000024214387, y: 0.012620566, z: 0}
 --- !u!114 &971732533139509620
 MonoBehaviour:
@@ -24252,10 +24254,127 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9ea27ce02ee4e1e81b192565f1cf125, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _time: 1.8
-  _explosionRadius: 5
-  _damage: 30
+  _weapon: {fileID: -2298331801112282559}
   _explosion: {fileID: 7151874556821285643, guid: 2c81bf139243075488e051502146eb27, type: 3}
+--- !u!114 &-2298331801112282559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5077952501396457332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abb217199da0455a9a030aa72df1a973, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _weaponWeaponTypeEnum: 4
+  _damage: 20
+  _maxAmmo: 1
+  _reloadTime: 0
+  _fireRate: 0
+  _range: 5
+  _actionClip: {fileID: 8300000, guid: dcd33bb624f38c547aec00b9ccfb82c6, type: 3}
+  _spreadAngle: 0
+  _reloadClip: {fileID: 0}
+  IdGranade: 1
+  _timeBeforeExplosion: 3
+--- !u!82 &-1096483089395510625
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5077952501396457332}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 10
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &5079655740988949776
 GameObject:
   m_ObjectHideFlags: 0
