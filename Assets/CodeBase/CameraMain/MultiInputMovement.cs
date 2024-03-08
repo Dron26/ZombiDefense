@@ -72,7 +72,7 @@ namespace CameraMain
 
                 Vector3 newPosition = transform.position + moveDirection * moveSpeed * Time.deltaTime;
                 newPosition.x = Mathf.Clamp(newPosition.x, minBounds.x, maxBounds.x);
-                newPosition.z = Mathf.Clamp(newPosition.z, minBounds.y, maxBounds.y);
+                newPosition.z= Mathf.Clamp(newPosition.z, minBounds.y, maxBounds.y);
 
                 MoveTo(newPosition);
             }

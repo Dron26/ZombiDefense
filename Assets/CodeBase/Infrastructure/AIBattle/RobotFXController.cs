@@ -17,10 +17,10 @@ namespace Infrastructure.AIBattle
        
         private AudioClip _shoot;
          private AudioClip _reload;
-        private AudioSource _audioSource;
+      //  private AudioSource _audioSource;
         private Weapon _weapon;
-        private AudioManager _audioManager;
-        private WeaponController _weaponController;
+      //  private AudioManager _audioManager;
+  //      private WeaponController _weaponController;
         private Humanoid _humanoid;
         
         private void Awake()
@@ -31,19 +31,19 @@ namespace Infrastructure.AIBattle
                 _humanoid.OnInitialize+=SetAudio;
             }
              
-             _weaponController= GetComponent<WeaponController>();
-             _weaponController.OnInitialized += SetWeapon;
+//             _weaponController= GetComponent<WeaponController>();
+  //           _weaponController.OnInitialized += SetWeapon;
         }
 
         private void SetAudio(Humanoid _humanoid)
         {
-            _audioManager=_humanoid.GetAudioController();
-            _audioSource= _audioManager.GetSoundSource();
+          //  _audioManager=_humanoid.GetAudioController();
+         //   _audioSource= _audioManager.GetSoundSource();
         }
 
         public void OnAttackFX()
         {
-            _audioSource.PlayOneShot(_shoot);
+           // _audioSource.PlayOneShot(_shoot);
             _particleGunshotSingle.Play();
         }
         
@@ -74,7 +74,7 @@ namespace Infrastructure.AIBattle
 
         public void OnReloadFX()
         {
-            _audioSource.PlayOneShot(_reload);
+         //   _audioSource.PlayOneShot(_reload);
         }
         public void SetWeapon(Weapon weapon)
         {

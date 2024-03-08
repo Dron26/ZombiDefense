@@ -27,10 +27,10 @@ namespace Infrastructure.Logic.Inits
         [SerializeField] private MovePointController _movePointController;
         [SerializeField] private List<Image> _images;
         [SerializeField] private MultiInputMovement _cameraInputMovement;
-        [SerializeField] private WindowBase _windowBase;
+        [SerializeField] private HudPanel _hudPanel;
         
         private LoadingCurtain _loadingCurtain;
-        public WindowBase Window=>_windowBase;
+        public HudPanel Window=>_hudPanel;
         private SaveLoadService _saveLoadService;
         private PlayerCharacterInitializer _playerCharacterInitializer;
         private EnemyCharacterInitializer _enemyCharacterInitializer;
@@ -79,10 +79,10 @@ namespace Infrastructure.Logic.Inits
             Debug.Log("Finish _playerCharacterInitializer();");
              _audioManager.Initialize(_saveLoadService);
 
-             _windowBase.Init(_saveLoadService,this );
-             _windowBase.OnClickStartSpawn+=_enemyCharacterInitializer.StartSpawning;
-             _windowBase.OnClickContinueStartSpawn+=OnClickContinueStartSpawn;
-             _windowBase.OnClickExitToMenu+=OnClickExitToMenu;
+             _hudPanel.Init(_saveLoadService,this );
+             _hudPanel.OnClickStartSpawn+=_enemyCharacterInitializer.StartSpawning;
+             _hudPanel.OnClickContinueStartSpawn+=OnClickContinueStartSpawn;
+             _hudPanel.OnClickExitToMenu+=OnClickExitToMenu;
 
              
              _playerCharacterInitializer.Initialize(_audioManager, this, _saveLoadService);
@@ -185,7 +185,7 @@ namespace Infrastructure.Logic.Inits
             {
                 _isTutorialLevel=true;
                 TutorialLevel tutorialLevel = location.GetComponent<TutorialLevel>();
-                tutorialLevel.SetImages(GetImages());
+               // tutorialLevel.SetImages(GetImages());
                 OnLoaded+=()=> tutorialLevel.Initialize(this);
                 tutorialLevel.OnEndTutorial+=SwicthScene;
                 //   location.GetComponent<TutorialLevel>().Initialize();
@@ -201,12 +201,12 @@ namespace Infrastructure.Logic.Inits
             _playerCharacterInitializer.CreatedHumanoid -= SetInfo;
             _playerCharacterInitializer.LastHumanoidDie -= _enemyCharacterInitializer.StopSpawning;
             _waveManager.OnReadySpawning -= ReadyToSpawning;
-            _windowBase.OnClickStartSpawn-=_enemyCharacterInitializer.StartSpawning;
+            _hudPanel.OnClickStartSpawn-=_enemyCharacterInitializer.StartSpawning;
         }
 
-         public List<Image> GetImages()
+         public HudPanel GetHudPanel()
          {
-             return _images;
+             return _hudPanel;
          }
          
          private void SwicthScene()

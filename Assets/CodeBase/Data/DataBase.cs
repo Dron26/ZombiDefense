@@ -40,7 +40,7 @@ namespace Data
         [NonSerialized] 
         public Camera CameraPhysical;
         [NonSerialized] 
-        public LocationData SelectedLocation=new LocationData();
+        public LocationData  SelectedLocation;
         
         private bool _isAuthorized = false;
         [NonSerialized] 
@@ -208,10 +208,12 @@ namespace Data
 
         public void SetSelectedLocation(LocationDataUI locationDataUI)
         {
+            SelectedLocation=new LocationData();
             SelectedLocation.Id = locationDataUI.Id;
             SelectedLocation.Path = locationDataUI.Path;
             SelectedLocation.IsCompleted = locationDataUI.IsCompleted;
             SelectedLocation.IsLocked = locationDataUI.IsLocked;
+            SelectedLocation.IsTutorial = locationDataUI.IsTutorial;
            // SelectedLocation.MaxEnemyOnLevel = locationDataUI.MaxEnemyOnLevel;
            // SelectedLocation.Waves=locationDataUI.GetWaveDataInfo();
         }

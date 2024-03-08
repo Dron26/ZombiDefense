@@ -8,5 +8,7 @@ namespace Infrastructure.Logic.WeaponManagment
         SniperRifle = 3,
         Grenade = 4,
         HeavyMachineGun = 5,
-        Shotgun = 6}
+        Shotgun = 6,
+        Turret = 7
+    }
 }

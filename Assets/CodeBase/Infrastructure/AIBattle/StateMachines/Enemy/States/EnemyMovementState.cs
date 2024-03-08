@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Animation;
 using Characters.Humanoids.AbstractLevel;
 using Enemies.AbstractEntity;
+using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
@@ -23,16 +25,21 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         private Dictionary<int, float> _animInfo=new();
         private bool _isTargetSet = false;
         private float _trackingProbability = 0.5f;
-        private Vector3 _humanoidPosition ;
-        
+        private bool _isWalking;
         private void Awake()
         {
             _animator = GetComponent<Animator>();
             _enemyAnimController = GetComponent<EnemyAnimController>();
-            
+            _isWalking = false;
             _enemy = GetComponent<Enemy>();
+            _enemy.OnDeath += OnDeath;
         }
-        
+
+        private void OnDeath(Enemy enemy)
+        {
+            StopCoroutine(CheckDistance());
+        }
+
         public override void OnTakeGranadeDamage()
         {
             _agent.speed = 0;
@@ -54,13 +61,12 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         public void InitHumanoid(Humanoid targetHumanoid)
         {
             _humanoid = targetHumanoid;
-            _humanoidPosition = _humanoid.transform.position;
             _humanoid.OnMove += OnTargetChangePoint;
         }
 
         private void OnSetActiveHumanoid()
         {
-            ChangeState();
+            ChangeState<EnemySearchTargetState>();
         }
 
         protected override void FixedUpdateCustom()
@@ -79,27 +85,24 @@ namespace Infrastructure.AIBattle.EnemyAI.States
                 
                 if (_agent.isOnNavMesh)
                     {
-                        _agent.SetDestination(_humanoidPosition);
+                        _agent.SetDestination(_humanoid.transform.position);
                         _isTargetSet = true;
-                        Movement();
+                        _agent.isStopped = false;
+                        _animator.SetBool(_enemyAnimController.Walk, true);
+                        StartCoroutine(CheckDistance());
                     }
             }
             else
             {
-                ChangeState();
+                ChangeState<EnemySearchTargetState>();
             }
         }
-        
-        private void Movement()
-        {
-            _agent.isStopped = false;
-            _animator.SetBool(_enemyAnimController.Walk, true);
-           
-            StartCoroutine(CheckDistance());;
-        }
 
-        private void ChangeState()
+        private void ChangeState<TState>() where TState : IEnemySwitcherState
         {
+            StopCoroutine(CheckDistance());
+            StopCoroutine(CheckSoldierPosition());
+            
             if (_agent==null )
             {
                 _agent = GetComponent<NavMeshAgent>();
@@ -109,35 +112,51 @@ namespace Infrastructure.AIBattle.EnemyAI.States
                 _agent.isStopped = true;
             }
             _animator.SetBool(_enemyAnimController.Walk, false);
-            SetTarget(false);
-            StateMachine.EnterBehavior<EnemySearchTargetState>();
+            _isTargetSet = false;
+            _isWalking=false;
+            StateMachine.EnterBehavior<TState>();
         }
         
         private IEnumerator CheckDistance()
         {
-            while (_isTargetSet &&_humanoid.IsLife)
+            while (_humanoid.IsLife&&_enemy.IsLife())
             {
-                _distance = Vector3.Distance(transform.position, _humanoid.transform.position);
-
-                if (_stoppingDistance >= _distance)
-                {
-                    _animator.SetBool(_enemyAnimController.Walk, false);
-                    StateMachine.EnterBehavior<EnemyAttackState>();
-                }
-
                 if (!_humanoid.IsLife)
                 {
                     _animator.SetBool(_enemyAnimController.Walk, false);
-                    SetTarget(false);
-                    StateMachine.EnterBehavior<EnemySearchTargetState>();
+                    ChangeState<EnemySearchTargetState>();
+                    yield break;
                 }
+                else
+                {
+                    _distance = Vector3.Distance(transform.position, _humanoid.transform.position);
+                    _agent.SetDestination(_humanoid.transform.position);
+                    if (_stoppingDistance >= _distance)
+                    {
+                        _animator.SetBool(_enemyAnimController.Walk, false);
+                        ChangeState<EnemyAttackState>();
+                        yield break;
+                    }
+                    //
+                    // {
+                    //     CheckSoldierPosition();
+                    // }
+                }
+                
 
-                 _animator.SetBool(_enemyAnimController.Walk, true);
+                
+
+                if (!_isWalking)
+                {
+                    _animator.SetBool(_enemyAnimController.Walk, true);
+                    _isWalking=true;
+                }
+                 
                  
                 yield return new WaitForSeconds(0.5f);
             }
 
-            ChangeState();
+            ChangeState<EnemySearchTargetState>();
         }
         
        private void OnTargetChangePoint()
@@ -147,7 +166,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
                if (ShouldTrackSoldier())
                    StartCoroutine(CheckSoldierPosition());
                else
-                   ChangeState();
+                   ChangeState<EnemyAttackState>();
            }
        }
         
@@ -171,6 +190,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
            // }
            
            _animator.SetBool(_enemyAnimController.Walk, true);
+           _isWalking=true;
        }
 
        private bool ShouldTrackSoldier() {     return Random.value <= _trackingProbability; }

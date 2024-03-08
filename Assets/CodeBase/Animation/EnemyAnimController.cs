@@ -21,7 +21,8 @@ namespace Animation
         public readonly int Threw = Animator.StringToHash("Threw");
         public readonly int GranadeTakeDamage = Animator.StringToHash("GranadeTakeDamage");
         public readonly int WakeUp = Animator.StringToHash("WakeUp");
-
+        public AnimationClip _currentClip;
+        
         [SerializeField] private AnimationClip[] _walkClips;
         [SerializeField] private AnimationClip[] _runClips;
         [SerializeField] private AnimationClip[] _attackClips;
@@ -33,7 +34,7 @@ namespace Animation
         [SerializeField] private AnimationClip[] _takeDamageClips;
         [SerializeField] private AnimationClip[] _takeGranadeClips;
         private Animator _animator;
-        private AnimatorOverrideController animatorOverrideController;
+        private AnimatorOverrideController _animatorOverrideController;
         private Dictionary<int, float> _animInfo = new();
         private RuntimeAnimatorController animatorController;
 
@@ -70,8 +71,8 @@ namespace Animation
 
         public void SetRandomAnimation()
         {
-            animatorOverrideController = new AnimatorOverrideController(_animator.runtimeAnimatorController);
-            _animator.runtimeAnimatorController = animatorOverrideController;
+            _animatorOverrideController = new AnimatorOverrideController(_animator.runtimeAnimatorController);
+            _animator.runtimeAnimatorController = _animatorOverrideController;
 
             Dictionary<string, AnimationClip[]> animationClips = new Dictionary<string, AnimationClip[]>
             {
@@ -88,7 +89,15 @@ namespace Animation
             foreach (var animationClip in animationClips)
             {
                 int randomIndex = Random.Range(0, animationClip.Value.Length);
-                animatorOverrideController[animationClip.Key] = animationClip.Value[randomIndex];
+                _animatorOverrideController[animationClip.Key] = animationClip.Value[randomIndex];
+                
+                // if (animationClip.Key== "Attack")
+                // {
+                //     AnimationEvent animationEvent = new AnimationEvent();
+                //     animationEvent.time = animationClip.Value[randomIndex].length-0.2f;
+                //     animationEvent.functionName = "AttackEnd";
+                //     animationClip.Value[randomIndex].AddEvent(animationEvent);
+                // }
             }
         }
 
@@ -127,6 +136,11 @@ namespace Animation
         public void OnAttack(bool isActive)
         {
             _animator.SetBool(IsAttack, isActive);
+            
+            if (isActive)
+            {
+                _currentClip= _animator.GetCurrentAnimatorClipInfo(0)[0].clip;
+            }
         }
 
         public void OnGranadeTakeDamage()

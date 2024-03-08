@@ -123,10 +123,10 @@ namespace Enemies.AbstractEntity
 
         private void Die( WeaponType weaponWeaponType)
         {
-            EnemyStateMachine stateMachine = GetComponent<EnemyStateMachine>();
-            stateMachine.EnterBehavior<EnemyDieState>();
             OnDeath?.Invoke(this);
             OnAction(EnemyEventType.Death, weaponWeaponType);
+            EnemyStateMachine stateMachine = GetComponent<EnemyStateMachine>();
+            stateMachine.EnterBehavior<EnemyDieState>();
         }
 
         public void OnAction(EnemyEventType action,WeaponType weaponType)
@@ -158,8 +158,8 @@ namespace Enemies.AbstractEntity
             if (_health <= 0)
             {
                 _saveLoadService.SetInactiveEnemy(this);
-                Die(weaponType);
                 _isLife = false;
+                Die(weaponType);
             }
         }
     }

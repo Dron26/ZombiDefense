@@ -176,7 +176,7 @@ MonoBehaviour:
   - {fileID: 7545535013560650714}
   - {fileID: 201618959929686644}
   _cameraInputMovement: {fileID: 2093397770404966250}
-  _windowBase: {fileID: 1675371939050236497}
+  _hudPanel: {fileID: 1675371939050236497}
   availableCharacters: []
 --- !u!114 &7789322449996127429
 MonoBehaviour:
@@ -212,9 +212,49 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 855901291580267255}
     m_Modifications:
+    - target: {fileID: 6709271053009515159, guid: d9bb1b57579121c48ae052ba435562e0, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6709271053009515159, guid: d9bb1b57579121c48ae052ba435562e0, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.46
+      objectReference: {fileID: 0}
+    - target: {fileID: 6709271053009515163, guid: d9bb1b57579121c48ae052ba435562e0, type: 3}
+      propertyPath: mainCamera
+      value: 
+      objectReference: {fileID: 2093397770104099301}
+    - target: {fileID: 6709271053009515163, guid: d9bb1b57579121c48ae052ba435562e0, type: 3}
+      propertyPath: mouseZoomSpeed
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6709271053009515163, guid: d9bb1b57579121c48ae052ba435562e0, type: 3}
+      propertyPath: maxZoomDistance
+      value: -16
+      objectReference: {fileID: 0}
+    - target: {fileID: 6709271053009515163, guid: d9bb1b57579121c48ae052ba435562e0, type: 3}
+      propertyPath: minZoomDistance
+      value: -22
+      objectReference: {fileID: 0}
     - target: {fileID: 6709271053308398612, guid: d9bb1b57579121c48ae052ba435562e0, type: 3}
       propertyPath: m_Name
       value: Camera
+      objectReference: {fileID: 0}
+    - target: {fileID: 6709271053308398614, guid: d9bb1b57579121c48ae052ba435562e0, type: 3}
+      propertyPath: maxBounds.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6709271053308398614, guid: d9bb1b57579121c48ae052ba435562e0, type: 3}
+      propertyPath: maxBounds.y
+      value: 101
+      objectReference: {fileID: 0}
+    - target: {fileID: 6709271053308398614, guid: d9bb1b57579121c48ae052ba435562e0, type: 3}
+      propertyPath: minBounds.x
+      value: -4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6709271053308398614, guid: d9bb1b57579121c48ae052ba435562e0, type: 3}
+      propertyPath: minBounds.y
+      value: 92
       objectReference: {fileID: 0}
     - target: {fileID: 6709271053308398615, guid: d9bb1b57579121c48ae052ba435562e0, type: 3}
       propertyPath: m_RootOrder
@@ -222,15 +262,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6709271053308398615, guid: d9bb1b57579121c48ae052ba435562e0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 53.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6709271053308398615, guid: d9bb1b57579121c48ae052ba435562e0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 7
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6709271053308398615, guid: d9bb1b57579121c48ae052ba435562e0, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -6.31
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6709271053308398615, guid: d9bb1b57579121c48ae052ba435562e0, type: 3}
       propertyPath: m_LocalRotation.w
@@ -455,22 +495,10 @@ PrefabInstance:
       propertyPath: AudioSource
       value: 
       objectReference: {fileID: 9013916390012692624}
-    - target: {fileID: 168884713129836802, guid: 357cb930eca088d4f8e754936f7304f2, type: 3}
-      propertyPath: m_Name
-      value: ButtonPanel
-      objectReference: {fileID: 0}
     - target: {fileID: 214687925513924236, guid: 357cb930eca088d4f8e754936f7304f2, type: 3}
       propertyPath: _cameraUI
       value: 
       objectReference: {fileID: 3970863866817895854}
-    - target: {fileID: 214687925513924236, guid: 357cb930eca088d4f8e754936f7304f2, type: 3}
-      propertyPath: _buttonGroup
-      value: 
-      objectReference: {fileID: 1763486484639567771}
-    - target: {fileID: 214687925513924236, guid: 357cb930eca088d4f8e754936f7304f2, type: 3}
-      propertyPath: _buttonPanel
-      value: 
-      objectReference: {fileID: 4550674414978144509}
     - target: {fileID: 214687925513924236, guid: 357cb930eca088d4f8e754936f7304f2, type: 3}
       propertyPath: _cameraPhysical
       value: 
@@ -839,6 +867,10 @@ PrefabInstance:
       propertyPath: AudioSource
       value: 
       objectReference: {fileID: 9013916390012692624}
+    - target: {fileID: 7894746068651439087, guid: 357cb930eca088d4f8e754936f7304f2, type: 3}
+      propertyPath: _panel
+      value: 
+      objectReference: {fileID: 5107545890549726132}
     - target: {fileID: 8101062417173350068, guid: 357cb930eca088d4f8e754936f7304f2, type: 3}
       propertyPath: AudioSource
       value: 
@@ -919,11 +951,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 679bd74bd4af4ef9b7cfc772970f8324, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &1763486484639567771 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7113138481357559333, guid: 357cb930eca088d4f8e754936f7304f2, type: 3}
-  m_PrefabInstance: {fileID: 8849529692258982334}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1824977196897178375 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7177690285523126969, guid: 357cb930eca088d4f8e754936f7304f2, type: 3}
@@ -935,17 +962,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &4550674414978144509 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5037529188217995587, guid: 357cb930eca088d4f8e754936f7304f2, type: 3}
+--- !u!1 &5107545890549726132 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4336541700976976394, guid: 357cb930eca088d4f8e754936f7304f2, type: 3}
   m_PrefabInstance: {fileID: 8849529692258982334}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f14ad1be718240fdbaadf2aa77610218, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &5732007367819379425 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3838181833088277343, guid: 357cb930eca088d4f8e754936f7304f2, type: 3}

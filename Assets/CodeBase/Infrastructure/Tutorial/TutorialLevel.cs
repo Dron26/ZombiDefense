@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Characters.Humanoids.AbstractLevel;
-using Infrastructure.AIBattle.PlayerCharacterStateMachine;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
 using Infrastructure.Logic.Inits;
@@ -10,6 +9,7 @@ using Infrastructure.Points;
 using Lean.Localization;
 using TMPro;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.UI;
 
 namespace Infrastructure.Tutorial
@@ -17,34 +17,54 @@ namespace Infrastructure.Tutorial
     public class TutorialLevel : MonoCache
     {
         [SerializeField] private TMP_Text tutorialText;
-        [SerializeField] private List<Image> _images;
+        private Dictionary<Image, Image> _showObjects;
+        [SerializeField] private List<Image> _buttons;
+        [SerializeField] private List<Image> _urrows;
         [SerializeField] private Humanoid _humanoid;
         [SerializeField] private WorkPoint _firstPoint;
         [SerializeField] private WorkPoint _secondPoint;
-        
+        [SerializeField] private Image _dimm;
+        [SerializeField] private GameObject _doorFirst;
+        [SerializeField] private GameObject _doorSecond;
+        private int _eulerDoor = 129;
+        private Quaternion _rotationDoorFirst;
+        private Quaternion _rotationDoorSecond;
         private Image _currentImage;
         private LeanLocalizedTextMeshProUGUI _localizedTextMesh;
         private int currentDialogIndex = 0;
         private List<string> _dialogTexts;
         private Color _currentColor;
         private Coroutine tutorialCoroutine;
-        private int _numberForStartChangeColor=2;
+        private int _numberForStartChangeColor = 2;
         private bool _keyPressed = false;
         private int _currentImageIndex = 0;
         public Action OnEndTutorial;
-private bool _isCharacterCreated = false;
+        private bool _isCharacterCreated = false;
         private PlayerCharacterInitializer _characterInitializer;
         private EnemyCharacterInitializer _enemyCharacterInitializer;
-private int numberForCreatedCharacter=8;
-private bool _isChangedColor = false;
-private MovePointController _movePointController;
-
+        private int numberForCreatedCharacter = 9;
+        private bool _isChangedColor = false;
+        private MovePointController _movePointController;
+        private SceneInitializer _initializer;
 
         private void Start()
         {
             _localizedTextMesh = tutorialText.GetComponent<LeanLocalizedTextMeshProUGUI>();
-            _characterInitializer=GetComponentInChildren<PlayerCharacterInitializer>();
-            _enemyCharacterInitializer=GetComponentInChildren<EnemyCharacterInitializer>();
+            _characterInitializer = GetComponentInChildren<PlayerCharacterInitializer>();
+            _enemyCharacterInitializer = GetComponentInChildren<EnemyCharacterInitializer>();
+
+            FillDictionary();
+        }
+
+        private void FillDictionary()
+        {
+            _showObjects = new Dictionary<Image, Image>();
+
+            for (int i = 0; i < _buttons.Count; i++)
+            {
+                _urrows[i].gameObject.SetActive(false);
+                _showObjects.Add(_buttons[i], _urrows[i]);
+            }
         }
 
         private void HandleEscapeKey()
@@ -55,8 +75,13 @@ private MovePointController _movePointController;
         public void Initialize(SceneInitializer sceneInitializer)
         {
             _dialogTexts = new List<string>();
+            _currentImageIndex = 0;
+            _dimm.enabled = true;
             _movePointController = sceneInitializer.GetMovePointController();
-            
+            _initializer = sceneInitializer;
+            _rotationDoorFirst = _doorFirst.transform.rotation;
+            _rotationDoorSecond = _doorSecond.transform.rotation;
+
             foreach (TutorialDialogKey dialog in Enum.GetValues(typeof(TutorialDialogKey)))
             {
                 _dialogTexts.Add(dialog.ToString());
@@ -65,44 +90,64 @@ private MovePointController _movePointController;
             tutorialCoroutine = StartCoroutine(RunTutorial());
         }
 
-        // ReSharper disable Unity.PerformanceAnalysis
         public IEnumerator RunTutorial()
         {
-            yield return  new WaitForSeconds(1f);
-            
+            yield return new WaitForSeconds(1f);
+            _initializer.GetHudPanel().SwitchPanelState(false);
+           
+
             foreach (string dialogText in _dialogTexts)
             {
                 _keyPressed = false;
                 _localizedTextMesh.TranslationName = dialogText;
 
-                if (currentDialogIndex>=_numberForStartChangeColor&&_currentImageIndex<_images.Count)
+                if (currentDialogIndex >= _numberForStartChangeColor && _currentImageIndex < _showObjects.Count)
                 {
                     _isChangedColor = true;
                     ChangeImageAndBrightness();
-                }else
+                }
+                else
                 {
                     _isChangedColor = false;
                 }
 
-                if (currentDialogIndex==numberForCreatedCharacter)
+                if (currentDialogIndex == numberForCreatedCharacter)
                 {
-                    SetCharacters();
+                    ChangeImageBrightness(1f);
+                    StopCoroutine(ChangeImageBrightness());
+                    tutorialText.color = Color.white;
+                    
                 }
-                if (currentDialogIndex==numberForCreatedCharacter+1)
+
+                if (currentDialogIndex == numberForCreatedCharacter + 1)
                 {
                     MoveCharacters(_firstPoint);
                 }
-                if (currentDialogIndex==numberForCreatedCharacter+2)
+
+                if (currentDialogIndex == numberForCreatedCharacter + 2)
                 {
                     MoveCharacters(_secondPoint);
                 }
-               
+
+                if (currentDialogIndex == numberForCreatedCharacter + 3)
+                {
+                    SetCharacters();
+                    OpenDoor();
+                }
+
                 yield return WaitForKeyPress();
 
                 currentDialogIndex++;
             }
 
             EndTutorial();
+        }
+
+        private void OpenDoor()
+        {
+            _initializer.GetSaveLoad().GetActiveEnemy()[0].GetComponent<NavMeshAgent>().speed = 1;
+            _rotationDoorFirst.eulerAngles=new Vector3(0,_eulerDoor,0);
+            _rotationDoorSecond.eulerAngles=new Vector3(0,-_eulerDoor,0);
         }
 
         private void MoveCharacters(WorkPoint point)
@@ -115,11 +160,13 @@ private MovePointController _movePointController;
         
         private void SetCharacters()
         {
+            _dimm.enabled = false;
             if (_isCharacterCreated) return;
             _characterInitializer.SetCreatHumanoid(_humanoid);
             _enemyCharacterInitializer.StartSpawning();
             _isCharacterCreated = true;
         }
+        
         private IEnumerator WaitForKeyPress()
         {
             while (!_keyPressed)
@@ -131,8 +178,14 @@ private MovePointController _movePointController;
                 else if (Input.anyKeyDown)
                 {
                     _keyPressed = true;
-                    StopCoroutine(ChangeImageBrightness());
-                    ChangeImageBrightness(1f);
+                    
+                    if (currentDialogIndex>=_numberForStartChangeColor&&_currentImageIndex<_showObjects.Count)
+                    {
+                        _urrows[_currentImageIndex].gameObject.SetActive(false);
+                        StopCoroutine(ChangeImageBrightness());
+                        ChangeImageBrightness(1f);
+                    }
+                    
                     
                     if (_isChangedColor)
                     {
@@ -146,18 +199,21 @@ private MovePointController _movePointController;
         
         private void EndTutorial()
         {
+            _initializer.GetHudPanel().SwitchPanelState(true);
             StopCoroutine(RunTutorial());
             OnEndTutorial?.Invoke();
         }
 
         private IEnumerator ChangeImageBrightness()
         {
-            _currentColor=_currentImage.color;
             
             bool increasingBrightness = true; 
             float currentBrightness = 1.0f; 
             float brightnessChangeStep = 0.03f; 
             float brightnessChangeInterval = 0.01f; 
+            
+            _currentColor=_currentImage.color;
+            _urrows[_currentImageIndex].gameObject.SetActive(true);
             
             while (!_keyPressed) 
             {
@@ -188,21 +244,19 @@ private MovePointController _movePointController;
 
         private void ChangeImageBrightness(float brightness)
         {
-            _currentImageIndex=Math.Clamp(_currentImageIndex,0,_images.Count-1);
-            _currentImage = _images[_currentImageIndex];
+            
             _currentImage.color = new Color(brightness, brightness, brightness);
         }
         
         private void ChangeImageAndBrightness()
         {
+            _currentImage=_buttons[_currentImageIndex];
             StartCoroutine(ChangeImageBrightness());
-            
-            _currentImageIndex=Math.Clamp(_currentImageIndex,0,_images.Count);
         }
 
         public void SetImages(List<Image> images)
         {
-            _images=images;
+            _buttons=images;
         }
     }
 }
@@ -213,6 +267,7 @@ public enum TutorialDialogKey
     WarningTutorial,
     StoreTutorial,
     PointUpTutorial,
+    AdditionalTutorial,
     HidePanelTutorial,
     TimePanelTutorial,
     MoneyPanelTutorial,

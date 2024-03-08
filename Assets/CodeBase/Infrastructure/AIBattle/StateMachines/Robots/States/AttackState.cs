@@ -12,7 +12,7 @@ namespace Infrastructure.AIBattle.StateMachines.Robots.States
         private Enemy _enemy = null;
         private float _currentRange;
         private RobotFXController _fxController;
-        private Characters.Robots.Robot _robot;
+        private Characters.Robots.Turret _turret;
         private WeaponController _weaponController;
         private bool _isShotgun;
         private bool _isAttacking;
@@ -34,7 +34,7 @@ namespace Infrastructure.AIBattle.StateMachines.Robots.States
         private void Awake()
         {
             _fxController = GetComponent<RobotFXController>();
-            _robot = GetComponent<Characters.Robots.Robot>();
+            _turret = GetComponent<Characters.Robots.Turret>();
             _weaponController = GetComponent<WeaponController>();
             _weaponController.ChangeWeapon += OnWeaponChanged;
         }

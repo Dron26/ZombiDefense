@@ -24250,7 +24250,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4667134088788107764
 Transform:
   m_ObjectHideFlags: 0
@@ -25049,7 +25049,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4667134088788122026
 Transform:
   m_ObjectHideFlags: 0
@@ -25229,6 +25229,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48a7ce247ba746f2a71cd3edc398e7af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _currentClip: {fileID: 0}
   _walkClips:
   - {fileID: 7400000, guid: e735691b591a7e248937137bdaa0c578, type: 2}
   - {fileID: 7400000, guid: 8e088edf678ab594fbfbc7667f7a8687, type: 2}
@@ -25399,7 +25400,7 @@ NavMeshAgent:
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 0
+  m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -26015,7 +26016,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4667134088788118044
 Transform:
   m_ObjectHideFlags: 0

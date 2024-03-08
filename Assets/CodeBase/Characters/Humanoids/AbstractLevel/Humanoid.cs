@@ -137,7 +137,10 @@ namespace Characters.Humanoids.AbstractLevel
         public void IsMoving(bool isMoving)
         {
             _isMoving = isMoving;
-            OnMove?.Invoke();
+            if (isMoving)
+            {
+                OnMove?.Invoke();
+            }
         }
 
 

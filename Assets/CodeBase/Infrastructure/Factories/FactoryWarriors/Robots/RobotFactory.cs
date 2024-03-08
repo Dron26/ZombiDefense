@@ -1,4 +1,3 @@
-using Characters.Humanoids.AbstractLevel;
 using Characters.Robots;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
@@ -11,27 +10,25 @@ namespace Infrastructure.Factories.FactoryWarriors.Robots
 {
     public class RobotFactory : MonoCache, IServiceFactory
     {
-        private AudioManager _audioManager;
-        public UnityAction<Robot> CreatedRobot;
+        [SerializeField] private AudioManager _audioManager;
+        public UnityAction<Turret> CreatedRobot;
 
         public void Create(GameObject prefab, Transform transform )
         {
             GameObject newRobot = Instantiate(prefab, transform);
-            Robot robotComponent = newRobot.GetComponent<Robot>();
-            WeaponController weaponController  = newRobot.GetComponent<WeaponController>();
+            Turret turretComponent = newRobot.GetComponent<Turret>();
             
-            robotComponent.transform.localPosition = Vector3.zero;
-            robotComponent.OnInitialize += OnInitialized;
+            turretComponent.transform.localPosition = Vector3.zero;
+            turretComponent.OnInitialize += OnInitialized;
             float randomAngle = Random.Range(0f, 360f);
             newRobot.transform.rotation = Quaternion.Euler(0f, randomAngle, 0f);
-            weaponController.Initialize();
-            robotComponent.Initialize(_audioManager);
+            turretComponent.Initialize(_audioManager);
 
         }
 
-        private void OnInitialized( Robot robotComponent)
+        private void OnInitialized( Turret turretComponent)
         {
-            CreatedRobot?.Invoke(robotComponent);
+            CreatedRobot?.Invoke(turretComponent);
         }
         
         public void Initialize( AudioManager audioManager)

@@ -23,7 +23,6 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         private FXController _fxController;
         private Enemy _enemy;
         private bool _isAttacked;
-
         private void Awake()
         {
             _animator = GetComponent<Animator>();
@@ -64,6 +63,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         public void InitHumanoid(Humanoid targetHumanoid)
         {
             _humanoid = targetHumanoid;
+            _isAttacked = false;
         }
 
         private IEnumerator Attack()
@@ -82,20 +82,25 @@ namespace Infrastructure.AIBattle.EnemyAI.States
                     transform.DOLookAt(_humanoid.transform.position, .1f);
                     _humanoid.ApplyDamage(_enemy.GetDamage());
                 }
-
+              
                 if (_currentRange >= _enemy.GetRangeAttack()||_humanoid.IsLife==false)
                 {
+                    _isAttacked = false;
                     ChangeState();
+                    break;
                 }
                 
-                yield return _waitForSeconds;
+                yield return new WaitForSeconds(_enemyAnimController._currentClip.length);
             }
             
             ChangeState();
+            
+            yield return null;
         }
 
         private void ChangeState()
         {
+            _isAttacked = false;
             _isAttack = false;
             _enemyAnimController.OnAttack(false);
             saveLoadService.OnSetActiveHumanoid-=OnSetActiveHumanoid;

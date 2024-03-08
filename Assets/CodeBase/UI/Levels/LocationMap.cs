@@ -89,7 +89,6 @@ namespace UI.Levels
             
             _saveLoadService.SetSelectedLocation(locationDataUI);
             EnterLevel();
-            
         }
         
         private void EnterLevel()

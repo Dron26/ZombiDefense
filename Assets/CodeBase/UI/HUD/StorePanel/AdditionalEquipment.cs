@@ -92,5 +92,18 @@ namespace UI.HUD.StorePanel
         {
             StartCoroutine(StartTimer(0));
         }
+
+        private void RemoveListener()
+        {
+            _saveLoadService.OnSelectedNewPoint -= CheckPointInfo;
+            
+            _medicineBoxButton.OnSelected-=SelectedMedicineBox;
+            weaponBoxButton.OnSelected-=SelectedWeaponBox;
+        }
+
+        private void OnDestroy()
+        {
+            RemoveListener();
+        }
     }
 }
