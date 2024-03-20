@@ -15,10 +15,10 @@ namespace Infrastructure.AIBattle.EnemyAI.States
     {
         private EnemyMovementState _movementState;
         private EnemyAttackState _attackState;
-        private Humanoid _targetHumanoid;
+        private Character _targetCharacter;
         private Enemy _enemy;
         private NavMeshAgent agent;
-        private Transform[] _humanoidTransforms;
+        private Character[] _humanoidTransforms;
         private bool _isSearhing;
 
         private void Awake()
@@ -45,18 +45,21 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         {
             agent.speed = 0;
             _isSearhing = true;
-            _humanoidTransforms = saveLoadService.GetActiveHumanoids()
-                .Where(humanoid => humanoid.IsLife == true)
-                .Select(humanoid => humanoid.transform)
+            _humanoidTransforms = saveLoadService.GetActiveCharacters()
+                .Where(character=> character.IsLife == true)
+                .Where(character=> character.TryGetComponent(out Humanoid humanoid) == true)
                 .ToArray();
+            
+            
+            
             
             int closestIndex = GetClosestIndex(transform.position, _humanoidTransforms);
 
             if (closestIndex != -1)
             {
-                _targetHumanoid = saveLoadService.GetActiveHumanoids()[closestIndex];
-                _movementState.InitHumanoid(_targetHumanoid);
-                _attackState.InitHumanoid(_targetHumanoid);
+                _targetCharacter = _humanoidTransforms[closestIndex];
+                _movementState.InitCharacter(_targetCharacter);
+                _attackState.InitCharacter(_targetCharacter);
 
                 EnemyMovementState _enemyMovement = GetComponent<EnemyMovementState>();
                 _enemyMovement.SetTarget(false);
@@ -67,7 +70,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
             _isSearhing = false;
         }
 
-        private int GetClosestIndex(Vector3 soldierPosition, Transform[] humanoidTransforms)
+        private int GetClosestIndex(Vector3 soldierPosition, Character[] humanoidTransforms)
         {
             NativeArray<EnemyPositionData> enemyPositionDataArray =
                 new NativeArray<EnemyPositionData>(humanoidTransforms.Length, Allocator.TempJob);
@@ -77,7 +80,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
                 enemyPositionDataArray[i] = new EnemyPositionData
                 {
                     soldierPosition = soldierPosition,
-                    enemyPosition = humanoidTransforms[i].position
+                    enemyPosition = humanoidTransforms[i].transform.position
                 };
             }
 

@@ -17,7 +17,7 @@ namespace Infrastructure.Logic.WaveManagment
         [SerializeField] public GameObject _timerPanel;
         [SerializeField] public TMP_Text countdownText;
         [SerializeField] public Button skipButton;
-private bool _isHumanoidReady=> _saveLoadService.GetActiveHumanoids().Count > 0;
+private bool _isHumanoidReady=> _saveLoadService.GetActiveCharacters().Count > 0;
         private bool hasSpawnStarted = false;
         private int bonusCoins;
         private  SaveLoadService _saveLoadService;

@@ -9,8 +9,11 @@ using Infrastructure.Location;
 using Newtonsoft.Json;
 using Service.Audio;
 using Service.PlayerAuthorization;
+using UI.Buttons;
 using UI.Levels;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace Service.SaveLoad
 {
@@ -23,7 +26,7 @@ namespace Service.SaveLoad
         public Action LastHumanoidDie;
         public Action OnSetInactiveEnemy;
         public Action<WorkPoint> OnSelectedNewPoint;
-        public Action<Humanoid> OnSelectedNewHumanoid;
+        public Action<Character> OnSelectedNewCharacter;
         public Action<int> OnChangeEnemiesCountOnWave;
         private LoadingCurtain _loadingCurtain;
         public MoneyData MoneyData => _dataBase.MoneyData; 
@@ -36,8 +39,8 @@ namespace Service.SaveLoad
         public bool IsSelectContinueGame => _isSelectContinueGame;
         private bool _isSelectContinueGame;
         private int _maxEnemiesOnWave;
-
-
+        private GraphicRaycaster _raycastPanel;
+        private EventSystem _eventSystem;
         private void Awake()
         {
             
@@ -117,39 +120,41 @@ namespace Service.SaveLoad
             OnSelectedNewPoint?.Invoke(point);
         }
         
-        public void SetSelectedHumanoid(Humanoid humanoid)
+        public void SetSelectedCharacter(Character character)
         {
-            if (GetSelectedHumanoid() != null&&humanoid!=GetSelectedHumanoid())
-            {
-                GetSelectedHumanoid().SetSelected(false);
-            }
+            // if (GetSelectedCharacter() != null&&character!=GetSelectedCharacter())
+            // {
+            //     IWeaponController weaponController = (IWeaponController)character.GetComponent(typeof(IWeaponController));
+            //     weaponController.SetSelected(false);
+            //     
+            // }
             
-            _dataBase.ChangeSelectedHumanoid(humanoid);
-            OnSelectedNewHumanoid?.Invoke(humanoid);
+            _dataBase.ChangeSelectedCharacters(character);
+            OnSelectedNewCharacter?.Invoke(character);
         }
 
-        public Humanoid GetSelectedHumanoid()=>
-            _dataBase.ReadSelectedHumanoid();
+        public Character GetSelectedCharacter()=>
+            _dataBase.ReadSelectedCharacter();
 
-        public void SetActiveHumanoids(List<Humanoid> activeHumanoids)
+        public void SetActiveCharacters(List<Character> activeHumanoids)
         {
-            _dataBase.ChangeActiveHumanoid(activeHumanoids);
+            _dataBase.ChangeActiveCharacter(activeHumanoids);
             OnSetActiveHumanoid?.Invoke();
         }
 
-        public List<Humanoid> GetActiveHumanoids( ) => 
-            _dataBase.ReadActiveHumanoid();
+        public List<Character> GetActiveCharacters( ) => 
+            _dataBase.ReadActiveCharacter();
 
-        public void SetInactiveHumanoids(List<Humanoid> inactiveHumanoids) => 
-            _dataBase.ChangeInactiveHumanoid( inactiveHumanoids);
+        public void SetInactiveHumanoids(List<Character> inactiveHumanoids) => 
+            _dataBase.ChangeInactiveCharacter( inactiveHumanoids);
 
-        public List<Humanoid> GetInactiveHumanoids( ) => 
-            _dataBase.ReadInactiveHumanoid();
+        public List<Character> GetInactiveHumanoids( ) => 
+            _dataBase.ReadInactiveCharacter();
         
-        public void SetAvailableCharacters(List<Humanoid> avaibelCharacters) => 
+        public void SetAvailableCharacters(List<Character> avaibelCharacters) => 
             _dataBase.ChangeAvailableCharacters( avaibelCharacters);
 
-        public List <Humanoid> GetAvailableCharacters( ) => 
+        public List <Character> GetAvailableCharacters( ) => 
             _dataBase.ReadAvailableCharacters();
         
         public void SetActiveEnemy(Enemy activeEnemy)
@@ -329,5 +334,19 @@ namespace Service.SaveLoad
             int count=_maxEnemiesOnWave-number;
             OnChangeEnemiesCountOnWave?.Invoke(count);
         }
+
+        public void SetRaycasterPanel(GraphicRaycaster buttonPanel)
+        {
+            _raycastPanel = buttonPanel;
+        }
+
+        public GraphicRaycaster GetRaycasterPanel() => _raycastPanel;
+
+        public void SetEvenSystem(EventSystem eventSystem)
+        {
+            _eventSystem=eventSystem;
+        }
+
+        public EventSystem GetEventSystem()=> _eventSystem;
     }
 }

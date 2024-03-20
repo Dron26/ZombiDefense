@@ -1,4 +1,5 @@
 using Characters.Humanoids.AbstractLevel;
+using Characters.Robots;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
 using Lean.Localization;
@@ -14,18 +15,24 @@ namespace UI.HUD.StorePanel
         [SerializeField] private TextMeshProUGUI _damageWindow;
         [SerializeField] private TextMeshProUGUI _infoWindow;
 
+        private CharacterStore _characterStore;
+        private Character _character;
 
-
-        public void SetParametrs(Humanoid humanoid)
+        public void SetParametrs()
         {
-     
-               
-                _nameWindow.text = LeanLocalization.GetTranslationText(humanoid.GetName());
-                _healthWindow.text = humanoid.GetMaxHealth().ToString();
-                _damageWindow.text = humanoid.GetComponent<WeaponController>().Damage.ToString();
+            gameObject.SetActive(true);
+            _character = _characterStore.SelectedCharacter;
+            _damageWindow.text = _character.GetComponent<IWeaponController>().Damage.ToString();
+            _nameWindow.text = LeanLocalization.GetTranslationText(_character.GetName());
+            _healthWindow.text = _character.GetMaxHealth().ToString();
             
-                _infoWindow.text = LeanLocalization.GetTranslationText(humanoid.GetName()+"Info");
-            
+            _infoWindow.text = LeanLocalization.GetTranslationText(_character.GetName() + "Info");
+        }
+
+        public void Initialize(CharacterStore characterStore)
+        {
+            _characterStore = characterStore;
+            _characterStore.OnUpdateSelectedCharacter += SetParametrs;
         }
     }
 }

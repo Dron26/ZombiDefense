@@ -24,32 +24,27 @@ namespace UI.HUD.StorePanel
         [SerializeField] private GameObject _buttonGroup;
         [SerializeField] private AdsStore _adsStore;
         [SerializeField] private GameObject _applyAdsMoneyWindow;
-        
         [SerializeField] CharacterStoreRotation _characterStoreRotation;
-        
         [SerializeField] private Button _buttonStorePanel;
         [SerializeField] private Button _buttonRightPanel;
         [SerializeField] private Button _closeButton;
         [SerializeField] private Button _applyAdsMoneyWindowButton;
         [SerializeField] private Button _closeAdsMoneyWindowButton;
-        
         [SerializeField] private ButtonPanel _buttonPanel;
         [SerializeField] private GameObject _rightButtonPanel;
         [SerializeField] private WorkPointUpgradePanel _pointUpgradePanel;
-         private WorkPointGroup _workPointGroup;
         [SerializeField] private int _priceForWorkPointUp;
-       
         [SerializeField] private AdditionalEquipment _additionalEquipmentButton;
-        
         [SerializeField] private Image _dimImage;
         [SerializeField] private Camera _cameraPhysical;
         [SerializeField] private Camera _cameraUI;
         [SerializeField] private Camera _characterVisual;
 
         
+        private WorkPointGroup _workPointGroup;
         private bool isButtonPanelOpen = true;
         private WorkPoint _selectedWorkPoint;
-        private List<Humanoid> _characters = new();
+        private List<Character> _characters = new();
         private SceneInitializer _sceneInitializer;
         private PlayerCharacterInitializer _characterInitializer;
         private MovePointController _movePointController;
@@ -141,7 +136,7 @@ namespace UI.HUD.StorePanel
             _eliteCharacterStore.OnCharacterBought -= OnCharacterBought;
         }
 
-        private void OnCharacterBought(Humanoid humanoid)
+        private void OnCharacterBought(Character character )
         {
             SwitchStorePanel();
         }
@@ -207,7 +202,7 @@ namespace UI.HUD.StorePanel
            
         }
 
-        public List<Humanoid> GetAvaibleCharacters()
+        public List<Character> GetAvaibleCharacters()
         {
             return _characters;
         }

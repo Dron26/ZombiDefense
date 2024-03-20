@@ -33,7 +33,7 @@ namespace Infrastructure.Location
 
         private SpriteRenderer _currentCircle = new();
         private List<GameObject> _selectedCircles = new();
-        private Humanoid _humanoid;
+        private Character _character;
         private bool _isBusy;
         private bool _isSelected = false;
         private bool _isSelectedForMove = false;
@@ -133,16 +133,14 @@ namespace Infrastructure.Location
 
         public void CheckState()
         {
-            //_humanoid = GetComponentInChildren<Humanoid>();
-
-            if (_humanoid != null)
+            if (_character != null)
             {
-                _humanoid.SetSelected(true);
-                _saveLoadService.SetSelectedHumanoid(_humanoid);
-                _humanoid.SetPoint(this);
-                _humanoid.GetComponent<WeaponController>().SetPoint(this);
+                IWeaponController weaponController = (IWeaponController)_character.GetComponent(typeof(IWeaponController));
+                weaponController.SetPoint(this);
+                weaponController.SetSelected(true);
+                _saveLoadService.SetSelectedCharacter(_character);
+                _character.SetPoint(this);
                 _isBusy = true;
-               // CheckBoxes();
             }
             else
             {
@@ -153,12 +151,12 @@ namespace Infrastructure.Location
             }
         }
 
-        public void SetHumanoid(Humanoid humanoid)
+        public void SetCharacter(Character character)
         {
-            Debug.Log("SetHumanoid");
+            Debug.Log("SetCharacter");
             
-            _humanoid = humanoid;
-            _humanoid.transform.parent = transform;
+            _character = character;
+            _character.transform.parent = transform;
             CheckState();
         }
 
@@ -199,28 +197,14 @@ namespace Infrastructure.Location
             CheckState();
             OnSelected?.Invoke(this);
         }
-
-        // private void CheckBoxes()
-        // {
-        //     bool isActive = _humanoid == null;
-        //
-        //     if (_isHaveMedicineBox)
-        //         SetActiveMedicineBox(isActive);
-        //     if (_isHaveWeaponBox)
-        //         SetActiveWeaponBox(isActive);
-        // }
-
-        public void RemoveHumanoid()
+        public void RemoveCharacter()
         {
-            
-            
-            if (_humanoid==null)
+            if (_character==null)
             {
-                Debug.Log("RemoveHumanoid");
+                Debug.Log("RemoveCharacter");
             }
-            _humanoid.transform.parent = transform.parent;
-            _humanoid = null;
-            //CheckBoxes();
+            _character.transform.parent = transform.parent;
+            _character = null;
             CheckState();
         }
 

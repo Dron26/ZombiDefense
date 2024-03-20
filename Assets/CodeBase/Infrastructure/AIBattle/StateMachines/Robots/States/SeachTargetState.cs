@@ -14,7 +14,7 @@ namespace Infrastructure.AIBattle.StateMachines.Robot.States
     {
         private AttackState _attackState;
         private Enemy _enemy;
-        private WeaponController _weaponController;
+        private HumanoidWeaponController _humanoidWeaponController;
         private Transform[] _enemyTransforms;
         private bool _isSearhing;
         private Coroutine _coroutine;
@@ -34,7 +34,7 @@ namespace Infrastructure.AIBattle.StateMachines.Robot.States
         private void Awake()
         {
             timeout = new WaitForSeconds(time);
-            _weaponController = GetComponent<WeaponController>();
+            _humanoidWeaponController = GetComponent<HumanoidWeaponController>();
             _attackState = GetComponent<AttackState>();
         }
 
@@ -60,7 +60,7 @@ namespace Infrastructure.AIBattle.StateMachines.Robot.States
                     _enemy = saveLoadService.GetActiveEnemy()[closestEnemyIndex];
 
                     float _currentRange = Vector3.Distance(transform.position, _enemy.transform.position);
-                    float rangeAttack = _weaponController.GetRangeAttack();
+                    float rangeAttack = _humanoidWeaponController.GetRangeAttack();
                     
                     if (_currentRange <= rangeAttack && !_isTurning&&_enemy.IsLife())
                     {

@@ -32,7 +32,8 @@ namespace Data
             "Sergeant",
             "Grenadier",
             "Scout",
-            "Sniper"
+            "Sniper",
+            "Turret"
         };
         
         public static string GetName(int index) => Name[index];

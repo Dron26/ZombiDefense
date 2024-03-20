@@ -104,5 +104,7 @@ namespace UI.SettingsPanel
         {
             OnClickExitToMenu?.Invoke();
         }
+
+        public ButtonPanel GetButtonPanel() => _buttonPanel;
     }
 }

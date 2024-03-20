@@ -11,7 +11,7 @@ namespace UI.HUD.StorePanel
         {
             GameObject slotPrefab = Instantiate(_characterSlotPrefab, transform);
             CharacterSlot slot = slotPrefab.GetComponent<CharacterSlot>();
-            slot.Initialize(characterSlot.Humanoid, store);
+            slot.Initialize(characterSlot.Character, store);
         }
 
         public void Initialize(GameObject characterSlotPrefab)

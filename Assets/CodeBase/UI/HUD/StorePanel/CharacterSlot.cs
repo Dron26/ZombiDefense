@@ -7,21 +7,23 @@ using UnityEngine.UI;
 
 namespace UI.HUD.StorePanel
 {
-    public class CharacterSlot: MonoCache
+    public class CharacterSlot : MonoCache
     {
-       [SerializeField] private Image _icon;
-       //[SerializeField] private  TMP_Text _name;
-        public Humanoid Humanoid => _humanoid;
-        public bool IsSelected => _isSelected;
-        public int Price => _humanoid.Price;
-        public int Index => _humanoid.ID;
+        [SerializeField] private Image _icon;
 
-        private Humanoid _humanoid;
-        private bool _isSelected=false;
+        //[SerializeField] private  TMP_Text _name;
+        public Character Character => _character;
+        public bool IsSelected => _isSelected;
+        public int Price => _character.Price;
+        public int Index => _character.ID;
+
+        private Character _character;
+        private bool _isSelected = false;
         private Button _button;
         private CharacterStore _store;
 
         public UnityAction<CharacterSlot> Selected;
+
         private void Awake()
         {
             _button = GetComponentInChildren<Button>();
@@ -32,15 +34,13 @@ namespace UI.HUD.StorePanel
         {
             Selected?.Invoke(this);
         }
-        
 
-        public void Initialize( Humanoid humanoid,CharacterStore store)
+
+        public void Initialize(Character character, CharacterStore store)
         {
-            _store=store;
-            _humanoid = humanoid;
-            _icon.sprite = _humanoid.Sprite;
-      //      _name.text = humanoid.GetName();
+            _store = store;
+            _character = character;
+            _icon.sprite = _character.Sprite;
         }
-        
     }
 }

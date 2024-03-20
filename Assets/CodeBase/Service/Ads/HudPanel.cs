@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Characters.Robots;
 using Data;
 using Infrastructure;
 using Infrastructure.AIBattle.EnemyAI;
@@ -9,14 +10,17 @@ using Infrastructure.Logic.WaveManagment;
 using Infrastructure.StateMachine.States;
 using Service.SaveLoad;
 using UI;
+using UI.Buttons;
 using UI.HUD.StorePanel;
 using UI.Report;
 using UI.Resurse;
 using UI.SettingsPanel;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Service.Ads
 {
+    [RequireComponent(typeof(RaycastHitChecker))]
     public class HudPanel:MonoCache
     {
         [SerializeField] private GameObject _panel;
@@ -26,6 +30,7 @@ namespace Service.Ads
         [SerializeField] private TimeManager _timeManager;
         [SerializeField] private ResursesCanvas _resursesCanvas;
         [SerializeField] private ReportPanel _reportPanel;
+        
         public Action OnClickExitToMenu;
         private SaveLoadService _saveLoadService;
         private SceneInitializer _sceneInitializer;
@@ -46,6 +51,8 @@ namespace Service.Ads
             _reportPanel.OnClickContinue += StartContinueSpawn;
             _saveLoadService.OnCompleteLocation+=_reportPanel.ShowReport;
             _saveLoadService.LastHumanoidDie+=_reportPanel.OnLastHumanoidDie;
+            _saveLoadService.SetRaycasterPanel(GetButtonPanel().GetComponent<GraphicRaycaster>());
+            GetComponent<RaycastHitChecker>().Initialize(_saveLoadService);
         }
 
         private void StartTimer()
@@ -82,5 +89,7 @@ namespace Service.Ads
         {
             _panel.SetActive(state);
         }
+        
+        public ButtonPanel GetButtonPanel() => _menuPanel.GetButtonPanel();
     }
 }

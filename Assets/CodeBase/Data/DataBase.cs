@@ -27,8 +27,8 @@ namespace Data
         public int CompletedLevel;
         
         public int Points;
-        public List<int> LevelHumanoid = new List<int>();
-        public List<int> AmountHumanoids = new List<int>();
+        public List<int> LevelCharacters = new List<int>();
+        public List<int> AmountCharacters = new List<int>();
 
         [NonSerialized]
         public bool IsFirstStart = true;
@@ -46,17 +46,17 @@ namespace Data
         [NonSerialized] 
         public List<Wave> _waves;
         [NonSerialized] 
-        private List<Humanoid> AvaibelCharacters;
+        private List<Character> AvaibelCharacters;
         [NonSerialized] 
         private WorkPoint SelectedPoint;
         [NonSerialized] 
-        private Humanoid SelectedHumanoid;
+        private Character SelectedCharacter;
         [NonSerialized] 
-        private List<Humanoid> ActiveHumanoids = new();
+        private List<Character> ActiveCharacters = new();
         [NonSerialized] 
         private List<Enemy> ActiveEnemy = new();
         [NonSerialized] 
-        private List<Humanoid> InactiveHumanoids = new();
+        private List<Character> InactiveCharacters = new();
         [NonSerialized] 
         private List<Enemy> InactiveEnemy = new();
 
@@ -66,20 +66,20 @@ namespace Data
         {
             for (int i = 0; i < levels.Count; i++)
             {
-                LevelHumanoid.Add(levels[i]);
-                AmountHumanoids.Add(amount[i]);
+                LevelCharacters.Add(levels[i]);
+                AmountCharacters.Add(amount[i]);
             }
         }
 
-        public int ReadHumanoid(int levelHumanoid)
+        public int ReadCharacters(int levelCharacters)
         {
             int number = 0;
 
-            for (int i = 0; i < LevelHumanoid.Count; i++)
+            for (int i = 0; i < LevelCharacters.Count; i++)
             {
-                if (levelHumanoid == LevelHumanoid[i])
+                if (levelCharacters == LevelCharacters[i])
                 {
-                    number = AmountHumanoids[i];
+                    number = AmountCharacters[i];
                 }
             }
 
@@ -118,30 +118,30 @@ namespace Data
         public WorkPoint ReadSelectedPoint() =>
             SelectedPoint;
 
-        public Humanoid ChangeSelectedHumanoid(Humanoid humanoid) =>
-            SelectedHumanoid = humanoid;
+        public Character ChangeSelectedCharacters(Character character) =>
+            SelectedCharacter = character;
 
-        public Humanoid ReadSelectedHumanoid() =>
-            SelectedHumanoid;
+        public Character ReadSelectedCharacter() =>
+            SelectedCharacter;
 
 
-        public void ChangeActiveHumanoid(List<Humanoid> activeHumanoids) =>
-            ActiveHumanoids = new List<Humanoid>(activeHumanoids);
+        public void ChangeActiveCharacter(List<Character> activeCharacters) =>
+            ActiveCharacters = new List<Character>(activeCharacters);
 
-        public List<Humanoid> ReadActiveHumanoid() =>
-            new List<Humanoid>(ActiveHumanoids);
+        public List<Character> ReadActiveCharacter() =>
+            new List<Character>(ActiveCharacters);
 
-        public void ChangeInactiveHumanoid(List<Humanoid> inactiveHumanoids) =>
-            InactiveHumanoids = new List<Humanoid>(inactiveHumanoids);
+        public void ChangeInactiveCharacter(List<Character> inactiveCharacters) =>
+            InactiveCharacters = new List<Character>(inactiveCharacters);
 
-        public List<Humanoid> ReadInactiveHumanoid() =>
-            new List<Humanoid>(InactiveHumanoids);
+        public List<Character> ReadInactiveCharacter() =>
+            new List<Character>(InactiveCharacters);
 
-        public void ChangeAvailableCharacters(List<Humanoid> avaibelCharacters) =>
-            AvaibelCharacters = new List<Humanoid>(avaibelCharacters);
+        public void ChangeAvailableCharacters(List<Character> avaibelCharacters) =>
+            AvaibelCharacters = new List<Character>(avaibelCharacters);
 
-        public List<Humanoid> ReadAvailableCharacters() =>
-            new List<Humanoid>(AvaibelCharacters);
+        public List<Character> ReadAvailableCharacters() =>
+            new List<Character>(AvaibelCharacters);
 
         public void ChangeActiveEnemy(Enemy activeEnemy)
         {
@@ -214,8 +214,6 @@ namespace Data
             SelectedLocation.IsCompleted = locationDataUI.IsCompleted;
             SelectedLocation.IsLocked = locationDataUI.IsLocked;
             SelectedLocation.IsTutorial = locationDataUI.IsTutorial;
-           // SelectedLocation.MaxEnemyOnLevel = locationDataUI.MaxEnemyOnLevel;
-           // SelectedLocation.Waves=locationDataUI.GetWaveDataInfo();
         }
 
         public void SetCompletedLevel()
@@ -241,12 +239,12 @@ namespace Data
         
         public void ChangeSurvivalCount()
         {
-            PersonalAchievements.SetSurvival(ActiveHumanoids.Count);
+            PersonalAchievements.SetSurvival(ActiveCharacters.Count);
         }
         
         public void ChangeDeadMercenaryCount()
         {
-            PersonalAchievements.SetDeadMercenary(InactiveHumanoids.Count);
+            PersonalAchievements.SetDeadMercenary(InactiveCharacters.Count);
         }
 
         public LocationData GetLocation()
@@ -265,9 +263,4 @@ namespace Data
         InactiveEnemy= new();
         }
     }
-}
-
-public class StatisticsData
-{
-    
 }

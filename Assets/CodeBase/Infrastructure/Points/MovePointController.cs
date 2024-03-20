@@ -16,7 +16,7 @@ namespace Infrastructure.Points
     public class MovePointController : MonoCache
     {
         private PlayerCharacterInitializer _characterInitializer;
-        private List<Humanoid> _activeHumanoids;
+        private List<Character> _activeCharacters;
         private SceneInitializer _sceneInitializer;
         private WorkPointGroup _workPointGroup;
         private List<WorkPoint> _workPoints = new();
@@ -25,10 +25,10 @@ namespace Infrastructure.Points
         private WorkPoint _currentPoint;
         public WorkPoint SelectedPoint => _selectedPoint;
         private WorkPoint _movePoint;
-        private Humanoid _selectedHumanoid;
+        private Character _selectedCharacter;
         public UnityAction<WorkPoint> OnClickWorkpoint;
         public UnityAction<WorkPoint> OnUnSelectedPoint;
-        private bool isHumanoidSelected = false;
+        private bool isChracterSelected = false;
         private bool isPointToMoveTaked;
         [SerializeField] private WorkPoint _startPoint;
         private Store store;
@@ -40,7 +40,7 @@ namespace Infrastructure.Points
             _saveLoadService = saveLoadService;
             _sceneInitializer = sceneInitializer;
             _characterInitializer = sceneInitializer.GetPlayerCharacterInitializer();
-            _activeHumanoids = _saveLoadService.GetActiveHumanoids();
+            _activeCharacters = _saveLoadService.GetActiveCharacters();
             _workPointGroup = _characterInitializer.GetWorkPointGroup();
             FillWorkPoints();
             _workPointGroup.OnSelectedPoint += OnSelectedPoint;
@@ -68,9 +68,8 @@ namespace Infrastructure.Points
 
         public void OnSelectedPoint(WorkPoint newPoint)
         {
-            isHumanoidSelected = _saveLoadService.GetSelectedHumanoid();
-            _selectedHumanoid = _saveLoadService.GetSelectedHumanoid();
-            
+            isChracterSelected = _saveLoadService.GetSelectedCharacter();
+            _selectedCharacter = _saveLoadService.GetSelectedCharacter();
             
             
                 if (_selectedPoint != newPoint)
@@ -78,9 +77,9 @@ namespace Infrastructure.Points
                     Debug.Log("selectNewPoint");
                     _selectedPoint.SelectedForMove(false);
                     
-                    if (isHumanoidSelected)
+                    if (isChracterSelected)
                     {
-                        if (_selectedHumanoid.IsLife && !_selectedHumanoid.IsMove)
+                        if (_selectedCharacter.IsLife && !_selectedCharacter.IsMove)
                         {
                             isPointToMoveTaked = false;
                         }
@@ -95,16 +94,18 @@ namespace Infrastructure.Points
                     _saveLoadService.SetSelectedPoint(_selectedPoint);
                 
                 
-                    if (newPoint.IsBusy == false && isHumanoidSelected && isPointToMoveTaked == false)
+                    if (newPoint.IsBusy == false && isChracterSelected && isPointToMoveTaked == false)
                     {
-                        Debug.Log("setMovePoint");
-                        isPointToMoveTaked = true;
-                        _movePoint = newPoint;
+                        if (_selectedCharacter.CanMove)
+                        {
+                            isPointToMoveTaked = true;
+                            _movePoint = newPoint;
+                        }
                     }
                 }
-                else if (isHumanoidSelected)
+                else if (isChracterSelected)
                 {
-                    if (_selectedHumanoid.IsLife&&!_selectedHumanoid.IsMove)
+                    if (_selectedCharacter.IsLife&&!_selectedCharacter.IsMove)
                     {
                         Debug.Log("selectOldPoint");
                         if (newPoint.IsBusy == false && isPointToMoveTaked )
@@ -116,7 +117,7 @@ namespace Infrastructure.Points
                             _previousMovePoint = _movePoint;
                
                             PlayerCharactersStateMachine stateMachine =
-                                _selectedHumanoid.GetComponent<PlayerCharactersStateMachine>();
+                                _selectedCharacter.GetComponent<PlayerCharactersStateMachine>();
                             stateMachine.MoveTo();
                             stateMachine.EnterBehavior<MovementState>();
                             SetPoint(newPoint);
@@ -131,14 +132,14 @@ namespace Infrastructure.Points
 
         public void SetPoint(WorkPoint newPoint)
         {
-            MovementState movementState = _selectedHumanoid.GetComponent<MovementState>();
+            MovementState movementState = _selectedCharacter.GetComponent<MovementState>();
             movementState.SetNewPoint(newPoint);
             ChangeCurrentPoint(newPoint);
         }
         
         private void ChangeCurrentPoint(WorkPoint newPoint)
         {
-            _currentPoint.RemoveHumanoid();
+            _currentPoint.RemoveCharacter();
             _currentPoint = newPoint;
         }
 

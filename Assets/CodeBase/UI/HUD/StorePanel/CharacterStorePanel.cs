@@ -15,14 +15,14 @@ namespace UI.HUD.StorePanel
        [SerializeField] private Image _characterImagePrefab;
         private float _circleRadius = 200f;
         [SerializeField] private List<Sprite> _characterSprites;
-        [SerializeField] private List<Humanoid> _availableCharacters;
-        private Dictionary<Button, Humanoid> _buttonCharacterMap;
+        [SerializeField] private List<Character> _availableCharacters;
+        private Dictionary<Button, Character> _buttonCharacterMap;
         [SerializeField] private GameObject _confirmationDialog;
         [SerializeField] public float characterDisplayTime = 1f;
         [SerializeField] private List<Image> characterImages;
         private int currentIndex = 0;
         
-        public UnityAction<Humanoid> BuyCharacter;
+        public UnityAction<Character> BuyCharacter;
 
 
         private PlayerCharacterInitializer _characterInitializer;
@@ -35,7 +35,7 @@ namespace UI.HUD.StorePanel
         public void Initialize( PlayerCharacterInitializer initializer,Store store)
         {
             characterImages = new List<Image>();
-            _buttonCharacterMap = new Dictionary<Button, Humanoid>();
+            _buttonCharacterMap = new Dictionary<Button, Character>();
             _characterInitializer = initializer;
             _availableCharacters = store.GetAvaibleCharacters();
             characterImages.Clear();
@@ -44,7 +44,8 @@ namespace UI.HUD.StorePanel
 
             // Find sprites for each character type
             _characterSprites = new List<Sprite>();
-            foreach (Humanoid humanoid in _availableCharacters)
+            
+            foreach (Character humanoid in _availableCharacters)
             {
                 if (!_characterSprites.Contains(humanoid.Sprite))
                 {

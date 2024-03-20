@@ -4,61 +4,43 @@ using UnityEngine;
 
 namespace UI.HUD.StorePanel
 {
-    public class CharacterSkinnedMeshesGroup: MonoCache
-    {  
-        [SerializeField] private  List<GameObject> _ordinarySoldier;  
-        [SerializeField] private  List<GameObject> _sergeant;  
-        [SerializeField] private  List<GameObject> _grenader;  
-        [SerializeField] private  List<GameObject> _scout;  
-        [SerializeField] private  List<GameObject> _sniper;
+    public class CharacterSkinnedMeshesGroup : MonoCache
+    {
+        private List<List<GameObject>> _characterSkinnedMeshes;
+        private bool _isShowed = false;
+        private int _selectedIndex = -1;
+        private CharacterStore _characterStore;
 
-        
-        
-        
-        private  List<List<GameObject>> _characterSkinnedMeshes;
-private bool _isShowed = false;
-private int _selectedIndex=-1;
-        public void Awake()
+        public void Initialize(CharacterStore characterStore)
         {
-            _characterSkinnedMeshes=new List<List<GameObject>>();
-            FillCharacters();
+            _characterSkinnedMeshes = new List<List<GameObject>>();
+            _characterStore = characterStore;
+            characterStore.OnUpdateSelectedCharacter += OnStoreActive;
+            _characterSkinnedMeshes = characterStore.CharacterSkinnedMeshes;
         }
-       
-        private void FillCharacters()
+
+        private void OnStoreActive()
         {
-            _characterSkinnedMeshes.Add(_ordinarySoldier);
-            _characterSkinnedMeshes.Add(_sergeant);
-            _characterSkinnedMeshes.Add(_grenader);
-            _characterSkinnedMeshes.Add(_scout);
-            _characterSkinnedMeshes.Add(_sniper);
-            
-            
-            foreach (List<GameObject> obj in _characterSkinnedMeshes)
-            {
-                foreach (GameObject obj2 in obj)
-                {
-                    obj2.SetActive(false);
-                }
-            }
+            ShowCharacter(_characterStore.SelectedCharacterSlot.Index);
         }
 
 
-        public void ShowCharacter(int index)
+        private void ShowCharacter(int index)
         {
-            if (_selectedIndex!=-1)
+            if (_selectedIndex != -1)
             {
                 HideCharacter();
             }
-            
+
             foreach (GameObject obj in _characterSkinnedMeshes[index])
             {
                 obj.SetActive(true);
             }
-            
-            _selectedIndex=index;
+
+            _selectedIndex = index;
         }
 
-        public void HideCharacter()
+        private void HideCharacter()
         {
             foreach (GameObject obj in _characterSkinnedMeshes[_selectedIndex])
             {

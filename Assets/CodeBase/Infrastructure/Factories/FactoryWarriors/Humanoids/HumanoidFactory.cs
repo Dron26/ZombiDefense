@@ -17,13 +17,14 @@ namespace Infrastructure.Factories.FactoryWarriors.Humanoids
         {
             GameObject newHumanoid = Instantiate(prefab, transform);
             Humanoid humanoidComponent = newHumanoid.GetComponent<Humanoid>();
-            WeaponController weaponController  = newHumanoid.GetComponent<WeaponController>();
-            
-            humanoidComponent.transform.localPosition = Vector3.zero;
+            HumanoidWeaponController humanoidWeaponController  = newHumanoid.GetComponent<HumanoidWeaponController>();
+            Transform newHumanoidTransform = humanoidComponent.transform;
+            newHumanoidTransform.localPosition = Vector3.zero;
+            newHumanoidTransform.tag="PlayerUnit";
             humanoidComponent.OnInitialize += OnInitialized;
             float randomAngle = Random.Range(0f, 360f);
-            newHumanoid.transform.rotation = Quaternion.Euler(0f, randomAngle, 0f);
-            weaponController.Initialize();
+            newHumanoidTransform.rotation = Quaternion.Euler(0f, randomAngle, 0f);
+            humanoidWeaponController.Initialize();
             humanoidComponent.Initialize(_audioManager);
 
         }

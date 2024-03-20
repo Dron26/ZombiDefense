@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Characters.Humanoids.AbstractLevel;
+using Characters.Robots;
 using Data.Upgrades;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
@@ -15,98 +16,98 @@ namespace UI.HUD.StorePanel
 {
     public class CharacterStore :MonoCache
     {
-        //[SerializeField] private GameObject _visualPanel;
-        //[SerializeField] private GameObject _infoCharacterPanel;
-        //[SerializeField] private GameObject _upgradePanel;
-       // [SerializeField] private CharacterGroupPanel _characterGroupPanel;
-       
         [SerializeField] UpgradGrouper _upgradGrouper;
         [SerializeField] private Button _buyButton;
         [SerializeField] private PricePanel _pricePanel;
         [SerializeField]private CharacterInfoPanel _characterInfoPanel;
-        [SerializeField] private List<GameObject> _characters;
+        [SerializeField] private List<GameObject> _charactersObject;
         [SerializeField] private GameObject _characterSlotPrefab;
         [SerializeField] private GameObject _container;
         [SerializeField] private GameObject _panelCharacterStore;
-         [SerializeField] private CharacterGroupContent _characterGroupContent;
+        [SerializeField] private CharacterGroupContent _characterGroupContent;
         [SerializeField] private CharacterSkinnedMeshesGroup _characterSkinnedMeshesGroup;
-        public Action<Humanoid> OnCharacterBought;
+        
+        [SerializeField] private List<GameObject> _ordinarySoldier;
+        [SerializeField] private List<GameObject> _sergeant;
+        [SerializeField] private List<GameObject> _grenader;
+        [SerializeField] private List<GameObject> _scout;
+        [SerializeField] private List<GameObject> _sniper;
+        [SerializeField] private List<GameObject> _turret;
+        private List<List<GameObject>> _characterSkinnedMeshes;
+        
+        public Action<Character> OnCharacterBought;
         public Action OnMoneyEmpty;
         public Action OnUpdateBought;
-        
-        private List<Humanoid> _allHumanoid=new();
-         private List<Humanoid> _allAvailableHumanoid=new();
+        public Action OnUpdateSelectedCharacter;
+        private List<Character> _characters=new();
+        private List<Character> _allAvailableHumanoid=new();
         private List<int> _indexAvailableHumanoid=new();
         private List<CharacterSlot> _characterSlots=new();
         private CharacterSlot _selectedCharacterSlot;
-        private Humanoid _selectedHumanoid;
+        private Character _selectedCharacter;
         private SaveLoadService _saveLoadService;
         private Store _store;
         private  bool _isInitialized;
+        public CharacterSlot SelectedCharacterSlot => _selectedCharacterSlot;
+        public Character SelectedCharacter=> _selectedCharacter;
+        public List<List<GameObject>> CharacterSkinnedMeshes => _characterSkinnedMeshes;
         public void Initialize( SaveLoadService saveLoadService,Store store )
         {
             _saveLoadService=saveLoadService;
             _store = store;
-            SetHumanoid();
+            _characterSkinnedMeshes = new List<List<GameObject>>();
+            FillCharacters();
+            _characterSkinnedMeshesGroup.Initialize( this);
+            _characterInfoPanel.Initialize( this);
+            _pricePanel.Initialize(this);
+            SetCharacters();
             InitializeCharacterSlots();
-            //  InitializeUpgradePanel();
-           // SetCharacterData(false);
             InitializeButton();
-            
             _isInitialized=true;
-            _store.IsStoreActive +=SetCharacterData ;
+            _store.IsStoreActive +=SetCharacterData;
+            
         }
-        
-        // protected override void OnEnabled()
-        // {
-        //     if (!_isInitialized) return;
-        //     SetCharacterData(true);
-        // }
-        
+        private void FillCharacters()
+        {
+            _characterSkinnedMeshes.Add(_ordinarySoldier);
+            _characterSkinnedMeshes.Add(_sergeant);
+            _characterSkinnedMeshes.Add(_grenader);
+            _characterSkinnedMeshes.Add(_scout);
+            _characterSkinnedMeshes.Add(_sniper);
+            _characterSkinnedMeshes.Add(_turret);
+            
+            
+            foreach (List<GameObject> obj in _characterSkinnedMeshes)
+            {
+                foreach (GameObject obj2 in obj)
+                {
+                    obj2.SetActive(false);
+                }
+            }
+        }
         private void InitializeButton()
         {
             _buyButton.onClick.AddListener(OnTryBuyCharacter);
-        }
-        
-        public void OpenPanel()
-        {
-            //_saveLoad.UpdateData();
         }
         
         private void InitializeCharacterSlots()
         {
             _characterGroupContent.Initialize(_characterSlotPrefab);
             
-            foreach (Humanoid humanoid in _allHumanoid)
+            foreach (Character character in _characters)
             {
                 
                 CharacterSlot characterSlot = Instantiate(_characterSlotPrefab,_characterGroupContent.transform).GetComponent<CharacterSlot>();
-                characterSlot.Initialize(humanoid,this);
+                characterSlot.Initialize(character,this);
                 _characterSlots.Add(characterSlot);
                 characterSlot.Selected+=SetSelectedSlot;
             }
             
             _selectedCharacterSlot= _characterSlots[0];
-            _selectedHumanoid=_selectedCharacterSlot.Humanoid;
+            _selectedCharacter=_selectedCharacterSlot.Character;
             _selectedCharacterSlot.Selected.Invoke(_selectedCharacterSlot);
         }
 
-        private void SetPriceInfo()
-        {
-            _pricePanel.SetInfo(_selectedCharacterSlot.Price);
-        }
-        
-        private void SetVisual()
-        {
-            _characterSkinnedMeshesGroup.ShowCharacter(_selectedCharacterSlot.Index);
-        }
-        
-        private void SetCharacterInfo()
-        {
-            _characterInfoPanel.gameObject.SetActive(true);
-            _characterInfoPanel.SetParametrs(_selectedHumanoid);
-        }
-        
         private void InitializeUpgradePanel()
         {
             _upgradGrouper.Initialize(_saveLoadService,this);
@@ -123,9 +124,9 @@ namespace UI.HUD.StorePanel
         
         private void OnTryBuyCharacter()
         {
-            if (OnTryBuy(_selectedHumanoid.Price))
+            if (OnTryBuy(_selectedCharacter.Price))
             {
-                OnCharacterBought?.Invoke(_selectedHumanoid);
+                OnCharacterBought?.Invoke(_selectedCharacter);
             }
             else
             {
@@ -148,41 +149,54 @@ namespace UI.HUD.StorePanel
 
         private void UpdateParametrs(UpgradeData upgradeData,int level)
         {
-            _selectedHumanoid.SetUpgrade(upgradeData, level);
-           WeaponController weaponController=_selectedHumanoid.GetComponent<WeaponController>(); 
-           weaponController.SetUpgrade(upgradeData, level);
-           OnUpdateBought?.Invoke();
+            _selectedCharacter.SetUpgrade(upgradeData, level);
+            
+            if (_selectedCharacter.TryGetComponent(out Humanoid humanoid))
+            {
+                HumanoidWeaponController humanoidWeaponController=humanoid.GetComponent<HumanoidWeaponController>();
+                humanoidWeaponController.SetUpgrade(upgradeData, level);
+            }
+            
+            OnUpdateBought?.Invoke();
         }
 
-        private void SetHumanoid()
+        private void SetCharacters()
         {
-            foreach (GameObject character in _characters)
+            foreach (GameObject character in _charactersObject)
             {
                 if (character.TryGetComponent(out Humanoid humanoid))
                 {
-                    humanoid.UIInitialize();
-                    WeaponController weaponController=humanoid.GetComponent<WeaponController>(); 
-                    weaponController.UIInitialize();
-                    _allHumanoid.Add(humanoid);
+                    HumanoidWeaponController humanoidWeaponController=humanoid.GetComponent<HumanoidWeaponController>(); 
+                    humanoidWeaponController.UIInitialize();
+                    _characters.Add(humanoid);
                     
                     if (humanoid.IsBuyed)
                     {
                         _allAvailableHumanoid.Add(humanoid);
                         _indexAvailableHumanoid.Add(_allAvailableHumanoid.IndexOf(humanoid));
                     }
-                }    
-                
+                }
+                else if (character.TryGetComponent(out Turret turret))
+                {
+                    _characters.Add(turret);
+                    
+                    if (turret.IsBuyed)
+                    {
+                        _allAvailableHumanoid.Add(humanoid);
+                        _indexAvailableHumanoid.Add(_allAvailableHumanoid.IndexOf(humanoid));
+                    }
+                } 
             }
         }
-        
-        public void SetSelectedSlot(CharacterSlot characterSlot)
+
+        private void SetSelectedSlot(CharacterSlot characterSlot)
         {
             
             if (characterSlot!=_selectedCharacterSlot)
             {
                 _selectedCharacterSlot = characterSlot;
-                _selectedHumanoid=_selectedCharacterSlot.Humanoid;
-                SetCharacterData(true);
+                _selectedCharacter=_selectedCharacterSlot.Character;
+                OnUpdateSelectedCharacter?.Invoke();
             }
         }
 
@@ -191,9 +205,7 @@ namespace UI.HUD.StorePanel
             if (isActive)
             {
                 _container.gameObject.SetActive(true);
-                SetPriceInfo();
-                SetVisual();
-                SetCharacterInfo();
+                OnUpdateSelectedCharacter?.Invoke();
             }
             else
             {

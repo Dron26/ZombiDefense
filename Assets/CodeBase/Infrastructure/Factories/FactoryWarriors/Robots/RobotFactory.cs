@@ -1,8 +1,8 @@
 using Characters.Robots;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.Logic.WeaponManagment;
 using Service.Audio;
 using Service.GeneralFactory;
+using Service.SaveLoad;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -10,20 +10,23 @@ namespace Infrastructure.Factories.FactoryWarriors.Robots
 {
     public class RobotFactory : MonoCache, IServiceFactory
     {
-        [SerializeField] private AudioManager _audioManager;
+        private AudioManager _audioManager;
         public UnityAction<Turret> CreatedRobot;
-
+private SaveLoadService _saveLoadService;
         public void Create(GameObject prefab, Transform transform )
         {
             GameObject newRobot = Instantiate(prefab, transform);
             Turret turretComponent = newRobot.GetComponent<Turret>();
-            
-            turretComponent.transform.localPosition = Vector3.zero;
+            Transform newTurret = turretComponent.transform;
+            newTurret.localPosition = Vector3.zero;
+            newTurret.tag="PlayerUnit";
             turretComponent.OnInitialize += OnInitialized;
             float randomAngle = Random.Range(0f, 360f);
-            newRobot.transform.rotation = Quaternion.Euler(0f, randomAngle, 0f);
-            turretComponent.Initialize(_audioManager);
-
+            newTurret.rotation = Quaternion.Euler(0f, randomAngle, 0f);
+            TurretWeaponController turretWeaponController  = newTurret.GetComponent<TurretWeaponController>();
+            turretWeaponController.Initialize();
+            turretComponent.Initialize(_audioManager, _saveLoadService);
+            
         }
 
         private void OnInitialized( Turret turretComponent)
@@ -31,10 +34,10 @@ namespace Infrastructure.Factories.FactoryWarriors.Robots
             CreatedRobot?.Invoke(turretComponent);
         }
         
-        public void Initialize( AudioManager audioManager)
+        public void Initialize( AudioManager audioManager,SaveLoadService saveLoadService)
         {
             _audioManager=audioManager;
+            _saveLoadService=saveLoadService;
         }
-        
     }
 }

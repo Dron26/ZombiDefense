@@ -15,6 +15,7 @@ using Service.Audio;
 using Service.SaveLoad;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Infrastructure.Logic.Inits
@@ -28,15 +29,16 @@ namespace Infrastructure.Logic.Inits
         [SerializeField] private List<Image> _images;
         [SerializeField] private MultiInputMovement _cameraInputMovement;
         [SerializeField] private HudPanel _hudPanel;
-        
+        [SerializeField] private Camera _cameraPhysical;
+        [SerializeField] private Camera _cameraUI;
+        [SerializeField] private EventSystem _eventSystem;
         private LoadingCurtain _loadingCurtain;
         public HudPanel Window=>_hudPanel;
         private SaveLoadService _saveLoadService;
         private PlayerCharacterInitializer _playerCharacterInitializer;
         private EnemyCharacterInitializer _enemyCharacterInitializer;
          private GameObject _location;
-         private Camera _cameraPhysical;
-         private Camera _cameraUI;
+         
 
         private GameBootstrapper _gameBootstrapper;
         private WaveManager _waveManager;
@@ -45,7 +47,7 @@ namespace Infrastructure.Logic.Inits
         public Action SetInfoCompleted;
         public Action OnReadySpawning;
         
-        public List<Humanoid> availableCharacters = new ();
+        public List<Character> availableCharacters = new ();
 
         public bool IsStartedTutorial => _isTutorialLevel;
         private bool _isTutorialLevel;
@@ -59,7 +61,7 @@ namespace Infrastructure.Logic.Inits
             _stateMachine = stateMachine;
             _gameBootstrapper = FindObjectOfType<GameBootstrapper>();
             _saveLoadService = _gameBootstrapper.GetSaveLoad();
-
+            _saveLoadService.SetEvenSystem(_eventSystem);
             LoadLevelPrefab();
             
             LoadCharacters();
@@ -75,7 +77,7 @@ namespace Infrastructure.Logic.Inits
 
             _loadingCurtain.OnClicked = OnClikedCurtain;
 
-            _playerCharacterInitializer.CreatedHumanoid += SetInfo;
+            _playerCharacterInitializer.CreatedCharacter += SetInfo;
             Debug.Log("Finish _playerCharacterInitializer();");
              _audioManager.Initialize(_saveLoadService);
 
@@ -198,7 +200,7 @@ namespace Infrastructure.Logic.Inits
 
          protected override void OnDisabled()
         {
-            _playerCharacterInitializer.CreatedHumanoid -= SetInfo;
+            _playerCharacterInitializer.CreatedCharacter -= SetInfo;
             _playerCharacterInitializer.LastHumanoidDie -= _enemyCharacterInitializer.StopSpawning;
             _waveManager.OnReadySpawning -= ReadyToSpawning;
             _hudPanel.OnClickStartSpawn-=_enemyCharacterInitializer.StartSpawning;

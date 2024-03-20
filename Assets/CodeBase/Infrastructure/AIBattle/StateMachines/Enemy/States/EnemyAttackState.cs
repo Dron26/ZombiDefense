@@ -13,7 +13,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
     {
         private readonly WaitForSeconds _waitForSeconds = new(1f);
 
-        private Humanoid _humanoid;
+        private Character _character;
 
         private float _currentRange;
         private bool _isAttack;
@@ -60,9 +60,9 @@ namespace Infrastructure.AIBattle.EnemyAI.States
             }
         }
 
-        public void InitHumanoid(Humanoid targetHumanoid)
+        public void InitCharacter(Character targetCharacter)
         {
-            _humanoid = targetHumanoid;
+            _character = targetCharacter;
             _isAttacked = false;
         }
 
@@ -70,20 +70,20 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         {
             Vector3 ourPosition = transform.position;
             
-            while (_isAttack&&_humanoid.IsLife)
+            while (_isAttack&&_character.IsLife)
             {
 
-                _currentRange = Vector3.Distance(transform.position, _humanoid.transform.position);
+                _currentRange = Vector3.Distance(transform.position, _character.transform.position);
 
                 if (_currentRange <= _enemy.GetRangeAttack()&&_isAttacked==false)
                 {
                     _isAttacked = true;
                     _enemyAnimController.OnAttack(true);
-                    transform.DOLookAt(_humanoid.transform.position, .1f);
-                    _humanoid.ApplyDamage(_enemy.GetDamage());
+                    transform.DOLookAt(_character.transform.position, .1f);
+                    _character.ApplyDamage(_enemy.GetDamage());
                 }
               
-                if (_currentRange >= _enemy.GetRangeAttack()||_humanoid.IsLife==false)
+                if (_currentRange >= _enemy.GetRangeAttack()||_character.IsLife==false)
                 {
                     _isAttacked = false;
                     ChangeState();

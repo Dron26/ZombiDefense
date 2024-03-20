@@ -14,7 +14,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         private MovementState _movementState;
         private AttackState _attackState;
         private Enemy _enemy;
-        private WeaponController _weaponController;
+        private HumanoidWeaponController _humanoidWeaponController;
         private Transform[] _enemyTransforms;
         private bool _isSearhing;
         private PlayerCharacterAnimController _playerCharacterAnimController;
@@ -36,7 +36,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         private void Awake()
         {
             timeout = new WaitForSeconds(time);
-            _weaponController = GetComponent<WeaponController>();
+            _humanoidWeaponController = GetComponent<HumanoidWeaponController>();
             _movementState = GetComponent<MovementState>();
             _attackState = GetComponent<AttackState>();
             _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
@@ -65,7 +65,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
                     _enemy = saveLoadService.GetActiveEnemy()[closestEnemyIndex];
 
                     float _currentRange = Vector3.Distance(transform.position, _enemy.transform.position);
-                    float rangeAttack = _weaponController.GetRangeAttack();
+                    float rangeAttack = _humanoidWeaponController.GetRangeAttack();
                     
                     if (_currentRange <= rangeAttack && !_isTurning&&_enemy.IsLife())
                     {

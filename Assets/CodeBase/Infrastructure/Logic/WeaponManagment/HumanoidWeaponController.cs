@@ -11,7 +11,7 @@ using UI.Buttons;
 
 namespace Infrastructure.Logic.WeaponManagment
 {
-    public class WeaponController : MonoCache
+    public class HumanoidWeaponController : MonoCache, IWeaponController
     {
         private GameObject _weaponPrefab;
 
@@ -19,12 +19,17 @@ namespace Infrastructure.Logic.WeaponManagment
         [SerializeField] private Weapon _granade;
         [SerializeField] private Sprite shootingRadiusSprite;
         [SerializeField] private ParticleSystem _ring;
+        public int Damage
+        {
+            get => _damage;
+            set => _damage = value;
+        }
 
         public Action ChangeWeapon;
         public Action<Weapon> OnInitialized;
         public Action OnChangeGranade;
         public int CountGranade => _granades.Count;
-        public int Damage => _damage;
+       
         public bool IsCanThrowGranade => _isCanThrowGranade;
         private GrenadeThrower _grenadeThrower;
         private PlayerCharacterAnimController _playerCharacterAnimController;
@@ -44,7 +49,9 @@ namespace Infrastructure.Logic.WeaponManagment
         private bool _isCanThrowGranade;
         public WeaponType WeaponWeaponType => _weaponWeaponType;
         public Weapon GetWeapon() => _weapon;
-        
+        public bool IsSelected => _isSelected;
+        protected bool _isSelected;
+
         public float GetRangeAttack() => _range;
 
         public Weapon GetActiveWeapon() => _weapon;
@@ -54,7 +61,7 @@ namespace Infrastructure.Logic.WeaponManagment
 
         private GameObject _radiusObject;
         private SpriteRenderer _spriteRenderer;
-        
+
         private void Awake()
         {
             _humanoid = GetComponent<Humanoid>();
@@ -99,13 +106,14 @@ namespace Infrastructure.Logic.WeaponManagment
 
         private void SetShootingRadiusSprite()
         {
-            _radiusObject= new GameObject("ShootingRadius");
+            _radiusObject = new GameObject("ShootingRadius");
             _radiusObject.SetActive(true);
             _radiusObject.transform.position = transform.position;
-            _spriteRenderer= _radiusObject.AddComponent<SpriteRenderer>();
+            _spriteRenderer = _radiusObject.AddComponent<SpriteRenderer>();
             _spriteRenderer.sprite = shootingRadiusSprite;
             SetShootingRadius();
         }
+
         private void SetShootingRadius()
         {
             _spriteRenderer.color = new Color(1f, 1f, 1f, 0.5f);
@@ -120,10 +128,11 @@ namespace Infrastructure.Logic.WeaponManagment
             float spread = 8;
             return spread;
         }
-        
-        public float GetSpreadAngle() =>_weapon.SpreadAngle;
 
-        public void SetDamage(int damage) => _damage += damage;
+        public float GetSpreadAngle() => _weapon.SpreadAngle;
+
+        private void SetDamage(int damage) => _damage += damage;
+
         public void SetUpgrade(UpgradeData upgradeData, int level)
         {
             SetDamage(upgradeData.Damage);
@@ -133,13 +142,13 @@ namespace Infrastructure.Logic.WeaponManagment
         {
             SetWeaponParametrs();
         }
-        
+
         public void SetPoint(WorkPoint workPoint)
         {
             _damage = (_damage * workPoint.UpPrecent) / 100;
-            _range=(_range * workPoint.UpPrecent) / 100;
+            _range = (_range * workPoint.UpPrecent) / 100;
             SetShootingRadius();
-            
+
             if (workPoint.IsHaveWeaponBox)
             {
                 OpenWeaponBox(workPoint.GetWeaponBox());
@@ -151,20 +160,20 @@ namespace Infrastructure.Logic.WeaponManagment
             if (weaponBox.GetGranades().Count > 0)
             {
                 gameObject.AddComponent<GrenadeThrower>();
-                _grenadeThrower= GetComponent<GrenadeThrower>();
-                _grenadeThrower.OnThrowed+= OnThrowedGranade;
+                _grenadeThrower = GetComponent<GrenadeThrower>();
+                _grenadeThrower.OnThrowed += OnThrowedGranade;
                 AddGranade(weaponBox.GetGranades());
                 _isCanThrowGranade = true;
                 OnChangeGranade?.Invoke();
             }
-            
+
         }
 
         private void OnThrowedGranade()
         {
-            
+
             _granades.RemoveAt(0);
-            
+
             if (_granades.Count != 0)
             {
                 _isCanThrowGranade = true;
@@ -172,20 +181,26 @@ namespace Infrastructure.Logic.WeaponManagment
             else
             {
                 _isCanThrowGranade = false;
-                Destroy(gameObject.GetComponent<GrenadeThrower>(),3f);
+                Destroy(gameObject.GetComponent<GrenadeThrower>(), 3f);
             }
-            
+
             OnChangeGranade?.Invoke();
-            
-           
         }
 
-        public void AddGranade( List<Granade>  granades)
+        public void SetSelected(bool isSelected)
         {
-            _granades= new List<Granade>(granades);
+            _isSelected = isSelected;
+            if (_ring != null)
+            {
+                _ring.gameObject.SetActive(_isSelected);
+            }
+        }
+        public void AddGranade(List<Granade> granades)
+        {
+            _granades = new List<Granade>(granades);
         }
 
-        public  void ThrowGranade( )
+        public void ThrowGranade()
         {
             if (_granades.Count > 0)
             {
@@ -200,6 +215,20 @@ namespace Infrastructure.Logic.WeaponManagment
         }
     }
 
-    //    Sniper Vector3(0.0289999992,-0.0839999989,0.0170000009)Vector3(347.422821,89.5062866,89.6258698)
-//    shotgun Vector3(0.0179999992,-0.0500000007,-0.0189999994)Vector3(348.677673,89.4979019,89.6276169)
+
 }
+
+
+public interface IWeaponController
+{
+    public int Damage { get; set; }
+    public void Initialize();
+    public float GetSpread();
+    public void SetUpgrade(UpgradeData upgradeData, int level);
+    public void UIInitialize();
+    public void SetPoint(WorkPoint workPoint);
+    public void SetSelected(bool isSelected);
+    public void SetAdditionalWeaponButton(AdditionalWeaponButton additionalWeaponButton);
+}
+//    Sniper Vector3(0.0289999992,-0.0839999989,0.0170000009)Vector3(347.422821,89.5062866,89.6258698)
+//    shotgun Vector3(0.0179999992,-0.0500000007,-0.0189999994)Vector3(348.677673,89.4979019,89.6276169)

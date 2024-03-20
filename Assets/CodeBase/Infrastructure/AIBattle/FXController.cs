@@ -22,7 +22,7 @@ namespace Infrastructure.AIBattle
         private AudioSource _audioSource;
         private Weapon _weapon;
         private AudioManager _audioManager;
-        private WeaponController _weaponController;
+        private HumanoidWeaponController _humanoidWeaponController;
         private Humanoid _humanoid;
         
         private void Awake()
@@ -33,8 +33,8 @@ namespace Infrastructure.AIBattle
                 _humanoid.OnInitialize+=SetAudio;
             }
              
-             _weaponController= GetComponent<WeaponController>();
-             _weaponController.OnInitialized += SetWeapon;
+             _humanoidWeaponController= GetComponent<HumanoidWeaponController>();
+             _humanoidWeaponController.OnInitialized += SetWeapon;
         }
 
         private void SetAudio(Humanoid _humanoid)

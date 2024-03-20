@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using Characters.Humanoids.AbstractLevel;
+using Characters.Robots;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Factories.FactoryWarriors.Humanoids;
+using Infrastructure.Factories.FactoryWarriors.Robots;
 using Infrastructure.Location;
 using Infrastructure.Points;
 using Service.Audio;
@@ -19,10 +21,12 @@ namespace Infrastructure.Logic.Inits
     {
         [SerializeField] private WorkPointGroup _workPointsGroup;
         [SerializeField] private HumanoidFactory _humanoidFactory;
+        [SerializeField] private RobotFactory _robotFactory;
         private List<WorkPoint> _workPoints = new();
-        private static readonly List<Humanoid> _activeHumanoids = new();
-        private static readonly List<Humanoid> _inactiveHumanoids = new();
-        public UnityAction CreatedHumanoid;
+        private static readonly List<Character> _activeCharacter = new();
+        private static readonly List<Character> _inactiveHumanoids = new();
+        
+        public UnityAction CreatedCharacter;
         private Humanoid _selectedHumanoid;
         private Store _store;
         private CharacterStore _characterStore;
@@ -39,17 +43,19 @@ namespace Infrastructure.Logic.Inits
         public void Initialize(AudioManager audioManager, SceneInitializer sceneInitializer, SaveLoadService saveLoadService)
         {
             _saveLoadService = saveLoadService;
-            _humanoidFactory.CreatedHumanoid += OnCreatedHumanoid;
+            _humanoidFactory.CreatedHumanoid += OnCreatedCharacted;
+            _robotFactory.CreatedRobot += OnCreatedCharacted;
             _humanoidFactory.Initialize(audioManager);
+            _robotFactory.Initialize(audioManager,_saveLoadService);
             _workPointsGroup.Initialize(_saveLoadService);
             FillWorkPoints();
             _store = sceneInitializer.Window.GetStoreOnPlay();
             
             _characterStore = _store.GetCharacterStore();
-            _characterStore.OnCharacterBought += SetCreatHumanoid;
+            _characterStore.OnCharacterBought += CreateCharacter;
             
             _vipCharacterStore = _store.GetVipCharacterStore();
-            _vipCharacterStore.OnCharacterBought += SetCreatHumanoid;
+            _vipCharacterStore.OnCharacterBought += CreateCharacter;
             
             _movePointController = sceneInitializer.GetMovePointController();
         }
@@ -61,14 +67,19 @@ namespace Infrastructure.Logic.Inits
             }
         }
 
-        private void OnCreatedHumanoid(Humanoid humanoid)
+        private void OnCreatedCharacted(Character character)
         {
             _coutnCreated++;
-            _activeHumanoids.Add(humanoid);
-            DieState dieState = humanoid.GetComponent<DieState>();
-            dieState.OnDeath += OnDeath;
-            CreatedHumanoid?.Invoke();
-            _movePointController.SelectedPoint.SetHumanoid(humanoid);
+            _activeCharacter.Add(character);
+            
+            if (character.TryGetComponent(out Humanoid humanoid))
+            {
+                DieState dieState = humanoid.GetComponent<DieState>();
+                dieState.OnDeath += OnDeath;
+            }
+           
+            CreatedCharacter?.Invoke();
+            _movePointController.SelectedPoint.SetCharacter(character);
             _movePointController.SetCurrentPoint(_movePointController.SelectedPoint);
             _movePointController.SelectedPoint.OnPointerClick(null);
             _movePointController.SelectedPoint.OnPointerClick(null);
@@ -79,49 +90,75 @@ namespace Infrastructure.Logic.Inits
         {
              _humanoidFactory.Create(humanoid.gameObject, transform);
         }
+        
+        private  void CreateTurret(Turret turret, Transform transform)
+        {
+            _robotFactory.Create(turret.gameObject, transform);
+        }
 
-        public void SetCreatHumanoid(Humanoid humanoid)
+        public void CreateCharacter(Character character )
         {
             Transform transform = _movePointController.SelectedPoint.transform;
             
-            if (humanoid != null && humanoid.GetComponent<Humanoid>())
+            if (character.TryGetComponent( out Humanoid humanoid))
             {
-                _countOrdered++;
-                CreateHumanoid(humanoid, transform);
-            }
-            else
-            {
-                print("SetCreatHumanoid error");
-            }
+                if (humanoid != null && humanoid.GetComponent<Humanoid>())
+                {
+                    _countOrdered++;
+                    CreateHumanoid(humanoid, transform);
+                }
+                else
+                {
+                    print("SetCreatHumanoid error");
+                }
 
             
-            _workPointsGroup.OnSelected(_movePointController.SelectedPoint);
+                _workPointsGroup.OnSelected(_movePointController.SelectedPoint);
+            }
+            else if(character.TryGetComponent( out Turret turret))
+            {
+                if (turret != null && turret.GetComponent<Turret>())
+                {
+                    _countOrdered++;
+                    CreateTurret(turret, transform);
+                }
+                else
+                {
+                    print("SetCreatTurret error");
+                }
+
+            
+                _workPointsGroup.OnSelected(_movePointController.SelectedPoint);
+            }
         }
 
-        public List<Humanoid> GetAllHumanoids() => _activeHumanoids;
+        public List<Character> GetAllCharacter() => _activeCharacter;
 
         private void CheckRemainingHumanoids()
         {
-            if (_activeHumanoids.Count == 0)
+            if (_activeCharacter.Count == 0)
             {
                 LastHumanoidDie?.Invoke();
             }
         }
 
-        private void OnDeath(Humanoid humanoid)
+        private void OnDeath(Character character)
         {
-            _inactiveHumanoids.Add(humanoid);
-            _activeHumanoids.Remove(humanoid);
+            _inactiveHumanoids.Add(character);
+            _activeCharacter.Remove(character);
             SetLocalParametrs();
             CheckRemainingHumanoids();
         }
 
         protected override void OnDisable()
         {
-            foreach (Humanoid humanoid in _activeHumanoids)
+            foreach (Character character in _activeCharacter)
             {
-                DieState dieState = humanoid.GetComponent<DieState>();
-                dieState.OnDeath -= OnDeath;
+                if (character.TryGetComponent(out Humanoid humanoid))
+                {
+                    DieState dieState = humanoid.GetComponent<DieState>();
+                    dieState.OnDeath -= OnDeath;
+                }
             }
         }
 
@@ -138,7 +175,7 @@ namespace Infrastructure.Logic.Inits
 
         private void SetLocalParametrs()
         {
-            _saveLoadService.SetActiveHumanoids(_activeHumanoids);
+            _saveLoadService.SetActiveCharacters(_activeCharacter);
             _saveLoadService.SetInactiveHumanoids(_inactiveHumanoids);
         }
     }

@@ -65,7 +65,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
             
                 if (distance <= _minDistance)
                 {
-                    _point.SetHumanoid(_humanoid);
+                    _point.SetCharacter(_humanoid);
                     PlayerCharactersStateMachine.EnterBehavior<SearchTargetState>();
                 }
                 
