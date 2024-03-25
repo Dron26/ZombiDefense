@@ -15,7 +15,7 @@ namespace UI.HUD.StorePanel
         [SerializeField] private GameObject _storePanel;
         private int _moneyCount=> ConstantsData.MoneyForReward;
         private  IAdsService _adsService;
-        private SaveLoadService _saveLoadService;
+        private Wallet _wallet;
         private ISaveLoadService SaveLoadService;
 
         private void Awake()
@@ -95,12 +95,12 @@ namespace UI.HUD.StorePanel
         {
             Debug.Log("AddMoney");
             
-            _saveLoadService.MoneyData.AddMoney(_moneyCount);
+            _wallet.AddMoney(_moneyCount);
         }
 
-        public void Initialize(SaveLoadService saveLoadService)
+        public void Initialize(Wallet wallet)
         {
-             _saveLoadService=saveLoadService;
+            _wallet=wallet;
         }
         
         private void InitializeAdsSDK()

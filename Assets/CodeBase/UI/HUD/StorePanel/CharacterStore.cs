@@ -47,6 +47,7 @@ namespace UI.HUD.StorePanel
         private Character _selectedCharacter;
         private SaveLoadService _saveLoadService;
         private Store _store;
+        private Wallet _wallet;
         private  bool _isInitialized;
         public CharacterSlot SelectedCharacterSlot => _selectedCharacterSlot;
         public Character SelectedCharacter=> _selectedCharacter;
@@ -65,6 +66,7 @@ namespace UI.HUD.StorePanel
             InitializeButton();
             _isInitialized=true;
             _store.IsStoreActive +=SetCharacterData;
+            _wallet=store.GetWallet();
             
         }
         private void FillCharacters()
@@ -136,9 +138,9 @@ namespace UI.HUD.StorePanel
         
         private bool OnTryBuy(int price)
         {
-            if (_saveLoadService.MoneyData.IsMoneyEnough(price))
+            if (_wallet.IsMoneyEnough(price))
             {
-                _saveLoadService.MoneyData.SpendMoney(price);
+                _wallet.SpendMoney(price);
                 return true;
             }
             else

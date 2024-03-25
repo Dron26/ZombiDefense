@@ -9,7 +9,7 @@ using Infrastructure.Location;
 using Newtonsoft.Json;
 using Service.Audio;
 using Service.PlayerAuthorization;
-using UI.Buttons;
+using UI.HUD.StorePanel;
 using UI.Levels;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -28,8 +28,8 @@ namespace Service.SaveLoad
         public Action<WorkPoint> OnSelectedNewPoint;
         public Action<Character> OnSelectedNewCharacter;
         public Action<int> OnChangeEnemiesCountOnWave;
+        public Action<Enemy> OnEnemyDeath;
         private LoadingCurtain _loadingCurtain;
-        public MoneyData MoneyData => _dataBase.MoneyData; 
         public int MaxEnemiesOnWave=>_maxEnemiesOnWave;
         private YandexAuthorization _authorization=new();
         public event Action OnClearSpawnData;
@@ -41,6 +41,7 @@ namespace Service.SaveLoad
         private int _maxEnemiesOnWave;
         private GraphicRaycaster _raycastPanel;
         private EventSystem _eventSystem;
+        
         private void Awake()
         {
             
@@ -269,7 +270,7 @@ namespace Service.SaveLoad
         
         public void SetNumberKilledEnemies()
         {
-            _dataBase.ChangeNumberKilledEnemies() ;
+            
         }
         public int GetNumberKilledEnemies() => 
             _dataBase.PersonalAchievements.NumberKilledEnemies;
@@ -348,5 +349,18 @@ namespace Service.SaveLoad
         }
 
         public EventSystem GetEventSystem()=> _eventSystem;
+        
+
+        public int  FixMoneyState()
+        {
+           return _dataBase.MoneyData.FixTempMoneyState();
+        }
+
+        public void EnemyDeath(Enemy enemy)
+        {
+            _dataBase.ChangeNumberKilledEnemies();
+            OnEnemyDeath?.Invoke(enemy);
+        }
+        
     }
 }

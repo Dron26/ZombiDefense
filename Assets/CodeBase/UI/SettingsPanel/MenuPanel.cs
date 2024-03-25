@@ -40,11 +40,11 @@ namespace UI.SettingsPanel
         private GameBootstrapper _gameBootstrapper;
 
         public Action OnClickExitToMenu;
-        private TimeManager _timeManager;
+        private GlobalTimer _globalTimer;
         
-        public void Initialize(SaveLoadService saveLoadService, TimeManager timeManager)
+        public void Initialize(SaveLoadService saveLoadService, GlobalTimer globalTimer)
         {
-            _timeManager=timeManager;
+            _globalTimer=globalTimer;
             _stateMachine = saveLoadService.GetGameBootstrapper().GetStateMachine();
             _panel.SetActive(true);
             _gameBootstrapper=FindObjectOfType<GameBootstrapper>();
@@ -71,7 +71,7 @@ namespace UI.SettingsPanel
 
         private void SwitchState()
         {
-            _timeManager.SetPaused(!_panel.activeSelf);
+            _globalTimer.SetPaused(!_panel.activeSelf);
             _audioManager.SetMenuEnabled(!_panel.activeSelf);
             _panel.SetActive(!_panel.activeSelf);
             _resursePanel.SetActive(!_resursePanel.activeSelf); 

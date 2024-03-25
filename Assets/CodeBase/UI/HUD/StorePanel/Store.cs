@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Characters.Humanoids.AbstractLevel;
+using Enemies.AbstractEntity;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
@@ -15,10 +16,10 @@ using UI.Buttons;
 
 namespace UI.HUD.StorePanel
 {
+    [RequireComponent(typeof(Wallet))]
     public class Store : MonoCache
     {
         [SerializeField] private GameObject _storePanel;
-        
         [SerializeField] private CharacterStore _characterStore;
         [SerializeField] private CharacterStore _eliteCharacterStore;
         [SerializeField] private GameObject _buttonGroup;
@@ -39,8 +40,9 @@ namespace UI.HUD.StorePanel
         [SerializeField] private Camera _cameraPhysical;
         [SerializeField] private Camera _cameraUI;
         [SerializeField] private Camera _characterVisual;
+        private Wallet _wallet;
 
-        
+        private int _moneyAmount;
         private WorkPointGroup _workPointGroup;
         private bool isButtonPanelOpen = true;
         private WorkPoint _selectedWorkPoint;
@@ -50,26 +52,28 @@ namespace UI.HUD.StorePanel
         private MovePointController _movePointController;
         private SaveLoadService _saveLoadService;
         private int maxLevel = 3;
-        private bool _isPanelActive=false;
+        private bool _isPanelActive = false;
         public Action<bool> IsStoreActive;
         public Action<WorkPoint> OnBoughtUpgrade;
-        private TimeManager _timeManager;
+        private GlobalTimer _globalTimer;
         private int _medicineBoxPrice = 100;
         private int _weaponBoxPrice = 200;
         private BoxFactory _boxFactory;
-        
-        public void Initialize(SceneInitializer initializer, SaveLoadService saveLoadService, TimeManager timeManager)
+
+        public void Initialize(SceneInitializer initializer, SaveLoadService saveLoadService, GlobalTimer globalTimer)
         {
-            _timeManager = timeManager;
+            _globalTimer = globalTimer;
             _storePanel.gameObject.SetActive(!_storePanel.activeSelf);
             _saveLoadService = saveLoadService;
             _sceneInitializer = initializer;
+            _moneyAmount = _saveLoadService.ReadAmountMoney();
             _workPointGroup = _sceneInitializer.GetPlayerCharacterInitializer().GetWorkPointGroup();
             SetCharacterInitializer();
             _storePanel.gameObject.SetActive(!_storePanel.activeSelf);
-            _adsStore.Initialize(_saveLoadService);
+            _adsStore.Initialize(_wallet);
             _additionalEquipmentButton.Initialize(_saveLoadService);
-            _boxFactory=GetComponent<BoxFactory>();
+            _boxFactory = GetComponent<BoxFactory>();
+            _wallet.Initialize(_saveLoadService);
         }
 
         private void SetCharacterInitializer()
@@ -78,24 +82,24 @@ namespace UI.HUD.StorePanel
             //_characterInitializer.OnClickWorkpoint += CheckPointInfo;
             _characters = _saveLoadService.GetAvailableCharacters();
             _saveLoadService.OnSelectedNewPoint += CheckPointInfo;
-            
-            _characterStore.Initialize(_saveLoadService,this);
+
+            _characterStore.Initialize(_saveLoadService, this);
             _characterStore.OnCharacterBought += OnCharacterBought;
             _characterStore.OnMoneyEmpty += ShowPanelAdsForMoney;
-            
-            _additionalEquipmentButton.OnSelectedMedicineBox+=OnSelectMedicineBox;
-            _additionalEquipmentButton.OnSelectedWeaponBox+=OnSelectWeaponBox;
-            
-          //  _eliteCharacterStore.Initialize(_saveLoadService,this);
-          //_eliteCharacterStore.OnCharacterBought += OnCharacterBought;
-            
+
+            _additionalEquipmentButton.OnSelectedMedicineBox += OnSelectMedicineBox;
+            _additionalEquipmentButton.OnSelectedWeaponBox += OnSelectWeaponBox;
+
+            //  _eliteCharacterStore.Initialize(_saveLoadService,this);
+            //_eliteCharacterStore.OnCharacterBought += OnCharacterBought;
+
             InitializeButton();
             //_characterStore.BuyCharacter += OnBuyCharacter;
             _movePointController = _sceneInitializer.GetMovePointController();
 
             _pointUpgradePanel.Initialize();
-            _pointUpgradePanel.OnSelectedButton+=(BuyPointUp);
-            
+            _pointUpgradePanel.OnSelectedButton += (BuyPointUp);
+
             //_movePointController.OnClickWorkpoint += OnClickWorkpoint;
             //_movePointController.OnSelectedNewPoint+=OnSelectedNewPoint;
             //_movePointController.OnUnSelectedPoint+=OnUnSelectedPoint;
@@ -104,11 +108,11 @@ namespace UI.HUD.StorePanel
 
         private void OnSelectMedicineBox()
         {
-            if (!_selectedWorkPoint.IsHaveMedicineBox&&!_selectedWorkPoint.IsHaveWeaponBox)
+            if (!_selectedWorkPoint.IsHaveMedicineBox && !_selectedWorkPoint.IsHaveWeaponBox)
             {
-                if (_saveLoadService.MoneyData.IsMoneyEnough(_medicineBoxPrice))
+                if (_wallet.IsMoneyEnough(_medicineBoxPrice))
                 {
-                    _saveLoadService.MoneyData.SpendMoney(_medicineBoxPrice);
+                    _wallet.SpendMoney(_medicineBoxPrice);
                     _selectedWorkPoint.SetMedicineBox(_boxFactory.CreateMedicine());
                     _additionalEquipmentButton.HideButton();
                 }
@@ -117,11 +121,11 @@ namespace UI.HUD.StorePanel
 
         private void OnSelectWeaponBox()
         {
-            if (!_selectedWorkPoint.IsHaveWeaponBox&&!_selectedWorkPoint.IsHaveMedicineBox)
+            if (!_selectedWorkPoint.IsHaveWeaponBox && !_selectedWorkPoint.IsHaveMedicineBox)
             {
-                if (_saveLoadService.MoneyData.IsMoneyEnough(_weaponBoxPrice))
+                if (_wallet.IsMoneyEnough(_weaponBoxPrice))
                 {
-                    _saveLoadService.MoneyData.SpendMoney(_weaponBoxPrice);
+                    _wallet.SpendMoney(_weaponBoxPrice);
                     _selectedWorkPoint.SetWeaponBox(_boxFactory.CreateWeapon());
                     _additionalEquipmentButton.HideButton();
                 }
@@ -136,11 +140,11 @@ namespace UI.HUD.StorePanel
             _eliteCharacterStore.OnCharacterBought -= OnCharacterBought;
         }
 
-        private void OnCharacterBought(Character character )
+        private void OnCharacterBought(Character character)
         {
             SwitchStorePanel();
         }
-        
+
         private void ShowPanelAdsForMoney()
         {
             _applyAdsMoneyWindow.gameObject.SetActive(!_applyAdsMoneyWindow.gameObject);
@@ -158,7 +162,7 @@ namespace UI.HUD.StorePanel
             _applyAdsMoneyWindowButton.onClick.AddListener(ShowPanelAds);
             _closeAdsMoneyWindowButton.onClick.AddListener(ShowPanelAdsForMoney);
         }
-        
+
         private void ShowPanelAds()
         {
             ShowPanelAdsForMoney();
@@ -168,27 +172,27 @@ namespace UI.HUD.StorePanel
 
         private void CheckPointInfo(WorkPoint workPoint)
         {
-                _selectedWorkPoint = workPoint;
+            _selectedWorkPoint = workPoint;
 
-                if (_selectedWorkPoint.Level <=maxLevel )
-                {
-                    _pointUpgradePanel.SwitchStateButton(true);
-                }
-                else
-                {
-                    _pointUpgradePanel.SwitchStateButton(false);
-                }
+            if (_selectedWorkPoint.Level <= maxLevel)
+            {
+                _pointUpgradePanel.SwitchStateButton(true);
+            }
+            else
+            {
+                _pointUpgradePanel.SwitchStateButton(false);
+            }
         }
 
         private void BuyPointUp()
         {
             int price = _priceForWorkPointUp;
 
-            if (_saveLoadService.MoneyData.IsMoneyEnough(price))
+            if (_wallet.IsMoneyEnough(price))
             {
-                _saveLoadService.MoneyData.SpendMoney(price);
+                _wallet.SpendMoney(price);
                 _workPointGroup.UpLevel(_selectedWorkPoint);
-                
+
                 //OnBoughtUpgrade?.Invoke(_selectedWorkPoint);
             }
             else
@@ -196,10 +200,9 @@ namespace UI.HUD.StorePanel
                 print("должен мигать кошелек");
             }
         }
-        
+
         private void ClosePanel()
         {
-           
         }
 
         public List<Character> GetAvaibleCharacters()
@@ -216,7 +219,7 @@ namespace UI.HUD.StorePanel
         {
             _buttonStorePanel.gameObject.SetActive(isActive);
         }
-        
+
         private void ChangeStateButtonPanel()
         {
             isButtonPanelOpen = !isButtonPanelOpen;
@@ -226,14 +229,13 @@ namespace UI.HUD.StorePanel
         private void Buy(int price)
         {
         }
-        
+
         public void SwitchStorePanel()
         {
-            _isPanelActive=!_isPanelActive;
-            _timeManager.SetPaused(_isPanelActive);
+            _isPanelActive = !_isPanelActive;
+            _globalTimer.SetPaused(_isPanelActive);
             SwitchPanels(_isPanelActive);
             SwitchCameras(_isPanelActive);
-            
         }
 
         private void SwitchCameras(bool isActive)
@@ -243,14 +245,14 @@ namespace UI.HUD.StorePanel
             isActive = !isActive;
             _cameraPhysical.gameObject.SetActive(isActive);
         }
-        
+
         private void SwitchPanels(bool isActive)
         {
             _storePanel.gameObject.SetActive(isActive);
             _characterStore.gameObject.SetActive(isActive);
             _characterStoreRotation.gameObject.SetActive(isActive);
             IsStoreActive.Invoke(isActive);
-            
+
             _dimImage.gameObject.SetActive(isActive);
             _buttonPanel.SwitchPanelState();
         }
@@ -264,5 +266,57 @@ namespace UI.HUD.StorePanel
         {
             return _eliteCharacterStore;
         }
+
+        public Wallet GetWallet()
+        {
+            return _wallet;
+        }
+    }
+}
+
+public class Wallet
+{
+    public int MoneyForEnemy { get; set; }
+    public int AllAmountMoney { get; set; }
+
+    public int TempMoney { get; set; }
+    public event Action MoneyChanged;
+
+    public void Initialize(SaveLoadService saveLoadService)
+    {
+        TempMoney = saveLoadService.FixMoneyState();
+        saveLoadService.OnEnemyDeath += AddMoneyForKilledEnemy;
+    }
+
+    public void AddMoneyForKilledEnemy(Enemy enemy)
+    {
+        int amountMoney = enemy.GetPrice();
+        TempMoney += amountMoney;
+        AllAmountMoney += amountMoney;
+        MoneyForEnemy += amountMoney;
+        MoneyChanged?.Invoke();
+    }
+
+    public void AddMoney(int amountMoney)
+    {
+        TempMoney += amountMoney;
+        AllAmountMoney += amountMoney;
+        MoneyChanged?.Invoke();
+    }
+
+    public int ReadAmountMoney()
+    {
+        return TempMoney;
+    }
+
+    public void SpendMoney(int amountMoney)
+    {
+        TempMoney -= Mathf.Clamp(amountMoney, 0, int.MaxValue);
+        MoneyChanged?.Invoke();
+    }
+
+    public bool IsMoneyEnough(int price)
+    {
+        return TempMoney >= price;
     }
 }

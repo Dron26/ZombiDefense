@@ -32,6 +32,7 @@ namespace Infrastructure.Logic.Inits
         [SerializeField] private Camera _cameraPhysical;
         [SerializeField] private Camera _cameraUI;
         [SerializeField] private EventSystem _eventSystem;
+        
         private LoadingCurtain _loadingCurtain;
         public HudPanel Window=>_hudPanel;
         private SaveLoadService _saveLoadService;
@@ -71,7 +72,6 @@ namespace Infrastructure.Logic.Inits
             Debug.Log("Finish SetAvailableCharacters();");
             _saveLoadService.SetCameras(_cameraPhysical, _cameraUI);
             Debug.Log("Finish SetCameras();");
-            
             
             _loadingCurtain = _gameBootstrapper.GetLoadingCurtain();
 
@@ -114,7 +114,6 @@ namespace Infrastructure.Logic.Inits
             Debug.Log("+++InitializeEnemies++++");
             _enemyCharacterInitializer.Initialize(_saveLoadService, this);
             Debug.Log("Finish _playerCharacterInitializer();");
-
             _waveManager = _enemyCharacterInitializer.GetWaveManager();
             Debug.Log("Finish _playerCharacterInitializer();");
 
@@ -236,5 +235,9 @@ namespace Infrastructure.Logic.Inits
              Destroy(transform.parent.gameObject);
          }
 
+         public object GetStore()
+         {
+             return _hudPanel.GetStoreOnPlay();
+         }
     }
 }

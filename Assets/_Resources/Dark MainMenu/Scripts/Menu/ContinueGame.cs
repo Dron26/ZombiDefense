@@ -6,13 +6,7 @@ namespace _Resources.Dark_MainMenu.Scripts.Menu
     public class ContinueGame : MonoBehaviour {
 
         public Button startButton;
-
-
-        public void Start()
-        {
-          //  startButton.interactable = intToBool(PlayerPrefs.GetInt("startButton", 0));
-        }
-
+        
 
         int boolToInt(bool val)
         {

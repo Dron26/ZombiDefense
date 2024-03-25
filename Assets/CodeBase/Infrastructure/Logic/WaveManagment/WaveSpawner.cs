@@ -7,6 +7,7 @@ using Infrastructure.Factories.FactoryWarriors.Enemies;
 using Service;
 using Service.Audio;
 using Service.SaveLoad;
+using UI.HUD.StorePanel;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -24,7 +25,6 @@ namespace Infrastructure.Logic.WaveManagment
         private WaveManager _waveManager;
         private AudioManager _audioManager;
         private SaveLoadService _saveLoadService;
-        private MoneyData _moneyData;
         private List<Wave> _groupWave = new();
         private EnemyFactory _enemyFactory;
         private List<List<Enemy>> _createdEnemies = new();
@@ -48,7 +48,6 @@ namespace Infrastructure.Logic.WaveManagment
         private bool _isStopSpawning;
         private bool _isStopRevival = false;
         private Wave _newWave;
-
         public void Initialize(AudioManager audioManager, EnemyFactory enemyFactory)
         {
             _enemyFactory = enemyFactory;
@@ -64,7 +63,6 @@ namespace Infrastructure.Logic.WaveManagment
             _saveLoadService.OnClearSpawnData += ClearData;
 
             _stepDelayTime = 0.73f;
-            _moneyData = _saveLoadService.MoneyData;
         }
 
         public void SetWaveData(Wave waveData)
@@ -218,8 +216,7 @@ namespace Infrastructure.Logic.WaveManagment
 
         private void OnEnemyDeath(Enemy enemy)
         {
-            _moneyData.AddMoneyForKilledEnemy(enemy.GetPrice());
-            _saveLoadService.SetNumberKilledEnemies();
+            _saveLoadService.EnemyDeath(enemy);
         }
 
 

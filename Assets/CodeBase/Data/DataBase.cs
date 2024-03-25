@@ -14,7 +14,7 @@ namespace Data
     [Serializable]
     public class DataBase
     {
-        public MoneyData MoneyData = new MoneyData();
+        public MoneyData  MoneyData= new MoneyData();
         public PersonalAchievements PersonalAchievements = new PersonalAchievements();
         public TimeStatistics TimeStatistics = new TimeStatistics();
         public AudioData AudioData = new AudioData();
@@ -87,8 +87,8 @@ namespace Data
         }
 
         public int ReadAmountMoney =>
-            MoneyData.Money;
-        
+            MoneyData.TempMoney;
+
         public void AddPoints(int totalPoints) =>
             Points += totalPoints;
 
@@ -156,7 +156,7 @@ namespace Data
         {
             ActiveEnemy.Remove(inactiveEnemy);
             InactiveEnemy.Add(inactiveEnemy);
-            MoneyData.AllAmountMoney++;
+            //MoneyData.AllAmountMoney++;
         }
 
         public int ReadCountEnemy() =>

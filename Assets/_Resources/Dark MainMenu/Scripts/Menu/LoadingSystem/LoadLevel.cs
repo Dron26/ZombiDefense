@@ -1,9 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI; 
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
-
 
 public class LoadLevel : MonoBehaviour {
 
@@ -15,7 +11,6 @@ public class LoadLevel : MonoBehaviour {
 	{	
 		levelName = PlayerPrefs.GetString("lastLevel");
         SceneManager.LoadScene("Loading");
-		
 	}
 	
 	

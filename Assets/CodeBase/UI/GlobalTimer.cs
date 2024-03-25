@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace UI
 {
-    public class TimeManager : MonoCache
+    public class GlobalTimer : MonoCache
     {
         [SerializeField] private Button _buttonTime;
         [SerializeField] private GameObject _buttonPanel;
@@ -73,11 +73,12 @@ namespace UI
             
             if (_isPanelActive)
             {
+                _buttonTime.interactable = false;
                 StartCoroutine(StartTimer());
             }
             else
             {
-                StartCoroutine(StartTimer());
+                StopCoroutine(StartTimer());
             }
         }
 
@@ -85,8 +86,9 @@ namespace UI
         {
             yield return new WaitForSecondsRealtime(3);
             
-            _buttonPanel.SetActive(false);
-            _isPanelActive = !_isPanelActive;
+            _buttonTime.interactable = true;
+                _buttonPanel.SetActive(false);
+                _isPanelActive = !_isPanelActive;
         }
 
         public void SetPaused(bool isActive)

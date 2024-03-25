@@ -24,10 +24,10 @@ namespace Service.Ads
     public class HudPanel:MonoCache
     {
         [SerializeField] private GameObject _panel;
-        [SerializeField] private Store store;
+        [SerializeField] private Store _store;
         [SerializeField] private MenuPanel _menuPanel;
         [SerializeField] private TimerDisplay _timerDisplay;
-        [SerializeField] private TimeManager _timeManager;
+        [SerializeField] private GlobalTimer _globalTimer;
         [SerializeField] private ResursesCanvas _resursesCanvas;
         [SerializeField] private ReportPanel _reportPanel;
         
@@ -42,11 +42,11 @@ namespace Service.Ads
             _saveLoadService = saveLoadService;
             _sceneInitializer = sceneInitializer;
             _sceneInitializer.OnReadySpawning=StartTimer;
-             store.Initialize(_sceneInitializer, _saveLoadService,_timeManager);
-            _menuPanel.Initialize(_saveLoadService,_timeManager);
+             _store.Initialize(_sceneInitializer, _saveLoadService,_globalTimer);
+            _menuPanel.Initialize(_saveLoadService,_globalTimer);
             _menuPanel.OnClickExitToMenu+= OnClickExit;
-            _resursesCanvas.Initialize(_saveLoadService);
-            _reportPanel.Initialize(_saveLoadService,_timeManager);
+            _resursesCanvas.Initialize(_store.GetWallet());
+            _reportPanel.Initialize(_saveLoadService,_globalTimer,_store);
             _reportPanel.OnClickExitToMenu+= OnClickExit;
             _reportPanel.OnClickContinue += StartContinueSpawn;
             _saveLoadService.OnCompleteLocation+=_reportPanel.ShowReport;
@@ -78,7 +78,7 @@ namespace Service.Ads
             OnClickContinueStartSpawn.Invoke();
         }
         
-        public Store GetStoreOnPlay() => store;
+        public Store GetStoreOnPlay() => _store;
 
         private void OnClickExit()
         {

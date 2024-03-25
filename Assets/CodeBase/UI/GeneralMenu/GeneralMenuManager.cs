@@ -24,14 +24,12 @@ namespace UI.GeneralMenu
         [SerializeField] private GameObject _menuPanel;
         [SerializeField]private AudioManager _audioManager;
         [SerializeField]private LocationMap _locationMap;
-        private MoneyData _moneyData;
         
         public  void Initialize( GameStateMachine stateMachine)
         {
             _stateMachine = stateMachine;
             _gameBootstrapper=FindObjectOfType<GameBootstrapper>();
             _saveLoadService = _gameBootstrapper.GetSaveLoad();
-            _moneyData=_saveLoadService.MoneyData;
             
             _loadingCurtain=_gameBootstrapper.GetLoadingCurtain();
             _menuPanel.SetActive(false);

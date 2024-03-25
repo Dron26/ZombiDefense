@@ -9,15 +9,15 @@ namespace UI.Resurse
     public class ResursesCanvas : MonoCache
     {
         [SerializeField]private StatsMoney _statsMoney;
-        private SaveLoadService _saveLoadService;
+        private Wallet _wallet;
         
-        public void Initialize(SaveLoadService saveLoadService)
+        public void Initialize(Wallet wallet)
         {
-            _saveLoadService= saveLoadService;
-            _statsMoney.Initialize(_saveLoadService.ReadAmountMoney()); 
-            _saveLoadService.MoneyData.MoneyChanged += OnChangeMoney;
+            _wallet= wallet;
+            _statsMoney.Initialize(_wallet.ReadAmountMoney()); 
+            _wallet.MoneyChanged += OnChangeMoney;
         }
 
-        private void OnChangeMoney() => _statsMoney.SetMoney(_saveLoadService.ReadAmountMoney());
+        private void OnChangeMoney() => _statsMoney.SetMoney(_wallet.ReadAmountMoney());
     }
 }
