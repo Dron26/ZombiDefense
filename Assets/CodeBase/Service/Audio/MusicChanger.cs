@@ -44,12 +44,11 @@ namespace Service.Audio
             _audioBackgraundChanger=GetComponent<AudioBackgraundChanger>();
             _audioBackgraundChanger.Initialize(saveLoadService);
             
-            _audioManager.OnMenuEnabled+=SetBackgroundMusics;
-            _saveLoadService.GetCurtain().OnStartLoading+=SetLoadingMusic;
-            _saveLoadService.GetCurtain().OnClicked+=SetBackgroundMusics;
+            
             
             SetMusicVolume(_currentVolumeMusic);
             SetBackgroundMusics();
+            AddListener();
         }
 
         private void SetBackgroundMusics()
@@ -93,6 +92,25 @@ namespace Service.Audio
         {
             SoundInstance.StopRandomMusic();
             SoundInstance.StartLoadingMusic(MusicClipAddresses.Loading);
+        }
+        
+        private void AddListener()
+        {
+            _audioManager.OnMenuEnabled+=SetBackgroundMusics;
+            _saveLoadService.GetCurtain().OnStartLoading+=SetLoadingMusic;
+            _saveLoadService.GetCurtain().OnClicked+=SetBackgroundMusics;
+        }
+
+        private void RemoveListener()
+        {
+            _audioManager.OnMenuEnabled-=SetBackgroundMusics;
+            _saveLoadService.GetCurtain().OnStartLoading-=SetLoadingMusic;
+            _saveLoadService.GetCurtain().OnClicked-=SetBackgroundMusics;
+        }
+
+        private void OnDestroy()
+        {
+            RemoveListener();
         }
     }
 }

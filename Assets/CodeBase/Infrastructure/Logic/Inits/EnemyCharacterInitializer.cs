@@ -11,20 +11,18 @@ namespace Infrastructure.Logic.Inits
         private  PlayerCharacterInitializer _playerCharacterInitializer;
         private SaveLoadService _saveLoadService;
 
-        public void Initialize(SaveLoadService saveLoadService,SceneInitializer sceneInitializer)
+        public void Initialize(SaveLoadService saveLoadService, SceneInitializer sceneInitializer)
         {
             Debug.Log("Initialize+EnemyCharacterInitializer");
             _playerCharacterInitializer=sceneInitializer.GetPlayerCharacterInitializer();
             _saveLoadService = saveLoadService;
-            _waveManager.Initialize(saveLoadService,sceneInitializer.GetAudioController());
+            _waveManager.Initialize(saveLoadService,sceneInitializer);
         }
-
-       
 
         public WaveManager GetWaveManager() => _waveManager;
 
 
-        public void StartSpawning()
+        public void SetWaveData()
         {
             print("StartingSpawning");
             

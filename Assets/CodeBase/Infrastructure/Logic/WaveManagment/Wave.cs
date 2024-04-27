@@ -10,7 +10,8 @@ namespace Infrastructure.Logic.WaveManagment
     {
         [SerializeField] private List<Enemy> _enemies;
         [SerializeField] private List<int> _enemyCount;
-        
+        [SerializeField] private int _timeBetweenWaves;
+        public int TimeBetweenWaves => _timeBetweenWaves;
         public void AddData(List<Enemy> enemies, List<int> enemyCount)
         {
             _enemies = new List<Enemy>();
@@ -30,7 +31,7 @@ namespace Infrastructure.Logic.WaveManagment
         {
             return new List<Enemy>(_enemies);
         }
-        
+
         public List<int> GetEnemyCount()
         {
             return new List<int>(_enemyCount);

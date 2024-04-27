@@ -14,6 +14,7 @@ namespace UI.Buttons
         {
             _saveLoadService= saveLoadService;
             saveLoadService.OnChangeEnemiesCountOnWave += SetCount;
+            SetCount(_saveLoadService.MaxEnemiesOnWave);
         }
 
         private void SetCount(int count)

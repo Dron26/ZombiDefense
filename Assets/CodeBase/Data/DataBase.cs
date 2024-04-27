@@ -159,6 +159,8 @@ namespace Data
             //MoneyData.AllAmountMoney++;
         }
 
+        public int ReadInactiveEnemy() => InactiveEnemy.Count;
+
         public int ReadCountEnemy() =>
             ActiveEnemy.Count;
         
@@ -259,8 +261,8 @@ namespace Data
 
         public void ClearSpawnLocationData()
         {
-        ActiveEnemy= new();
-        InactiveEnemy= new();
+            ActiveEnemy = new();
+            InactiveEnemy = new();
         }
     }
 }

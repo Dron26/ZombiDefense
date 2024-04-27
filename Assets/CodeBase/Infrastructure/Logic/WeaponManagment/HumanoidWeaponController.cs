@@ -8,6 +8,7 @@ using Infrastructure.BaseMonoCache.Code.MonoCache;
 using UnityEngine;
 using Infrastructure.Location;
 using UI.Buttons;
+using UnityEngine.Experimental.GlobalIllumination;
 
 namespace Infrastructure.Logic.WeaponManagment
 {
@@ -17,8 +18,9 @@ namespace Infrastructure.Logic.WeaponManagment
 
         [SerializeField] private Weapon _weapon;
         [SerializeField] private Weapon _granade;
-        [SerializeField] private Sprite shootingRadiusSprite;
-        [SerializeField] private ParticleSystem _ring;
+        [SerializeField] private SpriteRenderer _radius;
+        [SerializeField] private GameObject _light;
+        
         public int Damage
         {
             get => _damage;
@@ -29,7 +31,7 @@ namespace Infrastructure.Logic.WeaponManagment
         public Action<Weapon> OnInitialized;
         public Action OnChangeGranade;
         public int CountGranade => _granades.Count;
-       
+
         public bool IsCanThrowGranade => _isCanThrowGranade;
         private GrenadeThrower _grenadeThrower;
         private PlayerCharacterAnimController _playerCharacterAnimController;
@@ -59,9 +61,6 @@ namespace Infrastructure.Logic.WeaponManagment
         public void SetWeapon(Transform weaponTransform) =>
             _weaponPrefab.transform.parent = weaponTransform;
 
-        private GameObject _radiusObject;
-        private SpriteRenderer _spriteRenderer;
-
         private void Awake()
         {
             _humanoid = GetComponent<Humanoid>();
@@ -74,9 +73,35 @@ namespace Infrastructure.Logic.WeaponManagment
             SetAnimInfo();
             SetWeaponParametrs();
             ChangeWeapon?.Invoke();
-            SetShootingRadiusSprite();
-            SetShootingRadius();
             OnInitialized?.Invoke(_weapon);
+            SetLight();
+           
+            SetRadius();
+        }
+
+        private void SetRadius()
+        {
+            _radius.transform.localScale=new Vector3(_range/3.6f, _range/3.6f, 1);
+        }
+
+        private void SetLight()
+        {
+            if (_light!=null)
+            {
+                Light[] light = FindObjectsOfType<Light>();
+            
+                for (int i = 0; i < light.Length; i++)
+                {
+                    if (light[i].CompareTag($"Light"))
+                    {
+                        if (light[i].intensity>1)
+                        {
+                            _light.gameObject.SetActive(false);
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
         private void SetGranadeParametrs()
@@ -104,22 +129,7 @@ namespace Infrastructure.Logic.WeaponManagment
             _range = _weapon.Range;
         }
 
-        private void SetShootingRadiusSprite()
-        {
-            _radiusObject = new GameObject("ShootingRadius");
-            _radiusObject.SetActive(true);
-            _radiusObject.transform.position = transform.position;
-            _spriteRenderer = _radiusObject.AddComponent<SpriteRenderer>();
-            _spriteRenderer.sprite = shootingRadiusSprite;
-            SetShootingRadius();
-        }
 
-        private void SetShootingRadius()
-        {
-            _spriteRenderer.color = new Color(1f, 1f, 1f, 0.5f);
-            _radiusObject.transform.localScale = new Vector3(_range * 2f, _range * 2f, 1f);
-            _radiusObject.SetActive(false);
-        }
 
         public int GetDamage() => _damage;
 
@@ -147,7 +157,7 @@ namespace Infrastructure.Logic.WeaponManagment
         {
             _damage = (_damage * workPoint.UpPrecent) / 100;
             _range = (_range * workPoint.UpPrecent) / 100;
-            SetShootingRadius();
+            //SetShootingRadius();
 
             if (workPoint.IsHaveWeaponBox)
             {
@@ -189,10 +199,9 @@ namespace Infrastructure.Logic.WeaponManagment
 
         public void SetSelected(bool isSelected)
         {
-            _isSelected = isSelected;
-            if (_ring != null)
+            if (_radius != null)
             {
-                _ring.gameObject.SetActive(_isSelected);
+                _radius.gameObject.SetActive(isSelected);
             }
         }
         public void AddGranade(List<Granade> granades)

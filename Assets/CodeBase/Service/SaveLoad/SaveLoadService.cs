@@ -29,19 +29,22 @@ namespace Service.SaveLoad
         public Action<Character> OnSelectedNewCharacter;
         public Action<int> OnChangeEnemiesCountOnWave;
         public Action<Enemy> OnEnemyDeath;
+        public int TimeTimeBeforeNextWave=> _timeBeforeNextWave;
         private LoadingCurtain _loadingCurtain;
         public int MaxEnemiesOnWave=>_maxEnemiesOnWave;
         private YandexAuthorization _authorization=new();
         public event Action OnClearSpawnData;
         private GameBootstrapper _gameBootstrapper;
-        
+        public event Action LastEnemyRemained;
         private bool IsAuthorized => _authorization.IsAuthorized();
         public bool IsSelectContinueGame => _isSelectContinueGame;
+        
         private bool _isSelectContinueGame;
         private int _maxEnemiesOnWave;
         private GraphicRaycaster _raycastPanel;
         private EventSystem _eventSystem;
-        
+        private int _timeBeforeNextWave;
+        private bool _isDay;
         private void Awake()
         {
             
@@ -65,9 +68,9 @@ namespace Service.SaveLoad
             _dataBase.SetStatusAuthorization(IsAuthorized);
         }
 
-        public void GetMoneyData()
+        public void SetTimeBeforeNextWave(int time)
         {
-            
+            _timeBeforeNextWave=time;
         }
 
         private void SetStartParametrs()
@@ -123,12 +126,12 @@ namespace Service.SaveLoad
         
         public void SetSelectedCharacter(Character character)
         {
-            // if (GetSelectedCharacter() != null&&character!=GetSelectedCharacter())
-            // {
-            //     IWeaponController weaponController = (IWeaponController)character.GetComponent(typeof(IWeaponController));
-            //     weaponController.SetSelected(false);
-            //     
-            // }
+            if (GetSelectedCharacter() != null&&character!=GetSelectedCharacter())
+            {
+                IWeaponController weaponController = (IWeaponController)GetSelectedCharacter().GetComponent(typeof(IWeaponController));
+                weaponController.SetSelected(false);
+                
+            }
             
             _dataBase.ChangeSelectedCharacters(character);
             OnSelectedNewCharacter?.Invoke(character);
@@ -170,6 +173,11 @@ namespace Service.SaveLoad
         {
             _dataBase.ChangeInactiveEnemy(inactiveEnemy);
             OnSetInactiveEnemy?.Invoke();
+
+            if (_dataBase.ReadActiveEnemy().Count==1)
+            { 
+                LastEnemyRemained?.Invoke();
+            }
         }
         
         public int GetCountEnemy() => 
@@ -234,7 +242,7 @@ namespace Service.SaveLoad
 
         public void ClearData()
         {
-            throw new NotImplementedException();
+            _dataBase.ClearSpawnLocationData();
         }
 
         public DataBase LoadData()
@@ -316,6 +324,8 @@ namespace Service.SaveLoad
         {
             OnClearSpawnData?.Invoke();
             _dataBase.ClearSpawnLocationData();
+            Save();
+            
         }
 
 
@@ -330,10 +340,9 @@ namespace Service.SaveLoad
             OnChangeEnemiesCountOnWave?.Invoke(_maxEnemiesOnWave);
         }
 
-        public void SetKilledEnemiesOnWave(int number)
+        public void SetKilledEnemiesOnWave()
         {
-            int count=_maxEnemiesOnWave-number;
-            OnChangeEnemiesCountOnWave?.Invoke(count);
+            OnChangeEnemiesCountOnWave?.Invoke(--_maxEnemiesOnWave);
         }
 
         public void SetRaycasterPanel(GraphicRaycaster buttonPanel)
@@ -361,6 +370,11 @@ namespace Service.SaveLoad
             _dataBase.ChangeNumberKilledEnemies();
             OnEnemyDeath?.Invoke(enemy);
         }
-        
+
+
+        public void SetInfoDay(bool isDay)
+        {
+            _isDay=isDay;
+        }
     }
 }

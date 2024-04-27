@@ -77,17 +77,30 @@ namespace Infrastructure.Points
                     Debug.Log("selectNewPoint");
                     _selectedPoint.SelectedForMove(false);
                     
-                    if (isChracterSelected)
-                    {
-                        if (_selectedCharacter.IsLife && !_selectedCharacter.IsMove)
-                        {
-                            isPointToMoveTaked = false;
-                        }
-                    }
-                    else
+                    if (newPoint.IsBusy)
                     {
                         _previousMovePoint=newPoint;
                     }
+                    else
+                    {
+                         if (isChracterSelected)
+                                            {
+                                                if (_selectedCharacter.IsLife && !_selectedCharacter.IsMove)
+                                                {
+                                                    isPointToMoveTaked = false;
+                                                }
+                                                // if (newPoint.IsBusy)
+                                                // {
+                                                //     _previousMovePoint=newPoint;
+                                                // }
+                                            }
+                                            else
+                                            {
+                                                _previousMovePoint=newPoint;
+                                            }
+                    }
+                    
+                   
                     
                     _selectedPoint.SetSelected(false);
                     _selectedPoint = newPoint;
@@ -114,14 +127,17 @@ namespace Infrastructure.Points
                             _previousMovePoint.SetBusy(false);
                             newPoint.SetBusy(true);
                             newPoint.SelectedForMove(true);
-                            _previousMovePoint = _movePoint;
-               
+
                             PlayerCharactersStateMachine stateMachine =
                                 _selectedCharacter.GetComponent<PlayerCharactersStateMachine>();
                             stateMachine.MoveTo();
                             stateMachine.EnterBehavior<MovementState>();
                             SetPoint(newPoint);
                             isPointToMoveTaked = false;
+                        }
+                        else
+                        {
+                            
                         }
                     }
                 }
@@ -139,13 +155,14 @@ namespace Infrastructure.Points
         
         private void ChangeCurrentPoint(WorkPoint newPoint)
         {
-            _currentPoint.RemoveCharacter();
-            _currentPoint = newPoint;
+            _previousMovePoint.RemoveCharacter();
+            _previousMovePoint = newPoint;
         }
 
         public void SetCurrentPoint(WorkPoint point)
         {
             _currentPoint = point;
+            _previousMovePoint=point;
         }
     }
 }

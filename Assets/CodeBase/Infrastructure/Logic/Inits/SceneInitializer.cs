@@ -47,12 +47,13 @@ namespace Infrastructure.Logic.Inits
         private int ordered = 1;
         public Action SetInfoCompleted;
         public Action OnReadySpawning;
-        
+        public Action OnClickContinue;
+        private TimerDisplay _timerDisplay;
         public List<Character> availableCharacters = new ();
 
         public bool IsStartedTutorial => _isTutorialLevel;
         private bool _isTutorialLevel;
-        private bool _isInfinity;
+        
 
         public Action OnLoaded;
         public void Initialize(GameStateMachine stateMachine)
@@ -75,40 +76,36 @@ namespace Infrastructure.Logic.Inits
             
             _loadingCurtain = _gameBootstrapper.GetLoadingCurtain();
 
-            _loadingCurtain.OnClicked = OnClikedCurtain;
-
-            _playerCharacterInitializer.CreatedCharacter += SetInfo;
+            
             Debug.Log("Finish _playerCharacterInitializer();");
              _audioManager.Initialize(_saveLoadService);
 
-             _hudPanel.Init(_saveLoadService,this );
-             _hudPanel.OnClickStartSpawn+=_enemyCharacterInitializer.StartSpawning;
-             _hudPanel.OnClickContinueStartSpawn+=OnClickContinueStartSpawn;
-             _hudPanel.OnClickExitToMenu+=OnClickExitToMenu;
-
+             _timerDisplay=_hudPanel.GetTimerDisplay();
+             
              
              _playerCharacterInitializer.Initialize(_audioManager, this, _saveLoadService);
              Debug.Log("Finish _playerCharacterInitializer();");
 
              InitializeEnemies();
 
+             _hudPanel.Init(_saveLoadService,this,_waveManager );
 
-             _playerCharacterInitializer.LastHumanoidDie += OnLastHumanoidDie;
+            
             Debug.Log("Finish _playerCharacterInitializer();");
 
             _movePointController.Initialize(this, _saveLoadService);
             Debug.Log("Finish _movePointController();");
-            
-            
+            AddListener();
         }
+
+       
 
         private void OnLastHumanoidDie()
         {
             _saveLoadService.OnLastHumanoidDie();
             _enemyCharacterInitializer.StopSpawning();
         }
-
-
+        
         private void InitializeEnemies()
         {
             Debug.Log("+++InitializeEnemies++++");
@@ -119,27 +116,20 @@ namespace Infrastructure.Logic.Inits
 
             _waveManager.OnReadySpawning += ReadyToSpawning;
             Debug.Log("Finish _playerCharacterInitializer();");
-            
-            StartCoroutine(_waveManager.SetWaveData());
+
+            _waveManager.SetWaveData();
         }
-       
-        
+
         private void ReadyToSpawning()
         {
             _loadingCurtain.OnLoaded();
-            OnReadySpawning?.Invoke();
             
-            if (_isInfinity)
-            {
-                _enemyCharacterInitializer.StartSpawning();
-                _isInfinity = false;
-            }
+            
         }
         
         private void OnClikedCurtain()
         {
             OnLoaded?.Invoke();
-            
         }
 
         public PlayerCharacterInitializer GetPlayerCharacterInitializer() => _playerCharacterInitializer;
@@ -179,6 +169,7 @@ namespace Infrastructure.Logic.Inits
             _enemyCharacterInitializer=location.GetComponentInChildren<EnemyCharacterInitializer>();
             CameraData cameraData = location.GetComponentInChildren<CameraData>();
             _cameraInputMovement.SetPosition(cameraData); 
+            _saveLoadService.SetInfoDay(cameraData.IsDay);
             _location=location;
             tempLocation=null;
             
@@ -186,10 +177,8 @@ namespace Infrastructure.Logic.Inits
             {
                 _isTutorialLevel=true;
                 TutorialLevel tutorialLevel = location.GetComponent<TutorialLevel>();
-               // tutorialLevel.SetImages(GetImages());
                 OnLoaded+=()=> tutorialLevel.Initialize(this);
                 tutorialLevel.OnEndTutorial+=SwicthScene;
-                //   location.GetComponent<TutorialLevel>().Initialize();
             }
             else
             {
@@ -202,8 +191,7 @@ namespace Infrastructure.Logic.Inits
             _playerCharacterInitializer.CreatedCharacter -= SetInfo;
             _playerCharacterInitializer.LastHumanoidDie -= _enemyCharacterInitializer.StopSpawning;
             _waveManager.OnReadySpawning -= ReadyToSpawning;
-            _hudPanel.OnClickStartSpawn-=_enemyCharacterInitializer.StartSpawning;
-        }
+            _timerDisplay.OnClickReady-=_enemyCharacterInitializer.SetWaveData;        }
 
          public HudPanel GetHudPanel()
          {
@@ -219,25 +207,60 @@ namespace Infrastructure.Logic.Inits
 
 
          public void OnClickContinueStartSpawn()
-         {
-             _saveLoadService.ClearSpawnData();
-            InitializeEnemies();
-            StartCoroutine(_waveManager.SetWaveData());
-            _isInfinity=true;
+         { 
+             // _saveLoadService.ClearSpawnData();
+             OnClickContinue?.Invoke();
+           //  _waveManager.OnReadySpawning -= ReadyToSpawning;
+            // _playerCharacterInitializer.ClearData();
+            //InitializeEnemies();
             
+       
          }
          
          private void OnClickExitToMenu()
          {
              _saveLoadService.Save();
              _saveLoadService.GetGameBootstrapper().GetStateMachine().Enter<LoadLevelState,string>(ConstantsData.Menu); 
+             _saveLoadService.ClearSpawnData();
+             _playerCharacterInitializer.ClearData();
+             Destroy(_location.gameObject);
+             Destroy(transform.parent.gameObject);
+             
+         }
+
+         private void ResetLevel()
+         {
+             _saveLoadService.ClearSpawnData();
+             _playerCharacterInitializer.ClearData();
              Destroy(_location.gameObject);
              Destroy(transform.parent.gameObject);
          }
-
-         public object GetStore()
+         
+         private void AddListener()
          {
-             return _hudPanel.GetStoreOnPlay();
+             _timerDisplay.OnClickReady+=_enemyCharacterInitializer.SetWaveData;
+             _hudPanel.OnStartSpawn+=OnClickContinueStartSpawn;
+             _hudPanel.OnClickExitToMenu+=OnClickExitToMenu;
+             _hudPanel.OnResetLevel += ResetLevel;
+             _loadingCurtain.OnClicked += OnClikedCurtain;
+             _playerCharacterInitializer.CreatedCharacter += SetInfo;
+             _playerCharacterInitializer.LastHumanoidDie += OnLastHumanoidDie;
+         }
+
+         private void RemoveListener()
+         {
+             _timerDisplay.OnClickReady-=_enemyCharacterInitializer.SetWaveData;
+             _hudPanel.OnStartSpawn-=OnClickContinueStartSpawn;
+             _hudPanel.OnClickExitToMenu-=OnClickExitToMenu;
+             _hudPanel.OnResetLevel -= ResetLevel;
+             _loadingCurtain.OnClicked -= OnClikedCurtain;
+             _playerCharacterInitializer.CreatedCharacter -= SetInfo;
+             _playerCharacterInitializer.LastHumanoidDie -= OnLastHumanoidDie;
+         }
+
+         private void OnDestroy()
+         {
+             RemoveListener();
          }
     }
 }

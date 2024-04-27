@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Infrastructure;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
@@ -34,12 +35,13 @@ namespace UI.GeneralMenu
             _loadingCurtain=_gameBootstrapper.GetLoadingCurtain();
             _menuPanel.SetActive(false);
             _saveLoadService.SetCurtain(_loadingCurtain);
-            _loadingCurtain.OnClicked = OnClikedCurtain;
             
             LoadAudioController();
             _settingPanel.Initialize(_audioManager,_saveLoadService);
             _locationMap.Initialize(_stateMachine,_saveLoadService);
             _saveLoadService.SetFirstStart();
+
+            AddListener();
         }
         
         private  void  LoadAudioController()
@@ -57,10 +59,22 @@ namespace UI.GeneralMenu
         {
         //    _yandexLeaderboard.Initialize(CreateLeaderboard());
             
-            
-            
-            
                 _loadingCurtain.OnLoaded();
+        }
+
+        private void AddListener()
+        {
+            _loadingCurtain.OnClicked += OnClikedCurtain;
+        }
+
+        private void RemoveListener()
+        {
+            _loadingCurtain.OnClicked -= OnClikedCurtain;
+        }
+
+        private void OnDestroy()
+        {
+            RemoveListener();
         }
     }
 }

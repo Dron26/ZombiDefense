@@ -23,8 +23,8 @@ namespace Infrastructure.Logic.Inits
         [SerializeField] private HumanoidFactory _humanoidFactory;
         [SerializeField] private RobotFactory _robotFactory;
         private List<WorkPoint> _workPoints = new();
-        private static readonly List<Character> _activeCharacter = new();
-        private static readonly List<Character> _inactiveHumanoids = new();
+        private static readonly List<Character> _activeCharacters = new();
+        private static readonly List<Character> _inactiveCharacetrs = new();
         
         public UnityAction CreatedCharacter;
         private Humanoid _selectedHumanoid;
@@ -70,7 +70,7 @@ namespace Infrastructure.Logic.Inits
         private void OnCreatedCharacted(Character character)
         {
             _coutnCreated++;
-            _activeCharacter.Add(character);
+            _activeCharacters.Add(character);
             
             if (character.TryGetComponent(out Humanoid humanoid))
             {
@@ -81,8 +81,7 @@ namespace Infrastructure.Logic.Inits
             CreatedCharacter?.Invoke();
             _movePointController.SelectedPoint.SetCharacter(character);
             _movePointController.SetCurrentPoint(_movePointController.SelectedPoint);
-            _movePointController.SelectedPoint.OnPointerClick(null);
-            _movePointController.SelectedPoint.OnPointerClick(null);
+            
             SetLocalParametrs();
         }
 
@@ -132,11 +131,11 @@ namespace Infrastructure.Logic.Inits
             }
         }
 
-        public List<Character> GetAllCharacter() => _activeCharacter;
+        public List<Character> GetAllCharacter() => _activeCharacters;
 
         private void CheckRemainingHumanoids()
         {
-            if (_activeCharacter.Count == 0)
+            if (_activeCharacters.Count == 0)
             {
                 LastHumanoidDie?.Invoke();
             }
@@ -144,15 +143,15 @@ namespace Infrastructure.Logic.Inits
 
         private void OnDeath(Character character)
         {
-            _inactiveHumanoids.Add(character);
-            _activeCharacter.Remove(character);
+            _inactiveCharacetrs.Add(character);
+            _activeCharacters.Remove(character);
             SetLocalParametrs();
             CheckRemainingHumanoids();
         }
 
         protected override void OnDisable()
         {
-            foreach (Character character in _activeCharacter)
+            foreach (Character character in _activeCharacters)
             {
                 if (character.TryGetComponent(out Humanoid humanoid))
                 {
@@ -175,8 +174,26 @@ namespace Infrastructure.Logic.Inits
 
         private void SetLocalParametrs()
         {
-            _saveLoadService.SetActiveCharacters(_activeCharacter);
-            _saveLoadService.SetInactiveHumanoids(_inactiveHumanoids);
+            _saveLoadService.SetActiveCharacters(_activeCharacters);
+            _saveLoadService.SetInactiveHumanoids(_inactiveCharacetrs);
+        }
+
+        public void ClearData()
+        {
+            ClearGroup(_activeCharacters);
+            ClearGroup(_inactiveCharacetrs);
+            _countOrdered = 0;
+            _coutnCreated = 0;
+        }
+
+        private void ClearGroup(List<Character> characters)
+        {
+            foreach (var character in characters)
+            {
+                Destroy(character);
+            }
+            
+            characters.Clear();
         }
     }
 }

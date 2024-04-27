@@ -85,8 +85,8 @@ namespace CameraMain
 
         public void SetPosition(CameraData data )
         {
-            minBounds = new Vector2(data.minBoundsX, data.minBoundsY);
-            maxBounds = new Vector2(data.maxBoundsX, data.maxBoundsY);
+            minBounds = new Vector2(data.MinBoundsX, data.MinBoundsY);
+            maxBounds = new Vector2(data.MaxBoundsX, data.MaxBoundsY);
             
             ZoomController controller= GetComponentInChildren<ZoomController>();
             controller.SetData(data);

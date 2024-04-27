@@ -163,7 +163,7 @@ namespace Infrastructure.Tutorial
             _dimm.enabled = false;
             if (_isCharacterCreated) return;
             _characterInitializer.CreateCharacter(_humanoid);
-            _enemyCharacterInitializer.StartSpawning();
+            _enemyCharacterInitializer.SetWaveData();
             _isCharacterCreated = true;
         }
         

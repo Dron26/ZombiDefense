@@ -710,12 +710,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1af120f93e234438958b7801b9591a98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minBoundsX: 29
-  minBoundsY: -7
-  maxBoundsX: 72
-  maxBoundsY: -0.5
-  minZoomDistance: 10
-  maxZoomDistance: 20
+  MinBoundsX: 0
+  MinBoundsY: 0
+  MaxBoundsX: 0
+  MaxBoundsY: 0
+  MinZoomDistance: 0
+  MaxZoomDistance: 0
+  IsDay: 0
 --- !u!1 &8911169419210217439
 GameObject:
   m_ObjectHideFlags: 0
@@ -10959,6 +10960,10 @@ PrefabInstance:
     - target: {fileID: 4945430113621801314, guid: 55678640143107b408903690558b5afc, type: 3}
       propertyPath: m_Name
       value: Directional Light
+      objectReference: {fileID: 0}
+    - target: {fileID: 4945430113621801314, guid: 55678640143107b408903690558b5afc, type: 3}
+      propertyPath: m_TagString
+      value: Light
       objectReference: {fileID: 0}
     - target: {fileID: 9010247550471259954, guid: 55678640143107b408903690558b5afc, type: 3}
       propertyPath: m_Intensity

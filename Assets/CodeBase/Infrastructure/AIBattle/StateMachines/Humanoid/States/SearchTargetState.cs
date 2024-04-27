@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Enemies.AbstractEntity;
 using Infrastructure.Logic.WeaponManagment;
@@ -51,25 +52,23 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         {
             _isSearhing = true;
             _playerCharacterAnimController.OnIdle();
+            float rangeAttack = _humanoidWeaponController.GetRangeAttack();
             
             while (_isSearhing)
             {
-                _enemyTransforms = saveLoadService.GetActiveEnemy()
-                    .Select(enemy => enemy.transform)
-                    .ToArray();
-            
-                int closestEnemyIndex = GetClosestEnemyIndex(transform.position);
+                
+                int closestEnemyIndex = GetClosestEnemyIndex();
                 
                 if (closestEnemyIndex != -1)
                 {
                     _enemy = saveLoadService.GetActiveEnemy()[closestEnemyIndex];
 
                     float _currentRange = Vector3.Distance(transform.position, _enemy.transform.position);
-                    float rangeAttack = _humanoidWeaponController.GetRangeAttack();
                     
                     if (_currentRange <= rangeAttack && !_isTurning&&_enemy.IsLife())
                     {
                         LookEnemyPosition(_enemy.transform);
+                        _isSearhing = false;
                     }
                 }
                 
@@ -147,47 +146,63 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
             ChangeState();
         }
         
-        private int GetClosestEnemyIndex(Vector3 soldierPosition)
+        private int GetClosestEnemyIndex()
         {
-            NativeArray<EnemyPositionData> enemyPositionDataArray = new NativeArray<EnemyPositionData>(_enemyTransforms.Length, Allocator.TempJob);
-            
-            for (int i = 0; i < _enemyTransforms.Length; i++)
-            {
-                enemyPositionDataArray[i] = new EnemyPositionData
-                {
-                    soldierPosition = soldierPosition,
-                    enemyPosition = _enemyTransforms[i].position
-                };
-            }
-
-            // Create a job and set the size of the result array.
-            var job = new GetClosestEnemyJob
-            {
-                enemyPositionDataArray = enemyPositionDataArray
-            };
-            
-            job.SetResultArraySize(_enemyTransforms.Length);
-
-            // Schedule the job and wait for it to complete.
-            var jobHandle = job.Schedule(_enemyTransforms.Length, 100);
-            jobHandle.Complete();
-
-            // Find the index of the closest enemy from the results of the job.
             int closestEnemyIndex = -1;
-            float closestEnemyDistance = float.MaxValue;
-            for (int i = 0; i < _enemyTransforms.Length; i++)
+            List<Enemy> enemyGroup = saveLoadService.GetActiveEnemy();
+            if (enemyGroup.Count>0)
             {
-                float distance = job.resultArray[i].distance;
-                if (distance < closestEnemyDistance)
+                foreach (Enemy enemy in enemyGroup)
                 {
-                    closestEnemyDistance = distance;
-                    closestEnemyIndex = job.resultArray[i].enemyIndex;
+                    if (!enemy.IsLife())
+                    {
+                        Debug.Log("dfjnsdkfhskdjhfjskdhfjksdhkfjhsdjk");
+                    }
+                    
                 }
+                _enemyTransforms = saveLoadService.GetActiveEnemy()
+                    .Select(enemy => enemy.transform)
+                    .ToArray();
+            
+                NativeArray<EnemyPositionData> enemyPositionDataArray = new NativeArray<EnemyPositionData>(_enemyTransforms.Length, Allocator.TempJob);
+            
+                for (int i = 0; i < _enemyTransforms.Length; i++)
+                {
+                    enemyPositionDataArray[i] = new EnemyPositionData
+                    {
+                        soldierPosition = transform.position,
+                        enemyPosition = _enemyTransforms[i].position
+                    };
+                }
+
+                // Create a job and set the size of the result array.
+                var job = new GetClosestEnemyJob
+                {
+                    enemyPositionDataArray = enemyPositionDataArray
+                };
+            
+                job.SetResultArraySize(_enemyTransforms.Length);
+
+                // Schedule the job and wait for it to complete.
+                var jobHandle = job.Schedule(_enemyTransforms.Length, 100);
+                jobHandle.Complete();
+
+                // Find the index of the closest enemy from the results of the job.
+                
+                float closestEnemyDistance = float.MaxValue;
+                for (int i = 0; i < _enemyTransforms.Length; i++)
+                {
+                    float distance = job.resultArray[i].distance;
+                    if (distance < closestEnemyDistance)
+                    {
+                        closestEnemyDistance = distance;
+                        closestEnemyIndex = job.resultArray[i].enemyIndex;
+                    }
+                }
+
+                enemyPositionDataArray.Dispose();
+                job.resultArray.Dispose();
             }
-
-            enemyPositionDataArray.Dispose();
-            job.resultArray.Dispose();
-
             return closestEnemyIndex;
         }
         

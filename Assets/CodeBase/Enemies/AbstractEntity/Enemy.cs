@@ -147,20 +147,23 @@ namespace Enemies.AbstractEntity
             //     OnTakeGranadeDamage?.Invoke();
             //     PushForGranade();
             // }
-            
-            if (_health >= 0)
+            if (_isLife)
             {
-                AdditionalDamage(damage, weaponType);
+                if (_health >= 0)
+                {
+                    AdditionalDamage(damage, weaponType);
                 
-                _health -= Mathf.Clamp(damage, _minHealth, MaxHealth);
-            }
+                    _health -= Mathf.Clamp(damage, _minHealth, MaxHealth);
+                }
         
-            if (_health <= 0)
-            {
-                _saveLoadService.SetInactiveEnemy(this);
-                _isLife = false;
-                Die(weaponType);
+                if (_health <= 0)
+                {
+                    _saveLoadService.SetInactiveEnemy(this);
+                    _isLife = false;
+                    Die(weaponType);
+                }
             }
+            
         }
     }
 }

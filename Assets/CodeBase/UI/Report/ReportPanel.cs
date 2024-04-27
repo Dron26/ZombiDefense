@@ -30,9 +30,10 @@ namespace UI.Report
         [SerializeField] private TMP_Text _infoDeadMercenaryValue;
         [SerializeField] private LeanLocalizedTextMeshProUGUI _infoOffer;
 
-        [SerializeField] private Button _buttonApply;
-        [SerializeField] private Button _buttonExit;
-        [SerializeField] private Button _buttonReset;
+        [SerializeField] private Button _stayOnLocation;
+        [SerializeField] private Button _backToMenu;
+        [SerializeField] private Button _reset;
+        [SerializeField] private Button _continue;
         
         [SerializeField] private GameObject _panel;
         
@@ -43,29 +44,21 @@ namespace UI.Report
         private int _deadMercenary;
         private int _profit;
         public Action OnClickExitToMenu;
-        public Action OnClickContinue;
+        public Action OnStayInLication;
+        public Action OnResetLevel;
         private GlobalTimer _globalTimer;
         private bool _isLastHumanoidDie;
         private GameStateMachine _stateMachine;
         private Wallet _wallet;
+        
         public void Initialize(SaveLoadService saveLoadService, GlobalTimer globalTimer, Store store)
         {
             _saveLoadService = saveLoadService;
             _globalTimer=globalTimer;
-            _buttonApply.GetComponentInChildren<Button>().onClick.AddListener(СontinueGame);
-            _buttonExit.onClick.AddListener(SwicthScene);
-            _buttonReset.onClick.AddListener(ResetLevel);
+            AddListener();
             _panel.SetActive(false);
             _stateMachine = saveLoadService.GetGameBootstrapper().GetStateMachine();
             _wallet=store.GetWallet();
-        }
-
-        private void СontinueGame()
-        {
-            Debug.Log("Entered СontinueGame()");
-            _globalTimer.SetPaused(false);
-            OnClickContinue?.Invoke();
-            _panel.SetActive(false);
         }
 
         public void ShowReport()
@@ -81,12 +74,12 @@ namespace UI.Report
             
             if (_isLastHumanoidDie)
             {
-                _buttonApply.gameObject.SetActive(false);
+                _stayOnLocation.gameObject.SetActive(false);
                 _infoOffer.TranslationName = ReportKey.DeadOffer.ToString();
             }
             else
             {
-                _buttonApply.gameObject.SetActive(true);
+                _stayOnLocation.gameObject.SetActive(true);
                 _infoOffer.TranslationName = ReportKey.TasksCompleted.ToString();
             }
 
@@ -118,19 +111,57 @@ namespace UI.Report
             OnClickExitToMenu?.Invoke();
         }
 
-
         public void OnLastHumanoidDie()
         {
             _isLastHumanoidDie=true;
             ShowReport();
         }
         
+        private void StayInLocation()
+        {
+            _globalTimer.SetPaused(false);
+            OnStayInLication?.Invoke();
+            _panel.SetActive(false);
+        }
         private void ResetLevel()
         {
             Debug.Log("ResetLevel()");
+            OnResetLevel?.Invoke();
             _stateMachine.Enter<LoadLevelState,string>(ConstantsData.Level); 
-        } 
+        }
         
+        private void СontinueGame()
+        {
+            Debug.Log("Entered СontinueGame()");
+            _globalTimer.SetPaused(false);
+            OnStayInLication?.Invoke();
+            _panel.SetActive(false);
+        }
+        
+        private void AddListener()
+        {
+            _backToMenu.onClick.AddListener(SwicthScene);
+            _reset.onClick.AddListener(ResetLevel);
+            _continue.onClick.AddListener(СontinueGame);
+            
+            _saveLoadService.LastHumanoidDie+=OnLastHumanoidDie;
+            _saveLoadService.OnCompleteLocation+=ShowReport;
+        }
+
+        private void RemoveListener()
+        {
+            _backToMenu.onClick.RemoveListener(SwicthScene);
+            _reset.onClick.RemoveListener(ResetLevel);
+            _continue.onClick.RemoveListener(СontinueGame);
+            
+            _saveLoadService.LastHumanoidDie-=OnLastHumanoidDie;
+            _saveLoadService.OnCompleteLocation-=ShowReport;
+        }
+
+        private void OnDestroy()
+        {
+            RemoveListener();
+        }
     }
 }
 

@@ -34,48 +34,42 @@ namespace Service.Ads
         public Action OnClickExitToMenu;
         private SaveLoadService _saveLoadService;
         private SceneInitializer _sceneInitializer;
+        private WaveManager _waveManager;
+        public Action OnStartSpawn;
+        public Action OnResetLevel;
 
-        public Action OnClickStartSpawn;
-        public Action OnClickContinueStartSpawn;
-        public void Init(SaveLoadService saveLoadService,SceneInitializer sceneInitializer)
+        public void Init(SaveLoadService saveLoadService,SceneInitializer sceneInitializer,WaveManager waveManager )
         {
             _saveLoadService = saveLoadService;
+            _waveManager = waveManager;
             _sceneInitializer = sceneInitializer;
-            _sceneInitializer.OnReadySpawning=StartTimer;
-             _store.Initialize(_sceneInitializer, _saveLoadService,_globalTimer);
+            _store.Initialize(_sceneInitializer, _saveLoadService,_globalTimer);
             _menuPanel.Initialize(_saveLoadService,_globalTimer);
-            _menuPanel.OnClickExitToMenu+= OnClickExit;
             _resursesCanvas.Initialize(_store.GetWallet());
             _reportPanel.Initialize(_saveLoadService,_globalTimer,_store);
-            _reportPanel.OnClickExitToMenu+= OnClickExit;
-            _reportPanel.OnClickContinue += StartContinueSpawn;
-            _saveLoadService.OnCompleteLocation+=_reportPanel.ShowReport;
-            _saveLoadService.LastHumanoidDie+=_reportPanel.OnLastHumanoidDie;
             _saveLoadService.SetRaycasterPanel(GetButtonPanel().GetComponent<GraphicRaycaster>());
             GetComponent<RaycastHitChecker>().Initialize(_saveLoadService);
+            _timerDisplay.Initialize(_saveLoadService,_store.GetWallet(),_waveManager);
+            AddListener();
         }
 
         private void StartTimer()
         {
+            _saveLoadService.OnSetActiveHumanoid -= StartTimer;
             if (_sceneInitializer.IsStartedTutorial) return;
-            _timerDisplay.StartTimer(_saveLoadService);
-            _timerDisplay.OnClickStartSpawn += StartSpawn;
+            
+            _timerDisplay.StartTimer();
         }
 
         protected override void OnDisable()
         {
-            _timerDisplay.OnClickStartSpawn-= StartSpawn;
-            _saveLoadService.OnCompleteLocation-=_reportPanel.ShowReport;
+            RemoveListener();
+            _timerDisplay.Disabled();
         }
 
-        private void StartSpawn()
-        {
-            OnClickStartSpawn.Invoke();
-        }
-        
         private void StartContinueSpawn()
         {
-            OnClickContinueStartSpawn.Invoke();
+            OnStartSpawn.Invoke();
         }
         
         public Store GetStoreOnPlay() => _store;
@@ -91,5 +85,31 @@ namespace Service.Ads
         }
         
         public ButtonPanel GetButtonPanel() => _menuPanel.GetButtonPanel();
+
+        public TimerDisplay GetTimerDisplay() => _timerDisplay;
+
+        private void AddListener()
+        {
+            _sceneInitializer.OnClickContinue+= StartTimer;
+            _saveLoadService.OnSetActiveHumanoid += StartTimer;
+            _menuPanel.OnClickExitToMenu+= OnClickExit;
+            _reportPanel.OnClickExitToMenu+= OnClickExit;
+            _reportPanel.OnStayInLication += StartContinueSpawn;
+            _reportPanel.OnResetLevel += ResetLevel;
+        }
+
+        private void RemoveListener()
+        {
+            _sceneInitializer.OnClickContinue-= StartTimer;
+            _menuPanel.OnClickExitToMenu-= OnClickExit;
+            _reportPanel.OnClickExitToMenu-= OnClickExit;
+            _reportPanel.OnStayInLication -= StartContinueSpawn;
+            _reportPanel.OnResetLevel -= ResetLevel;
+        }
+
+        private void ResetLevel()
+        {
+            OnResetLevel?.Invoke();
+        }
     }
 }

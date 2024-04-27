@@ -1,12 +1,11 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
-using Data;
 using Enemies.AbstractEntity;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Factories.FactoryWarriors.Enemies;
+using Infrastructure.Logic.Inits;
 using Service.Audio;
 using Service.SaveLoad;
-using UI.HUD.StorePanel;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -17,92 +16,60 @@ namespace Infrastructure.Logic.WaveManagment
     [RequireComponent(typeof(EnemyFactory))]
     public class WaveManager : MonoCache
     {
+        [SerializeField] private List<int> _timesBetweenWaves;
+        [SerializeField] private List<Wave> _waves;
+        public Action<Wave> OnSetWave;
+        public Action OnStartSpawn;
         private EnemyFactory _enemyFactory;
         private WaveSpawner _waveSpawner;
-        [SerializeField] List<Wave> _waves = new();
         private int currentWaveIndex = 0;
-        private bool isSpawningWave = false;
         private bool isWaitingForNextWave = false;
         private bool canStartNextWave = true;
 
-        [SerializeField] public float TimeBetweenWaves;
-
+        private int TimeBetweenWaves => _timesBetweenWaves[currentWaveIndex];
         private List<Enemy> enemies = new List<Enemy>();
-
-        // Флаг, разрешающий начало новой волны
+        private bool _isContinueGame;
         public Wave CurrentWave => _waves[currentWaveIndex];
         public int CurrentWaveIndex => currentWaveIndex;
         public int TotalWaves => _waves.Count;
         public UnityAction OnReadySpawning;
         private SaveLoadService _saveLoadService;
+        private SceneInitializer _sceneInitializer;
 
-
-        public void Initialize(SaveLoadService saveLoadService, AudioManager audioManager)
+        public void Initialize(SaveLoadService saveLoadService,SceneInitializer sceneInitializer)
         {
+            _sceneInitializer = sceneInitializer;
             _saveLoadService = saveLoadService;
-            _enemyFactory= GetComponent<EnemyFactory>();
-            _enemyFactory.Initialize(_saveLoadService, audioManager);
+            _saveLoadService.SetTimeBeforeNextWave(TimeBetweenWaves);
+            _enemyFactory = GetComponent<EnemyFactory>();
+            _enemyFactory.Initialize(_saveLoadService, _sceneInitializer.GetAudioController());
             _waveSpawner = GetComponent<WaveSpawner>();
-            _waveSpawner.Initialize(audioManager,_enemyFactory);
-            _waveSpawner.OnSpawnPointsReady += OnWaveSpawningCompleted;
-            _saveLoadService.OnClearSpawnData += ClearData;
+            _waveSpawner.Initialize(_sceneInitializer.GetAudioController(), _enemyFactory, this);
+            AddListener();
         }
-        
-        public IEnumerator SetWaveData()
+
+        public void SetWaveData()
         {
-            Debug.Log("SetWaveData"+"WaitForSeconds(TimeBetweenWaves);"+TimeBetweenWaves);
-
-            if (currentWaveIndex>0)
+            if (canStartNextWave)
             {
-                yield return new WaitForSeconds(TimeBetweenWaves);
-            }
-            
-
-            Debug.Log("SetWaveData");
-            
-            while (currentWaveIndex <= _waves.Count)
-            {
-                if (!isSpawningWave && !isWaitingForNextWave && canStartNextWave)
-                {
-                    isSpawningWave = true;
-                    _waveSpawner.SetWaveData(CurrentWave);
-                    canStartNextWave = false;
-                }
-
-                yield return null;
+                canStartNextWave = false;
+                OnSetWave?.Invoke(CurrentWave);
             }
         }
 
         public void StartSpawn()
         {
-            _waveSpawner.OnStartSpawn();
-        }
-        
-        private void OnWaveSpawningCompleted()
-        {
-            isSpawningWave = false;
-            currentWaveIndex++;
-            
-            Debug.Log(currentWaveIndex);
-            if (currentWaveIndex >= _waves.Count)
-            {
-                Debug.Log("All in Queue completed!");
-                OnReadySpawning?.Invoke();
-            }
-            else
-            {
-                isWaitingForNextWave = true;
-                StartCoroutine(WaitForNextWave());
-            }
+            OnStartSpawn?.Invoke();
         }
 
-        private IEnumerator WaitForNextWave()
+        private void OnWaveSpawningCompleted()
         {
-            yield return new WaitForSeconds(TimeBetweenWaves);
-            isWaitingForNextWave = false;
+            currentWaveIndex++;
+            if (currentWaveIndex == 1) OnReadySpawning?.Invoke();
+
             canStartNextWave = true;
         }
-        
+
         public void StopSpawn()
         {
             _waveSpawner.StopSpawn();
@@ -114,14 +81,25 @@ namespace Infrastructure.Logic.WaveManagment
             return _saveLoadService;
         }
 
-        private void ClearData()
+        private void AddListener()
+        {
+            _waveSpawner.OnSpawnPointsReady += OnWaveSpawningCompleted;
+            _waveSpawner.OnCompletedWave += CompletedWave;
+            _sceneInitializer.OnClickContinue += SetContinue;
+        }
+
+        private void SetContinue()
         {
             canStartNextWave = true;
             currentWaveIndex = 0;
             isWaitingForNextWave = false;
-            isSpawningWave = false;
-            List<int> countEnemies = new List<int>(){200};
-            CurrentWave.AddData(CurrentWave.GetEnemies(),countEnemies);
+            _isContinueGame=true;
+            SetWaveData();
+        }
+
+        private void CompletedWave()
+        {
+            SetWaveData();
         }
     }
 }

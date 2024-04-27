@@ -81,8 +81,8 @@ namespace CameraMain
 
         public void SetData(CameraData data)
         {
-            minZoomDistance=data.minZoomDistance;
-            maxZoomDistance=data.maxZoomDistance;
+            minZoomDistance=data.MinZoomDistance;
+            maxZoomDistance=data.MaxZoomDistance;
         }
     }
 }

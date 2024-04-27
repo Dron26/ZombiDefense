@@ -55,13 +55,14 @@ namespace Infrastructure.Location
             _selectedCircles.Add(_standartCircle);
             _selectedCircles.Add(_improvedCircle);
             _selectedCircles.Add(_expertCircle);
-
             //_currentCircle.gameObject.SetActive(true);
             _collider = GetComponent<Collider>();
             
             _startScale = _selectedCircle.transform.localScale;
             _maxScale =_startScale*2 ;
         }
+
+       
 
 
         public void SetMedicineBox(MedicineBox medicineBox)
@@ -92,7 +93,7 @@ namespace Infrastructure.Location
             weaponTransform.parent = transform;
             weaponTransform.position = transform.position;
             _isHaveWeaponBox = true;
-            CheckState();
+            CheckCharacter();
         }
 
         public WeaponBox GetWeaponBox()
@@ -127,20 +128,29 @@ namespace Infrastructure.Location
                 StopCoroutine(SelectedCircleActivated());
             }
             
-           
             _selectedCircle.gameObject.SetActive(_isSelected);
         }
 
-        public void CheckState()
+        private void SetToWeapon()
+        {
+            IWeaponController weaponController = (IWeaponController)_character.GetComponent(typeof(IWeaponController));
+            weaponController.SetPoint(this);
+            weaponController.SetSelected(_isSelected);
+        }
+
+        public void CheckCharacter()
         {
             if (_character != null)
             {
-                IWeaponController weaponController = (IWeaponController)_character.GetComponent(typeof(IWeaponController));
-                weaponController.SetPoint(this);
-                weaponController.SetSelected(true);
-                _saveLoadService.SetSelectedCharacter(_character);
-                _character.SetPoint(this);
-                _isBusy = true;
+                
+                if (_isSelected)
+                {
+                    SetToWeapon();
+                    _saveLoadService.SetSelectedCharacter(_character);
+                    _character.SetPoint(this);
+                    _isBusy = true;
+                }
+                
             }
             else
             {
@@ -157,7 +167,7 @@ namespace Infrastructure.Location
             
             _character = character;
             _character.transform.parent = transform;
-            CheckState();
+            CheckCharacter();
         }
 
         public void UpLevel(int precent)
@@ -176,7 +186,7 @@ namespace Infrastructure.Location
         public void OnPointerClick(PointerEventData eventData)
         {
                 SetSelected(true);
-                CheckState();
+                CheckCharacter();
                 OnSelected?.Invoke(this);
             
         }
@@ -194,18 +204,18 @@ namespace Infrastructure.Location
         public void SetStartPointer()
         {
             SetSelected(true);
-            CheckState();
+            CheckCharacter();
             OnSelected?.Invoke(this);
         }
         public void RemoveCharacter()
         {
-            if (_character==null)
+            if (_character!=null)
             {
-                Debug.Log("RemoveCharacter");
+                _character.transform.parent = transform.parent;
+                _character = null;
             }
-            _character.transform.parent = transform.parent;
-            _character = null;
-            CheckState();
+            CheckCharacter();
+
         }
 
 

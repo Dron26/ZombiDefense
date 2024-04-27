@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Characters.Humanoids.AbstractLevel;
-using Enemies.AbstractEntity;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
@@ -62,6 +61,9 @@ namespace UI.HUD.StorePanel
 
         public void Initialize(SceneInitializer initializer, SaveLoadService saveLoadService, GlobalTimer globalTimer)
         {
+            _wallet = GetComponent<Wallet>();
+            _boxFactory = GetComponent<BoxFactory>();
+            
             _globalTimer = globalTimer;
             _storePanel.gameObject.SetActive(!_storePanel.activeSelf);
             _saveLoadService = saveLoadService;
@@ -72,7 +74,6 @@ namespace UI.HUD.StorePanel
             _storePanel.gameObject.SetActive(!_storePanel.activeSelf);
             _adsStore.Initialize(_wallet);
             _additionalEquipmentButton.Initialize(_saveLoadService);
-            _boxFactory = GetComponent<BoxFactory>();
             _wallet.Initialize(_saveLoadService);
         }
 
@@ -140,10 +141,7 @@ namespace UI.HUD.StorePanel
             _eliteCharacterStore.OnCharacterBought -= OnCharacterBought;
         }
 
-        private void OnCharacterBought(Character character)
-        {
-            SwitchStorePanel();
-        }
+        private void OnCharacterBought(Character character) => SwitchStorePanel();
 
         private void ShowPanelAdsForMoney()
         {
@@ -201,33 +199,16 @@ namespace UI.HUD.StorePanel
             }
         }
 
-        private void ClosePanel()
-        {
-        }
+        public List<Character> GetAvaibleCharacters() => _characters;
 
-        public List<Character> GetAvaibleCharacters()
-        {
-            return _characters;
-        }
+        public CharacterStore GetBuyedPanel() => _characterStore;
 
-        public CharacterStore GetBuyedPanel()
-        {
-            return _characterStore;
-        }
-
-        public void SetButtonState(bool isActive)
-        {
-            _buttonStorePanel.gameObject.SetActive(isActive);
-        }
+        public void SetButtonState(bool isActive) => _buttonStorePanel.gameObject.SetActive(isActive);
 
         private void ChangeStateButtonPanel()
         {
             isButtonPanelOpen = !isButtonPanelOpen;
             _rightButtonPanel.gameObject.SetActive(isButtonPanelOpen);
-        }
-
-        private void Buy(int price)
-        {
         }
 
         public void SwitchStorePanel()
@@ -257,66 +238,10 @@ namespace UI.HUD.StorePanel
             _buttonPanel.SwitchPanelState();
         }
 
-        public CharacterStore GetCharacterStore()
-        {
-            return _characterStore;
-        }
+        public CharacterStore GetCharacterStore() => _characterStore;
 
-        public CharacterStore GetVipCharacterStore()
-        {
-            return _eliteCharacterStore;
-        }
+        public CharacterStore GetVipCharacterStore() => _eliteCharacterStore;
 
-        public Wallet GetWallet()
-        {
-            return _wallet;
-        }
-    }
-}
-
-public class Wallet
-{
-    public int MoneyForEnemy { get; set; }
-    public int AllAmountMoney { get; set; }
-
-    public int TempMoney { get; set; }
-    public event Action MoneyChanged;
-
-    public void Initialize(SaveLoadService saveLoadService)
-    {
-        TempMoney = saveLoadService.FixMoneyState();
-        saveLoadService.OnEnemyDeath += AddMoneyForKilledEnemy;
-    }
-
-    public void AddMoneyForKilledEnemy(Enemy enemy)
-    {
-        int amountMoney = enemy.GetPrice();
-        TempMoney += amountMoney;
-        AllAmountMoney += amountMoney;
-        MoneyForEnemy += amountMoney;
-        MoneyChanged?.Invoke();
-    }
-
-    public void AddMoney(int amountMoney)
-    {
-        TempMoney += amountMoney;
-        AllAmountMoney += amountMoney;
-        MoneyChanged?.Invoke();
-    }
-
-    public int ReadAmountMoney()
-    {
-        return TempMoney;
-    }
-
-    public void SpendMoney(int amountMoney)
-    {
-        TempMoney -= Mathf.Clamp(amountMoney, 0, int.MaxValue);
-        MoneyChanged?.Invoke();
-    }
-
-    public bool IsMoneyEnough(int price)
-    {
-        return TempMoney >= price;
+        public Wallet GetWallet() => _wallet;
     }
 }

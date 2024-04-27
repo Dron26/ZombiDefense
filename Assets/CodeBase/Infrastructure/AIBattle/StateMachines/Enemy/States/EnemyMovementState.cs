@@ -38,6 +38,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         private void OnDeath(Enemy enemy)
         {
             StopCoroutine(CheckDistance());
+            _character.GetComponent<Humanoid>().OnMove -= OnTargetChangePoint;
         }
 
         public override void OnTakeGranadeDamage()
@@ -60,13 +61,20 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         
         public void InitCharacter(Character targetCharacter)
         {
-            _character = targetCharacter;
-            
-            if (_character.TryGetComponent(out Humanoid humanoid ))
+            if (_character!=targetCharacter )
             {
-                humanoid.OnMove += OnTargetChangePoint;
-            }
-           
+                if (_character != null)
+                {
+                    _character.GetComponent<Humanoid>().OnMove -= OnTargetChangePoint;
+                }
+
+                _character = targetCharacter;
+                    _character.GetComponent<Humanoid>().OnMove += OnTargetChangePoint;
+                    
+                }
+               
+            
+
         }
 
         private void OnSetActiveHumanoid()
