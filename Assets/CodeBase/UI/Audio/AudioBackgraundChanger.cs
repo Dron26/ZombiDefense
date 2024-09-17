@@ -1,4 +1,5 @@
 using Agava.WebUtility;
+using Common;
 using Data;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Plugins.SoundInstance.Core.Static;
@@ -29,10 +30,10 @@ namespace UI.Audio
             if (!inBackground)
             {
                 _time  = Time.timeScale;
-                Time.timeScale = ConstantsData.Zero;
+                Time.timeScale = Constants.Zero;
                 SoundInstance.PauseMusic();
-                SoundInstance.musicVolume = ConstantsData.Zero;
-                SoundInstance.GetMusicSource().volume = ConstantsData.Zero;
+                SoundInstance.musicVolume = Constants.Zero;
+                SoundInstance.GetMusicSource().volume = Constants.Zero;
                 
             }
             else

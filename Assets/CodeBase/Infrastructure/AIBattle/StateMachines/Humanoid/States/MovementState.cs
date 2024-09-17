@@ -36,11 +36,12 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         
         private void Move()
         {
+            Debug.Log("Move()");
             if (_point != null)
             {
                 Vector3 targetPosition = _point.transform.position;
                 _playerCharacterAnimController.OnShoot(false);
-                _playerCharacterAnimController.OnMove(true);
+                _playerCharacterAnimController.Move(true);
                 _agent.SetDestination(targetPosition);
                 _humanoid.IsMoving(true);
                 _isSetDestination = true;
@@ -77,7 +78,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
             _reachedDestination = true;
             _isSetDestination = false;
             _humanoid.IsMoving(false);
-            _playerCharacterAnimController.OnMove(false);
+            _playerCharacterAnimController.Move(false);
             StopCoroutine(CheckDistance());
             
             if (_coroutine != null)

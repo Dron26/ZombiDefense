@@ -55,7 +55,7 @@ namespace Infrastructure.Logic.WaveManagment
         
         private void SetSpawnStarted()
         {
-            if (_waveManager.CurrentWaveIndex!=_waveManager.TotalWaves)
+            if (_waveManager.CurrentStartedWave!=_waveManager.TotalWaves)
             {
                 StartCoroutine(ShowSpawnTimer());
             }

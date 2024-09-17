@@ -1,4 +1,5 @@
 using System;
+using Common;
 
 namespace Data.Stats
 {
@@ -8,7 +9,7 @@ namespace Data.Stats
         public int Count;
 
         public RestartsData() =>
-            Count = (int)ConstantsData.Zero;
+            Count = (int)Constants.Zero;
 
         public void Increment() =>
             Count++;

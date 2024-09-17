@@ -1,4 +1,5 @@
 ﻿using System;
+using Common;
 using Data;
 using Data.Upgrades;
 using Infrastructure.AIBattle;
@@ -17,7 +18,7 @@ namespace Characters.Humanoids.AbstractLevel
     [RequireComponent(typeof(PlayerCharactersStateMachine))]
     public abstract class Humanoid : Character
 {
-    protected AudioManager _audioManager;
+    protected AudioManager AudioManager;
     public Vector3 StartPosition;
     public Action<Humanoid> OnDataLoad;
     protected Animator _animator;
@@ -66,7 +67,7 @@ namespace Characters.Humanoids.AbstractLevel
 
     public void Initialize(AudioManager audioManager)
     {
-        _audioManager = audioManager;
+        AudioManager = audioManager;
         _currentHealth = _maxHealth;
         _animator = GetComponent<Animator>();
         _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
@@ -76,7 +77,7 @@ namespace Characters.Humanoids.AbstractLevel
 
     public AudioManager GetAudioController()
     {
-        return _audioManager;
+        return AudioManager;
     }
 
 
@@ -119,9 +120,9 @@ namespace Characters.Humanoids.AbstractLevel
 
     
 
-    private void OpenMedicineBox(MedicineBox medicineBox)
+    private void OpenMedicineBox(MedicalKit medicalKit)
     {
-        AddHealth(((_maxHealth * medicineBox.GetRecoveryRate()) / 100));
+        AddHealth(((_maxHealth * medicalKit.GetRecoveryRate()) / 100));
     }
 
     private void AddHealth(int health)
@@ -155,7 +156,6 @@ namespace Characters.Humanoids.AbstractLevel
 
         protected virtual void InitializeCharacter()
         {
-            // Общая инициализация для всех персонажей
             IsLife = true;
 
             if (transform.TryGetComponent(out Humanoid _))
@@ -171,15 +171,13 @@ namespace Characters.Humanoids.AbstractLevel
         public abstract void ApplyDamage(int damage);
 
        
-        public string GetName() => ConstantsData.GetName(_id);
+        public string GetName() => Constants.GetName(_id);
         protected virtual void Die()
         {
             IsLife = false;
-            // Логика смерти персонажа
         }
 
         public abstract void SetUpgrade(UpgradeData upgrade, int level);
-        // Другие общие методы и свойства
         
         public virtual void SetPoint(WorkPoint workPoint)
         {}

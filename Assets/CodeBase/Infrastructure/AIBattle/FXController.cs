@@ -1,5 +1,6 @@
 ﻿using System;
 using Characters.Humanoids.AbstractLevel;
+using Infrastructure.AIBattle.AdditionalEquipment;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
@@ -83,6 +84,7 @@ namespace Infrastructure.AIBattle
             _weapon = weapon;
             _shoot=_weapon.ActionClip;
             _reload=_weapon.ReloadClip;
+            _particleGunshotSingle = _weapon.GetParticleGunshot;
         }
         
         protected override void  OnDisable()

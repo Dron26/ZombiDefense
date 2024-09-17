@@ -9,6 +9,7 @@ namespace Infrastructure.Logic.WeaponManagment
         Grenade = 4,
         HeavyMachineGun = 5,
         Shotgun = 6,
-        Turret = 7
+        Turret = 7,
+        Submachinegun = 8,
     }
 }

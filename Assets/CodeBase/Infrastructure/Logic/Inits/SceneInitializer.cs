@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using CameraMain;
 using Characters.Humanoids.AbstractLevel;
+using Common;
 using Data;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Infrastructure.Location;
 using Infrastructure.Logic.WaveManagment;
 using Infrastructure.Points;
 using Infrastructure.StateMachine;
@@ -13,6 +15,7 @@ using Infrastructure.Tutorial;
 using Service.Ads;
 using Service.Audio;
 using Service.SaveLoad;
+using UI.Levels;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -32,6 +35,7 @@ namespace Infrastructure.Logic.Inits
         [SerializeField] private Camera _cameraPhysical;
         [SerializeField] private Camera _cameraUI;
         [SerializeField] private EventSystem _eventSystem;
+         private LocationManager _locationManager;
         
         private LoadingCurtain _loadingCurtain;
         public HudPanel Window=>_hudPanel;
@@ -64,8 +68,9 @@ namespace Infrastructure.Logic.Inits
             _gameBootstrapper = FindObjectOfType<GameBootstrapper>();
             _saveLoadService = _gameBootstrapper.GetSaveLoad();
             _saveLoadService.SetEvenSystem(_eventSystem);
-            LoadLevelPrefab();
-            
+            _locationManager = _gameBootstrapper.GetLocationManager();
+            LocationPrefab location= _locationManager.CreateLocation();
+            SetInitializers(location);
             LoadCharacters();
             Debug.Log("Finish LoadCharacters();");
             _saveLoadService.SetAvailableCharacters(availableCharacters);
@@ -87,18 +92,24 @@ namespace Infrastructure.Logic.Inits
              Debug.Log("Finish _playerCharacterInitializer();");
 
              InitializeEnemies();
-
-             _hudPanel.Init(_saveLoadService,this,_waveManager );
+             AddListener();
+             _hudPanel.Init(_saveLoadService,this,_waveManager,_locationManager );
 
             
             Debug.Log("Finish _playerCharacterInitializer();");
 
             _movePointController.Initialize(this, _saveLoadService);
             Debug.Log("Finish _movePointController();");
-            AddListener();
+           
         }
 
-       
+        private void SetInitializers(LocationPrefab location)
+        {
+            _playerCharacterInitializer = location.GetPlayer;
+            _enemyCharacterInitializer = location.GetEnemy;
+            _cameraInputMovement.Initialize(location.CameraData); 
+        }
+
 
         private void OnLastHumanoidDie()
         {
@@ -123,8 +134,6 @@ namespace Infrastructure.Logic.Inits
         private void ReadyToSpawning()
         {
             _loadingCurtain.OnLoaded();
-            
-            
         }
         
         private void OnClikedCurtain()
@@ -159,34 +168,7 @@ namespace Infrastructure.Logic.Inits
             }
         }
 
-        private void LoadLevelPrefab()
-        {
-            string path = _saveLoadService.GetSelectedLocation().Path;
-            GameObject tempLocation = Resources.Load<GameObject>(path);
-            GameObject location =Instantiate(tempLocation);
-            
-            _playerCharacterInitializer=location.GetComponentInChildren<PlayerCharacterInitializer>();
-            _enemyCharacterInitializer=location.GetComponentInChildren<EnemyCharacterInitializer>();
-            CameraData cameraData = location.GetComponentInChildren<CameraData>();
-            _cameraInputMovement.SetPosition(cameraData); 
-            _saveLoadService.SetInfoDay(cameraData.IsDay);
-            _location=location;
-            tempLocation=null;
-            
-            if (_saveLoadService.GetSelectedLocation().IsTutorial)
-            {
-                _isTutorialLevel=true;
-                TutorialLevel tutorialLevel = location.GetComponent<TutorialLevel>();
-                OnLoaded+=()=> tutorialLevel.Initialize(this);
-                tutorialLevel.OnEndTutorial+=SwicthScene;
-            }
-            else
-            {
-                _isTutorialLevel = false;
-            }
-        }
-
-         protected override void OnDisabled()
+        protected override void OnDisabled()
         {
             _playerCharacterInitializer.CreatedCharacter -= SetInfo;
             _playerCharacterInitializer.LastHumanoidDie -= _enemyCharacterInitializer.StopSpawning;
@@ -201,7 +183,7 @@ namespace Infrastructure.Logic.Inits
          private void SwicthScene()
          {
              _saveLoadService.Save();
-             _stateMachine.Enter<LoadLevelState,string>(ConstantsData.Menu); 
+             _stateMachine.Enter<LoadLevelState,string>(Constants.Menu); 
              Destroy(gameObject);
          }
 
@@ -220,7 +202,7 @@ namespace Infrastructure.Logic.Inits
          private void OnClickExitToMenu()
          {
              _saveLoadService.Save();
-             _saveLoadService.GetGameBootstrapper().GetStateMachine().Enter<LoadLevelState,string>(ConstantsData.Menu); 
+             _saveLoadService.GetGameBootstrapper().GetStateMachine().Enter<LoadLevelState,string>(Constants.Menu); 
              _saveLoadService.ClearSpawnData();
              _playerCharacterInitializer.ClearData();
              Destroy(_location.gameObject);
@@ -249,7 +231,6 @@ namespace Infrastructure.Logic.Inits
 
          private void RemoveListener()
          {
-             _timerDisplay.OnClickReady-=_enemyCharacterInitializer.SetWaveData;
              _hudPanel.OnStartSpawn-=OnClickContinueStartSpawn;
              _hudPanel.OnClickExitToMenu-=OnClickExitToMenu;
              _hudPanel.OnResetLevel -= ResetLevel;

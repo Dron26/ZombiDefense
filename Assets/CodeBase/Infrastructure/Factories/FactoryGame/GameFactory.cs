@@ -11,9 +11,9 @@ namespace Infrastructure.Factories.FactoryGame
             _assets = assets;
         
         public GameObject CreateMenu() => 
-            _assets.Instantiate(AssetPath.Menu);
+            _assets.Instantiate(AssetPaths.Menu);
 
         public GameObject CreateLevel() => 
-            _assets.Instantiate(AssetPath.Level);
+            _assets.Instantiate(AssetPaths.Level);
     }
 }

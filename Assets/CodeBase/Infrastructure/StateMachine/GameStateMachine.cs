@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Common;
 using Data.Settings.Language;
 using Infrastructure.Factories.FactoryGame;
 using Infrastructure.StateMachine.States;
@@ -58,13 +59,7 @@ namespace Infrastructure.StateMachine
         
         private List<string> GetSceneNames()
         {
-             // return (from buildSettingsScene in EditorBuildSettings.scenes
-             //     where buildSettingsScene.enabled
-             //     select buildSettingsScene.path.Substring(buildSettingsScene.path.LastIndexOf(Path.AltDirectorySeparatorChar) + 1)
-             //     into name
-             //     select name.Substring(0, name.Length - 6)).ToList();
-                 Debug.Log("осторожно говнокод");
-             List<string> names = new() { "Initial", "Menu", "Level" };
+            List<string> names = new() { Constants.Initial, Constants.Menu, Constants.Location };
              return  names;
 
         }

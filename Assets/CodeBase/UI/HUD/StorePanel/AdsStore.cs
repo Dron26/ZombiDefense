@@ -1,3 +1,4 @@
+using Common;
 using Data;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Plugins.SoundInstance.Core.Static;
@@ -13,7 +14,7 @@ namespace UI.HUD.StorePanel
     {
         [SerializeField] private Button _addMoneyButton;
         [SerializeField] private GameObject _storePanel;
-        private int _moneyCount=> ConstantsData.MoneyForReward;
+        private int _moneyCount=> Constants.MoneyForReward;
         private  IAdsService _adsService;
         private Wallet _wallet;
         private ISaveLoadService SaveLoadService;

@@ -1,38 +1,32 @@
-using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Infrastructure.AIBattle.AdditionalEquipment;
 using UnityEngine;
 
 namespace Infrastructure.Logic.WeaponManagment
 {
-    public  class Weapon:MonoCache
+    public  class Weapon : WeaponItem
     {
-        [SerializeField] private WeaponType _weaponWeaponTypeEnum;
-        [SerializeField] private int _damage;
-        [SerializeField] private int _maxAmmo;
-        [SerializeField] private float _reloadTime;
-        [SerializeField] private float _fireRate;
-        [SerializeField] private float _range;
-        [SerializeField] private AudioClip _actionClip;
-        [SerializeField] private float _spreadAngle;
-        [SerializeField] private AudioClip _reloadClip;
-        [SerializeField] private int IdGranade;
-        [SerializeField] private int  _timeBeforeExplosion;
+        private ItemData _itemData;
+        [SerializeField] private  ParticleSystem _particleGunshot;
+        [SerializeField] private  ParticleSystem _particleEject;
+        [SerializeField] private  Light _weaponLight;
+        public WeaponType WeaponType =>_itemData.WeaponType;
+        public override ItemType ItemType => _itemData.ItemType;
         
-        public AudioClip ActionClip => _actionClip;
-        public AudioClip ReloadClip => _reloadClip;
-        public int Damage => _damage;
-        public int MaxAmmo => _maxAmmo;
-        public float ReloadTime => _reloadTime;
-        public float FireRate => _fireRate;
-        public float Range => _range;
-        public bool IsShotgun => _weaponWeaponTypeEnum == WeaponType.Shotgun;
-        public bool IsGranade => _weaponWeaponTypeEnum == WeaponType.Grenade;
+        public override int Damage => _itemData.Damage;
+        public override float Range => _itemData.Range;
+        public float ReloadTime => _itemData.ReloadTime;
+        public float FireRate => _itemData.FireRate;
+        public AudioClip ActionClip => _itemData.ActionClip;
+        public AudioClip ReloadClip => _itemData.ReloadClip;
+        public int MaxAmmo => _itemData.MaxAmmo;
+        public int TimeBeforeExplosion => _itemData.TimeBeforeExplosion;
+        public float SpreadAngle=>_itemData.SpreadAngle;
+        public bool IsShotgun=>WeaponType== WeaponType.Shotgun;
+
+        public ParticleSystem GetParticleGunshot=>_particleGunshot;
+         public ParticleSystem GetParticleEject=>_particleEject;
+         public Light WeaponLigt=>_weaponLight;
         
-        public float SpreadAngle=>_spreadAngle;
-        
-        public WeaponType GetWeaponType() => _weaponWeaponTypeEnum;
-        
-        public int GetIdGranade() => IdGranade;
-        
-        public int GetTimeBeforeExplosion() => _timeBeforeExplosion;
+        public override void Initialize(ItemData itemData) => _itemData = itemData;
     }
 }

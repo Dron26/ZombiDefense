@@ -15,7 +15,8 @@ namespace UI.HUD.StorePanel
         [SerializeField]  private WeaponBoxButton weaponBoxButton;
         [SerializeField] private GameObject _additionalPanel;
         [SerializeField] private GameObject _additionalPanelButton;
-        private Button _button;
+        
+        private Button _buttonAdditionalPanel;
         public event Action OnSelectedMedicineBox;
         public event Action OnSelectedWeaponBox;
 
@@ -26,19 +27,21 @@ namespace UI.HUD.StorePanel
         public void Initialize(SaveLoadService saveLoadService)
         {
             _saveLoadService = saveLoadService;
-            
-            _saveLoadService.OnSelectedNewPoint += CheckPointInfo;
-            
-            _medicineBoxButton.OnSelected+=SelectedMedicineBox;
-            weaponBoxButton.OnSelected+=SelectedWeaponBox;
+
+            AddListener();
             
             weaponBoxButton.SwitchStateButton(false);
-                
             _medicineBoxButton.SwitchStateButton(false);
-            _button=_additionalPanel.GetComponent<Button>();
-            _button.onClick.AddListener(OnSelectButton);
+            _buttonAdditionalPanel=_additionalPanel.GetComponent<Button>();
+            _buttonAdditionalPanel.onClick.AddListener(OnSelectButton);
         }
-
+        private void AddListener()
+        {
+            _saveLoadService.OnSelectedNewPoint += CheckPointInfo;
+            _medicineBoxButton.OnSelected+=SelectedMedicineBox;
+            weaponBoxButton.OnSelected+=SelectedWeaponBox;
+        }
+        
         private void SelectedMedicineBox()
         {
             OnSelectedMedicineBox?.Invoke();

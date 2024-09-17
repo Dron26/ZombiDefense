@@ -62,8 +62,9 @@ public class GrenadeThrower : MonoBehaviour
                         volume =humanoid.GetAudioController().GetSoundSource().volume;
                     }
                     
+                    
+                    granade.Throw(volume);
                     granade.transform.parent = null;
-                    granade.Work(volume);
                     OnThrowed.Invoke();
                 }
             }

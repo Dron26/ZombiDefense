@@ -9,17 +9,25 @@ namespace UI.Buttons
     {
         [SerializeField] private TMP_Text _text;
         private SaveLoadService _saveLoadService;
-
+        private int _countEnemy;
         public void Initialize(SaveLoadService saveLoadService)
         {
             _saveLoadService= saveLoadService;
-            saveLoadService.OnChangeEnemiesCountOnWave += SetCount;
-            SetCount(_saveLoadService.MaxEnemiesOnWave);
+            saveLoadService.OnSetInactiveEnemy += SetInactive;
+            SetCount(_saveLoadService.MaxEnemiesOnScene);
         }
 
         private void SetCount(int count)
         {
-            _text.text=count.ToString();
+            _countEnemy = count;
+            _text.text=_countEnemy.ToString();
         }
+        
+        private void SetInactive()
+        {
+            _countEnemy--;
+            SetCount(_countEnemy);
+        }
+        
     }
 }

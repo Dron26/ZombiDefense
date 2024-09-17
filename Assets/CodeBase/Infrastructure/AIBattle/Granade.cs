@@ -1,87 +1,58 @@
-using System;
 using System.Collections;
-using Enemies.AbstractEntity;
-using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.Logic.WeaponManagment;
+using Infrastructure.AIBattle.AdditionalEquipment;
+using Service.Audio;
 using UnityEngine;
+using Infrastructure.Logic.WeaponManagment;
 
 namespace Infrastructure.AIBattle
 {
-    public class Granade : MonoCache
+    [RequireComponent(typeof(ExplosionManager))]
+    [RequireComponent(typeof(GranadeAudioPlayer))]
+    public class Granade : Weapon
     {
-        private float _time;
-        [SerializeField] private Weapon _weapon;
-         private float _explosionRadius;
-         private int _damage;
-        [SerializeField] private ParticleSystem _explosion;
-        private Action<bool> isExploded;
+        private ParticleSystem _explosionEffect;
+        private AudioClip _explosionSound;
+        private ExplosionManager _explosionManager;
+        private GranadeAudioPlayer _granadeAudio;
+        public WeaponType Type => WeaponType.Grenade;
         private float _sourceVolume;
-       
-        private void Explosion()
+        private float _timeBeforeExplosion;
+
+        private void Start()
         {
-            GameObject exploded = Instantiate(_explosion.gameObject, transform.position, Quaternion.identity);
-            exploded.GetComponent<ParticleSystem>().Play();
-            
-            SetAudioSource( exploded);
-            
-            Vector3 explosionPosition = transform.position;
-            Debug.Log("точка взрыва explosionPosition");
-
-            // Используем слой "Enemies" для поиска только вражеских объектов
-            int enemyLayer = LayerMask.GetMask("Enemy");
-            Collider[] colliders = Physics.OverlapSphere(explosionPosition, _explosionRadius, enemyLayer);
-
-            foreach (Collider collider in colliders)
-            {
-                float distance = Vector3.Distance(collider.transform.position, explosionPosition);
-                float damagePercentage = Mathf.Clamp01(1 - distance / _explosionRadius);
-                int calculatedDamage = Mathf.RoundToInt(damagePercentage * _damage);
-
-                // Тот же код для нанесения урона
-                if (collider.TryGetComponent(out Enemy currentEnemy))
-                {
-                    IDamageable damageable = collider.GetComponent<IDamageable>();
-
-                    if (damageable != null)
-                    {
-                        currentEnemy.ApplyDamage(calculatedDamage, _weapon.GetWeaponType());
-                    }
-                }
-            }
-
-
-            Debug.Log("Бабах");
-            isExploded?.Invoke(true);
-            Destroy(gameObject);
+            _timeBeforeExplosion = TimeBeforeExplosion;
+            _granadeAudio = GetComponent<GranadeAudioPlayer>();
+            _explosionManager = GetComponent<ExplosionManager>();
         }
 
-        private IEnumerator ThrowerControlling()
+        private IEnumerator StartCountdown()
         {
-            while (_time! > 0)
+            while (_timeBeforeExplosion > 0)
             {
-                _time -= Time.deltaTime;
+                _timeBeforeExplosion -= Time.deltaTime;
                 yield return null;
             }
 
-            Explosion();
+            Explode();
         }
 
-        public void Work(float volume)
+        public void Throw(float volume)
         {
-            _explosionRadius = _weapon.Range;
-            _time=_weapon.GetTimeBeforeExplosion();
-            _damage = _weapon.Damage;
             _sourceVolume = volume;
-            
-            StartCoroutine(ThrowerControlling());
+            StartCoroutine(StartCountdown());
         }
 
-        public void SetAudioSource(GameObject exploded)
+        private void Explode()
         {
-            exploded.AddComponent<AudioSource>();
-            AudioSource audioSource=exploded.GetComponent<AudioSource>();
-            audioSource.volume = _sourceVolume;
-            audioSource.PlayOneShot(_weapon.ActionClip);
+            _explosionManager.ExecuteExplosion(transform.position, Range, Damage, _explosionEffect, _sourceVolume);
+            _granadeAudio.PlaySound(_explosionSound, transform.position, _sourceVolume);
+            Destroy(gameObject);
+        }
+
+        public override void Initialize(ItemData itemData)
+        {
+            _explosionSound = itemData.ActionClip;
+            _explosionEffect = itemData.ExplosionEffect;
         }
     }
 }

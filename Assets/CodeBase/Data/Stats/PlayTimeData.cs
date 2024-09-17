@@ -1,4 +1,5 @@
 using System;
+using Common;
 
 namespace Data.Stats
 {
@@ -20,7 +21,7 @@ namespace Data.Stats
             PlayTime += deltaTime;
 
         public void Clear() =>
-            PlayTime = ConstantsData.Zero;
+            PlayTime = Constants.Zero;
 
         public bool IsPlayTimeLessTarget() =>
             _targetPlayTime < PlayTime;

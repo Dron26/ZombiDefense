@@ -1,25 +1,25 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Characters.Humanoids.AbstractLevel;
 using Data.Upgrades;
 using Infrastructure.AIBattle;
 using Infrastructure.AIBattle.AdditionalEquipment;
+using Infrastructure.AssetManagement;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using UnityEngine;
 using Infrastructure.Location;
 using UI.Buttons;
-using UnityEngine.Experimental.GlobalIllumination;
+using UnityEngine;
 
 namespace Infrastructure.Logic.WeaponManagment
 {
     public class HumanoidWeaponController : MonoCache, IWeaponController
     {
-        private GameObject _weaponPrefab;
 
-        [SerializeField] private Weapon _weapon;
-        [SerializeField] private Weapon _granade;
+        [SerializeField] private WeaponType _weaponType;
         [SerializeField] private SpriteRenderer _radius;
-        [SerializeField] private GameObject _light;
+        [SerializeField] private GameObject _weaponContainer;
+        public bool IsCanThrowGranade => _isCanThrowGranade;
         
         public int Damage
         {
@@ -30,62 +30,114 @@ namespace Infrastructure.Logic.WeaponManagment
         public Action ChangeWeapon;
         public Action<Weapon> OnInitialized;
         public Action OnChangeGranade;
-        public int CountGranade => _granades.Count;
 
-        public bool IsCanThrowGranade => _isCanThrowGranade;
+        public WeaponType WeaponType => _weaponType;
+        public float GetRangeAttack() => _range;
+        public float GetSpread() => _spread;
+
+        public Weapon GetActiveItemData() => _weapon;
+        private WeaponLight _light;
+        private ItemData _itemData;
+        private Weapon _weapon;
+        private GameObject _weaponPrefab;
         private GrenadeThrower _grenadeThrower;
         private PlayerCharacterAnimController _playerCharacterAnimController;
-        private Animator _animator;
-        private Humanoid _humanoid;
         private Dictionary<int, float> _weaponAnimInfo = new();
-        private WeaponType _weaponWeaponType;
         private List<Granade> _granades = new();
         private int _damage;
-        private int _maxAmmo;
         private float _reloadTime;
+        private float _spread = 8;
         private float _fireRate;
         private float _range;
-        public float ReloadTime => _reloadTime;
-        public bool _isShotgun;
         private bool _isGranade;
         private bool _isCanThrowGranade;
-        public WeaponType WeaponWeaponType => _weaponWeaponType;
-        public Weapon GetWeapon() => _weapon;
-        public bool IsSelected => _isSelected;
         protected bool _isSelected;
 
-        public float GetRangeAttack() => _range;
-
-        public Weapon GetActiveWeapon() => _weapon;
 
         public void SetWeapon(Transform weaponTransform) =>
             _weaponPrefab.transform.parent = weaponTransform;
 
-        private void Awake()
-        {
-            _humanoid = GetComponent<Humanoid>();
-            _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
-            _animator = GetComponent<Animator>();
-        }
-
         public void Initialize()
         {
             SetAnimInfo();
-            SetWeaponParametrs();
-            ChangeWeapon?.Invoke();
-            OnInitialized?.Invoke(_weapon);
+            SetWeapon();
             SetLight();
-           
             SetRadius();
+            OnInitialized?.Invoke(_weapon);
         }
 
-        private void SetRadius()
+        public float GetSpreadAngle() => _itemData.SpreadAngle;
+
+
+        public void SetUpgrade(UpgradeData upgradeData, int level) => SetDamage(upgradeData.Damage);
+
+        public void UIInitialize() => SetWeapon();
+
+        public void SetPoint(WorkPoint workPoint)
         {
-            _radius.transform.localScale=new Vector3(_range/3.6f, _range/3.6f, 1);
+            _damage = (_damage * workPoint.UpPrecent) / 100;
+            _range = (_range * workPoint.UpPrecent) / 100;
+            //SetShootingRadius();
+
+            if (workPoint.IsHaveWeaponBox)
+            {
+                OpenWeaponBox(workPoint.GetWeaponBox());
+            }
+        }
+
+        public void SetSelected(bool isSelected)
+        {
+            if (_radius != null)
+            {
+                _radius.gameObject.SetActive(isSelected);
+            }
+        }
+        public void AddGranade(List<Granade> granades) => _granades = new List<Granade>(granades);
+
+        public void ThrowGranade()
+        {
+            if (_granades.Count > 0)
+            {
+                _isCanThrowGranade = false;
+                _grenadeThrower.ThrowGrenade(_granades[0]);
+            }
+        }
+
+        public void SetAdditionalWeaponButton(AdditionalWeaponButton additionalWeaponButton) => additionalWeaponButton.OnClickButton += ThrowGranade;
+
+        private void Awake() => _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
+
+        private void SetDamage(int damage) => _damage += damage;
+        
+        private void SetAnimInfo()
+        {
+            foreach (KeyValuePair<int, float> info in _playerCharacterAnimController.GetAnimInfo())
+            {
+                _weaponAnimInfo.Add(info.Key, info.Value);
+            }
+        }
+
+        private void SetWeapon()
+        {
+            string path = AssetPaths.WeaponData + _weaponType;
+            ItemData itemData = Resources.Load<ItemData>(path);
+
+            path = AssetPaths.WeaponPrefabs + _weaponType;
+            GameObject weapon = Instantiate(Resources.Load<GameObject>(path), _weaponContainer.transform, true);
+
+            _light = weapon.GetComponentInChildren<WeaponLight>();
+            _weapon =  weapon.GetComponent<Weapon>();
+            
+            _weapon.Initialize(itemData);
+            Damage = _weapon.Damage;
+            _range = _weapon.Range;
+            
+            ChangeWeapon?.Invoke();
         }
 
         private void SetLight()
         {
+            
             if (_light!=null)
             {
                 Light[] light = FindObjectsOfType<Light>();
@@ -103,85 +155,28 @@ namespace Infrastructure.Logic.WeaponManagment
                 }
             }
         }
+        
+        private void SetRadius() => _radius.transform.localScale=new Vector3(_range/3.6f, _range/3.6f, 1);
 
-        private void SetGranadeParametrs()
+
+      
+        private void OpenWeaponBox(AdditionalBox weaponBox)
         {
-            if (!_isGranade)
-            {
-                _fireRate = _weaponAnimInfo[_playerCharacterAnimController.IsShoot];
-                _reloadTime = _weaponAnimInfo[_playerCharacterAnimController.Reload];
-            }
-        }
-
-        private void SetAnimInfo()
-        {
-            foreach (KeyValuePair<int, float> info in _playerCharacterAnimController.GetAnimInfo())
-            {
-                _weaponAnimInfo.Add(info.Key, info.Value);
-            }
-        }
-
-        private void SetWeaponParametrs()
-        {
-            _weaponWeaponType = _weapon.GetWeaponType();
-            _damage = _weapon.Damage;
-            _maxAmmo = _weapon.MaxAmmo;
-            _range = _weapon.Range;
-        }
-
-
-
-        public int GetDamage() => _damage;
-
-        public float GetSpread()
-        {
-            float spread = 8;
-            return spread;
-        }
-
-        public float GetSpreadAngle() => _weapon.SpreadAngle;
-
-        private void SetDamage(int damage) => _damage += damage;
-
-        public void SetUpgrade(UpgradeData upgradeData, int level)
-        {
-            SetDamage(upgradeData.Damage);
-        }
-
-        public void UIInitialize()
-        {
-            SetWeaponParametrs();
-        }
-
-        public void SetPoint(WorkPoint workPoint)
-        {
-            _damage = (_damage * workPoint.UpPrecent) / 100;
-            _range = (_range * workPoint.UpPrecent) / 100;
-            //SetShootingRadius();
-
-            if (workPoint.IsHaveWeaponBox)
-            {
-                OpenWeaponBox(workPoint.GetWeaponBox());
-            }
-        }
-
-        private void OpenWeaponBox(WeaponBox weaponBox)
-        {
-            if (weaponBox.GetGranades().Count > 0)
+            List<Granade> granades = weaponBox.GetItems().OfType<Granade>().ToList();
+            
+            if (granades.Count > 0)
             {
                 gameObject.AddComponent<GrenadeThrower>();
                 _grenadeThrower = GetComponent<GrenadeThrower>();
                 _grenadeThrower.OnThrowed += OnThrowedGranade;
-                AddGranade(weaponBox.GetGranades());
+                AddGranade(granades);
                 _isCanThrowGranade = true;
                 OnChangeGranade?.Invoke();
             }
-
         }
 
         private void OnThrowedGranade()
         {
-
             _granades.RemoveAt(0);
 
             if (_granades.Count != 0)
@@ -196,48 +191,8 @@ namespace Infrastructure.Logic.WeaponManagment
 
             OnChangeGranade?.Invoke();
         }
-
-        public void SetSelected(bool isSelected)
-        {
-            if (_radius != null)
-            {
-                _radius.gameObject.SetActive(isSelected);
-            }
-        }
-        public void AddGranade(List<Granade> granades)
-        {
-            _granades = new List<Granade>(granades);
-        }
-
-        public void ThrowGranade()
-        {
-            if (_granades.Count > 0)
-            {
-                _isCanThrowGranade = false;
-                _grenadeThrower.ThrowGrenade(_granades[0]);
-            }
-        }
-
-        public void SetAdditionalWeaponButton(AdditionalWeaponButton additionalWeaponButton)
-        {
-            additionalWeaponButton.OnClickButton += ThrowGranade;
-        }
     }
-
-
 }
 
-
-public interface IWeaponController
-{
-    public int Damage { get; set; }
-    public void Initialize();
-    public float GetSpread();
-    public void SetUpgrade(UpgradeData upgradeData, int level);
-    public void UIInitialize();
-    public void SetPoint(WorkPoint workPoint);
-    public void SetSelected(bool isSelected);
-    public void SetAdditionalWeaponButton(AdditionalWeaponButton additionalWeaponButton);
-}
 //    Sniper Vector3(0.0289999992,-0.0839999989,0.0170000009)Vector3(347.422821,89.5062866,89.6258698)
 //    shotgun Vector3(0.0179999992,-0.0500000007,-0.0189999994)Vector3(348.677673,89.4979019,89.6276169)

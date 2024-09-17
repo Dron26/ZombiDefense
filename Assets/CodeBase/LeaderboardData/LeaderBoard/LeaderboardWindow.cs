@@ -1,5 +1,6 @@
 using System.Collections;
 using Agava.YandexGames;
+using Common;
 using Data;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.StateMachine;
@@ -167,12 +168,12 @@ namespace LeaderBoard
         public void Show(bool showCursor = true)
         {
             gameObject.SetActive(true);
-            Time.timeScale = ConstantsData.TimeScaleStop;
+            Time.timeScale = Constants.TimeScaleStop;
         }
         
         private void Hide()
         {
-            Time.timeScale = ConstantsData.TimeScaleResume;
+            Time.timeScale = Constants.TimeScaleResume;
             gameObject.SetActive(false);
         }
         
@@ -195,8 +196,8 @@ namespace LeaderBoard
             LeaderBoardService.OnGetEntryError += ShowGetEntryError;
 
             
-                LeaderBoardService.GetEntries(ConstantsData.Leaderboard);
-                LeaderBoardService.GetPlayerEntry(ConstantsData.Leaderboard);
+                LeaderBoardService.GetEntries(Constants.Leaderboard);
+                LeaderBoardService.GetPlayerEntry(Constants.Leaderboard);
             
         }
         
@@ -225,10 +226,10 @@ namespace LeaderBoard
 
         private void AddLevelResult()
         {
-            Debug.Log($"AddLevelResult {ConstantsData.Leaderboard} {SaveLoadService.LoadData().ReadAmountMoney.ToString()}");
+            Debug.Log($"AddLevelResult {Constants.Leaderboard} {SaveLoadService.LoadData().ReadAmountMoney.ToString()}");
             LeaderBoardService.OnSetValueError += ShowSetValueError;
             SubscribeSetValueSuccess();
-            LeaderBoardService.SetValue(ConstantsData.Leaderboard,
+            LeaderBoardService.SetValue(Constants.Leaderboard,
                 SaveLoadService.LoadData().ReadAmountMoney);
         }
         private void SuccessSetValue()

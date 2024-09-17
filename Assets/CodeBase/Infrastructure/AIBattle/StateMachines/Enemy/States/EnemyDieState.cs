@@ -17,7 +17,8 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         private WaitForSeconds _wait;
         private bool _isStopRevival = false;
         private float _waitTime=5f;
-        
+        public bool IsFalled { get; set; }
+        private bool _canDestroyed { get; set; }
         private void Start()
         {
             _enemy=GetComponent<Enemy>();
@@ -38,6 +39,8 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         
         private  IEnumerator WaitBeforeDie()
         {
+            _canDestroyed= false;
+            IsFalled = false;
             _isDeath=true;
             _collider.enabled = false;
             _agent.enabled = false;
@@ -54,14 +57,19 @@ namespace Infrastructure.AIBattle.EnemyAI.States
             
             
             StartCoroutine(Fall());
+            IsFalled = true;
             _enemy.gameObject.SetActive(false);
             _enemy.gameObject.transform.position = _enemy.StartPosition;
-
             yield return  _wait;
             
-            if (!_isStopRevival)
+            if (!_isStopRevival&!_canDestroyed)
             {
                 AfterDie();
+            }
+
+            if (_canDestroyed)
+            {
+                Destroy(gameObject);
             }
             
             yield break;
@@ -71,7 +79,6 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         {
             _collider.enabled = true;
             _agent.enabled = true;
-            
             OnRevival?.Invoke(_enemy);
             _isDeath=false;
             _agent.isStopped = false;
@@ -101,5 +108,14 @@ namespace Infrastructure.AIBattle.EnemyAI.States
 
         public override void OnTakeGranadeDamage()
         {}
+
+        public void SetDestroyed()
+        {
+                _canDestroyed = true;
+                if (IsFalled)
+                {
+                    Destroy(gameObject);
+                }
+        }
     }
 }

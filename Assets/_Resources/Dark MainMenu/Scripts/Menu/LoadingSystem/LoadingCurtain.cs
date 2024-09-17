@@ -41,7 +41,6 @@ public class LoadingCurtain : MonoBehaviour
         loadingIcon.SetActive(false);
         
 
-        // Ожидание нажатия кнопки
         while (!Input.anyKeyDown)
         {
             yield return null;

@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Characters.Humanoids.AbstractLevel;
+using Infrastructure.AIBattle;
 using Infrastructure.AIBattle.AdditionalEquipment;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
@@ -41,8 +43,8 @@ namespace Infrastructure.Location
         private int _level;
         private int _upPrecent=100;
         SaveLoadService _saveLoadService;
-        private MedicineBox _medicineBox;
-        private WeaponBox _weaponBox;
+        private MedicalKit _medicalKit;
+        private AdditionalBox _weaponBox;
         private bool _isHaveWeaponBox;
         
         private Vector3 _startScale;
@@ -62,31 +64,49 @@ namespace Infrastructure.Location
             _maxScale =_startScale*2 ;
         }
 
-       
-
-
-        public void SetMedicineBox(MedicineBox medicineBox)
+        public void SetMedicalBox<T>(AdditionalBox box, ref T boxField, ref bool isHaveBox) where T : EquipmentItem
         {
-            _medicineBox = medicineBox;
-            Transform medicineTransform = _medicineBox.transform;
-            medicineTransform.parent = transform;
-            medicineTransform.position = transform.position;
-            _isHaveMedicineBox = true;
+            EquipmentItem equipmentItem = box.GetItems().FirstOrDefault(item => item.ItemType == ItemType.MedicalKit)as MedicalKit;
+            
+            if (equipmentItem != null && equipmentItem is T specificBox)
+            {
+                boxField = specificBox;
+                Transform boxTransform = boxField.transform;
+                boxTransform.parent = transform;
+                boxTransform.position = transform.position;
+                isHaveBox = true;
+            }
+            else
+            {
+                Debug.LogWarning($"{typeof(T).Name} not found in the box.");
+            }
         }
 
-        public MedicineBox GetMedicineBox()
+        public T GetBox<T>(ref T boxField, ref bool isHaveBox) where T : EquipmentItem
         {
-            _isHaveMedicineBox = false;
-            Destroy(_medicineBox.gameObject, 0.1f);
-            return _medicineBox;
+            isHaveBox = false;
+            Destroy(boxField.gameObject, 0.1f);
+            return boxField;
+        }
+        public T GetWeaponBox<T>(ref T boxField, ref bool isHaveBox) where T : AdditionalBox
+        {
+            isHaveBox = false;
+            Destroy(boxField.gameObject, 0.1f);
+            return boxField;
         }
 
-        public void SetActiveMedicineBox(bool isActive)
+
+        public void SetMedicineBox(AdditionalBox box)
         {
-            _medicineBox.gameObject.SetActive(isActive);
+            SetMedicalBox(box, ref _medicalKit, ref _isHaveMedicineBox);
         }
 
-        public void SetWeaponBox(WeaponBox weaponBox)
+        public MedicalKit GetMedicineBox()
+        {
+            return GetBox(ref _medicalKit, ref _isHaveMedicineBox);
+        }
+
+        public void SetWeaponBox(AdditionalBox weaponBox)
         {
             _weaponBox = weaponBox;
             Transform weaponTransform = _weaponBox.transform;
@@ -96,18 +116,10 @@ namespace Infrastructure.Location
             CheckCharacter();
         }
 
-        public WeaponBox GetWeaponBox()
+        public AdditionalBox GetWeaponBox()
         {
-            _isHaveWeaponBox = false;
-            Destroy(_weaponBox.gameObject, 0.1f);
-            return _weaponBox;
+            return GetWeaponBox(ref _weaponBox, ref _isHaveWeaponBox);
         }
-
-        private void SetActiveWeaponBox(bool isActive)
-        {
-            _weaponBox.gameObject.SetActive(isActive);
-        }
-
 
         public void SetBusy(bool isBusy)
         {

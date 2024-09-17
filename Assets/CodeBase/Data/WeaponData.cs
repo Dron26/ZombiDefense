@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Data
 {
-    [CreateAssetMenu(fileName = "New PrefabWeapon Data", menuName = "SmallArms/PrefabWeapon Data")]
+    [CreateAssetMenu(fileName = "WeaponData", menuName = "SmallArms/WeaponData")]
     public class WeaponData : ScriptableObject
     {
         [SerializeField] private Weapon _handgun;
@@ -14,8 +14,7 @@ namespace Data
         [SerializeField] private Weapon _shootgun;
         [SerializeField] private Weapon _granade;
         public bool IsGranade => _isGranade;
-        private bool _isGranade=false;
-        
+        private bool _isGranade = false;
         private List<Weapon> _smallArms=new();
         private List<Weapon> _granads=new();
 

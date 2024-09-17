@@ -1,6 +1,7 @@
 using Data.Settings.Language;
 using Infrastructure.AssetManagement;
 using Infrastructure.Factories.FactoryGame;
+using Interface;
 using Service;
 using Service.Ads;
 using Service.Localization;
@@ -44,6 +45,7 @@ namespace Infrastructure.StateMachine.States
             _services.RegisterSingle<ILeaderboardService>((new YandexLeaderboardService()));
             _services.RegisterSingle<IAuthorization>((new YandexAuthorization()));
             _services.RegisterSingle<ISaveLoadService>(new SaveLoadService());
+            _services.RegisterSingle<IResourceLoadService >(new ResourceLoaderService());
         }
     }
 }

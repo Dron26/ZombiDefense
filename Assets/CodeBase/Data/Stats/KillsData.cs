@@ -1,4 +1,5 @@
 using System;
+using Common;
 
 namespace Data.Stats
 {
@@ -20,7 +21,7 @@ namespace Data.Stats
             KilledEnemies++;
 
         public void Clear() =>
-            KilledEnemies = (int)ConstantsData.Zero;
+            KilledEnemies = (int)Constants.Zero;
 
         public bool IsTotalKilled() =>
             KilledEnemies == TotalEnemies;

@@ -9,7 +9,6 @@ using Service.SaveLoad;
 using UI.HUD.StorePanel;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
 
 namespace Infrastructure.Points
 {
@@ -47,7 +46,6 @@ namespace Infrastructure.Points
             store = _sceneInitializer.Window.GetStoreOnPlay();
             OnSelectedStartPoint();
             _workPoints[0].SetStartPointer();
-            
         }
 
         private void FillWorkPoints()
@@ -61,8 +59,8 @@ namespace Infrastructure.Points
         private void OnSelectedStartPoint()
         {
             _selectedPoint = _workPoints[0];
-            _previousMovePoint =  _workPoints[0];
-            _currentPoint=_workPoints[0];//  _selectedPoint.SetSelected(true);
+            _previousMovePoint = _workPoints[0];
+            _currentPoint = _workPoints[0]; //  _selectedPoint.SetSelected(true);
             _saveLoadService.SetSelectedPoint(_selectedPoint);
         }
 
@@ -70,80 +68,78 @@ namespace Infrastructure.Points
         {
             isChracterSelected = _saveLoadService.GetSelectedCharacter();
             _selectedCharacter = _saveLoadService.GetSelectedCharacter();
-            
-            
-                if (_selectedPoint != newPoint)
+
+
+            if (_selectedPoint != newPoint)
+            {
+                Debug.Log("selectNewPoint");
+                _selectedPoint.SelectedForMove(false);
+
+                if (newPoint.IsBusy)
                 {
-                    Debug.Log("selectNewPoint");
-                    _selectedPoint.SelectedForMove(false);
-                    
-                    if (newPoint.IsBusy)
+                    _previousMovePoint = newPoint;
+                }
+                else
+                {
+                    if (isChracterSelected)
                     {
-                        _previousMovePoint=newPoint;
+                        if (_selectedCharacter.IsLife && !_selectedCharacter.IsMove)
+                        {
+                            isPointToMoveTaked = false;
+                        }
+                        // if (newPoint.IsBusy)
+                        // {
+                        //     _previousMovePoint=newPoint;
+                        // }
                     }
                     else
                     {
-                         if (isChracterSelected)
-                                            {
-                                                if (_selectedCharacter.IsLife && !_selectedCharacter.IsMove)
-                                                {
-                                                    isPointToMoveTaked = false;
-                                                }
-                                                // if (newPoint.IsBusy)
-                                                // {
-                                                //     _previousMovePoint=newPoint;
-                                                // }
-                                            }
-                                            else
-                                            {
-                                                _previousMovePoint=newPoint;
-                                            }
-                    }
-                    
-                   
-                    
-                    _selectedPoint.SetSelected(false);
-                    _selectedPoint = newPoint;
-                    _saveLoadService.SetSelectedPoint(_selectedPoint);
-                
-                
-                    if (newPoint.IsBusy == false && isChracterSelected && isPointToMoveTaked == false)
-                    {
-                        if (_selectedCharacter.CanMove)
-                        {
-                            isPointToMoveTaked = true;
-                            _movePoint = newPoint;
-                        }
+                        _previousMovePoint = newPoint;
                     }
                 }
-                else if (isChracterSelected)
+
+
+                _selectedPoint.SetSelected(false);
+                _selectedPoint = newPoint;
+                _saveLoadService.SetSelectedPoint(_selectedPoint);
+
+
+                if (newPoint.IsBusy == false && isChracterSelected && isPointToMoveTaked == false)
                 {
-                    if (_selectedCharacter.IsLife&&!_selectedCharacter.IsMove)
+                    if (_selectedCharacter.CanMove)
                     {
-                        Debug.Log("selectOldPoint");
-                        if (newPoint.IsBusy == false && isPointToMoveTaked )
-                        {
-                            Debug.Log("movePoint");
-                            _previousMovePoint.SetBusy(false);
-                            newPoint.SetBusy(true);
-                            newPoint.SelectedForMove(true);
-
-                            PlayerCharactersStateMachine stateMachine =
-                                _selectedCharacter.GetComponent<PlayerCharactersStateMachine>();
-                            stateMachine.MoveTo();
-                            stateMachine.EnterBehavior<MovementState>();
-                            SetPoint(newPoint);
-                            isPointToMoveTaked = false;
-                        }
-                        else
-                        {
-                            
-                        }
+                        isPointToMoveTaked = true;
+                        _movePoint = newPoint;
                     }
                 }
-                
+            }
+            else if (isChracterSelected)
+            {
+                if (_selectedCharacter.IsLife && !_selectedCharacter.IsMove)
+                {
+                    Debug.Log("selectOldPoint");
+                    if (newPoint.IsBusy == false && isPointToMoveTaked)
+                    {
+                        Debug.Log("movePoint");
+                        _previousMovePoint.SetBusy(false);
+                        newPoint.SetBusy(true);
+                        newPoint.SelectedForMove(true);
 
-                store.SetButtonState(_selectedPoint.IsBusy == false);
+                        PlayerCharactersStateMachine stateMachine =
+                            _selectedCharacter.GetComponent<PlayerCharactersStateMachine>();
+                        stateMachine.MoveTo();
+                        stateMachine.EnterBehavior<MovementState>();
+                        SetPoint(newPoint);
+                        isPointToMoveTaked = false;
+                    }
+                    else
+                    {
+                    }
+                }
+            }
+
+
+            store.SetButtonState(_selectedPoint.IsBusy == false);
         }
 
         public void SetPoint(WorkPoint newPoint)
@@ -152,7 +148,7 @@ namespace Infrastructure.Points
             movementState.SetNewPoint(newPoint);
             ChangeCurrentPoint(newPoint);
         }
-        
+
         private void ChangeCurrentPoint(WorkPoint newPoint)
         {
             _previousMovePoint.RemoveCharacter();
@@ -162,7 +158,7 @@ namespace Infrastructure.Points
         public void SetCurrentPoint(WorkPoint point)
         {
             _currentPoint = point;
-            _previousMovePoint=point;
+            _previousMovePoint = point;
         }
     }
 }

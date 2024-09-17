@@ -36,7 +36,7 @@ namespace Infrastructure.Factories.FactoryWarriors.Humanoids
         
         public void Initialize( AudioManager audioManager)
         {
-            _audioManager=audioManager;
+             _audioManager=audioManager;
         }
     }
 }

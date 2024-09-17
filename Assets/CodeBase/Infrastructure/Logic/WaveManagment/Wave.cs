@@ -16,6 +16,7 @@ namespace Infrastructure.Logic.WaveManagment
         {
             _enemies = new List<Enemy>();
             _enemyCount = new List<int>();
+            
             foreach (var value in enemies)
             {
                 _enemies.Add(value);

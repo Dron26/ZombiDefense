@@ -15,7 +15,7 @@ namespace UI.SettingsPanel
         [SerializeField]private Slider musicSlider;
     
         private SaveLoadService _saveLoadService;
-        private AudioManager _audioManager;
+        private AudioManager _audioPlayer;
         private AudioData _audioDataSettings;
         private  bool _soundEnabled ;
         private bool _musicEnabled ;
@@ -25,7 +25,7 @@ namespace UI.SettingsPanel
         
         public void Initialize(AudioManager audioManager,SaveLoadService saveLoadService)
         {
-            _audioManager = audioManager;
+            _audioPlayer = audioManager;
             _saveLoadService = saveLoadService;
 
             LoadSound();
@@ -51,24 +51,24 @@ namespace UI.SettingsPanel
         
         private void SetSound(bool value)
         {
-            _audioManager.ToggleSound(value);
-            _soundEnabled = _audioManager.SoundEnabled;
+            _audioPlayer.ToggleSound(value);
+            _soundEnabled = _audioPlayer.SoundEnabled;
         }
 
         private void SetMusic(bool value)
         {
-            _audioManager.ToggleMusic(value);
-            _musicEnabled = _audioManager.MusicEnabled;
+            _audioPlayer.ToggleMusic(value);
+            _musicEnabled = _audioPlayer.MusicEnabled;
         }
 
         private void ChangeSound(float value)
         {
-            _audioManager.SetSoundVolume(value);
+            _audioPlayer.SetSoundVolume(value);
         }
 
         private void ChangeMusic(float value )
         {
-            _audioManager.SetMusicVolume(value);
+            _audioPlayer.SetMusicVolume(value);
         }
 
         private void SetPause(bool isActive)

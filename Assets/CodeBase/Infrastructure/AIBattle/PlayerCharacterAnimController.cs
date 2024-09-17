@@ -45,12 +45,17 @@ namespace Infrastructure.AIBattle
             _animator.SetBool(IsShoot,satate);
         }
 
-        public void OnMove(bool satate)
+        public void Move(bool isMove)
         {
-            _animator.SetBool(Run,satate);
+            _animator.SetBool(Run,isMove);
+            
+            if (isMove)
+            {
+                ReloadWeapon(false);
+            }
         }
         
-        public void OnReload(bool satate)
+        public void ReloadWeapon(bool satate)
         {
             _animator.SetBool(Reload,satate);
         }
@@ -58,7 +63,7 @@ namespace Infrastructure.AIBattle
         public void OnIdle()
         {
             OnShoot( false);
-            OnMove(false);
+            Move(false);
         }
         
         
@@ -67,7 +72,7 @@ namespace Infrastructure.AIBattle
             List<int>animHashNames = new();
 
             animHashNames.Add(IsShoot);
-                animHashNames.Add(Reload);
+            animHashNames.Add(Reload);
                 
             animatorController = _animator.runtimeAnimatorController;
 

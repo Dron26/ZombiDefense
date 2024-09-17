@@ -5,6 +5,7 @@ using Infrastructure.StateMachine;
 using Infrastructure.StateMachine.States;
 using Service.SaveLoad;
 using Service.Yandex;
+using UI.Levels;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,6 +18,7 @@ namespace Infrastructure
         private Game _game;
        [SerializeField] private LoadingCurtain _loadingCurtain;
         private SaveLoadService _saveLoadService;
+        [SerializeField] private LocationManager _locationManager;
         private void Awake()
         {
             DontDestroyOnLoad(this);
@@ -35,7 +37,8 @@ namespace Infrastructure
             Language language = GetLanguage();
             _game = new Game(this,_loadingCurtain,language);
             _game.StateMashine.Enter<BootstrapState>();
-           
+            _locationManager = GetComponent<LocationManager>();
+            _locationManager.Init(_game.StateMashine,_saveLoadService);
         }
         
         public YandexInitializer GetYandexInitializer() => 
@@ -60,6 +63,11 @@ namespace Infrastructure
                 default:
                     return Language.EN;
             }
+        }
+
+        public LocationManager GetLocationManager()
+        {
+            return _locationManager;
         }
     }
 }

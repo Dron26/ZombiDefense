@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using Common;
 using Data;
 using Infrastructure;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
@@ -10,6 +12,7 @@ using Lean.Localization;
 using Service.SaveLoad;
 using TMPro;
 using UI.HUD.StorePanel;
+using UI.Levels;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -50,15 +53,17 @@ namespace UI.Report
         private bool _isLastHumanoidDie;
         private GameStateMachine _stateMachine;
         private Wallet _wallet;
-        
-        public void Initialize(SaveLoadService saveLoadService, GlobalTimer globalTimer, Store store)
+        private LocationManager _locationManager;
+        public void Init(SaveLoadService saveLoadService, GlobalTimer globalTimer, Store store,
+            LocationManager locationManager)
         {
             _saveLoadService = saveLoadService;
             _globalTimer=globalTimer;
-            AddListener();
-            _panel.SetActive(false);
+            _locationManager = locationManager;
             _stateMachine = saveLoadService.GetGameBootstrapper().GetStateMachine();
+            _panel.SetActive(false);
             _wallet=store.GetWallet();
+            AddListener();
         }
 
         public void ShowReport()
@@ -74,16 +79,18 @@ namespace UI.Report
             
             if (_isLastHumanoidDie)
             {
-                _stayOnLocation.gameObject.SetActive(false);
+                _reset.transform.parent.gameObject.SetActive(true);
+                _continue.transform.parent.gameObject.SetActive(false);
                 _infoOffer.TranslationName = ReportKey.DeadOffer.ToString();
             }
             else
             {
-                _stayOnLocation.gameObject.SetActive(true);
+                _reset.transform.parent.gameObject.SetActive(false);
+                _continue.transform.parent.gameObject.SetActive(true);
                 _infoOffer.TranslationName = ReportKey.TasksCompleted.ToString();
             }
 
-            Time.timeScale = 1;
+            
             _panel.SetActive(true);
             _numberKilledEnemies = _saveLoadService.GetNumberKilledEnemies();
             _allNumberKilledEnemies = _saveLoadService.GetAllNumberKilledEnemies();
@@ -125,37 +132,37 @@ namespace UI.Report
         }
         private void ResetLevel()
         {
+            _globalTimer.SetPaused(false);
             Debug.Log("ResetLevel()");
             OnResetLevel?.Invoke();
-            _stateMachine.Enter<LoadLevelState,string>(ConstantsData.Level); 
+            _stateMachine.Enter<LoadLevelState,string>(Constants.Location); 
         }
         
-        private void СontinueGame()
+        private void SelectNextLocation()
         {
-            Debug.Log("Entered СontinueGame()");
             _globalTimer.SetPaused(false);
-            OnStayInLication?.Invoke();
-            _panel.SetActive(false);
+            Debug.Log("Entered СontinueGame()");
+            Destroy(gameObject);
         }
         
         private void AddListener()
         {
             _backToMenu.onClick.AddListener(SwicthScene);
             _reset.onClick.AddListener(ResetLevel);
-            _continue.onClick.AddListener(СontinueGame);
+            _continue.onClick.AddListener(SelectNextLocation);
             
             _saveLoadService.LastHumanoidDie+=OnLastHumanoidDie;
-            _saveLoadService.OnCompleteLocation+=ShowReport;
+            _saveLoadService.OnSetCompletedLocation+=ShowReport;
         }
 
         private void RemoveListener()
         {
             _backToMenu.onClick.RemoveListener(SwicthScene);
             _reset.onClick.RemoveListener(ResetLevel);
-            _continue.onClick.RemoveListener(СontinueGame);
+            _continue.onClick.RemoveListener(SelectNextLocation);
             
             _saveLoadService.LastHumanoidDie-=OnLastHumanoidDie;
-            _saveLoadService.OnCompleteLocation-=ShowReport;
+            _saveLoadService.OnSetCompletedLocation-=ShowReport;
         }
 
         private void OnDestroy()

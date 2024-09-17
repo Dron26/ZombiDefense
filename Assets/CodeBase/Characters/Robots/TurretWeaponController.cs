@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Characters.Humanoids.AbstractLevel;
 using Data.Upgrades;
 using Infrastructure.AIBattle;
@@ -93,7 +94,7 @@ private TurretGun _turretGun;
 
         private void SetWeaponParametrs()
         {
-            _weaponWeaponType = _weapon.GetWeaponType();
+            _weaponWeaponType = _weapon.WeaponType;
             _damage = _weapon.Damage;
             _maxAmmo = _weapon.MaxAmmo;
             _range = _weapon.Range;
@@ -147,18 +148,19 @@ private TurretGun _turretGun;
             OnSelected?.Invoke();
         }
 
-        private void OpenWeaponBox(WeaponBox weaponBox)
+        private void OpenWeaponBox(AdditionalBox weaponBox)
         {
-            if (weaponBox.GetGranades().Count > 0)
+            List<Granade> granades = weaponBox.GetItems().OfType<Granade>().ToList();
+
+            if (granades.Count > 0)
             {
                 gameObject.AddComponent<GrenadeThrower>();
                 _grenadeThrower = GetComponent<GrenadeThrower>();
                 _grenadeThrower.OnThrowed += OnThrowedGranade;
-                AddGranade(weaponBox.GetGranades());
+                AddGranade(granades);
                 _isCanThrowGranade = true;
                 OnChangeGranade?.Invoke();
             }
-
         }
 
         private void OnThrowedGranade()

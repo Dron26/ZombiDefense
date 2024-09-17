@@ -57,6 +57,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 
         protected override void OnEnabled()
         {
+            Debug.Log("OnEnabled()");
             if (_isAttacking == false & _isReloading == false)
             {
                 Attack();
@@ -65,6 +66,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 
         public void InitEnemy(Enemy targetEnemy)
         {
+            Debug.Log("InitEnemy()");
             _enemy = targetEnemy;
             _isTargetSet = true;
 
@@ -76,12 +78,15 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 
         private void Attack()
         {
+            Debug.Log("Attack()");
             if (_enemy.IsLife())
             {
                 if (_ammoCount == 0 && _isReloading == false)
                 {
+                    Debug.Log("Reload()");
                     Reload();
                 }
+                
                 if (_isAttacking == false & _isReloading == false)
                 {
                     _currentRange = Vector3.Distance(transform.position, _enemy.transform.position);
@@ -112,7 +117,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
                 ApplyDamageToEnemiesInRange();
             }
             else
-                _enemy.ApplyDamage(_damage, _humanoidWeaponController.WeaponWeaponType);
+                _enemy.ApplyDamage(_damage, _humanoidWeaponController.WeaponType);
 
             if (_ammoCount == 0 & _isReloading == false)
             {
@@ -131,19 +136,21 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
             _isAttacking = false;
 
             _playerCharacterAnimController.OnShoot(false);
-            _playerCharacterAnimController.OnReload(true);
+            _playerCharacterAnimController.ReloadWeapon(true);
         }
 
         public void OnReloadEnd()
         {
+            Debug.Log("OnReloadEnd()");
             _ammoCount = _maxAmmo;
             _isReloading = false;
-            _playerCharacterAnimController.OnReload(false);
+            _playerCharacterAnimController.ReloadWeapon(false);
             Attack();
         }
 
         private void ChangeState<TState>() where TState : State
         {
+            Debug.Log("AttackChangeState()");
             PlayerCharactersStateMachine.EnterBehavior<TState>();
         }
 
@@ -178,8 +185,8 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
                                 }
                             }
 
-                            enemy.ApplyDamage(_humanoidWeaponController.GetDamage() * damagePercent,
-                                _humanoidWeaponController.WeaponWeaponType); // применяем урон
+                            enemy.ApplyDamage(_humanoidWeaponController.Damage * damagePercent,
+                                _humanoidWeaponController.WeaponType); // применяем урон
                         }
                     }
                 }
@@ -188,14 +195,14 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 
         private void OnWeaponChanged()
         {
-            _activeWeapon = _humanoidWeaponController.GetActiveWeapon();
+            _activeWeapon = _humanoidWeaponController.GetActiveItemData();
             _isShotgun = _activeWeapon.IsShotgun;
             _maxAmmo = _activeWeapon.MaxAmmo;
             _ammoCount = _maxAmmo;
             //  _reloadTime = _weaponController.ReloadTime;
             _fireRate = _activeWeapon.FireRate;
             _range = _activeWeapon.Range;
-            _damage = _humanoidWeaponController.GetDamage();
+            _damage = _humanoidWeaponController.Damage;
 
             if (_isShotgun)
             {
@@ -212,11 +219,13 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 
         public override void ExitBehavior()
         {
+            Debug.Log("ExitBehavior()");
             enabled = false;
         }
 
         protected override void OnDisable()
         {
+            Debug.Log("OnDisable()");
             _isAttacking = false;
             _isTargetSet = false;
             _playerCharacterAnimController.OnShoot(false);
@@ -225,9 +234,10 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 
         private void StartMove()
         {
+            Debug.Log("StartMove()");
             if (_isAttacking == true||_isReloading==true)
             {
-                _playerCharacterAnimController.OnReload(false);
+                _playerCharacterAnimController.ReloadWeapon(false);
                 _isReloading = false;
                 _playerCharacterAnimController.OnShoot(false);
                 OnDisable();

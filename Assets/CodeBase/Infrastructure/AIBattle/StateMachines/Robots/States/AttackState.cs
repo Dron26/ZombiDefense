@@ -99,7 +99,7 @@ namespace Infrastructure.AIBattle.StateMachines.Robots.States
                 ApplyDamageToEnemiesInRange();
             }
             else
-                _enemy.ApplyDamage(_damage, _humanoidWeaponController.WeaponWeaponType);
+                _enemy.ApplyDamage(_damage, _humanoidWeaponController.WeaponType);
 
             if (_ammoCount == 0 & _isReloading == false)
             {
@@ -160,8 +160,8 @@ namespace Infrastructure.AIBattle.StateMachines.Robots.States
                                 }
                             }
 
-                            enemy.ApplyDamage(_humanoidWeaponController.GetDamage() * damagePercent,
-                                _humanoidWeaponController.WeaponWeaponType); // применяем урон
+                            enemy.ApplyDamage(_humanoidWeaponController.Damage * damagePercent,
+                                _humanoidWeaponController.WeaponType); // применяем урон
                         }
                     }
                 }
@@ -170,14 +170,14 @@ namespace Infrastructure.AIBattle.StateMachines.Robots.States
 
         private void OnWeaponChanged()
         {
-            _activeWeapon = _humanoidWeaponController.GetActiveWeapon();
+            _activeWeapon = _humanoidWeaponController.GetActiveItemData();
             _isShotgun = _activeWeapon.IsShotgun;
             _maxAmmo = _activeWeapon.MaxAmmo;
             _ammoCount = _maxAmmo;
             //  _reloadTime = _weaponController.ReloadTime;
             _fireRate = _activeWeapon.FireRate;
             _range = _activeWeapon.Range;
-            _damage = _humanoidWeaponController.GetDamage();
+            _damage = _humanoidWeaponController.Damage;
 
             if (_isShotgun)
             {

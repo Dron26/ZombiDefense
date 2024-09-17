@@ -20,27 +20,28 @@ namespace UI.GeneralMenu
         private GameStateMachine _stateMachine;
         private LoadingCurtain _loadingCurtain  ;
         private GameBootstrapper _gameBootstrapper; 
-        
+        [SerializeField] private LocationMap _locationMap;
         [SerializeField]private  SettingPanel _settingPanel;
         [SerializeField] private GameObject _menuPanel;
         [SerializeField]private AudioManager _audioManager;
-        [SerializeField]private LocationMap _locationMap;
+        private LocationManager _locationManager;
         
         public  void Initialize( GameStateMachine stateMachine)
         {
             _stateMachine = stateMachine;
             _gameBootstrapper=FindObjectOfType<GameBootstrapper>();
             _saveLoadService = _gameBootstrapper.GetSaveLoad();
-            
+            _locationManager=_gameBootstrapper.GetLocationManager();
             _loadingCurtain=_gameBootstrapper.GetLoadingCurtain();
             _menuPanel.SetActive(false);
             _saveLoadService.SetCurtain(_loadingCurtain);
             
             LoadAudioController();
             _settingPanel.Initialize(_audioManager,_saveLoadService);
-            _locationMap.Initialize(_stateMachine,_saveLoadService);
+            
             _saveLoadService.SetFirstStart();
-
+            _locationMap.Initialize( _saveLoadService,_locationManager);
+            
             AddListener();
         }
         
@@ -65,11 +66,13 @@ namespace UI.GeneralMenu
         private void AddListener()
         {
             _loadingCurtain.OnClicked += OnClikedCurtain;
+            _locationMap.OnSelectLocation += _locationManager.SetSelectedLocationId;
         }
 
         private void RemoveListener()
         {
             _loadingCurtain.OnClicked -= OnClikedCurtain;
+            _locationMap.OnSelectLocation -= _locationManager.SetSelectedLocationId;
         }
 
         private void OnDestroy()
