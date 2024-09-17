@@ -25,7 +25,7 @@ namespace Infrastructure.Logic.WeaponManagment
 
         public ParticleSystem GetParticleGunshot=>_particleGunshot;
          public ParticleSystem GetParticleEject=>_particleEject;
-         public Light WeaponLigt=>_weaponLight;
+         public Light GetWeaponLigt=>_weaponLight;
         
         public override void Initialize(ItemData itemData) => _itemData = itemData;
     }

@@ -8,6 +8,7 @@ using Infrastructure.AIBattle.AdditionalEquipment;
 using Infrastructure.AssetManagement;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
+using Infrastructure.Logic.Inits;
 using UI.Buttons;
 using UnityEngine;
 
@@ -36,7 +37,7 @@ namespace Infrastructure.Logic.WeaponManagment
         public float GetSpread() => _spread;
 
         public Weapon GetActiveItemData() => _weapon;
-        private WeaponLight _light;
+        private Light _light;
         private ItemData _itemData;
         private Weapon _weapon;
         private GameObject _weaponPrefab;
@@ -67,7 +68,6 @@ namespace Infrastructure.Logic.WeaponManagment
         }
 
         public float GetSpreadAngle() => _itemData.SpreadAngle;
-
 
         public void SetUpgrade(UpgradeData upgradeData, int level) => SetDamage(upgradeData.Damage);
 
@@ -125,37 +125,18 @@ namespace Infrastructure.Logic.WeaponManagment
             path = AssetPaths.WeaponPrefabs + _weaponType;
             GameObject weapon = Instantiate(Resources.Load<GameObject>(path), _weaponContainer.transform, true);
 
-            _light = weapon.GetComponentInChildren<WeaponLight>();
             _weapon =  weapon.GetComponent<Weapon>();
-            
             _weapon.Initialize(itemData);
+            
+            _light = _weapon.GetWeaponLigt;
             Damage = _weapon.Damage;
             _range = _weapon.Range;
             
             ChangeWeapon?.Invoke();
         }
 
-        private void SetLight()
-        {
-            
-            if (_light!=null)
-            {
-                Light[] light = FindObjectsOfType<Light>();
-            
-                for (int i = 0; i < light.Length; i++)
-                {
-                    if (light[i].CompareTag($"Light"))
-                    {
-                        if (light[i].intensity>1)
-                        {
-                            _light.gameObject.SetActive(false);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        
+        private void SetLight() => _light.gameObject.SetActive(LighInformer.HasLight);
+
         private void SetRadius() => _radius.transform.localScale=new Vector3(_range/3.6f, _range/3.6f, 1);
 
 

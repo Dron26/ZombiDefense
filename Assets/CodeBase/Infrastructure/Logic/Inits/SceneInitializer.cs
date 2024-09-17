@@ -36,7 +36,6 @@ namespace Infrastructure.Logic.Inits
         [SerializeField] private Camera _cameraUI;
         [SerializeField] private EventSystem _eventSystem;
          private LocationManager _locationManager;
-        
         private LoadingCurtain _loadingCurtain;
         public HudPanel Window=>_hudPanel;
         private SaveLoadService _saveLoadService;
@@ -108,6 +107,7 @@ namespace Infrastructure.Logic.Inits
             _playerCharacterInitializer = location.GetPlayer;
             _enemyCharacterInitializer = location.GetEnemy;
             _cameraInputMovement.Initialize(location.CameraData); 
+            LighInformer.SetLight(!location.IsNight);
         }
 
 
