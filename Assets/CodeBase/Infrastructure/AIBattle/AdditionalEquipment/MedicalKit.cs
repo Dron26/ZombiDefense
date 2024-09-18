@@ -1,3 +1,4 @@
+using Infrastructure.Logic.WeaponManagment;
 using UnityEngine;
 
 namespace Infrastructure.AIBattle.AdditionalEquipment

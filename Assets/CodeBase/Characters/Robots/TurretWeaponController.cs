@@ -34,7 +34,7 @@ namespace Characters.Robots
         private Animator _animator;
         private Humanoid _humanoid;
         private Dictionary<int, float> _weaponAnimInfo = new();
-        private WeaponType _weaponWeaponType;
+        private ItemType _itemItemType;
         private List<Granade> _granades = new();
         private int _damage;
         private int _maxAmmo;
@@ -45,7 +45,7 @@ namespace Characters.Robots
         public bool _isShotgun;
         private bool _isGranade;
         private bool _isCanThrowGranade;
-        public WeaponType WeaponWeaponType => _weaponWeaponType;
+        public ItemType ItemItemType => _itemItemType;
         public Weapon GetWeapon() => _weapon;
         public bool IsSelected => _isSelected;
         protected bool _isSelected;
@@ -94,7 +94,7 @@ private TurretGun _turretGun;
 
         private void SetWeaponParametrs()
         {
-            _weaponWeaponType = _weapon.WeaponType;
+            _itemItemType = _weapon.ItemType;
             _damage = _weapon.Damage;
             _maxAmmo = _weapon.MaxAmmo;
             _range = _weapon.Range;

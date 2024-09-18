@@ -14,18 +14,18 @@ namespace Enemies.Aliens
            
         }
 
-        public override void AdditionalDamage(float getDamage, WeaponType weaponWeaponType)
+        public override void AdditionalDamage(float getDamage, ItemType itemItemType)
         {
             if (Level == _levelNumber && _minDamage>=getDamage)
             {
-                OnAction(EnemyEventType.TakeSimpleWalkerDamage,weaponWeaponType);
+                OnAction(EnemyEventType.TakeSimpleWalkerDamage,itemItemType);
             }
             
         }
 
-        void IDamageable.ApplyDamage(float damage, WeaponType weaponType)
+        void IDamageable.ApplyDamage(float damage, ItemType itemType)
         {
-            AdditionalDamage(damage, weaponType);
+            AdditionalDamage(damage, itemType);
         }
     }
 }

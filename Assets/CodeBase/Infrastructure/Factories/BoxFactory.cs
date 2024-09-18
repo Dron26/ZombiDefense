@@ -1,3 +1,4 @@
+using Data;
 using Infrastructure.AIBattle;
 using Infrastructure.AIBattle.AdditionalEquipment;
 using Infrastructure.AssetManagement;

@@ -1,10 +1,12 @@
 ﻿using System;
+using Common;
 using Data;
 using Data.Upgrades;
 using Infrastructure.AIBattle;
 using Infrastructure.AIBattle.AdditionalEquipment;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
+using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
 using Infrastructure.Logic.WeaponManagment;
 using Service.Audio;
@@ -15,117 +17,111 @@ namespace Characters.Humanoids.AbstractLevel
     [RequireComponent(typeof(HumanoidWeaponController))]
     [RequireComponent(typeof(PlayerCharactersStateMachine))]
     public abstract class Humanoid : Character
-{
-    protected AudioManager AudioManager;
-    public Vector3 StartPosition;
-    public Action<Humanoid> OnDataLoad;
-    protected Animator _animator;
-    protected PlayerCharacterAnimController _playerCharacterAnimController;
-    protected FXController _fxController;
-    protected int _currentHealth;
-    protected bool _isTakeDamagePlay;
-    protected int _minHealth = 0;
-    protected bool _isBuyed = false;
-    public bool IsBuyed => _isBuyed;
-    public Action OnMove;
-    public Action<Humanoid> OnInitialize;
-
-    public  override void ApplyDamage(int getDamage)
     {
-        Debug.Log(_currentHealth);
-
-        if (_currentHealth <= 0)
-        {
-            _animator.SetTrigger(_playerCharacterAnimController.Die);
-            IsLife = false;
-            Die();
-        }
-        else
-        {
-            if (!_isTakeDamagePlay)
-            {
-                _isTakeDamagePlay = true;
-                _animator.SetTrigger(_playerCharacterAnimController.IsHit);
-            }
-
-            _fxController.OnHitFX();
-            _currentHealth -= Mathf.Clamp(getDamage, _minHealth, _maxHealth);
-        }
-    }
-    public override void SetUpgrade(UpgradeData upgrade, int level)
-    {
-        _maxHealth += upgrade.Health;
-        _currentHealth += _maxHealth; 
-    }
-    private void Die()
-    {
-        PlayerCharactersStateMachine stateMachine = GetComponent<PlayerCharactersStateMachine>();
-        stateMachine.EnterBehavior<DieState>();
-    }
-
-    public void Initialize(AudioManager audioManager)
-    {
-        AudioManager = audioManager;
-        _currentHealth = _maxHealth;
-        _animator = GetComponent<Animator>();
-        _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
-        _fxController = GetComponent<FXController>();
-        OnInitialize?.Invoke(this);
-    }
-
-    public AudioManager GetAudioController()
-    {
-        return AudioManager;
-    }
-
-
-    private void SetUpgradeFromPoint(int upPrecent)
-    {
-        _maxHealth += (_maxHealth * upPrecent) / 100;
-    }
-
-    public void SetPontInfo()
-    {
-    }
-
-    public void IsMoving(bool isMoving)
-    {
-        _isMoving = isMoving;
+        private PlayerCharacterAnimController _playerCharacterAnimController;
+        private FXController _fxController;
+        private AudioManager AudioManager;
+        public Vector3 StartPosition;
+        private Animator _animator;
+        public Action OnMove;
+        public Action<Humanoid> OnInitialize;
+       
+        private int _currentHealth;
+        private bool _isTakeDamagePlay;
+        private int _minHealth = 0;
+        private bool _isBuyed = false;
+        public bool IsBuyed => _isBuyed;
+        public AudioManager GetAudioManager() => AudioManager;
         
-        if (isMoving)
+        public void Initialize()
         {
-            OnMove?.Invoke();
+            IsLife = true;
+            _currentHealth = CharacterData.Health;
+            _animator = GetComponent<Animator>();
+            _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
+            _fxController = GetComponent<FXController>();
+            OnInitialize?.Invoke(this);
+        }
+        
+        public void SetAudioManager(AudioManager audioManager)
+        {
+            if (audioManager == null)
+                throw new ArgumentNullException(nameof(audioManager));
+
+            AudioManager = audioManager;
+        }
+        
+        
+        public override void ApplyDamage(int getDamage)
+        {
+            if (_currentHealth <= 0)
+            {
+                _animator.SetTrigger(_playerCharacterAnimController.Die);
+                IsLife = false;
+                Die();
+            }
+            else
+            {
+                if (!_isTakeDamagePlay)
+                {
+                    _isTakeDamagePlay = true;
+                    _animator.SetTrigger(_playerCharacterAnimController.IsHit);
+                }
+
+                _fxController.OnHitFX();
+                _currentHealth -= Mathf.Clamp(getDamage, _minHealth, _currentHealth);
+            }
+        }
+
+        public override void SetUpgrade(UpgradeData upgrade, int level) => _currentHealth += upgrade.Health;
+
+        private void Die()
+        {
+            PlayerCharactersStateMachine stateMachine = GetComponent<PlayerCharactersStateMachine>();
+            stateMachine.EnterBehavior<DieState>();
+        }
+
+        
+        private void SetUpgradeFromPoint(int upPrecent) => _currentHealth += ( Health*upPrecent) / 100;
+
+        public void SetPontInfo() { }
+
+        public void IsMoving(bool isMoving)
+        {
+            base.IsMoving = isMoving;
+
+            if (isMoving)
+            {
+                OnMove?.Invoke();
+            }
+        }
+
+        public void SetAvailable(bool isAvailable)
+        {
+            _isBuyed = isAvailable;
+        }
+
+        public void UIInitialize() => _currentHealth = Health;
+
+        protected void SetPoint(WorkPoint workPoint)
+        {
+            if (workPoint.IsHaveMedicineBox && _currentHealth < Health)
+            {
+                OpenMedicineBox(workPoint.GetMedicineBox());
+            }
+        }
+
+        private void OpenMedicineBox(MedicalKit medicalKit)
+        {
+            if (medicalKit != null)
+            {
+                AddHealth(((Health * medicalKit.GetRecoveryRate()) / 100));
+            }
+        }
+
+        private void AddHealth(int health)
+        {
+            _currentHealth = Mathf.Min(Health, _currentHealth + health);
         }
     }
-    
-    public void SetAvailable(bool isBuyed)
-    {
-        isBuyed = isBuyed;
-    }
-    
-    public void UIInitialize()
-    {
-        _currentHealth = _maxHealth;
-    }
-
-    protected void SetPoint(WorkPoint workPoint)
-    {
-        if(workPoint.IsHaveMedicineBox && _currentHealth < _maxHealth)
-        {
-            OpenMedicineBox(workPoint.GetMedicineBox());
-        }
-    }
-
-    
-
-    private void OpenMedicineBox(MedicalKit medicalKit)
-    {
-        AddHealth(((_maxHealth * medicalKit.GetRecoveryRate()) / 100));
-    }
-
-    private void AddHealth(int health)
-    {
-        _currentHealth += health;
-    }
-}
 }

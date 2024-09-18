@@ -12,12 +12,12 @@ namespace UI.HUD.StorePanel
         [SerializeField] private Image _icon;
 
         //[SerializeField] private  TMP_Text _name;
-        public Character Character => _character;
+        public CharacterData Data => _data;
         public bool IsSelected => _isSelected;
-        public int Price => _character.Price;
-        public int Index => _character.ID;
+        public int Price => _data.Price;
+        public CharacterType Type => _data.Type;
 
-        private Character _character;
+        private CharacterData _data;
         private bool _isSelected = false;
         private Button _button;
         private CharacterStore _store;
@@ -36,11 +36,11 @@ namespace UI.HUD.StorePanel
         }
 
 
-        public void Initialize(Character character, CharacterStore store)
+        public void Initialize(CharacterData data, CharacterStore store)
         {
             _store = store;
-            _character = character;
-            _icon.sprite = _character.Sprite;
+            _data = data;
+            _icon.sprite = _data.Sprite;
         }
     }
 }

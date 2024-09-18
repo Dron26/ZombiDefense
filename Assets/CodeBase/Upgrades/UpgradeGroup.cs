@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Characters.Humanoids;
+using Characters.Humanoids.AbstractLevel;
 using Data.Upgrades;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using UnityEngine;
@@ -10,12 +11,12 @@ namespace Upgrades
 {
     public class UpgradeGroup : MonoCache
     {
-        [SerializeField] private HumanoidType _humanoidType;
+        [SerializeField] private CharacterType _characterType;
          private UpgradeSlot _upgradeSlot;
         [SerializeField] private List<GameObject> _slots;
          private List<UpgradeSlot> _upgradeSlots=new();
        
-         public HumanoidType HumanoidType => _humanoidType;
+         public CharacterType CharacterType => _characterType;
         private int _currentLevel;
         private List<UpgradeData> _upgradeDatas = new();
 

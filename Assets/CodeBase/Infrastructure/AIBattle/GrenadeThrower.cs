@@ -59,7 +59,7 @@ public class GrenadeThrower : MonoBehaviour
                     
                     if (TryGetComponent(out Humanoid humanoid))
                     {
-                        volume =humanoid.GetAudioController().GetSoundSource().volume;
+                        volume =humanoid.GetAudioManager().GetSoundSource().volume;
                     }
                     
                     

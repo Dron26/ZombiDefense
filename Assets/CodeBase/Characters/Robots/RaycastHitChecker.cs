@@ -9,8 +9,8 @@ namespace Characters.Robots
     public class RaycastHitChecker : MonoBehaviour
     {
         private PointerEventData _pointerEventData;
-        private GraphicRaycaster _raycaster; //сюда кидаем canvas, на нем должен висеть компонент GraphicReycaster.
-        private EventSystem _eventSystem; //сюда кидаем eventsystem
+        private GraphicRaycaster _raycaster; 
+        private EventSystem _eventSystem;
         public Vector3 Point { get; set; }
     
         public void Initialize(SaveLoadService saveLoadService)

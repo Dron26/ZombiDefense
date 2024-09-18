@@ -25,7 +25,7 @@ namespace Infrastructure.Factories.FactoryWarriors.Humanoids
             float randomAngle = Random.Range(0f, 360f);
             newHumanoidTransform.rotation = Quaternion.Euler(0f, randomAngle, 0f);
             humanoidWeaponController.Initialize();
-            humanoidComponent.Initialize(_audioManager);
+            humanoidComponent.SetAudioManager(_audioManager);
 
         }
 

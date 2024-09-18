@@ -117,7 +117,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
                 ApplyDamageToEnemiesInRange();
             }
             else
-                _enemy.ApplyDamage(_damage, _humanoidWeaponController.WeaponType);
+                _enemy.ApplyDamage(_damage, _humanoidWeaponController.ItemType);
 
             if (_ammoCount == 0 & _isReloading == false)
             {
@@ -186,7 +186,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
                             }
 
                             enemy.ApplyDamage(_humanoidWeaponController.Damage * damagePercent,
-                                _humanoidWeaponController.WeaponType); // применяем урон
+                                _humanoidWeaponController.ItemType); // применяем урон
                         }
                     }
                 }

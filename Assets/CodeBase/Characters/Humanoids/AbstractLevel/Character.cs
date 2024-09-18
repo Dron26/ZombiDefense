@@ -8,52 +8,25 @@ namespace Characters.Humanoids.AbstractLevel
 {
     public abstract class Character : MonoCache
     {
-        [SerializeField] protected int _maxHealth;
-        [SerializeField] protected ParticleSystem _ring;
-        [SerializeField] protected Sprite _sprite;
-        [SerializeField] protected int _price;
-        public bool IsMove => _isMoving;
-        protected bool _isMoving;
-        public int Price => _price;
-        [SerializeField] protected int _id;
-        public int ID => _id;
-
-        
+        public CharacterData CharacterData=> _characterData;
+        public int Price => _characterData.Price;
+        public bool IsMove => IsMoving;
+        protected bool IsMoving;
         public bool IsLife { get; protected set; }
-        public Sprite Sprite => _sprite;
-        public bool CanMove => _canMove;
-        public bool _canMove=false;
-        protected virtual void Awake()
-        {
-            InitializeCharacter();
-        }
+        public Sprite Sprite => _characterData.Sprite;
+        public bool CanMove => _characterData.CanMove;
 
-        protected virtual void InitializeCharacter()
-        {
-            IsLife = true;
+        private CharacterData _characterData;
+        
+        public int Health => _characterData.Health;
+        public CharacterType Type => _characterData.Type;
 
-            if (transform.TryGetComponent(out Humanoid _))
-            {
-                _canMove = true;
-            }
-
-        }
-        public int GetMaxHealth()
-        {
-            return _maxHealth;
-        }
         public abstract void ApplyDamage(int damage);
 
-       
-        public string GetName() => Constants.GetName(_id);
-        protected virtual void Die()
-        {
-            IsLife = false;
-        }
-
         public abstract void SetUpgrade(UpgradeData upgrade, int level);
-        
-        public virtual void SetPoint(WorkPoint workPoint)
-        {}
+
+        public void SetPoint(WorkPoint workPoint) {}
+
+        public void Initialize(CharacterData characterData) => _characterData=characterData;
     }
 }

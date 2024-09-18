@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Characters.Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using UnityEngine;
 
@@ -21,12 +22,13 @@ namespace UI.HUD.StorePanel
 
         private void OnStoreActive()
         {
-            ShowCharacter(_characterStore.SelectedCharacterSlot.Index);
+            ShowCharacter(_characterStore.SelectedCharacterSlot.Type);
         }
 
 
-        private void ShowCharacter(int index)
+        private void ShowCharacter( CharacterType type)
         {
+            int index = (int)type;
             if (_selectedIndex != -1)
             {
                 HideCharacter();

@@ -23,6 +23,7 @@ namespace Characters.Robots
         public Vector3 StartPosition;
         public Action<Humanoid> OnDataLoad;
         private int _currentHealth;
+        private int _maxHealth;
         private bool _isLife = true;
         private bool _isTakeDamagePlay;
         private int _minHealth = 0;
@@ -34,25 +35,17 @@ namespace Characters.Robots
         
         public void Initialize(AudioManager audioManager,SaveLoadService saveLoadService)
         {
-            _audioManager = audioManager;
-            _currentHealth = _maxHealth;
-            OnInitialize?.Invoke(this);
+            _audioManager=audioManager;
             _raycastHitChecker = GetComponent<RaycastHitChecker>();
             _raycastHitChecker.Initialize(saveLoadService);
             _turretWeaponController= GetComponent<TurretWeaponController>();
             _fxController = GetComponent<RobotFXController>();
             GetComponent<TurretStateMachine>().Initialize(_raycastHitChecker,_fxController,_turretWeaponController);
+            _maxHealth = Health;
+            _currentHealth=_maxHealth;
+            OnInitialize?.Invoke(this);
         }
 
-        public void Start()
-        {
-           // _audioManager = audioManager;
-            _currentHealth = _maxHealth;
-            
-        }
-    
-
-        
         public override void ApplyDamage(int getDamage)
         {
             Debug.Log(_currentHealth);
@@ -87,7 +80,7 @@ namespace Characters.Robots
         
         private void SetUpgradeFromPoint(int upPrecent)
         {
-            _maxHealth += (_maxHealth * upPrecent) / 100;
+            _currentHealth += (_maxHealth * upPrecent) / 100;
         }
 
         public void SetAvailable(bool isBuyed)
@@ -103,7 +96,7 @@ namespace Characters.Robots
         
         private void AddHealth(int health)
         {
-            _currentHealth += _maxHealth;
+            _currentHealth += health;
         }
 
         public void UIInitialize()

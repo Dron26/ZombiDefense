@@ -101,7 +101,7 @@ namespace Animation
             }
         }
 
-        private void HandleEnemyEvent(EnemyEventType eventType, WeaponType weaponType)
+        private void HandleEnemyEvent(EnemyEventType eventType, ItemType itemType)
         {
             switch (eventType)
             {

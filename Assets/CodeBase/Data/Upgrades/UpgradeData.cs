@@ -1,4 +1,5 @@
 using Characters.Humanoids;
+using Characters.Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ namespace Data.Upgrades
     public class UpgradeData : MonoCache
     {
         
-        [SerializeField] private HumanoidType _humanoidType;
+        [SerializeField] private CharacterType _characterType;
         [SerializeField] private int _health;
         [SerializeField] private int _damage;
         [SerializeField] private bool _isHaveGrenade;
@@ -22,7 +23,7 @@ namespace Data.Upgrades
         public int PercentageCriticalShotChance => _percentageCriticalShotChance;
         public int ShotRadius => _shotRadius;
         
-        public HumanoidType HumanoidType => _humanoidType;
+        public CharacterType CharacterType => _characterType;
         public int Price => _price;
 
     }

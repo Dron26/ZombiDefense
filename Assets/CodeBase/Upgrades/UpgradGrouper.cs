@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Characters.Humanoids;
+using Characters.Humanoids.AbstractLevel;
 using Data.Upgrades;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Service.SaveLoad;
@@ -15,7 +16,7 @@ namespace Upgrades
         [SerializeField] private  List<UpgradeData> allUpgradeDatas = new();
         [SerializeField]private UpgradeSlot _upgradeSlotPrefab;
         
-        Array humanoidTypeValues = Enum.GetValues(typeof(HumanoidType));
+        Array humanoidTypeValues = Enum.GetValues(typeof(CharacterType));
         private List<UpgradeGroup> _upgradeGroups = new();
         private List<int> _currentLevel = new();
         private List<List<UpgradeData>> _upgradesDataTypes = new();
@@ -40,14 +41,14 @@ namespace Upgrades
         {
             for (int i = 0; i < humanoidTypeValues.Length; ++i)
             {
-                HumanoidType humanoidType = (HumanoidType)humanoidTypeValues.GetValue(i);
-                int value = (int)humanoidType;
+                CharacterType characterType = (CharacterType)humanoidTypeValues.GetValue(i);
+                int value = (int)characterType;
 
                 _upgradesDataTypes.Add(new List<UpgradeData>());
 
                 foreach (UpgradeData upgradeData in allUpgradeDatas)
                 {
-                    if ((int)upgradeData.HumanoidType == value)
+                    if ((int)upgradeData.CharacterType == value)
                     {
                         _upgradesDataTypes[i].Add(upgradeData);
                     }

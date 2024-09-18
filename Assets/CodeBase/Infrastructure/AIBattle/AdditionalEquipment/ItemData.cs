@@ -6,8 +6,7 @@ namespace Infrastructure.AIBattle.AdditionalEquipment
     [CreateAssetMenu(fileName = "BaseItemData", menuName = "ItemData")]
     public class ItemData : ScriptableObject
     {
-        public ItemType ItemType;
-        public WeaponType WeaponType;
+        public ItemType Type;
         public int Damage;
         public int MaxAmmo;
         public float ReloadTime;

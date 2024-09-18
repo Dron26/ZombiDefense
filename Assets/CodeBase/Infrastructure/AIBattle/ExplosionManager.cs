@@ -27,7 +27,7 @@ public class ExplosionManager : MonoBehaviour
             if (collider.TryGetComponent(out Enemy currentEnemy))
             {
                 IDamageable damageable = collider.GetComponent<IDamageable>();
-                damageable?.ApplyDamage(calculatedDamage, WeaponType.Grenade);
+                damageable?.ApplyDamage(calculatedDamage, ItemType.Grenade);
             }
         }
     }

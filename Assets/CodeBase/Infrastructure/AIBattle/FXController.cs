@@ -40,7 +40,7 @@ namespace Infrastructure.AIBattle
 
         private void SetAudio(Humanoid _humanoid)
         {
-            _audioManager=_humanoid.GetAudioController();
+            _audioManager=_humanoid.GetAudioManager();
             _audioSource= _audioManager.GetSoundSource();
         }
 

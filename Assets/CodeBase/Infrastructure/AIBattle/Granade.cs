@@ -14,7 +14,7 @@ namespace Infrastructure.AIBattle
         private AudioClip _explosionSound;
         private ExplosionManager _explosionManager;
         private GranadeAudioPlayer _granadeAudio;
-        public WeaponType Type => WeaponType.Grenade;
+        public ItemType Type => ItemType.Grenade;
         private float _sourceVolume;
         private float _timeBeforeExplosion;
 

@@ -15,15 +15,15 @@ namespace Infrastructure.AIBattle
         [SerializeField] private List<List<ParticleSystem>> _particlesGroup = new();
         [SerializeField] private ParticleSystem _particleTankDie;
         [SerializeField] private ParticleSystem _particleTankDie1;
-        [SerializeField] private List<WeaponType> _weaponNames;
+        [SerializeField] private List<ItemType> _weaponNames;
         [SerializeField] private ParticleSystem _bloodFlowing;
-        [SerializeField] private Dictionary<WeaponType, List<ParticleSystem>> _particleByType = new();
+        [SerializeField] private Dictionary<ItemType, List<ParticleSystem>> _particleByType = new();
         [SerializeField] private float _areaWidth = 0.1f;
         [SerializeField] private float _areaHeight = 0.1f;
         [SerializeField] private float _minParticleScale = 1f;
         [SerializeField] private float _maxParticleScale = 1f;
         
-        private WeaponType _weapon;
+        private ItemType _item;
         private AudioManager _audioManager;
 
         private void Awake()
@@ -38,9 +38,9 @@ namespace Infrastructure.AIBattle
             }
         }
         
-        private void HandleEnemyEvent(EnemyEventType eventType,WeaponType weaponType)
+        private void HandleEnemyEvent(EnemyEventType eventType,ItemType itemType)
         {
-            _weapon=weaponType;
+            _item=itemType;
             
             switch (eventType)
             {
@@ -113,7 +113,7 @@ namespace Infrastructure.AIBattle
             //     Debug.LogWarning($"No particle effects found for weapon name '{_weapon}'.");
             // }
 
-            if (_weapon!=WeaponType.SniperRifle)
+            if (_item!=ItemType.SniperRifle)
             {
                 int randomIndex = Random.Range(0, _particlesHitLite.Count);
                 _particlesHitLite[randomIndex].Play();

@@ -23,10 +23,10 @@ namespace UI.HUD.StorePanel
             gameObject.SetActive(true);
             _character = _characterStore.SelectedCharacter;
             _damageWindow.text = _character.GetComponent<IWeaponController>().Damage.ToString();
-            _nameWindow.text = LeanLocalization.GetTranslationText(_character.GetName());
-            _healthWindow.text = _character.GetMaxHealth().ToString();
+            _nameWindow.text = LeanLocalization.GetTranslationText(_character.GetType().ToString());
+            _healthWindow.text = _character.Health.ToString();
             
-            _infoWindow.text = LeanLocalization.GetTranslationText(_character.GetName() + "Info");
+            _infoWindow.text = LeanLocalization.GetTranslationText(_character.GetType() + "Info");
         }
 
         public void Initialize(CharacterStore characterStore)

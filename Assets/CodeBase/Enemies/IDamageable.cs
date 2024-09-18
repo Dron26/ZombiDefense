@@ -4,5 +4,5 @@ using Infrastructure.Logic.WeaponManagment;
 
 public interface IDamageable
 {
-    public void ApplyDamage(float damage, WeaponType weaponType);
+    public void ApplyDamage(float damage, ItemType itemType);
 }

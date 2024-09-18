@@ -193,7 +193,7 @@ namespace Characters.Robots
                 }
                 
                 _fxController.OnAttackFX();
-                enemy.ApplyDamage(_damage, WeaponType.Turret);
+                enemy.ApplyDamage(_damage, ItemType.Turret);
                 _shotsInterval = new WaitForSeconds(_timeShotsInterval);
                 yield return _shotsInterval;
             }

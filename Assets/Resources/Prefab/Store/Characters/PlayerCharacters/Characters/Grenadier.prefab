@@ -81,12 +81,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4c607e475c24fb4b44b4ccb5b54616c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxHealth: 80
-  _ring: {fileID: 0}
-  _sprite: {fileID: 21300000, guid: 1f604c59fb14f9944b7d1bca36c299ed, type: 3}
-  _price: 250
-  _id: 2
-  _canMove: 0
   StartPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &3438307147572246878
 MonoBehaviour:
@@ -172,9 +166,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f830727607e4ae4b44550dac031f891, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _weaponType: 0
+  _itemType: 3
   _radius: {fileID: 7106197545427733928}
-  _weaponContainer: {fileID: 0}
+  _weaponContainer: {fileID: 3438307147572263368}
 --- !u!114 &3438307147572246864
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1422,6 +1416,10 @@ PrefabInstance:
     - target: {fileID: 5796433978329646387, guid: 20d6374f3988fce4aba34976f191baf8, type: 3}
       propertyPath: m_Name
       value: weapon_shotgun
+      objectReference: {fileID: 0}
+    - target: {fileID: 5796433978329646387, guid: 20d6374f3988fce4aba34976f191baf8, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 20d6374f3988fce4aba34976f191baf8, type: 3}

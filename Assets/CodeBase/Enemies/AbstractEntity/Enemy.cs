@@ -23,7 +23,7 @@ namespace Enemies.AbstractEntity
         [SerializeField] private int _level;
         [SerializeField] private int _price;
 
-        public event Action<EnemyEventType,WeaponType> OnEnemyEvent;
+        public event Action<EnemyEventType,ItemType> OnEnemyEvent;
         public event Action OnTakeGranadeDamage;
         public Action<Enemy> OnInitialized;
         public Action<Enemy> OnDeath; 
@@ -119,19 +119,19 @@ namespace Enemies.AbstractEntity
 
         public abstract void PushForGranade();
 
-        public abstract void AdditionalDamage(float getDamage,WeaponType weaponWeaponType);
+        public abstract void AdditionalDamage(float getDamage,ItemType itemItemType);
 
-        private void Die( WeaponType weaponWeaponType)
+        private void Die( ItemType itemItemType)
         {
             OnDeath?.Invoke(this);
-            OnAction(EnemyEventType.Death, weaponWeaponType);
+            OnAction(EnemyEventType.Death, itemItemType);
             EnemyStateMachine stateMachine = GetComponent<EnemyStateMachine>();
             stateMachine.EnterBehavior<EnemyDieState>();
         }
 
-        public void OnAction(EnemyEventType action,WeaponType weaponType)
+        public void OnAction(EnemyEventType action,ItemType itemType)
         {
-            OnEnemyEvent?.Invoke(action,weaponType);
+            OnEnemyEvent?.Invoke(action,itemType);
         }
 
         public void SetIndex(int index)
@@ -140,7 +140,7 @@ namespace Enemies.AbstractEntity
         }
 
 
-        public void ApplyDamage(float damage, WeaponType weaponType)
+        public void ApplyDamage(float damage, ItemType itemType)
         {
             // if (weaponType==WeaponType.Grenade)
             // {
@@ -151,7 +151,7 @@ namespace Enemies.AbstractEntity
             {
                 if (_health >= 0)
                 {
-                    AdditionalDamage(damage, weaponType);
+                    AdditionalDamage(damage, itemType);
                 
                     _health -= Mathf.Clamp(damage, _minHealth, MaxHealth);
                 }
@@ -160,7 +160,7 @@ namespace Enemies.AbstractEntity
                 {
                     _saveLoadService.SetInactiveEnemy(this);
                     _isLife = false;
-                    Die(weaponType);
+                    Die(itemType);
                 }
             }
             

@@ -1,4 +1,5 @@
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Infrastructure.Logic.WeaponManagment;
 
 namespace Infrastructure.AIBattle.AdditionalEquipment
 {

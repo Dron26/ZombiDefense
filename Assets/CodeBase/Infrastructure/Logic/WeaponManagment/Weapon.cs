@@ -9,9 +9,7 @@ namespace Infrastructure.Logic.WeaponManagment
         [SerializeField] private  ParticleSystem _particleGunshot;
         [SerializeField] private  ParticleSystem _particleEject;
         [SerializeField] private  Light _weaponLight;
-        public WeaponType WeaponType =>_itemData.WeaponType;
-        public override ItemType ItemType => _itemData.ItemType;
-        
+
         public override int Damage => _itemData.Damage;
         public override float Range => _itemData.Range;
         public float ReloadTime => _itemData.ReloadTime;
@@ -21,12 +19,13 @@ namespace Infrastructure.Logic.WeaponManagment
         public int MaxAmmo => _itemData.MaxAmmo;
         public int TimeBeforeExplosion => _itemData.TimeBeforeExplosion;
         public float SpreadAngle=>_itemData.SpreadAngle;
-        public bool IsShotgun=>WeaponType== WeaponType.Shotgun;
+        public bool IsShotgun=>ItemType== ItemType.Shotgun;
 
         public ParticleSystem GetParticleGunshot=>_particleGunshot;
          public ParticleSystem GetParticleEject=>_particleEject;
          public Light GetWeaponLigt=>_weaponLight;
-        
-        public override void Initialize(ItemData itemData) => _itemData = itemData;
+
+         public override ItemType ItemType { get; }
+         public override void Initialize(ItemData itemData) => _itemData = itemData;
     }
 }

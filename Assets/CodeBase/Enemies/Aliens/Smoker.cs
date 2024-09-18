@@ -16,11 +16,11 @@ public class Smoker : Enemy,IDamageable
         
     }
 
-    public override void AdditionalDamage(float getDamage, WeaponType weaponWeaponType)
+    public override void AdditionalDamage(float getDamage, ItemType itemItemType)
     {
         if (Level == _levelNumber && _minDamage>=getDamage)
         {
-            OnAction(EnemyEventType.TakeSmokerDamage,weaponWeaponType);
+            OnAction(EnemyEventType.TakeSmokerDamage,itemItemType);
         }
         else if(getDamage>=_minDamage)
         {
@@ -64,7 +64,7 @@ public class Smoker : Enemy,IDamageable
               
         }
     }
-    void IDamageable.ApplyDamage(float damage, WeaponType weaponType)
+    void IDamageable.ApplyDamage(float damage, ItemType itemType)
     {
     }
 }

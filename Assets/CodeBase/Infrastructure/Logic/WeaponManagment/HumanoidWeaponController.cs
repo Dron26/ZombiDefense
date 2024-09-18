@@ -14,10 +14,10 @@ using UnityEngine;
 
 namespace Infrastructure.Logic.WeaponManagment
 {
-    public class HumanoidWeaponController : MonoCache, IWeaponController
+    public class HumanoidWeaponController : MonoCache,IWeaponController
     {
 
-        [SerializeField] private WeaponType _weaponType;
+        [SerializeField] private ItemType _itemType;
         [SerializeField] private SpriteRenderer _radius;
         [SerializeField] private GameObject _weaponContainer;
         public bool IsCanThrowGranade => _isCanThrowGranade;
@@ -32,7 +32,7 @@ namespace Infrastructure.Logic.WeaponManagment
         public Action<Weapon> OnInitialized;
         public Action OnChangeGranade;
 
-        public WeaponType WeaponType => _weaponType;
+        public ItemType ItemType => _itemType;
         public float GetRangeAttack() => _range;
         public float GetSpread() => _spread;
 
@@ -119,15 +119,16 @@ namespace Infrastructure.Logic.WeaponManagment
 
         private void SetWeapon()
         {
-            string path = AssetPaths.WeaponData + _weaponType;
+            string path = AssetPaths.WeaponData + _itemType;
             ItemData itemData = Resources.Load<ItemData>(path);
 
-            path = AssetPaths.WeaponPrefabs + _weaponType;
-            GameObject weapon = Instantiate(Resources.Load<GameObject>(path), _weaponContainer.transform, true);
-
+            path = AssetPaths.WeaponPrefabs + _itemType;
+            GameObject weapon = Instantiate(Resources.Load<GameObject>(path),_weaponContainer.transform);
+            
+            //Prefab/Store/Items/WeaponPrefabs/Pistol
+            
             _weapon =  weapon.GetComponent<Weapon>();
             _weapon.Initialize(itemData);
-            
             _light = _weapon.GetWeaponLigt;
             Damage = _weapon.Damage;
             _range = _weapon.Range;
