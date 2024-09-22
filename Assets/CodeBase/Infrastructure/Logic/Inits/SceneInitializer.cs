@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using CameraMain;
 using Characters.Humanoids.AbstractLevel;
 using Common;
-using Data;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
@@ -19,7 +18,7 @@ using UI.Levels;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
+using Image = UnityEngine.UI.Image;
 
 namespace Infrastructure.Logic.Inits
 {
@@ -35,6 +34,7 @@ namespace Infrastructure.Logic.Inits
         [SerializeField] private Camera _cameraPhysical;
         [SerializeField] private Camera _cameraUI;
         [SerializeField] private EventSystem _eventSystem;
+        
          private LocationManager _locationManager;
         private LoadingCurtain _loadingCurtain;
         public HudPanel Window=>_hudPanel;

@@ -43,7 +43,7 @@ namespace Characters.Humanoids.AbstractLevel
             OnInitialize?.Invoke(this);
         }
         
-        public void SetAudioManager(AudioManager audioManager)
+        public override void SetAudioManager(AudioManager audioManager)
         {
             if (audioManager == null)
                 throw new ArgumentNullException(nameof(audioManager));

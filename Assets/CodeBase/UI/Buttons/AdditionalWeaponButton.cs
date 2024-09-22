@@ -34,7 +34,7 @@ private bool _haveAdditionalWeapon;
         {
             if (_haveAdditionalWeapon)
             {
-                if (_humanoidWeaponController.IsCanThrowGranade)
+                if (_humanoidWeaponController.CanThrowGranade)
                 {
                     _grenadeThrower = _character.gameObject.GetComponent<GrenadeThrower>();
                     _weapon.interactable=true;

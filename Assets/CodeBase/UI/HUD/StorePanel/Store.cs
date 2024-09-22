@@ -15,7 +15,7 @@ using UI.Buttons;
 namespace UI.HUD.StorePanel
 {
     [RequireComponent(typeof(Wallet))]
-    [RequireComponent(typeof(WeaponStore))]
+    [RequireComponent(typeof(BoxStore))]
     public class Store : MonoCache
     {
         [SerializeField] private GameObject _storePanel;
@@ -58,12 +58,12 @@ namespace UI.HUD.StorePanel
         private WorkPoint _selectedWorkPoint;
 
 
-        private WeaponStore _weaponStore;
-
+        private BoxStore _boxStore;
+        private SceneObjectManager _sceneObjectManager;
         public void Initialize(SceneInitializer initializer, SaveLoadService saveLoadService, GlobalTimer globalTimer)
         {
             _wallet = GetComponent<Wallet>();
-            _weaponStore = GetComponent<WeaponStore>();
+            _boxStore = GetComponent<BoxStore>();
             
             
             _globalTimer = globalTimer;
@@ -72,11 +72,12 @@ namespace UI.HUD.StorePanel
             _sceneInitializer = initializer;
             _moneyAmount = _saveLoadService.ReadAmountMoney();
             _workPointGroup = _sceneInitializer.GetPlayerCharacterInitializer().GetWorkPointGroup();
-            _weaponStore.Initialize(_saveLoadService,_wallet);
+            _boxStore.Initialize(_saveLoadService,_wallet);
             SetCharacterInitializer();
             _storePanel.gameObject.SetActive(!_storePanel.activeSelf);
             _adsStore.Initialize(_wallet);
             _wallet.Initialize(_saveLoadService);
+            _sceneObjectManager.Initialize( _characterStore,_boxStore);
             AddListener();
         }
 

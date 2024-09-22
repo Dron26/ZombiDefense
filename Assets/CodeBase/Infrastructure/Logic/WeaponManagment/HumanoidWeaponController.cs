@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Characters.Humanoids.AbstractLevel;
 using Data.Upgrades;
 using Infrastructure.AIBattle;
 using Infrastructure.AIBattle.AdditionalEquipment;
 using Infrastructure.AssetManagement;
-using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
 using Infrastructure.Logic.Inits;
 using UI.Buttons;
@@ -14,31 +12,20 @@ using UnityEngine;
 
 namespace Infrastructure.Logic.WeaponManagment
 {
-    public class HumanoidWeaponController : MonoCache,IWeaponController
+    public class HumanoidWeaponController : WeaponController,IWeaponController
     {
 
         [SerializeField] private ItemType _itemType;
         [SerializeField] private SpriteRenderer _radius;
         [SerializeField] private GameObject _weaponContainer;
-        public bool IsCanThrowGranade => _isCanThrowGranade;
-        
-        public int Damage
-        {
-            get => _damage;
-            set => _damage = value;
-        }
-
+        public bool CanThrowGranade => _canThrowGranade;
         public Action ChangeWeapon;
         public Action<Weapon> OnInitialized;
         public Action OnChangeGranade;
-
-        public ItemType ItemType => _itemType;
         public float GetRangeAttack() => _range;
         public float GetSpread() => _spread;
 
         public Weapon GetActiveItemData() => _weapon;
-        private Light _light;
-        private ItemData _itemData;
         private Weapon _weapon;
         private GameObject _weaponPrefab;
         private GrenadeThrower _grenadeThrower;
@@ -51,7 +38,7 @@ namespace Infrastructure.Logic.WeaponManagment
         private float _fireRate;
         private float _range;
         private bool _isGranade;
-        private bool _isCanThrowGranade;
+        private bool _canThrowGranade;
         protected bool _isSelected;
 
 
@@ -67,7 +54,7 @@ namespace Infrastructure.Logic.WeaponManagment
             OnInitialized?.Invoke(_weapon);
         }
 
-        public float GetSpreadAngle() => _itemData.SpreadAngle;
+        public float GetSpreadAngle() => ItemData.SpreadAngle;
 
         public void SetUpgrade(UpgradeData upgradeData, int level) => SetDamage(upgradeData.Damage);
 
@@ -98,7 +85,7 @@ namespace Infrastructure.Logic.WeaponManagment
         {
             if (_granades.Count > 0)
             {
-                _isCanThrowGranade = false;
+                _canThrowGranade = false;
                 _grenadeThrower.ThrowGrenade(_granades[0]);
             }
         }
@@ -119,7 +106,7 @@ namespace Infrastructure.Logic.WeaponManagment
 
         private void SetWeapon()
         {
-            string path = AssetPaths.WeaponData + _itemType;
+            string path = AssetPaths.ItemsData + _itemType;
             ItemData itemData = Resources.Load<ItemData>(path);
 
             path = AssetPaths.WeaponPrefabs + _itemType;
@@ -129,14 +116,14 @@ namespace Infrastructure.Logic.WeaponManagment
             
             _weapon =  weapon.GetComponent<Weapon>();
             _weapon.Initialize(itemData);
-            _light = _weapon.GetWeaponLigt;
+            Light = _weapon.GetWeaponLigt;
             Damage = _weapon.Damage;
             _range = _weapon.Range;
             
             ChangeWeapon?.Invoke();
         }
 
-        private void SetLight() => _light.gameObject.SetActive(LighInformer.HasLight);
+        private void SetLight() => Light.gameObject.SetActive(LighInformer.HasLight);
 
         private void SetRadius() => _radius.transform.localScale=new Vector3(_range/3.6f, _range/3.6f, 1);
 
@@ -152,7 +139,7 @@ namespace Infrastructure.Logic.WeaponManagment
                 _grenadeThrower = GetComponent<GrenadeThrower>();
                 _grenadeThrower.OnThrowed += OnThrowedGranade;
                 AddGranade(granades);
-                _isCanThrowGranade = true;
+                _canThrowGranade = true;
                 OnChangeGranade?.Invoke();
             }
         }
@@ -163,11 +150,11 @@ namespace Infrastructure.Logic.WeaponManagment
 
             if (_granades.Count != 0)
             {
-                _isCanThrowGranade = true;
+                _canThrowGranade = true;
             }
             else
             {
-                _isCanThrowGranade = false;
+                _canThrowGranade = false;
                 Destroy(gameObject.GetComponent<GrenadeThrower>(), 3f);
             }
 
@@ -175,6 +162,3 @@ namespace Infrastructure.Logic.WeaponManagment
         }
     }
 }
-
-//    Sniper Vector3(0.0289999992,-0.0839999989,0.0170000009)Vector3(347.422821,89.5062866,89.6258698)
-//    shotgun Vector3(0.0179999992,-0.0500000007,-0.0189999994)Vector3(348.677673,89.4979019,89.6276169)

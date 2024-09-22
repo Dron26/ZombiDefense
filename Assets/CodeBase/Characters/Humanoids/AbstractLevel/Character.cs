@@ -1,7 +1,10 @@
+using System;
 using Common;
 using Data.Upgrades;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
+using Service.Audio;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Characters.Humanoids.AbstractLevel
@@ -20,7 +23,7 @@ namespace Characters.Humanoids.AbstractLevel
         
         public int Health => _characterData.Health;
         public CharacterType Type => _characterData.Type;
-
+        public event Action<Character> OnInitialize;
         public abstract void ApplyDamage(int damage);
 
         public abstract void SetUpgrade(UpgradeData upgrade, int level);
@@ -28,5 +31,6 @@ namespace Characters.Humanoids.AbstractLevel
         public void SetPoint(WorkPoint workPoint) {}
 
         public void Initialize(CharacterData characterData) => _characterData=characterData;
+        public abstract void SetAudioManager(AudioManager audioManager);
     }
 }

@@ -162,7 +162,7 @@ namespace Infrastructure.Tutorial
         {
             _dimm.enabled = false;
             if (_isCharacterCreated) return;
-            _characterInitializer.CreateCharacter(_humanoid);
+            _characterInitializer.SetCreatedCharacter(_humanoid);
             _enemyCharacterInitializer.SetWaveData();
             _isCharacterCreated = true;
         }

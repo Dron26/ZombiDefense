@@ -25,7 +25,7 @@ namespace Infrastructure.Logic.Inits
         private List<WorkPoint> _workPoints = new();
         private static readonly List<Character> _activeCharacters = new();
         private static readonly List<Character> _inactiveCharacetrs = new();
-        
+        private SceneObjectManager _sceneObjectManager;
         public UnityAction CreatedCharacter;
         private Humanoid _selectedHumanoid;
         private Store _store;
@@ -43,20 +43,12 @@ namespace Infrastructure.Logic.Inits
         public void Initialize(AudioManager audioManager, SceneInitializer sceneInitializer, SaveLoadService saveLoadService)
         {
             _saveLoadService = saveLoadService;
-            _humanoidFactory.CreatedHumanoid += OnCreatedCharacted;
+            _sceneObjectManager.CreatedHumanoid += OnCreatedCharacted;
             _robotFactory.CreatedRobot += OnCreatedCharacted;
-            _humanoidFactory.Initialize(audioManager);
             _robotFactory.Initialize(audioManager,_saveLoadService);
             _workPointsGroup.Initialize(_saveLoadService);
             FillWorkPoints();
             _store = sceneInitializer.Window.GetStoreOnPlay();
-            
-            _characterStore = _store.GetCharacterStore();
-            _characterStore.OnCharacterBought += CreateCharacter;
-            
-            _vipCharacterStore = _store.GetVipCharacterStore();
-            _vipCharacterStore.OnCharacterBought += CreateCharacter;
-            
             _movePointController = sceneInitializer.GetMovePointController();
         }
         private void FillWorkPoints()
@@ -71,6 +63,7 @@ namespace Infrastructure.Logic.Inits
         {
             _coutnCreated++;
             _activeCharacters.Add(character);
+            SetCreatedCharacter(character);
             
             if (character.TryGetComponent(out Humanoid humanoid))
             {
@@ -85,48 +78,29 @@ namespace Infrastructure.Logic.Inits
             SetLocalParametrs();
         }
 
-        private  void CreateHumanoid(Humanoid humanoid, Transform transform)
-        {
-             _humanoidFactory.Create(humanoid.gameObject, transform);
-        }
-        
         private  void CreateTurret(Turret turret, Transform transform)
         {
             _robotFactory.Create(turret.gameObject, transform);
         }
 
-        public void CreateCharacter(Character character )
+        public void SetCreatedCharacter(Character character )
         {
-            Transform transform = _movePointController.SelectedPoint.transform;
+            Transform point = _movePointController.SelectedPoint.transform;
+            Transform characterTransform = character.transform;
+            characterTransform.parent=point;
+            characterTransform.localPosition = Vector3.zero;
+            
+            
             
             if (character.TryGetComponent( out Humanoid humanoid))
             {
-                if (humanoid != null && humanoid.GetComponent<Humanoid>())
-                {
-                    _countOrdered++;
-                    CreateHumanoid(humanoid, transform);
-                }
-                else
-                {
-                    print("SetCreatHumanoid error");
-                }
-
-            
+                _countOrdered++;
                 _workPointsGroup.OnSelected(_movePointController.SelectedPoint);
             }
             else if(character.TryGetComponent( out Turret turret))
             {
-                if (turret != null && turret.GetComponent<Turret>())
-                {
-                    _countOrdered++;
-                    CreateTurret(turret, transform);
-                }
-                else
-                {
-                    print("SetCreatTurret error");
-                }
-
-            
+                _countOrdered++;
+            //    CreateTurret(turret, transform);
                 _workPointsGroup.OnSelected(_movePointController.SelectedPoint);
             }
         }

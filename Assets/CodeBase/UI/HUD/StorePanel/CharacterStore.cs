@@ -39,7 +39,7 @@ namespace UI.HUD.StorePanel
         [SerializeField] private List<GameObject> _turret;
         private List<List<GameObject>> _characterSkinnedMeshes;
 
-        public Action<Character> OnCharacterBought;
+        public Action<CharacterData> OnCharacterBought;
         public Action OnMoneyEmpty;
         public Action OnUpdateBought;
         public Action OnUpdateSelectedCharacter;
@@ -108,8 +108,6 @@ namespace UI.HUD.StorePanel
                 CharacterSlot characterSlot = Instantiate(_characterSlotPrefab, _characterGroupContent.transform)
                     .GetComponent<CharacterSlot>();
                 characterSlot.Initialize(data, this);
-                Soldier n = new();
-                n.Initialize();
                 _characterSlots.Add(characterSlot);
                 characterSlot.Selected += SetSelectedSlot;
             }
@@ -177,9 +175,10 @@ namespace UI.HUD.StorePanel
             {
                 if (obj.TryGetComponent(out Character character))
                 {
-                    string path = AssetPaths.Characters + obj.name;
+                    string path = AssetPaths.CharactersData + obj.name;
                     CharacterData data = Resources.Load<CharacterData>(path);
                     _charactersData.Add(data);
+                    character.Initialize(data);
                     _characters.Add(character);
                     _allAvailableHumanoid.Add(character);
                     _indexAvailableHumanoid.Add(_allAvailableHumanoid.IndexOf(character));
