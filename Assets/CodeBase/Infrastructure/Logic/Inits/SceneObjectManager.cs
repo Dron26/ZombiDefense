@@ -9,6 +9,7 @@ using Infrastructure.Factories.FactoryWarriors.Humanoids;
 using Infrastructure.Location;
 using Infrastructure.Logic.Inits;
 using Infrastructure.Logic.WeaponManagment;
+using Infrastructure.Points;
 using Service.Audio;
 using UI.HUD.StorePanel;
 using UnityEngine;
@@ -19,7 +20,6 @@ public class SceneObjectManager : MonoCache
 {
     private BoxStore _boxStore;
     private CharacterStore _characterStore;
-    private Store _store;
     private BoxFactory _boxFactory;
     private HumanoidFactory _humanoidFactory;
     private CharacterFactory _characterFactory;
@@ -29,20 +29,25 @@ public class SceneObjectManager : MonoCache
     public UnityAction<Character> CreatedHumanoid;
     public UnityAction<AdditionalBox> BuildedBox;
     private WorkPoint _selectedWorkPoint;
-
-    public void Initialize( CharacterStore characterStore,BoxStore boxStore)
+    private Store _store;
+    private MovePointController _movePointController;
+    public void Initialize(Store store,MovePointController movePointController)
     {
-        _boxStore = boxStore;
-        _characterStore = _characterStore;
-        // Подписка на события магазина
-        boxStore.BuyBox += HandleBox;
-        characterStore.OnCharacterBought += HandleCharacterSelected;
+        _store=store;
+        _movePointController = movePointController;
+       
+        AddListener();
     }
 
-    private void HandleBox(BoxData boxData,Transform pointTransform)
+    private void OnSelectedNewPoint(WorkPoint workPoint)
+    {
+        _selectedWorkPoint = workPoint;
+    }
+
+    private void OnBoughtBox(BoxData boxData)
     {
         AdditionalBox box = BuildBox(boxData);
-        PlaceBoxOnScene(box.transform,pointTransform);
+        PlaceBoxOnScene(box.transform,_selectedWorkPoint.transform);
         OnBuildedBox(box);
     }
 
@@ -64,7 +69,7 @@ public class SceneObjectManager : MonoCache
         return box;
     }
 
-    private void HandleCharacterSelected(CharacterData characterData)
+    private void OnBoughtCharacter(CharacterData characterData)
     {
         BuildCharacter(characterData);
     }
@@ -101,11 +106,7 @@ public class SceneObjectManager : MonoCache
     {
         BuildedBox?.Invoke(box);
     }
-        
-    public void Initialize( AudioManager audioManager)
-    {
-        _audioManager=audioManager;
-    }
+     
 
     private void PlaceBoxOnScene(Transform boxTransform,Transform pointTransform)
     {
@@ -113,27 +114,30 @@ public class SceneObjectManager : MonoCache
         boxTransform.position = pointTransform.position;
     }
 
-    private void OnSelectPoint(WorkPoint workPoint)
-    {
-        _selectedWorkPoint = workPoint;
-    }
     private void OnDestroy()
     {
+        RemoveListener();
     }
     
     private void AddListener()
     {
-        _saveLoadService.OnSelectedNewPoint += OnSelectPoint;
-        _additionalEquipmentButton.OnSelectedMedicineBox += OnSelectMedicineBox;
-        _additionalEquipmentButton.OnSelectedWeaponBox += OnSelectSmallWeaponBox;
+        _store.OnBoughtCharacter+=OnBoughtCharacter;
+        _store.OnBoughtBox+=OnBoughtBox;
+        _store.OnBoughtUpgrade+=OnBoughtUpgrade;
+        _movePointController.OnUnSelectedPoint += OnSelectedNewPoint;
+    }
+
+    private void OnBoughtUpgrade(WorkPoint point)
+    {
+        throw new System.NotImplementedException();
     }
 
     private void RemoveListener()
     {
-        _saveLoadService.OnSelectedNewPoint -= OnSelectPoint;
-
-        _additionalEquipmentButton.OnSelectedMedicineBox -= OnSelectMedicineBox;
-        _additionalEquipmentButton.OnSelectedWeaponBox -= OnSelectSmallWeaponBox;
+        _store.OnBoughtCharacter-=OnBoughtCharacter;
+        _store.OnBoughtBox-=OnBoughtBox;
+        _store.OnBoughtUpgrade-=OnBoughtUpgrade;
+        _movePointController.OnUnSelectedPoint += OnSelectedNewPoint;
     }
 }
 

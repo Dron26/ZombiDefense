@@ -34,7 +34,8 @@ namespace Infrastructure.Logic.Inits
         [SerializeField] private Camera _cameraPhysical;
         [SerializeField] private Camera _cameraUI;
         [SerializeField] private EventSystem _eventSystem;
-        
+        private SceneObjectManager _sceneObjectManager;
+
          private LocationManager _locationManager;
         private LoadingCurtain _loadingCurtain;
         public HudPanel Window=>_hudPanel;
@@ -93,13 +94,16 @@ namespace Infrastructure.Logic.Inits
              InitializeEnemies();
              AddListener();
              _hudPanel.Init(_saveLoadService,this,_waveManager,_locationManager );
-
-            
+             
             Debug.Log("Finish _playerCharacterInitializer();");
 
             _movePointController.Initialize(this, _saveLoadService);
             Debug.Log("Finish _movePointController();");
            
+            _sceneObjectManager = GetComponent<SceneObjectManager>();
+            _sceneObjectManager.Initialize( _hudPanel.GetStore(),_movePointController);
+            Debug.Log("Finish _sceneObjectManager();");
+
         }
 
         private void SetInitializers(LocationPrefab location)

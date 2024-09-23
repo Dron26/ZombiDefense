@@ -12,6 +12,7 @@ using Infrastructure.Location;
 using Infrastructure.Logic.WeaponManagment;
 using Service.SaveLoad;
 using UI.Locations;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Assertions.Must;
 
@@ -41,7 +42,7 @@ namespace UI.HUD.StorePanel
             _additionalEquipmentButton.Initialize(_saveLoadService);
             _boxFactory = GetComponent<BoxFactory>();
             _itemFactory= GetComponent<ItemFactory>();
-
+            AddListener();
             SetBoxes();
         }
 
@@ -138,15 +139,16 @@ namespace UI.HUD.StorePanel
 
         private void AddListener()
         {
-            _saveLoadService.OnSelectedNewPoint += OnSelectPoint;
             _additionalEquipmentButton.OnSelectedMedicineBox += OnSelectMedicineBox;
             _additionalEquipmentButton.OnSelectedWeaponBox += OnSelectSmallWeaponBox;
         }
 
+        private void OnDestroy()
+        {
+            RemoveListener();
+        }
         private void RemoveListener()
         {
-            _saveLoadService.OnSelectedNewPoint -= OnSelectPoint;
-
             _additionalEquipmentButton.OnSelectedMedicineBox -= OnSelectMedicineBox;
             _additionalEquipmentButton.OnSelectedWeaponBox -= OnSelectSmallWeaponBox;
         }

@@ -8,6 +8,7 @@ using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.Inits;
 using Infrastructure.Logic.WaveManagment;
 using Infrastructure.StateMachine.States;
+using Service.Audio;
 using Service.SaveLoad;
 using UI;
 using UI.Buttons;
@@ -65,8 +66,8 @@ namespace Service.Ads
 
         protected override void OnDisable()
         {
-            RemoveListener();
             _timerDisplay.Disabled();
+            RemoveListener();
         }
 
         private void StartContinueSpawn()
@@ -76,6 +77,11 @@ namespace Service.Ads
         
         public Store GetStoreOnPlay() => _store;
 
+        public Store GetStore()
+        {
+            return _store;
+        }
+        
         private void OnClickExit()
         {
             OnClickExitToMenu?.Invoke();

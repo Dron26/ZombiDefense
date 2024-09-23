@@ -22,7 +22,7 @@ namespace UI.HUD.StorePanel
         {
             gameObject.SetActive(true);
             _character = _characterStore.SelectedCharacter;
-            _damageWindow.text = _character.GetComponent<IWeaponController>().Damage.ToString();
+          //  _damageWindow.text = _character.GetComponent<IWeaponController>().Damage.ToString();
             _nameWindow.text = LeanLocalization.GetTranslationText(_character.GetType().ToString());
             _healthWindow.text = _character.Health.ToString();
             

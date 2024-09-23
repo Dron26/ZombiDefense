@@ -16,6 +16,7 @@ namespace Characters.Robots
     [RequireComponent(typeof(RobotFXController))]
     [RequireComponent(typeof(TurretStateMachine))]
     [RequireComponent(typeof(RaycastHitChecker))]
+    
     public  class Turret : Character
     {
         private RobotFXController _fxController;
@@ -33,9 +34,8 @@ namespace Characters.Robots
         private RaycastHitChecker _raycastHitChecker;
         private TurretWeaponController _turretWeaponController;
         
-        public void Initialize(AudioManager audioManager,SaveLoadService saveLoadService)
+        public void Initialize(SaveLoadService saveLoadService)
         {
-            _audioManager=audioManager;
             _raycastHitChecker = GetComponent<RaycastHitChecker>();
             _raycastHitChecker.Initialize(saveLoadService);
             _turretWeaponController= GetComponent<TurretWeaponController>();
@@ -93,7 +93,12 @@ namespace Characters.Robots
             _maxHealth += upgrade.Health;
             _currentHealth = _maxHealth;
         }
-        
+
+        public override void SetAudioManager(AudioManager audioManager)
+        {
+            _audioManager=audioManager;
+        }
+
         private void AddHealth(int health)
         {
             _currentHealth += health;

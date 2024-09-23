@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Characters.Humanoids.AbstractLevel;
+using Data;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
@@ -56,10 +57,9 @@ namespace UI.HUD.StorePanel
         private int _medicineBoxPrice = 100;
         private int _weaponBoxPrice = 200;
         private WorkPoint _selectedWorkPoint;
-
-
         private BoxStore _boxStore;
-        private SceneObjectManager _sceneObjectManager;
+        public event Action <BoxData> OnBoughtBox;
+        public event Action <CharacterData> OnBoughtCharacter;
         public void Initialize(SceneInitializer initializer, SaveLoadService saveLoadService, GlobalTimer globalTimer)
         {
             _wallet = GetComponent<Wallet>();
@@ -77,7 +77,7 @@ namespace UI.HUD.StorePanel
             _storePanel.gameObject.SetActive(!_storePanel.activeSelf);
             _adsStore.Initialize(_wallet);
             _wallet.Initialize(_saveLoadService);
-            _sceneObjectManager.Initialize( _characterStore,_boxStore);
+            
             AddListener();
         }
 
@@ -87,11 +87,11 @@ namespace UI.HUD.StorePanel
             //_characterInitializer.OnClickWorkpoint += CheckPointInfo;
             _characters = _saveLoadService.GetAvailableCharacters();
             
-            _characterStore.Initialize(_saveLoadService, this);
+            _characterStore.Initialize( this);
             
             //  _eliteCharacterStore.Initialize(_saveLoadService,this);
             //_eliteCharacterStore.OnCharacterBought += OnCharacterBought;
-            //_characterStore.BuyCharacter += OnBuyCharacter;
+            _characterStore.BuyCharacter += OnBoughtCharacter;
             _movePointController = _sceneInitializer.GetMovePointController();
 
             _pointUpgradePanel.Initialize();
@@ -102,12 +102,9 @@ namespace UI.HUD.StorePanel
             _characterStoreRotation.gameObject.SetActive(!_characterStoreRotation.gameObject.activeSelf);
         }
 
-        protected override void OnDisabled()
-        {
-            RemoveListener();
-        }
+        protected override void OnDisabled() => RemoveListener();
 
-        private void OnCharacterBought(Character character) => SwitchStorePanel();
+        private void BuyCharacter(CharacterData data) => SwitchStorePanel();
 
         private void ShowPanelAdsForMoney()
         {
@@ -196,6 +193,7 @@ namespace UI.HUD.StorePanel
         }
 
         public CharacterStore GetCharacterStore() => _characterStore;
+        public BoxStore GetBoxStore() => _boxStore;
 
         public CharacterStore GetVipCharacterStore() => _eliteCharacterStore;
 
@@ -204,7 +202,6 @@ namespace UI.HUD.StorePanel
         private void AddListener()
         {
             _saveLoadService.OnSelectedNewPoint += CheckPointInfo;
-            _characterStore.OnCharacterBought += OnCharacterBought;
             _characterStore.OnMoneyEmpty += ShowPanelAdsForMoney;
             
             _pointUpgradePanel.OnSelectedButton += (BuyPointUp);
@@ -214,14 +211,17 @@ namespace UI.HUD.StorePanel
             _buttonRightPanel.onClick.AddListener(ChangeStateButtonPanel);
             _applyAdsMoneyWindowButton.onClick.AddListener(ShowPanelAds);
             _closeAdsMoneyWindowButton.onClick.AddListener(ShowPanelAdsForMoney);
+
+            _boxStore.BuyBox+=OnBoughtBox;
+            _characterStore.BuyCharacter += BuyCharacter;
         }
 
         private void RemoveListener()
         {
             _saveLoadService.OnSelectedNewPoint -= CheckPointInfo;
-            _characterStore.OnCharacterBought -= OnCharacterBought;
+            _characterStore.BuyCharacter -= BuyCharacter;
             _characterStore.OnMoneyEmpty -= ShowPanelAdsForMoney;
-            _eliteCharacterStore.OnCharacterBought -= OnCharacterBought;
+            _eliteCharacterStore.BuyCharacter -= BuyCharacter;
             _pointUpgradePanel.OnSelectedButton -= (BuyPointUp);
         }
     }

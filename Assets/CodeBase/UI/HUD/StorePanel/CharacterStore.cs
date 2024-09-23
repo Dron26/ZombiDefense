@@ -39,7 +39,7 @@ namespace UI.HUD.StorePanel
         [SerializeField] private List<GameObject> _turret;
         private List<List<GameObject>> _characterSkinnedMeshes;
 
-        public Action<CharacterData> OnCharacterBought;
+        public Action<CharacterData> BuyCharacter;
         public Action OnMoneyEmpty;
         public Action OnUpdateBought;
         public Action OnUpdateSelectedCharacter;
@@ -50,7 +50,6 @@ namespace UI.HUD.StorePanel
         private List<CharacterSlot> _characterSlots = new();
         private CharacterSlot _selectedCharacterSlot;
         private Character _selectedCharacter;
-        private SaveLoadService _saveLoadService;
         private Store _store;
         private Wallet _wallet;
         private bool _isInitialized;
@@ -58,9 +57,8 @@ namespace UI.HUD.StorePanel
         public Character SelectedCharacter => _selectedCharacter;
         public List<List<GameObject>> CharacterSkinnedMeshes => _characterSkinnedMeshes;
 
-        public void Initialize(SaveLoadService saveLoadService, Store store)
+        public void Initialize(Store store)
         {
-            _saveLoadService = saveLoadService;
             _store = store;
             _characterSkinnedMeshes = new List<List<GameObject>>();
             FillCharacters();
@@ -117,12 +115,6 @@ namespace UI.HUD.StorePanel
             _selectedCharacterSlot.Selected.Invoke(_selectedCharacterSlot);
         }
 
-        private void InitializeUpgradePanel()
-        {
-            _upgradGrouper.Initialize(_saveLoadService, this);
-            _upgradGrouper.OnBuyUpgrade += OnTryBuyUpgrade;
-        }
-
         private void OnTryBuyUpgrade(UpgradeData upgradeData, int price, int level)
         {
             if (OnTryBuy(price))
@@ -135,7 +127,7 @@ namespace UI.HUD.StorePanel
         {
             if (OnTryBuy(_selectedCharacter.Price))
             {
-                OnCharacterBought?.Invoke(_selectedCharacter);
+                BuyCharacter?.Invoke(_selectedCharacter.CharacterData);
             }
             else
             {

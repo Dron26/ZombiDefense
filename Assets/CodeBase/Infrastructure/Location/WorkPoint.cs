@@ -66,30 +66,30 @@ namespace Infrastructure.Location
 
         public void SetMedicalBox<T>(AdditionalBox box, ref T boxField, ref bool isHaveBox) where T : EquipmentItem
         {
-            // Проверяем, что boxField еще не инициализирован
-            if (boxField != null)
-            {
-                Debug.LogWarning("Medical box is already set.");
-                return;
-            }
-
-            // Ищем медицинский набор в коробке
-            EquipmentItem equipmentItem = box.GetItems().FirstOrDefault(item => item.Type == ItemType.MedicalKit);
-
-            if (equipmentItem != null && equipmentItem is T specificBox)
-            {
-                // Инициализируем boxField
-                boxField = specificBox;
-
-                // Устанавливаем родительский объект и позицию
-
-                // Устанавливаем флаг наличия медицинского набора
-                isHaveBox = true;
-            }
-            else
-            {
-                Debug.LogWarning($"{typeof(T).Name} not found in the box.");
-            }
+            // // Проверяем, что boxField еще не инициализирован
+            // if (boxField != null)
+            // {
+            //     Debug.LogWarning("Medical box is already set.");
+            //     return;
+            // }
+            //
+            // // Ищем медицинский набор в коробке
+            // EquipmentItem equipmentItem = box.GetItems().FirstOrDefault(item => item.Type == ItemType.MedicalKit);
+            //
+            // if (equipmentItem != null && equipmentItem is T specificBox)
+            // {
+            //     // Инициализируем boxField
+            //     boxField = specificBox;
+            //
+            //     // Устанавливаем родительский объект и позицию
+            //
+            //     // Устанавливаем флаг наличия медицинского набора
+            //     isHaveBox = true;
+            // }
+            // else
+            // {
+            //     Debug.LogWarning($"{typeof(T).Name} not found in the box.");
+            // }
         }
 
         public T GetBox<T>(ref T boxField, ref bool isHaveBox) where T : EquipmentItem
