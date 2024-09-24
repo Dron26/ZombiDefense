@@ -33,22 +33,17 @@ namespace Characters.Robots
         public bool IsBuyed => _isBuyed;
         private RaycastHitChecker _raycastHitChecker;
         private TurretWeaponController _turretWeaponController;
-        
-        public void Initialize(SaveLoadService saveLoadService)
+        private SaveLoadService _saveLoadService;
+        public void SetSaveLoadService(SaveLoadService saveLoadService)
         {
+            _saveLoadService=saveLoadService;
             _raycastHitChecker = GetComponent<RaycastHitChecker>();
             _raycastHitChecker.Initialize(saveLoadService);
-            _turretWeaponController= GetComponent<TurretWeaponController>();
-            _fxController = GetComponent<RobotFXController>();
-            GetComponent<TurretStateMachine>().Initialize(_raycastHitChecker,_fxController,_turretWeaponController);
-            _maxHealth = Health;
-            _currentHealth=_maxHealth;
-            OnInitialize?.Invoke(this);
         }
 
         public override void ApplyDamage(int getDamage)
         {
-            Debug.Log(_currentHealth);
+           // Debug.Log(_currentHealth);
 
             if (_currentHealth <= 0)
             {
@@ -92,6 +87,16 @@ namespace Characters.Robots
         {
             _maxHealth += upgrade.Health;
             _currentHealth = _maxHealth;
+        }
+
+        public override void Initialize()
+        {
+            _turretWeaponController= GetComponent<TurretWeaponController>();
+            _fxController = GetComponent<RobotFXController>();
+            GetComponent<TurretStateMachine>().Initialize(_raycastHitChecker,_fxController,_turretWeaponController);
+            _maxHealth = Health;
+            _currentHealth=_maxHealth;
+            OnInitialize?.Invoke(this);
         }
 
         public override void SetAudioManager(AudioManager audioManager)

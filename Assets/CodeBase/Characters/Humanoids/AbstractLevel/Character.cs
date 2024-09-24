@@ -30,7 +30,15 @@ namespace Characters.Humanoids.AbstractLevel
 
         public void SetPoint(WorkPoint workPoint) {}
 
-        public void Initialize(CharacterData characterData) => _characterData=characterData;
+        public void Initialize(CharacterData characterData)
+        {
+            _characterData = characterData;
+            Initialize();
+            OnInitialize?.Invoke(this);
+        }
+
+        public abstract void Initialize();
+
         public abstract void SetAudioManager(AudioManager audioManager);
     }
 }

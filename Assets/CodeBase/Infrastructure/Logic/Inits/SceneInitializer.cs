@@ -87,8 +87,8 @@ namespace Infrastructure.Logic.Inits
 
              _timerDisplay=_hudPanel.GetTimerDisplay();
              
-             
-             _playerCharacterInitializer.Initialize(_audioManager, this, _saveLoadService);
+             _sceneObjectManager = GetComponent<SceneObjectManager>();
+             _playerCharacterInitializer.Initialize(_audioManager, this, _saveLoadService, _sceneObjectManager);
              Debug.Log("Finish _playerCharacterInitializer();");
 
              InitializeEnemies();
@@ -100,9 +100,9 @@ namespace Infrastructure.Logic.Inits
             _movePointController.Initialize(this, _saveLoadService);
             Debug.Log("Finish _movePointController();");
            
-            _sceneObjectManager = GetComponent<SceneObjectManager>();
             _sceneObjectManager.Initialize( _hudPanel.GetStore(),_movePointController);
             Debug.Log("Finish _sceneObjectManager();");
+
 
         }
 

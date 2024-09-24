@@ -40,8 +40,9 @@ namespace Infrastructure.Logic.Inits
 
         public Action LastHumanoidDie;
 
-        public void Initialize(AudioManager audioManager, SceneInitializer sceneInitializer, SaveLoadService saveLoadService)
+        public void Initialize(AudioManager audioManager, SceneInitializer sceneInitializer, SaveLoadService saveLoadService,SceneObjectManager sceneObjectManager)
         {
+             _sceneObjectManager=sceneObjectManager;
             _saveLoadService = saveLoadService;
             _sceneObjectManager.CreatedHumanoid += OnCreatedCharacted;
             _robotFactory.CreatedRobot += OnCreatedCharacted;
@@ -69,6 +70,10 @@ namespace Infrastructure.Logic.Inits
             {
                 DieState dieState = humanoid.GetComponent<DieState>();
                 dieState.OnDeath += OnDeath;
+            }
+            if (character.TryGetComponent(out Turret turret))
+            {
+                turret.SetSaveLoadService(_saveLoadService);
             }
            
             CreatedCharacter?.Invoke();
@@ -169,5 +174,6 @@ namespace Infrastructure.Logic.Inits
             
             characters.Clear();
         }
+        
     }
 }

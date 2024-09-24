@@ -23,15 +23,15 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
         private ISwitcherState _currentBehavior;
         private SceneInitializer _sceneInitializer;
         private SaveLoadService _saveLoadService;
-        private Humanoid _humanoid;
+        private Character _character;
         public Action OnStartMove;
 
         private void Awake()
         {
-            if (TryGetComponent(out Humanoid humanoid))
+            if (TryGetComponent(out Character character))
             {
-                _humanoid = humanoid;
-                _humanoid.OnInitialize += OnHumanoidInitialized;
+                _character = character;
+                _character.OnInitialize += OnCharacterInitialized;
             }
 
             _sceneInitializer = FindObjectOfType<SceneInitializer>();
@@ -62,7 +62,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
         }
 
 
-        public void OnHumanoidInitialized(Humanoid humanoid)
+        public void OnCharacterInitialized(Character character)
         {
             _currentBehavior = _allBehaviors[typeof(SearchTargetState)];
             EnterBehavior<SearchTargetState>();
@@ -80,7 +80,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
 
         protected override void OnDisable()
         {
-            _humanoid.OnInitialize -= OnHumanoidInitialized;
+            _character.OnInitialize -= OnCharacterInitialized;
         }
     }
 }

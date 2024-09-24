@@ -24,7 +24,6 @@ namespace Characters.Humanoids.AbstractLevel
         public Vector3 StartPosition;
         private Animator _animator;
         public Action OnMove;
-        public Action<Humanoid> OnInitialize;
        
         private int _currentHealth;
         private bool _isTakeDamagePlay;
@@ -33,14 +32,13 @@ namespace Characters.Humanoids.AbstractLevel
         public bool IsBuyed => _isBuyed;
         public AudioManager GetAudioManager() => AudioManager;
         
-        public void Initialize()
+        public override void Initialize()
         {
             IsLife = true;
             _currentHealth = CharacterData.Health;
             _animator = GetComponent<Animator>();
             _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
             _fxController = GetComponent<FXController>();
-            OnInitialize?.Invoke(this);
         }
         
         public override void SetAudioManager(AudioManager audioManager)

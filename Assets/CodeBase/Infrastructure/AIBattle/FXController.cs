@@ -24,24 +24,28 @@ namespace Infrastructure.AIBattle
         private Weapon _weapon;
         private AudioManager _audioManager;
         private HumanoidWeaponController _humanoidWeaponController;
-        private Humanoid _humanoid;
+        private Character _character;
         
         private void Awake()
         {
-            if (TryGetComponent(out Humanoid humanoid))
+            if (TryGetComponent(out Character character))
             { 
-                _humanoid=humanoid;
-                _humanoid.OnInitialize+=SetAudio;
+                this._character=character;
+                this._character.OnInitialize+=SetAudio;
             }
              
              _humanoidWeaponController= GetComponent<HumanoidWeaponController>();
              _humanoidWeaponController.OnInitialized += SetWeapon;
         }
 
-        private void SetAudio(Humanoid _humanoid)
+        private void SetAudio(Character character)
         {
-            _audioManager=_humanoid.GetAudioManager();
-            _audioSource= _audioManager.GetSoundSource();
+            if (TryGetComponent(out Humanoid humanoid))
+            {
+                _audioManager=humanoid.GetAudioManager();
+                _audioSource= _audioManager.GetSoundSource();
+            }
+           
         }
 
         public void OnAttackFX()

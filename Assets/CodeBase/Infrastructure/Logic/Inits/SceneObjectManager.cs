@@ -35,7 +35,7 @@ public class SceneObjectManager : MonoCache
     {
         _store=store;
         _movePointController = movePointController;
-       
+        _characterFactory=GetComponent<CharacterFactory>();
         AddListener();
     }
 

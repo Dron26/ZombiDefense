@@ -45,9 +45,10 @@ namespace Characters.Robots
             _turretWeaponController = turretWeaponController;
             _turretWeaponController.OnSelected += OnSelectedTurret;
             _raycastHitChecker = raycastHitChecker;
-            _turretGun=_turretWeaponController.GetActiveTurretGun(); 
-            _turretGun.OnEnter+= OnTriggerEnter;
-            _turretGun.OnExit+= OnTriggerExit;
+            // _turretWeaponController.Initialize();
+            // _turretGun=_turretWeaponController.GetActiveTurretGun(); 
+            // _turretGun.OnEnter+= OnTriggerEnter;
+            // _turretGun.OnExit+= OnTriggerExit;
         }
 
         private void OnSelectedTurret()

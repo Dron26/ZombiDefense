@@ -104,7 +104,11 @@ namespace UI.HUD.StorePanel
 
         protected override void OnDisabled() => RemoveListener();
 
-        private void BuyCharacter(CharacterData data) => SwitchStorePanel();
+        private void BuyCharacter(CharacterData data)
+        {
+            OnBoughtCharacter?.Invoke(data);
+            SwitchStorePanel();
+        }
 
         private void ShowPanelAdsForMoney()
         {

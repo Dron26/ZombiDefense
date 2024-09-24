@@ -25,11 +25,11 @@ namespace Infrastructure.AIBattle
         
         private void Awake()
         {
-            if (TryGetComponent(out Humanoid humanoid))
-            { 
-                _humanoid=humanoid;
-                _humanoid.OnInitialize+=SetAudio;
-            }
+            // if (TryGetComponent(out Humanoid humanoid))
+            // { 
+            //     _humanoid=humanoid;
+            //     _humanoid.OnInitialize+=SetAudio;
+            // }
              
 //             _weaponController= GetComponent<WeaponController>();
   //           _weaponController.OnInitialized += SetWeapon;

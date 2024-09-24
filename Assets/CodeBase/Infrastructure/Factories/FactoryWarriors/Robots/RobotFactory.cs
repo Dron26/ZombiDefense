@@ -23,8 +23,8 @@ private SaveLoadService _saveLoadService;
             turretComponent.OnInitialize += OnInitialized;
             float randomAngle = Random.Range(0f, 360f);
             newTurret.rotation = Quaternion.Euler(0f, randomAngle, 0f);
-            TurretWeaponController turretWeaponController  = newTurret.GetComponent<TurretWeaponController>();
-            turretWeaponController.Initialize();
+           // TurretWeaponController turretWeaponController  = newTurret.GetComponent<TurretWeaponController>();
+           // turretWeaponController.Initialize();
            // turretComponent.Initialize(_audioManager, _saveLoadService);
             
         }
