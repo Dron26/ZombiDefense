@@ -45,7 +45,7 @@ namespace Infrastructure.Logic.WeaponManagment
         public void SetWeapon(Transform weaponTransform) =>
             _weaponPrefab.transform.parent = weaponTransform;
 
-        public void Initialize()
+        public override void Initialize()
         {
             SetAnimInfo();
             SetWeapon();

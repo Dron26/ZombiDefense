@@ -31,10 +31,11 @@ public class SceneObjectManager : MonoCache
     private WorkPoint _selectedWorkPoint;
     private Store _store;
     private MovePointController _movePointController;
-    public void Initialize(Store store,MovePointController movePointController)
+    public void Initialize(Store store, MovePointController movePointController, AudioManager audioManager)
     {
         _store=store;
         _movePointController = movePointController;
+        _audioManager = audioManager;
         _characterFactory=GetComponent<CharacterFactory>();
         AddListener();
     }

@@ -13,9 +13,10 @@ namespace Infrastructure.Logic.WeaponManagment
         public ItemData ItemData;
         public int Damage { get; set; }
         
-        public virtual void Initialize(){}
         public void SetUpgrade(UpgradeData upgradeData, int level) => SetDamage(upgradeData.Damage);
-        
+
+        public virtual void Initialize(){}
+
         public virtual void SetPoint(WorkPoint workPoint){}
 
         public virtual void SetSelected(bool isSelected){}

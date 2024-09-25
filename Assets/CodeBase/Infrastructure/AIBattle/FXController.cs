@@ -89,6 +89,7 @@ namespace Infrastructure.AIBattle
             _shoot=_weapon.ActionClip;
             _reload=_weapon.ReloadClip;
             _particleGunshotSingle = _weapon.GetParticleGunshot;
+            _particleEjectSingle = _weapon.GetParticleEject;
         }
         
         protected override void  OnDisable()

@@ -34,7 +34,7 @@ namespace CameraMain
             else if (IsMouseZoomEnabled())
             {
                 float zoomDelta = Input.GetAxis("Mouse ScrollWheel") * mouseZoomSpeed;
-                float newCameraHeight = mainCamera.transform.position.y - zoomDelta;
+                float newCameraHeight = transform.position.y - zoomDelta;
 
                 newCameraHeight = Mathf.Clamp(newCameraHeight, minZoomDistance, maxZoomDistance);
 

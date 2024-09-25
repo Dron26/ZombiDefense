@@ -233,7 +233,7 @@ namespace Infrastructure.Location
         {
             if (_character!=null)
             {
-                _character.transform.parent = transform.parent;
+                _character.transform.SetParent(transform.parent, true);
                 _character = null;
             }
             CheckCharacter();

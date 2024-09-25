@@ -100,7 +100,7 @@ namespace Infrastructure.Logic.Inits
             _movePointController.Initialize(this, _saveLoadService);
             Debug.Log("Finish _movePointController();");
            
-            _sceneObjectManager.Initialize( _hudPanel.GetStore(),_movePointController);
+            _sceneObjectManager.Initialize( _hudPanel.GetStore(),_movePointController,_audioManager);
             Debug.Log("Finish _sceneObjectManager();");
 
 
@@ -111,7 +111,7 @@ namespace Infrastructure.Logic.Inits
             _playerCharacterInitializer = location.GetPlayer;
             _enemyCharacterInitializer = location.GetEnemy;
             _cameraInputMovement.Initialize(location.CameraData); 
-            LighInformer.SetLight(!location.IsNight);
+            LighInformer.SetLight(location.IsNight);
         }
 
 

@@ -34,7 +34,7 @@ namespace Characters.Robots
         public Action OnSelected;
         private GrenadeThrower _grenadeThrower;
 
-        public void Initialize()
+        public override void Initialize()
         {
             _turretGun = transform.GetComponentInChildren<TurretGun>();
             SetWeaponParametrs();

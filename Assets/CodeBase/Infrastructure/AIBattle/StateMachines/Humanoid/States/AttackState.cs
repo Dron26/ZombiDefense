@@ -97,6 +97,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
                         _isAttacking = true;
                         _isTargetSet = false;
 
+                        
                         _playerCharacterAnimController.OnShoot(true);
                     }
                 }

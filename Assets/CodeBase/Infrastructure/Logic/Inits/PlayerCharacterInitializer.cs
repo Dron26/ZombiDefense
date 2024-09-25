@@ -64,7 +64,6 @@ namespace Infrastructure.Logic.Inits
         {
             _coutnCreated++;
             _activeCharacters.Add(character);
-            SetCreatedCharacter(character);
             
             if (character.TryGetComponent(out Humanoid humanoid))
             {
@@ -76,10 +75,11 @@ namespace Infrastructure.Logic.Inits
                 turret.SetSaveLoadService(_saveLoadService);
             }
            
-            CreatedCharacter?.Invoke();
             _movePointController.SelectedPoint.SetCharacter(character);
             _movePointController.SetCurrentPoint(_movePointController.SelectedPoint);
             
+            CreatedCharacter?.Invoke();
+            SetCreatedCharacter(character);
             SetLocalParametrs();
         }
 

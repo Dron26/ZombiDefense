@@ -139,7 +139,7 @@ namespace Infrastructure.Points
             }
 
 
-            store.SetButtonState(_selectedPoint.IsBusy == false);
+            store.ChangeButtonStoreState(_selectedPoint.IsBusy == false);
         }
 
         public void SetPoint(WorkPoint newPoint)

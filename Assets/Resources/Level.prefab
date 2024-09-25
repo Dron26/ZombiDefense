@@ -241,9 +241,13 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 855901291580267255}
     m_Modifications:
+    - target: {fileID: 6709271053009515156, guid: d9bb1b57579121c48ae052ba435562e0, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     - target: {fileID: 6709271053009515159, guid: d9bb1b57579121c48ae052ba435562e0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 6
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 6709271053009515159, guid: d9bb1b57579121c48ae052ba435562e0, type: 3}
       propertyPath: m_LocalPosition.z
@@ -263,15 +267,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6709271053009515163, guid: d9bb1b57579121c48ae052ba435562e0, type: 3}
       propertyPath: maxZoomDistance
-      value: -16
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 6709271053009515163, guid: d9bb1b57579121c48ae052ba435562e0, type: 3}
       propertyPath: minZoomDistance
-      value: -22
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6709271053308398612, guid: d9bb1b57579121c48ae052ba435562e0, type: 3}
       propertyPath: m_Name
       value: Camera
+      objectReference: {fileID: 0}
+    - target: {fileID: 6709271053308398612, guid: d9bb1b57579121c48ae052ba435562e0, type: 3}
+      propertyPath: m_TagString
+      value: MainCamera
       objectReference: {fileID: 0}
     - target: {fileID: 6709271053308398614, guid: d9bb1b57579121c48ae052ba435562e0, type: 3}
       propertyPath: maxBounds.x
@@ -299,7 +307,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6709271053308398615, guid: d9bb1b57579121c48ae052ba435562e0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 6709271053308398615, guid: d9bb1b57579121c48ae052ba435562e0, type: 3}
       propertyPath: m_LocalPosition.z

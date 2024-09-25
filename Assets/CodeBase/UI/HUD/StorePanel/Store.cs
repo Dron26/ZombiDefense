@@ -91,7 +91,6 @@ namespace UI.HUD.StorePanel
             
             //  _eliteCharacterStore.Initialize(_saveLoadService,this);
             //_eliteCharacterStore.OnCharacterBought += OnCharacterBought;
-            _characterStore.BuyCharacter += OnBoughtCharacter;
             _movePointController = _sceneInitializer.GetMovePointController();
 
             _pointUpgradePanel.Initialize();
@@ -138,6 +137,9 @@ namespace UI.HUD.StorePanel
             {
                 _pointUpgradePanel.SwitchStateButton(false);
             }
+
+            ChangeButtonStoreState(!_selectedWorkPoint.IsBusy);
+           
         }
 
         private void BuyPointUp()
@@ -161,7 +163,7 @@ namespace UI.HUD.StorePanel
 
         public CharacterStore GetBuyedPanel() => _characterStore;
 
-        public void SetButtonState(bool isActive) => _buttonStorePanel.gameObject.SetActive(isActive);
+        public void ChangeButtonStoreState(bool isActive) => _buttonStorePanel.gameObject.SetActive(isActive);
 
         private void ChangeStateButtonPanel()
         {
