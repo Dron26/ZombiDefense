@@ -63,7 +63,6 @@ namespace UI.HUD.StorePanel
             _characterSkinnedMeshes = new List<List<GameObject>>();
             FillCharacters();
             _characterSkinnedMeshesGroup.Initialize(this);
-            _characterInfoPanel.Initialize(this);
             _pricePanel.Initialize(this);
             SetCharacters();
             InitializeCharacterSlots();
@@ -71,6 +70,7 @@ namespace UI.HUD.StorePanel
             _isInitialized = true;
             _store.IsStoreActive += SetCharacterData;
             _wallet = store.GetWallet();
+            _characterInfoPanel.Initialize(this);
         }
 
         private void FillCharacters()

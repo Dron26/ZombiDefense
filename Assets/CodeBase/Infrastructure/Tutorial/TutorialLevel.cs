@@ -5,6 +5,7 @@ using Characters.Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
 using Infrastructure.Logic.Inits;
+using Infrastructure.Logic.WaveManagment;
 using Infrastructure.Points;
 using Lean.Localization;
 using TMPro;
@@ -41,7 +42,7 @@ namespace Infrastructure.Tutorial
         public Action OnEndTutorial;
         private bool _isCharacterCreated = false;
         private PlayerCharacterInitializer _characterInitializer;
-        private EnemyCharacterInitializer _enemyCharacterInitializer;
+        private WaveManager _waveManager;
         private int numberForCreatedCharacter = 9;
         private bool _isChangedColor = false;
         private MovePointController _movePointController;
@@ -51,7 +52,7 @@ namespace Infrastructure.Tutorial
         {
             _localizedTextMesh = tutorialText.GetComponent<LeanLocalizedTextMeshProUGUI>();
             _characterInitializer = GetComponentInChildren<PlayerCharacterInitializer>();
-            _enemyCharacterInitializer = GetComponentInChildren<EnemyCharacterInitializer>();
+            _waveManager = GetComponentInChildren<WaveManager>();
 
             FillDictionary();
         }
@@ -163,7 +164,7 @@ namespace Infrastructure.Tutorial
             _dimm.enabled = false;
             if (_isCharacterCreated) return;
             _characterInitializer.SetCreatedCharacter(_humanoid);
-            _enemyCharacterInitializer.SetWaveData();
+            _waveManager.SetWaveData();
             _isCharacterCreated = true;
         }
         

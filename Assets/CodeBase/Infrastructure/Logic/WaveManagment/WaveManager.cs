@@ -4,9 +4,7 @@ using Enemies.AbstractEntity;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Factories.FactoryWarriors.Enemies;
 using Infrastructure.Logic.Inits;
-using Service.Audio;
 using Service.SaveLoad;
-using UI.Levels;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -17,16 +15,16 @@ namespace Infrastructure.Logic.WaveManagment
     [RequireComponent(typeof(EnemyFactory))]
     public class WaveManager : MonoCache
     {
-        [SerializeField] private List<int> _timesBetweenWaves;
         [SerializeField] private List<Wave> _waves;
         public Action<Wave> OnSetWave;
         public Action OnStartSpawn;
+        private int _timesBetweenWaves;
         private EnemyFactory _enemyFactory;
         private WaveSpawner _waveSpawner;
         private int _currentFilledWave = 0;
         private bool isWaitingForNextWave = false;
 
-        private int TimeBetweenWaves => _timesBetweenWaves[_currentFilledWave];
+        private int TimeBetweenWaves => _timesBetweenWaves;
         private List<Enemy> enemies = new List<Enemy>();
         private bool _isContinueGame;
         private bool _isStartedWave;
@@ -44,7 +42,6 @@ namespace Infrastructure.Logic.WaveManagment
         {
             _sceneInitializer = sceneInitializer;
             _saveLoadService = saveLoadService;
-            _saveLoadService.SetTimeBeforeNextWave(TimeBetweenWaves);
             _enemyFactory = GetComponent<EnemyFactory>();
             _enemyFactory.Initialize(_saveLoadService, _sceneInitializer.GetAudioController());
             _waveSpawner = GetComponent<WaveSpawner>();
@@ -52,6 +49,29 @@ namespace Infrastructure.Logic.WaveManagment
             _canFillWave = true;
             SetMaxCountEnemy();
             AddListener();
+        }
+        
+        public void SetWaveData()
+        {
+            if (_canFillWave)
+            {
+                _timesBetweenWaves = _waves[_currentFilledWave].TimeBetweenWaves;
+                _saveLoadService.SetTimeBeforeNextWave(_timesBetweenWaves);
+                OnSetWave?.Invoke(CurrentWave);
+            }
+        }
+
+        public void StartSpawn()
+        {
+            if (!_isStartedWave)
+            {
+                OnStartSpawn?.Invoke();
+            }
+        }
+        
+        public SaveLoadService GetSaveLoad()
+        {
+            return _saveLoadService;
         }
 
         private void SetMaxCountEnemy()
@@ -68,20 +88,9 @@ namespace Infrastructure.Logic.WaveManagment
             _saveLoadService.SetMaxEnemyOnScene(count);
         }
         
-        public void SetWaveData()
+        public void StopSpawn()
         {
-            if (_canFillWave)
-            {
-                OnSetWave?.Invoke(CurrentWave);
-            }
-        }
-
-        public void StartSpawn()
-        {
-            if (!_isStartedWave)
-            {
-                OnStartSpawn?.Invoke();
-            }
+            _waveSpawner.StopSpawn();
         }
 
         private void OnWaveFilled()
@@ -95,20 +104,14 @@ namespace Infrastructure.Logic.WaveManagment
             _isStartedWave = false;
         }
 
-        public void StopSpawn()
-        {
-            _waveSpawner.StopSpawn();
-        }
+       
 
         private void SetPossibilityFillWave()
         {
             _canFillWave = _currentFilledWave != _waves.Count;
         }
 
-        public SaveLoadService GetSaveLoad()
-        {
-            return _saveLoadService;
-        }
+       
 
         private void AddListener()
         {

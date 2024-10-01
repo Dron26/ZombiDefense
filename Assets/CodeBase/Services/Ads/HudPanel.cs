@@ -1,14 +1,8 @@
 using System;
-using System.Collections;
 using Characters.Robots;
-using Data;
-using Infrastructure;
-using Infrastructure.AIBattle.EnemyAI;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.Inits;
 using Infrastructure.Logic.WaveManagment;
-using Infrastructure.StateMachine.States;
-using Service.Audio;
 using Service.SaveLoad;
 using UI;
 using UI.Buttons;

@@ -41,7 +41,6 @@ namespace Infrastructure.Logic.Inits
         public HudPanel Window=>_hudPanel;
         private SaveLoadService _saveLoadService;
         private PlayerCharacterInitializer _playerCharacterInitializer;
-        private EnemyCharacterInitializer _enemyCharacterInitializer;
          private GameObject _location;
          
 
@@ -109,7 +108,7 @@ namespace Infrastructure.Logic.Inits
         private void SetInitializers(LocationPrefab location)
         {
             _playerCharacterInitializer = location.GetPlayer;
-            _enemyCharacterInitializer = location.GetEnemy;
+            _waveManager = location.GetEnemy;
             _cameraInputMovement.Initialize(location.CameraData); 
             LighInformer.SetLight(location.IsNight);
         }
@@ -118,15 +117,14 @@ namespace Infrastructure.Logic.Inits
         private void OnLastHumanoidDie()
         {
             _saveLoadService.OnLastHumanoidDie();
-            _enemyCharacterInitializer.StopSpawning();
+            _waveManager.StopSpawn();
         }
         
         private void InitializeEnemies()
         {
             Debug.Log("+++InitializeEnemies++++");
-            _enemyCharacterInitializer.Initialize(_saveLoadService, this);
+            _waveManager.Initialize(_saveLoadService, this);
             Debug.Log("Finish _playerCharacterInitializer();");
-            _waveManager = _enemyCharacterInitializer.GetWaveManager();
             Debug.Log("Finish _playerCharacterInitializer();");
 
             _waveManager.OnReadySpawning += ReadyToSpawning;
@@ -175,9 +173,9 @@ namespace Infrastructure.Logic.Inits
         protected override void OnDisabled()
         {
             _playerCharacterInitializer.CreatedCharacter -= SetInfo;
-            _playerCharacterInitializer.LastHumanoidDie -= _enemyCharacterInitializer.StopSpawning;
+            _playerCharacterInitializer.LastHumanoidDie -= _waveManager.StopSpawn;
             _waveManager.OnReadySpawning -= ReadyToSpawning;
-            _timerDisplay.OnClickReady-=_enemyCharacterInitializer.SetWaveData;        }
+            _timerDisplay.OnClickReady-=_waveManager.SetWaveData;        }
 
          public HudPanel GetHudPanel()
          {
@@ -224,7 +222,7 @@ namespace Infrastructure.Logic.Inits
          
          private void AddListener()
          {
-             _timerDisplay.OnClickReady+=_enemyCharacterInitializer.SetWaveData;
+             _timerDisplay.OnClickReady+=_waveManager.SetWaveData;
              _hudPanel.OnStartSpawn+=OnClickContinueStartSpawn;
              _hudPanel.OnClickExitToMenu+=OnClickExitToMenu;
              _hudPanel.OnResetLevel += ResetLevel;
