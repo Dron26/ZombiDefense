@@ -175,7 +175,7 @@ namespace Infrastructure.Logic.Inits
             _playerCharacterInitializer.CreatedCharacter -= SetInfo;
             _playerCharacterInitializer.LastHumanoidDie -= _waveManager.StopSpawn;
             _waveManager.OnReadySpawning -= ReadyToSpawning;
-            _timerDisplay.OnClickReady-=_waveManager.SetWaveData;        }
+            _timerDisplay.OnClickReady-=_waveManager.Spawn;        }
 
          public HudPanel GetHudPanel()
          {
@@ -207,7 +207,7 @@ namespace Infrastructure.Logic.Inits
              _saveLoadService.GetGameBootstrapper().GetStateMachine().Enter<LoadLevelState,string>(Constants.Menu); 
              _saveLoadService.ClearSpawnData();
              _playerCharacterInitializer.ClearData();
-             Destroy(_location.gameObject);
+             //Destroy(_location.gameObject);
              Destroy(transform.parent.gameObject);
              
          }
@@ -222,7 +222,7 @@ namespace Infrastructure.Logic.Inits
          
          private void AddListener()
          {
-             _timerDisplay.OnClickReady+=_waveManager.SetWaveData;
+             _timerDisplay.OnClickReady+=_waveManager.Spawn;
              _hudPanel.OnStartSpawn+=OnClickContinueStartSpawn;
              _hudPanel.OnClickExitToMenu+=OnClickExitToMenu;
              _hudPanel.OnResetLevel += ResetLevel;

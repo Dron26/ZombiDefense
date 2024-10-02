@@ -7,6 +7,7 @@ namespace Data
     [CreateAssetMenu(fileName = "BoxesPrice", menuName = "BoxesPrice")]
     public class BoxesPrice : ScriptableObject
     {
-        public Dictionary<BoxType, int> BoxPrices = new Dictionary<BoxType, int>();
+        public List<BoxType> BoxType = new List<BoxType>();
+        public List<int> Prices = new List<int>();
     }
 }

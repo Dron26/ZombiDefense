@@ -26,7 +26,7 @@ namespace Infrastructure.Points
         private WorkPoint _movePoint;
         private Character _selectedCharacter;
         public UnityAction<WorkPoint> OnClickWorkpoint;
-        public UnityAction<WorkPoint> OnUnSelectedPoint;
+        public UnityAction<WorkPoint> OnClickPoint;
         private bool isChracterSelected = false;
         private bool isPointToMoveTaked;
         [SerializeField] private WorkPoint _startPoint;
@@ -62,10 +62,12 @@ namespace Infrastructure.Points
             _previousMovePoint = _workPoints[0];
             _currentPoint = _workPoints[0]; //  _selectedPoint.SetSelected(true);
             _saveLoadService.SetSelectedPoint(_selectedPoint);
+            OnClickPoint?.Invoke(_selectedPoint);
         }
 
         public void OnSelectedPoint(WorkPoint newPoint)
         {
+            OnClickPoint?.Invoke(newPoint);
             isChracterSelected = _saveLoadService.GetSelectedCharacter();
             _selectedCharacter = _saveLoadService.GetSelectedCharacter();
 

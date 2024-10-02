@@ -32,7 +32,7 @@ namespace Infrastructure.Logic.WeaponManagment
         private PlayerCharacterAnimController _playerCharacterAnimController;
         private Dictionary<int, float> _weaponAnimInfo = new();
         private List<Granade> _granades = new();
-        private int _damage;
+        public int _damage;
         private float _reloadTime;
         private float _spread = 8;
         private float _fireRate;

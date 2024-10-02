@@ -270,7 +270,7 @@ namespace Infrastructure.Logic.WaveManagment
         private void AddListener()
         {
             _waveManager.OnSetWave += SetData;
-            _waveManager.OnStartSpawn += OnStartSpawn;
+            _waveManager.StartSpawn += OnStartSpawn;
             _saveLoadService.OnSetInactiveEnemy += OnSetInactiveEnemy;
         }
     }

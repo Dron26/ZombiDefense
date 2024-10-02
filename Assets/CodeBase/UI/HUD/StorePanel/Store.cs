@@ -218,10 +218,13 @@ namespace UI.HUD.StorePanel
             _applyAdsMoneyWindowButton.onClick.AddListener(ShowPanelAds);
             _closeAdsMoneyWindowButton.onClick.AddListener(ShowPanelAdsForMoney);
 
-            _boxStore.BuyBox+=OnBoughtBox;
+            _boxStore.BuyBox+=OnBuyBox;
             _characterStore.BuyCharacter += BuyCharacter;
         }
-
+        public void OnBuyBox(BoxData data)
+        {
+            OnBoughtBox?.Invoke(data);
+        }
         private void RemoveListener()
         {
             _saveLoadService.OnSelectedNewPoint -= CheckPointInfo;
@@ -229,6 +232,7 @@ namespace UI.HUD.StorePanel
             _characterStore.OnMoneyEmpty -= ShowPanelAdsForMoney;
             _eliteCharacterStore.BuyCharacter -= BuyCharacter;
             _pointUpgradePanel.OnSelectedButton -= (BuyPointUp);
+            _boxStore.BuyBox+=OnBuyBox;
         }
     }
 }

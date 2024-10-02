@@ -27,6 +27,12 @@ namespace Infrastructure.AIBattle
         public void SetItems(List<BaseItem> items)
         {
             _items = items;
+            foreach (var item in _items)
+            {
+                item.gameObject.SetActive(false);
+                item.transform.parent=transform;
+            }
+           
         }
     }
 }

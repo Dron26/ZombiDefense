@@ -7,7 +7,7 @@ namespace Infrastructure.AssetManagement
         public static readonly string LocationsPrefabs = "Locations/Prefabs/";
         public static readonly string LocationsData = "Locations/LocationData/";
         public static readonly string Resources = "Assets/Resources/";
-        public static readonly string Boxes = "Prefab/Store/Boxes/";
+        public static readonly string Boxes = "Prefab/Store/Boxes/Prefabs/";
         public static readonly string BoxesData = "Prefab/Store/Boxes/Data/";
         public static readonly string BoxesPrice = "Prefab/Store/Boxes/Data/Price";
         public static readonly string Items = "Prefab/Store/Items/";

@@ -17,7 +17,7 @@ namespace Infrastructure.Logic.WaveManagment
     {
         [SerializeField] private List<Wave> _waves;
         public Action<Wave> OnSetWave;
-        public Action OnStartSpawn;
+        public Action StartSpawn;
         private int _timesBetweenWaves;
         private EnemyFactory _enemyFactory;
         private WaveSpawner _waveSpawner;
@@ -28,6 +28,7 @@ namespace Infrastructure.Logic.WaveManagment
         private List<Enemy> enemies = new List<Enemy>();
         private bool _isContinueGame;
         private bool _isStartedWave;
+        private bool _canStartWave;
         private bool _canFillWave;
         public Wave CurrentWave => _waves[_currentFilledWave];
         public int CurrentFilledWave => _currentFilledWave;
@@ -61,11 +62,12 @@ namespace Infrastructure.Logic.WaveManagment
             }
         }
 
-        public void StartSpawn()
+        public void Spawn()
         {
-            if (!_isStartedWave)
+            if (!_isStartedWave&_canStartWave)
             {
-                OnStartSpawn?.Invoke();
+                _canStartWave = false;
+                StartSpawn?.Invoke();
             }
         }
         
@@ -102,6 +104,7 @@ namespace Infrastructure.Logic.WaveManagment
 
             SetPossibilityFillWave();
             _isStartedWave = false;
+            _canStartWave = true;
         }
 
        
@@ -139,10 +142,10 @@ namespace Infrastructure.Logic.WaveManagment
 
         private void CompletedWave()
         {
-            if (_currentStartedWave!<_currentFilledWave)
-            {
-                StartSpawn();
-            }
+            // if (_currentStartedWave!<_currentFilledWave)
+            // {
+            //     Spawn();
+            // }
         }
 
 

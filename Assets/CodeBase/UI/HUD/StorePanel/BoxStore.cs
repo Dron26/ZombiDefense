@@ -31,10 +31,11 @@ namespace UI.HUD.StorePanel
         private ItemFactory _itemFactory;
         private WorkPoint _selectedWorkPoint;
         private Wallet _wallet;
-        private Dictionary<BoxData, int> _boxesData;
+        private Dictionary<BoxData, int> _boxesData=new Dictionary<BoxData, int>();
         private AdditionalBox _weaponBox;
         private AdditionalBox _medicineBox;
         public event Action <BoxData> BuyBox;
+        
         public void Initialize(SaveLoadService saveLoadService, Wallet wallet)
         {
             _saveLoadService = saveLoadService;
@@ -56,25 +57,25 @@ namespace UI.HUD.StorePanel
         {
             string path = AssetPaths.BoxesPrice;
             BoxesPrice boxesPrice = Resources.Load<BoxesPrice>(path);
-
+            
             for (int i = 0; i < boxes.Count; i++)
             {
-                if (boxesPrice != null && boxesPrice.BoxPrices.ContainsKey(boxes[i].Type))
+                if (boxesPrice != null && boxesPrice.BoxType.Contains(boxes[i].Type))
                 {
-                    
-                    _boxesData.Add(boxes[i], boxesPrice.BoxPrices[boxes[i].Type]);
+                    _boxesData.Add(boxes[i], boxesPrice.Prices[boxesPrice.BoxType.IndexOf(boxes[i].Type)]);
                 }
             }
         }
 
         private List<BoxData> CreateBoxesGroup()
-        {
+        {   
             List<BoxData> boxes=new List<BoxData>();
             UnityEngine.Object[] boxObjects = Resources.LoadAll(AssetPaths.Boxes);
 
-            foreach (var boxObject in boxObjects)
+            foreach (GameObject boxObject in boxObjects)
             {
                 string fileName = System.IO.Path.GetFileNameWithoutExtension(boxObject.name);
+
 
                 if (Enum.TryParse(fileName, out BoxType boxType))
                 { 

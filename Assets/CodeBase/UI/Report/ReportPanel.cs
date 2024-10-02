@@ -73,7 +73,7 @@ namespace UI.Report
 
         private IEnumerator Show()
         {
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(4f);
             
             _globalTimer.SetPaused(true);
             

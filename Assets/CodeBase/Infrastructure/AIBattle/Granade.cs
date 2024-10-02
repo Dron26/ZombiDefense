@@ -18,13 +18,6 @@ namespace Infrastructure.AIBattle
         private float _sourceVolume;
         private float _timeBeforeExplosion;
 
-        private void Start()
-        {
-            _timeBeforeExplosion = TimeBeforeExplosion;
-            _granadeAudio = GetComponent<GranadeAudioPlayer>();
-            _explosionManager = GetComponent<ExplosionManager>();
-        }
-
         private IEnumerator StartCountdown()
         {
             while (_timeBeforeExplosion > 0)
@@ -51,8 +44,11 @@ namespace Infrastructure.AIBattle
 
         public override void Initialize(ItemData itemData)
         {
+            _granadeAudio = GetComponent<GranadeAudioPlayer>();
+            _explosionManager = GetComponent<ExplosionManager>();
             _explosionSound = itemData.ActionClip;
             _explosionEffect = itemData.ExplosionEffect;
+            _timeBeforeExplosion = itemData.TimeBeforeExplosion;
         }
     }
 }

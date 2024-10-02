@@ -16,6 +16,9 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UIElements;
 
+[RequireComponent(typeof(BoxFactory))]
+[RequireComponent(typeof(CharacterFactory))]
+[RequireComponent(typeof(ItemFactory))]
 public class SceneObjectManager : MonoCache
 {
     private BoxStore _boxStore;
@@ -23,7 +26,8 @@ public class SceneObjectManager : MonoCache
     private BoxFactory _boxFactory;
     private HumanoidFactory _humanoidFactory;
     private CharacterFactory _characterFactory;
-    private ItemFactory _itemFactory;
+    
+    [SerializeField]private ItemFactory _itemFactory;
     private PlayerCharacterInitializer _characterInitializer; 
     private AudioManager _audioManager;
     public UnityAction<Character> CreatedHumanoid;
@@ -37,6 +41,8 @@ public class SceneObjectManager : MonoCache
         _movePointController = movePointController;
         _audioManager = audioManager;
         _characterFactory=GetComponent<CharacterFactory>();
+        _boxFactory=GetComponent<BoxFactory>();
+        _itemFactory=GetComponent<ItemFactory>();   
         AddListener();
     }
 
@@ -125,7 +131,7 @@ public class SceneObjectManager : MonoCache
         _store.OnBoughtCharacter+=OnBoughtCharacter;
         _store.OnBoughtBox+=OnBoughtBox;
         _store.OnBoughtUpgrade+=OnBoughtUpgrade;
-        _movePointController.OnUnSelectedPoint += OnSelectedNewPoint;
+        _movePointController.OnClickPoint += OnSelectedNewPoint;
     }
 
     private void OnBoughtUpgrade(WorkPoint point)
@@ -138,7 +144,7 @@ public class SceneObjectManager : MonoCache
         _store.OnBoughtCharacter-=OnBoughtCharacter;
         _store.OnBoughtBox-=OnBoughtBox;
         _store.OnBoughtUpgrade-=OnBoughtUpgrade;
-        _movePointController.OnUnSelectedPoint += OnSelectedNewPoint;
+        _movePointController.OnClickPoint += OnSelectedNewPoint;
     }
 }
 
