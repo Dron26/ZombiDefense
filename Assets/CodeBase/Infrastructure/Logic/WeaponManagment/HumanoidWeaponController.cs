@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Data;
 using Data.Upgrades;
 using Infrastructure.AIBattle;
 using Infrastructure.AIBattle.AdditionalEquipment;
@@ -10,8 +11,12 @@ using Infrastructure.Logic.Inits;
 using UI.Buttons;
 using UnityEngine;
 
+
 namespace Infrastructure.Logic.WeaponManagment
 {
+    
+    [RequireComponent(typeof(GrenadeThrower))]
+
     public class HumanoidWeaponController : WeaponController,IWeaponController
     {
 
@@ -31,7 +36,7 @@ namespace Infrastructure.Logic.WeaponManagment
         private GrenadeThrower _grenadeThrower;
         private PlayerCharacterAnimController _playerCharacterAnimController;
         private Dictionary<int, float> _weaponAnimInfo = new();
-        private List<Granade> _granades = new();
+        private List<Grenade> _granades = new();
         public int _damage;
         private float _reloadTime;
         private float _spread = 8;
@@ -40,8 +45,8 @@ namespace Infrastructure.Logic.WeaponManagment
         private bool _isGranade;
         private bool _canThrowGranade;
         protected bool _isSelected;
-
-
+        private BoxData _boxData;
+        private List<BaseItem> _items;
         public void SetWeapon(Transform weaponTransform) =>
             _weaponPrefab.transform.parent = weaponTransform;
 
@@ -51,6 +56,7 @@ namespace Infrastructure.Logic.WeaponManagment
             SetWeapon();
             SetLight();
             SetRadius();
+
             OnInitialized?.Invoke(_weapon);
         }
 
@@ -79,7 +85,6 @@ namespace Infrastructure.Logic.WeaponManagment
                 _radius.gameObject.SetActive(isSelected);
             }
         }
-        public void AddGranade(List<Granade> granades) => _granades = new List<Granade>(granades);
 
         public void ThrowGranade()
         {
@@ -92,7 +97,12 @@ namespace Infrastructure.Logic.WeaponManagment
 
         public void SetAdditionalWeaponButton(AdditionalWeaponButton additionalWeaponButton) => additionalWeaponButton.OnClickButton += ThrowGranade;
 
-        private void Awake() => _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
+        private void Awake()
+        {
+            _grenadeThrower = GetComponent<GrenadeThrower>();
+            _grenadeThrower.OnThrowed += OnThrowedGranade;
+            _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
+        }
 
         private void SetDamage(int damage) => _damage += damage;
         
@@ -131,18 +141,26 @@ namespace Infrastructure.Logic.WeaponManagment
       
         private void OpenWeaponBox(AdditionalBox weaponBox)
         {
-            List<Granade> granades = weaponBox.GetItems().OfType<Granade>().ToList();
-            
+            _boxData = weaponBox.GetData();
+            _items = weaponBox.GetItems();
+            foreach (var item in _items)
+            {
+                item.transform.SetParent(transform); 
+            }
+            List<Grenade> granades = _items.OfType<Grenade>().ToList();
+
             if (granades.Count > 0)
             {
-                gameObject.AddComponent<GrenadeThrower>();
-                _grenadeThrower = GetComponent<GrenadeThrower>();
-                _grenadeThrower.OnThrowed += OnThrowedGranade;
-                AddGranade(granades);
+                foreach (Grenade grenade in granades)
+                {
+                    _granades.Add(grenade);
+                }
+                
                 _canThrowGranade = true;
                 OnChangeGranade?.Invoke();
             }
         }
+
 
         private void OnThrowedGranade()
         {
@@ -155,7 +173,6 @@ namespace Infrastructure.Logic.WeaponManagment
             else
             {
                 _canThrowGranade = false;
-                Destroy(gameObject.GetComponent<GrenadeThrower>(), 3f);
             }
 
             OnChangeGranade?.Invoke();

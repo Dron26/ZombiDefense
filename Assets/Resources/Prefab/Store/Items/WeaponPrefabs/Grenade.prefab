@@ -24149,7 +24149,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5077952501396457332}
   m_LocalRotation: {x: -0.38268343, y: 0, z: 0, w: 0.92387956}
-  m_LocalPosition: {x: 0, y: 2, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -24255,9 +24255,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9ea27ce02ee4e1e81b192565f1cf125, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _weaponData: {fileID: 0}
-  _explosionEffect: {fileID: 7151874556821285643, guid: 2c81bf139243075488e051502146eb27, type: 3}
-  _explosionSound: {fileID: 8300000, guid: dcd33bb624f38c547aec00b9ccfb82c6, type: 3}
+  _particleGunshot: {fileID: 0}
+  _particleEject: {fileID: 0}
+  _weaponLight: {fileID: 0}
 --- !u!82 &-1096483089395510625
 AudioSource:
   m_ObjectHideFlags: 0

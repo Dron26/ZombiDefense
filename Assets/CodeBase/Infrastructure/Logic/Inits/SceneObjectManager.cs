@@ -42,7 +42,7 @@ public class SceneObjectManager : MonoCache
         _audioManager = audioManager;
         _characterFactory=GetComponent<CharacterFactory>();
         _boxFactory=GetComponent<BoxFactory>();
-        _itemFactory=GetComponent<ItemFactory>();   
+        _itemFactory=GetComponent<ItemFactory>();
         AddListener();
     }
 
@@ -54,7 +54,6 @@ public class SceneObjectManager : MonoCache
     private void OnBoughtBox(BoxData boxData)
     {
         AdditionalBox box = BuildBox(boxData);
-        PlaceBoxOnScene(box.transform,_selectedWorkPoint.transform);
         OnBuildedBox(box);
     }
 
@@ -111,7 +110,7 @@ public class SceneObjectManager : MonoCache
     
     private void OnBuildedBox( AdditionalBox box)
     {
-        BuildedBox?.Invoke(box);
+        _selectedWorkPoint.SetWeaponBox(box);
     }
      
 

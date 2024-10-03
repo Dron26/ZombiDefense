@@ -13,13 +13,13 @@ public class GrenadeThrower : MonoBehaviour
     private float _maxDistance = 15f;
     private bool _isThrowed;
 
-    public void ThrowGrenade(Granade granade)
+    public void ThrowGrenade(Grenade grenade)
     {
         _isThrowed = false;
-        StartCoroutine(Throw(granade));
+        StartCoroutine(Throw(grenade));
     }
 
-    private IEnumerator Throw(Granade grenade)
+    private IEnumerator Throw(Grenade grenade)
     {
         while (_isThrowed == false)
         {
@@ -43,13 +43,14 @@ public class GrenadeThrower : MonoBehaviour
                         new Quaternion(0, transform.rotation.y, transform.rotation.z, transform.rotation.w);
                     transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, transform.eulerAngles.z);
                     
-                    GameObject newGrenade = Instantiate(grenade.gameObject, transform.position, transform.rotation);
-                    Vector3 pos = newGrenade.transform.position;
-                    newGrenade.transform.position = new Vector3(pos.x, pos.y + 2f, pos.z);
-                    newGrenade.transform.rotation = new Quaternion(-45f, 0, 0, 0);
+                    grenade.gameObject.SetActive(true);
+                    Transform grenadeTransform = grenade.transform;
+                    Vector3 pos = grenadeTransform.position;
+                    grenadeTransform.position = new Vector3(pos.x, pos.y + 2f, pos.z);
+                    grenadeTransform.rotation = new Quaternion(-45f, 0, 0, 0);
                     
-                    Granade granade = newGrenade.GetComponent<Granade>();
-                    Rigidbody rb = newGrenade.GetComponent<Rigidbody>();
+                    Grenade grenadeComponent = grenade.GetComponent<Grenade>();
+                    Rigidbody rb = grenade.GetComponent<Rigidbody>();
                     _throwForce = CalculateThrowForce(distanceToTarget);
                     Debug.Log("_throwForce" + _throwForce);
                     rb.AddForce(transform.forward * _throwForce, ForceMode.VelocityChange);
@@ -63,8 +64,8 @@ public class GrenadeThrower : MonoBehaviour
                     }
                     
                     
-                    granade.Throw(volume);
-                    granade.transform.parent = null;
+                    grenadeComponent.Throw(volume);
+                    grenadeTransform.parent = null;
                     OnThrowed.Invoke();
                 }
             }

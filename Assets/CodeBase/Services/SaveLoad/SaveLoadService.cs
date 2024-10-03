@@ -132,7 +132,6 @@ namespace Service.SaveLoad
             {
                 IWeaponController weaponController = (IWeaponController)GetSelectedCharacter().GetComponent(typeof(IWeaponController));
                 weaponController.SetSelected(false);
-                
             }
             
             _gameData.ChangeSelectedCharacters(character);

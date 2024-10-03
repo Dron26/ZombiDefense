@@ -8,7 +8,7 @@ namespace Infrastructure.AIBattle
 {
     [RequireComponent(typeof(ExplosionManager))]
     [RequireComponent(typeof(GranadeAudioPlayer))]
-    public class Granade : Weapon
+    public class Grenade : Weapon
     {
         private ParticleSystem _explosionEffect;
         private AudioClip _explosionSound;
@@ -44,6 +44,7 @@ namespace Infrastructure.AIBattle
 
         public override void Initialize(ItemData itemData)
         {
+            base.Initialize(itemData);
             _granadeAudio = GetComponent<GranadeAudioPlayer>();
             _explosionManager = GetComponent<ExplosionManager>();
             _explosionSound = itemData.ActionClip;

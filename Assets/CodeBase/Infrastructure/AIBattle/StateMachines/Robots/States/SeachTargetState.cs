@@ -2,6 +2,7 @@ using System.Collections;
 using System.Linq;
 using Enemies.AbstractEntity;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
+using Infrastructure.AIBattle.StateMachines.Humanoid.States;
 using Infrastructure.Logic.WeaponManagment;
 using Unity.Collections;
 using Unity.Jobs;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Enemies.AbstractEntity;
+using Infrastructure.AIBattle.StateMachines.Humanoid.States;
 using Infrastructure.Logic.WeaponManagment;
 using Unity.Collections;
 using Unity.Jobs;
@@ -45,7 +46,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 
         protected override void OnEnabled()
         {
-            Debug.Log("SearchTargetState-OnEnabled()");
+          //  Debug.Log("SearchTargetState-OnEnabled()");
            _coroutine=StartCoroutine(Search());
         }
 
@@ -57,7 +58,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
             
             while (_isSearhing)
             {
-                Debug.Log("SearchTargetState-while (_isSearhing)");
+                //  Debug.Log("SearchTargetState-while (_isSearhing)");
                 int closestEnemyIndex = GetClosestEnemyIndex();
                 
                 if (closestEnemyIndex != -1)
@@ -81,7 +82,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         private void ChangeState()
         {
             _isTurning = false;
-            Debug.Log("SearchTargetState-ChangeState)");
+         //   Debug.Log("SearchTargetState-ChangeState)");
             if (_enemy.IsLife())
             {
                 _attackState.InitEnemy(_enemy);
@@ -92,7 +93,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         private void LookEnemyPosition(Transform enemyTransform)
         {
             _turnTime = 0;
-            Debug.Log("SearchTargetState-LookEnemyPosition)");
+        //    Debug.Log("SearchTargetState-LookEnemyPosition)");
             if (currentTurnCoroutine != null)
             {
                 StopCoroutine(currentTurnCoroutine);
@@ -144,7 +145,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
             }
             _isTurning= false;
             transform.rotation = targetRotation;
-            Debug.Log("SearchTargetState-ChangeState)");
+         //   Debug.Log("SearchTargetState-ChangeState)");
             
             if (enabled)
             {
@@ -162,7 +163,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
                 {
                     if (!enemy.IsLife())
                     {
-                        Debug.Log("dfjnsdkfhskdjhfjskdhfjksdhkfjhsdjk");
+                  //      Debug.Log("dfjnsdkfhskdjhfjskdhfjksdhkfjhsdjk");
                     }
                     
                 }
@@ -249,14 +250,14 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 
         public override void ExitBehavior()
         {
-            Debug.Log("SAearh ExitBehavior");
+           // Debug.Log("SAearh ExitBehavior");
                 _isTurning= false;
             enabled = false;
         }
         
         protected override void OnDisable()
         {
-            Debug.Log("SAearh OnDisable");
+          //  Debug.Log("SAearh OnDisable");
             
             if (_coroutine != null)
                 StopCoroutine(_coroutine);

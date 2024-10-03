@@ -13,15 +13,17 @@ namespace Infrastructure.AIBattle
         private List<BaseItem> _items;
         private List<ItemType> _types;
         private BoxType _boxType;
-
+        private BoxData _boxData;
         public List<BaseItem> GetItems() => _items;
         public List<ItemType> GetItemsType() => _types;
         public BoxType GetType() => _boxType;
+        public BoxData GetData() => _boxData;
 
         public void Initialize(BoxData boxData)
         {
-            _boxType = boxData.Type;
-            _types = boxData.ItemTypes;
+            _boxData=boxData;
+            _boxType = _boxData.Type;
+            _types = _boxData.ItemTypes;
         }
         
         public void SetItems(List<BaseItem> items)

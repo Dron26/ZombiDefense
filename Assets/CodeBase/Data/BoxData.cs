@@ -10,5 +10,6 @@ namespace Data
     {
         public BoxType Type;
         public List<ItemType> ItemTypes;
+        public List<int> Count;
     }
 }

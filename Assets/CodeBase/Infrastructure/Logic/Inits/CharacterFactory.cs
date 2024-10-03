@@ -17,6 +17,7 @@ namespace Infrastructure.Factories.FactoryWarriors.Humanoids
         {
             string path =AssetPaths.Characters + type;
             GameObject prefab = Instantiate(Resources.Load<GameObject>(path));
+            prefab.gameObject.layer = LayerMask.NameToLayer("Character");
             return prefab;
         }
     }

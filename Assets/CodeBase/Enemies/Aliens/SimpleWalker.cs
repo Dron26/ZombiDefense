@@ -22,10 +22,5 @@ namespace Enemies.Aliens
             }
             
         }
-
-        void IDamageable.ApplyDamage(float damage, ItemType itemType)
-        {
-            AdditionalDamage(damage, itemType);
-        }
     }
 }

@@ -116,7 +116,7 @@ namespace Infrastructure.Logic.WaveManagment
 
         private void PreparEnemy(Enemy enemy, SpawnPoint spawnPoint)
         {
-            enemy.gameObject.layer = LayerMask.NameToLayer("Enemy");
+            enemy.gameObject.layer = LayerMask.NameToLayer("Character");
             enemy.GetComponent<EnemyDieState>().OnRevival += OnEnemyRevival;
             enemy.gameObject.transform.parent = spawnPoint.transform;
             enemy.StartPosition = spawnPoint.transform.position;

@@ -10,13 +10,8 @@ namespace UI.HUD.StorePanel
         [SerializeField] private Button _button;
         public Action OnSelected;
         
-        private void Awake()
-        {
-            _button.onClick.AddListener(() => 
-            {
-                OnSelected?.Invoke();
-            });
-        }
+        private void Awake() => _button.onClick.AddListener(() => OnSelected?.Invoke());
+
         public void SwitchStateButton(bool isActive)
         {
             _button.gameObject.SetActive(isActive);

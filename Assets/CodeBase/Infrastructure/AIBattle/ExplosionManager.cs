@@ -10,11 +10,9 @@ public class ExplosionManager : MonoBehaviour
     public void ExecuteExplosion(Vector3 explosionPosition, float explosionRadius, int damage, ParticleSystem explosionEffect,float volumeAudio)
     {
         _sourceVolume = volumeAudio;
-        // Создание эффекта взрыва
         GameObject exploded = Instantiate(explosionEffect.gameObject, explosionPosition, Quaternion.identity);
         exploded.GetComponent<ParticleSystem>().Play();
-        // Используем слой "Enemies" для поиска врагов
-        int enemyLayer = LayerMask.GetMask("Enemy");
+        int enemyLayer = LayerMask.GetMask("Character");
         Collider[] colliders = Physics.OverlapSphere(explosionPosition, explosionRadius, enemyLayer);
 
         foreach (Collider collider in colliders)
@@ -23,11 +21,9 @@ public class ExplosionManager : MonoBehaviour
             float damagePercentage = Mathf.Clamp01(1 - distance / explosionRadius);
             int calculatedDamage = Mathf.RoundToInt(damagePercentage * damage);
 
-            // Применяем урон, если найден враг
-            if (collider.TryGetComponent(out Enemy currentEnemy))
+            if (collider.TryGetComponent(out IDamageable damageable))
             {
-                IDamageable damageable = collider.GetComponent<IDamageable>();
-                damageable?.ApplyDamage(calculatedDamage, ItemType.Grenade);
+                damageable.ApplyDamage(calculatedDamage, ItemType.Grenade);
             }
         }
     }

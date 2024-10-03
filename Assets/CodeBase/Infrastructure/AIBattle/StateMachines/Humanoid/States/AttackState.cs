@@ -1,10 +1,9 @@
-﻿using System;
-using Characters.Humanoids.AbstractLevel;
-using Enemies.AbstractEntity;
+﻿using Enemies.AbstractEntity;
+using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
 using Infrastructure.Logic.WeaponManagment;
 using UnityEngine;
 
-namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
+namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
 {
     public class AttackState : State
     {
@@ -16,7 +15,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
 
         private PlayerCharacterAnimController _playerCharacterAnimController;
         private FXController _fxController;
-        private Humanoid _humanoid;
+        private Characters.Humanoids.AbstractLevel.Humanoid _humanoid;
         private HumanoidWeaponController _humanoidWeaponController;
         private bool _isShotgun;
 
@@ -45,7 +44,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         {
             _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
             _fxController = GetComponent<FXController>();
-            _humanoid = GetComponent<Humanoid>();
+            _humanoid = GetComponent<Characters.Humanoids.AbstractLevel.Humanoid>();
             _humanoidWeaponController = GetComponent<HumanoidWeaponController>();
             _humanoidWeaponController.ChangeWeapon += OnWeaponChanged;
         }

@@ -96,13 +96,12 @@ namespace Infrastructure.Logic.Inits
              
             Debug.Log("Finish _playerCharacterInitializer();");
 
-            _movePointController.Initialize(this, _saveLoadService);
-            Debug.Log("Finish _movePointController();");
-           
             _sceneObjectManager.Initialize( _hudPanel.GetStore(),_movePointController,_audioManager);
             Debug.Log("Finish _sceneObjectManager();");
-
-
+            
+            _movePointController.Initialize(this, _saveLoadService);
+            Debug.Log("Finish _movePointController();");
+            
         }
 
         private void SetInitializers(LocationPrefab location)

@@ -3,13 +3,14 @@ using Common;
 using Data.Upgrades;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
+using Infrastructure.Logic.WeaponManagment;
 using Service.Audio;
 using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Characters.Humanoids.AbstractLevel
 {
-    public abstract class Character : MonoCache
+    public abstract class Character : MonoCache,IDamageable
     {
         public CharacterData CharacterData=> _characterData;
         public int Price => _characterData.Price;
@@ -40,5 +41,10 @@ namespace Characters.Humanoids.AbstractLevel
         public abstract void Initialize();
 
         public abstract void SetAudioManager(AudioManager audioManager);
+        public void ApplyDamage(float damage, ItemType itemType)
+        {
+            int value = Convert.ToInt32(damage); 
+            ApplyDamage(value);
+        }
     }
 }

@@ -119,9 +119,9 @@ namespace Infrastructure.Location
         public void SetWeaponBox(AdditionalBox weaponBox)
         {
             _weaponBox = weaponBox;
-            Transform weaponTransform = _weaponBox.transform;
-            weaponTransform.parent = transform;
-            weaponTransform.position = transform.position;
+            Transform boxTransform = _weaponBox.transform;
+            boxTransform.parent = transform;
+            boxTransform.position = transform.position;
             _isHaveWeaponBox = true;
             CheckCharacter();
         }
