@@ -44,12 +44,13 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         {
             while (isActiveAndEnabled!=false)
             {
-                float newPosition=_humanoid.transform.position.y-0.0001f;
-                _humanoid.transform.position=new Vector3(_humanoid.transform.position.x,newPosition,_humanoid.transform.position.z);
+                if (_humanoid!=null)
+                {
+                    float newPosition=_humanoid.transform.position.y-0.0001f;
+                    _humanoid.transform.position=new Vector3(_humanoid.transform.position.x,newPosition,_humanoid.transform.position.z);
+                }
                 yield return null;
             }
-            
-            yield break;
         }
 
         public override void ExitBehavior()

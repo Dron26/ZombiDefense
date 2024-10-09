@@ -23,6 +23,7 @@ namespace UI.GeneralMenu
         [SerializeField] private LocationMap _locationMap;
         [SerializeField]private  SettingPanel _settingPanel;
         [SerializeField] private GameObject _menuPanel;
+        [SerializeField] private GameObject _locationPanel;
         [SerializeField]private AudioManager _audioManager;
         private LocationManager _locationManager;
         
@@ -33,16 +34,20 @@ namespace UI.GeneralMenu
             _saveLoadService = _gameBootstrapper.GetSaveLoad();
             _locationManager=_gameBootstrapper.GetLocationManager();
             _loadingCurtain=_gameBootstrapper.GetLoadingCurtain();
-            _menuPanel.SetActive(false);
+            
             _saveLoadService.SetCurtain(_loadingCurtain);
             
             LoadAudioController();
             _settingPanel.Initialize(_audioManager,_saveLoadService);
             
             _saveLoadService.SetFirstStart();
+            
             _locationMap.Initialize( _saveLoadService,_locationManager);
             
             AddListener();
+
+           
+           // _locationPanel.SetActive(!isActive);
         }
         
         private  void  LoadAudioController()
@@ -53,7 +58,9 @@ namespace UI.GeneralMenu
         
         private void OnClikedCurtain()
         {
-            _menuPanel.SetActive(true);
+            bool isActive = _saveLoadService.IsExitFromLocation;
+
+            _menuPanel.SetActive(!isActive);
         }
 
         private void Start()

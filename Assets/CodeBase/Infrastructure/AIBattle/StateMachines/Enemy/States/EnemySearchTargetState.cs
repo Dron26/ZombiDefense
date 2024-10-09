@@ -38,7 +38,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
 
         protected override void UpdateCustom()
         {
-            if (_isSearhing == false) Search();
+            if (_isSearhing == false&&_enemy.IsLife()) Search();
         }
 
         private void Search()

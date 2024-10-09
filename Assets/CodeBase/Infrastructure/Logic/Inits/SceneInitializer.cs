@@ -215,8 +215,8 @@ namespace Infrastructure.Logic.Inits
          {
              _saveLoadService.ClearSpawnData();
              _playerCharacterInitializer.ClearData();
-             Destroy(_location.gameObject);
-             Destroy(transform.parent.gameObject);
+            // Destroy(_location.gameObject);
+            // Destroy(transform.parent.gameObject);
          }
          
          private void AddListener()

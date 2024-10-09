@@ -39,6 +39,7 @@ namespace Service.SaveLoad
         private bool IsAuthorized => _authorization.IsAuthorized();
         public bool IsSelectContinueGame => _isSelectContinueGame;
         public int MaxEnemiesOnScene => _maxEnemiesOnScene;
+        public bool IsExitFromLocation=>_isExitFromLocation;
 
         private bool _isSelectContinueGame;
         private int _maxEnemiesOnWave;
@@ -47,6 +48,7 @@ namespace Service.SaveLoad
         private EventSystem _eventSystem;
         private int _timeBeforeNextWave;
         private bool _isDay;
+        private bool _isExitFromLocation;
         private void Awake()
         {
             
@@ -383,6 +385,11 @@ namespace Service.SaveLoad
         public void SetMaxEnemyOnScene(int count)
         {
             _maxEnemiesOnScene = count;
+        }
+
+        public void ExitFromLocation(bool isExit)
+        {
+            _isExitFromLocation=isExit;
         }
     }
 }

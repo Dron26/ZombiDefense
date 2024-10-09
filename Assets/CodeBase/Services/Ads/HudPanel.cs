@@ -96,7 +96,7 @@ namespace Service.Ads
             _saveLoadService.OnSetActiveHumanoid += StartTimer;
             _menuPanel.OnClickExitToMenu+= OnClickExit;
             _reportPanel.OnClickExitToMenu+= OnClickExit;
-            _reportPanel.OnStayInLication += StartContinueSpawn;
+            //_reportPanel.OnStayInLication += StartContinueSpawn;
             _reportPanel.OnResetLevel += ResetLevel;
         }
 
@@ -105,7 +105,7 @@ namespace Service.Ads
             _sceneInitializer.OnClickContinue-= StartTimer;
             _menuPanel.OnClickExitToMenu-= OnClickExit;
             _reportPanel.OnClickExitToMenu-= OnClickExit;
-            _reportPanel.OnStayInLication -= StartContinueSpawn;
+           // _reportPanel.OnStayInLication -= StartContinueSpawn;
             _reportPanel.OnResetLevel -= ResetLevel;
         }
 

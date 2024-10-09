@@ -47,7 +47,7 @@ namespace UI.Report
         private int _deadMercenary;
         private int _profit;
         public Action OnClickExitToMenu;
-        public Action OnStayInLication;
+        public Action OnClickNextLocation;
         public Action OnResetLevel;
         private GlobalTimer _globalTimer;
         private bool _isLastHumanoidDie;
@@ -124,12 +124,7 @@ namespace UI.Report
             ShowReport();
         }
         
-        private void StayInLocation()
-        {
-            _globalTimer.SetPaused(false);
-            OnStayInLication?.Invoke();
-            _panel.SetActive(false);
-        }
+     
         private void ResetLevel()
         {
             _globalTimer.SetPaused(false);
@@ -138,18 +133,20 @@ namespace UI.Report
             _stateMachine.Enter<LoadLevelState,string>(Constants.Location); 
         }
         
-        private void SelectNextLocation()
+        private void SelectOk()
         {
             _globalTimer.SetPaused(false);
-            Debug.Log("Entered СontinueGame()");
-            Destroy(gameObject);
+            _globalTimer.SetPaused(false);
+            _panel.SetActive(false);
+            _saveLoadService.ExitFromLocation(true);
+            OnClickExitToMenu?.Invoke();
         }
         
         private void AddListener()
         {
             _backToMenu.onClick.AddListener(SwicthScene);
             _reset.onClick.AddListener(ResetLevel);
-            _continue.onClick.AddListener(SelectNextLocation);
+            _continue.onClick.AddListener(SelectOk);
             
             _saveLoadService.LastHumanoidDie+=OnLastHumanoidDie;
             _saveLoadService.OnSetCompletedLocation+=ShowReport;
@@ -159,7 +156,7 @@ namespace UI.Report
         {
             _backToMenu.onClick.RemoveListener(SwicthScene);
             _reset.onClick.RemoveListener(ResetLevel);
-            _continue.onClick.RemoveListener(SelectNextLocation);
+            _continue.onClick.RemoveListener(SelectOk);
             
             _saveLoadService.LastHumanoidDie-=OnLastHumanoidDie;
             _saveLoadService.OnSetCompletedLocation-=ShowReport;
