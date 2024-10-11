@@ -287,6 +287,7 @@ GameObject:
   - component: {fileID: 8421369870866822689}
   - component: {fileID: 1481899767}
   - component: {fileID: 1806968150}
+  - component: {fileID: -6362070818513966674}
   m_Layer: 0
   m_Name: Bootstraper
   m_TagString: Untagged
@@ -329,6 +330,7 @@ MonoBehaviour:
   _yandexInitializer: {fileID: 0}
   _loadingCurtain: {fileID: 0}
   _locationManager: {fileID: 1806968150}
+  _pauseService: {fileID: -6362070818513966674}
 --- !u!114 &1481899767
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -351,5 +353,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b72c9a047fab4bc485003fd0bf87e0c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-6362070818513966674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8421369870866822703}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f84c4f21a80d4133a28eb19b7be3643c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

@@ -7,6 +7,7 @@ using Infrastructure.StateMachine.States;
 using Service;
 using Service.Ads;
 using Service.SaveLoad;
+using Services.PauseService;
 using UnityEngine;
 
 namespace Infrastructure.StateMachine
@@ -18,13 +19,13 @@ namespace Infrastructure.StateMachine
         
         
         public GameStateMachine(SceneLoader sceneLoader, AllServices services, LoadingCurtain loadingCurtain,
-            Language language )
+            Language language, PauseService pauseService)
         {
             List<string> sceneNames = GetSceneNames();
 
             _states = new Dictionary<Type, IExitebleState>
             {
-                [typeof(BootstrapState)] = new BootstrapState(this,sceneLoader, services,language),
+                [typeof(BootstrapState)] = new BootstrapState(this,sceneLoader, services,language,pauseService),
                 [typeof(LoadLevelState)] = new LoadLevelState(this,sceneLoader, services.Single<IGameFactory>(),sceneNames),
                 [typeof(GameLoopState)] = new GameLoopState(this,loadingCurtain),
             };

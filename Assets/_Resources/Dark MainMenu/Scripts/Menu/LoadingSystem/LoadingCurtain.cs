@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections;
 using TMPro;
+using UI;
 using UnityEngine.Events;
 
 public class LoadingCurtain : MonoBehaviour
@@ -14,7 +15,7 @@ public class LoadingCurtain : MonoBehaviour
     private CanvasGroup _canvasGroup;
     public Action OnStartLoading;
     public Action OnClicked;
-    
+    private GlobalTimer _globalTimer;
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
@@ -35,6 +36,7 @@ public class LoadingCurtain : MonoBehaviour
     
     private IEnumerator LoadSceneAsync()
     {
+        Time.timeScale = 1;
         yield return new WaitForSeconds(0.5f);
         loadingInfo.SetActive(false);
         loadedInfo.SetActive(true);

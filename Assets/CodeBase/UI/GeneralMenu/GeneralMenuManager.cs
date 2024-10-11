@@ -35,7 +35,7 @@ namespace UI.GeneralMenu
             _locationManager=_gameBootstrapper.GetLocationManager();
             _loadingCurtain=_gameBootstrapper.GetLoadingCurtain();
             
-            _saveLoadService.SetCurtain(_loadingCurtain);
+            
             
             LoadAudioController();
             _settingPanel.Initialize(_audioManager,_saveLoadService);

@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Interface
 {
-    public class PauseService : IPauseHandler
+    public class TimePauseService : IPauseHandler
     {
         private readonly List<IPauseHandler> _handlers = new();
 
@@ -24,6 +25,11 @@ namespace Interface
 
             foreach (var handler in _handlers)
                 handler.SetPaused(isPaused);
+        }
+
+        public void SetTimeScale(int scale)
+        {
+            Time.timeScale = scale;
         }
     }
 }

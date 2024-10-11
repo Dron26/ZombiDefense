@@ -9,7 +9,7 @@ namespace Service
     public class BackgroundWebUtility:MonoCache,IPauseHandler
     {
         public static BackgroundWebUtility Instance { get; private set; }
-        public PauseService PauseService { get; private set; }
+        public TimePauseService TimePauseService { get; private set; }
         private bool _isPlayAds;
         private void Awake() =>
             Instance = this;
@@ -17,14 +17,14 @@ namespace Service
         private void Start()
         {
             Initialize();
-            PauseService.Register(this);
+            TimePauseService.Register(this);
         }
         
         private void Initialize()
         {
             try
             {
-                PauseService = new PauseService();
+                TimePauseService = new TimePauseService();
             }
             catch (Exception e)
             {
@@ -34,12 +34,12 @@ namespace Service
         
         protected override void OnEnabled()
         {
-            //WebApplication.InBackgroundChangeEvent += OnInBackgroundChange;
+            WebApplication.InBackgroundChangeEvent += OnInBackgroundChange;
         }
 
         protected override void OnDisabled()
         {
-          //  WebApplication.InBackgroundChangeEvent -= OnInBackgroundChange;
+            WebApplication.InBackgroundChangeEvent -= OnInBackgroundChange;
         }
 
         public void SetPaused(bool isPaused)
@@ -66,17 +66,17 @@ namespace Service
 
         private void OnInBackgroundChange(bool inBackground)
         {
-            if (PauseService == null)
+            if (TimePauseService == null)
                 return;
 
-            PauseService.SetPaused(inBackground);
+            TimePauseService.SetPaused(inBackground);
         }
 
        
         
         private void OnApplicationFocus(bool hasFocus)
         {
- //           OnInBackgroundChange(!hasFocus);
+           OnInBackgroundChange(!hasFocus);
         }
     }
 }

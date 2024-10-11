@@ -7,6 +7,7 @@ using Service.Ads;
 using Service.Localization;
 using Service.PlayerAuthorization;
 using Service.SaveLoad;
+using Services.PauseService;
 
 namespace Infrastructure.StateMachine.States
 {
@@ -16,15 +17,17 @@ namespace Infrastructure.StateMachine.States
         private readonly GameStateMachine _stateMachine;
         private readonly SceneLoader _sceneLoader;
         private readonly AllServices _services;
+        private readonly PauseService _pauseService;
         private  Language _language;
 
-        public BootstrapState(GameStateMachine stateMachine,SceneLoader sceneLoader, AllServices allServices,Language language)
+        public BootstrapState(GameStateMachine stateMachine, SceneLoader sceneLoader, AllServices allServices,
+            Language language, PauseService pauseService)
         {
             _stateMachine = stateMachine;   
             _sceneLoader = sceneLoader;
             _services = allServices;
             _language = language;
-            
+            _pauseService=pauseService;
             RegisterServices();
         }
 
@@ -46,6 +49,7 @@ namespace Infrastructure.StateMachine.States
             _services.RegisterSingle<IAuthorization>((new YandexAuthorization()));
             _services.RegisterSingle<ISaveLoadService>(new SaveLoadService());
             _services.RegisterSingle<IResourceLoadService >(new ResourceLoaderService());
+            _services.RegisterSingle<IPauseService>(_pauseService);
         }
     }
 }

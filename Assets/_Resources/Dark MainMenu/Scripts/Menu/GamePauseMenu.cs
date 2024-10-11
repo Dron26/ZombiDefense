@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GamePauseMenu : MonoBehaviour {
+public class GamePauseMenu : MonoBehaviour 
+{
 
     public GameObject pauseMenuUi;
-
-	public static bool IsPaused = false;
+    public static bool IsPaused = false;
 
     
 

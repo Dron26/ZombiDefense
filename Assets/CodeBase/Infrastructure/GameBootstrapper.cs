@@ -5,6 +5,7 @@ using Infrastructure.StateMachine;
 using Infrastructure.StateMachine.States;
 using Service.SaveLoad;
 using Service.Yandex;
+using Services.PauseService;
 using UI.Levels;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,6 +20,7 @@ namespace Infrastructure
        [SerializeField] private LoadingCurtain _loadingCurtain;
         private SaveLoadService _saveLoadService;
         [SerializeField] private LocationManager _locationManager;
+        [SerializeField] private PauseService _pauseService ;
         private void Awake()
         {
             DontDestroyOnLoad(this);
@@ -35,7 +37,7 @@ namespace Infrastructure
         private  void  Init()
         {
             Language language = GetLanguage();
-            _game = new Game(this,_loadingCurtain,language);
+            _game = new Game(this,_loadingCurtain,language,_pauseService);
             _game.StateMashine.Enter<BootstrapState>();
             _locationManager = GetComponent<LocationManager>();
             _locationManager.Init(_game.StateMashine,_saveLoadService);

@@ -9,7 +9,9 @@ using Infrastructure.Logic.Inits;
 using Infrastructure.StateMachine;
 using Infrastructure.StateMachine.States;
 using Lean.Localization;
+using Service;
 using Service.SaveLoad;
+using Services.PauseService;
 using TMPro;
 using UI.HUD.StorePanel;
 using UI.Levels;
@@ -54,6 +56,7 @@ namespace UI.Report
         private GameStateMachine _stateMachine;
         private Wallet _wallet;
         private LocationManager _locationManager;
+        private IPauseService _pauseService;
         public void Init(SaveLoadService saveLoadService, GlobalTimer globalTimer, Store store,
             LocationManager locationManager)
         {
@@ -63,6 +66,7 @@ namespace UI.Report
             _stateMachine = saveLoadService.GetGameBootstrapper().GetStateMachine();
             _panel.SetActive(false);
             _wallet=store.GetWallet();
+            _pauseService = AllServices.Container.Single<IPauseService>();
             AddListener();
         }
 
@@ -113,8 +117,8 @@ namespace UI.Report
 
         private void SwicthScene()
         {
-            _globalTimer.SetPaused(false);
             _panel.SetActive(false);
+            SetPaused(false);
             OnClickExitToMenu?.Invoke();
         }
 
@@ -123,22 +127,25 @@ namespace UI.Report
             _isLastHumanoidDie=true;
             ShowReport();
         }
-        
      
+        
         private void ResetLevel()
         {
-            _globalTimer.SetPaused(false);
             Debug.Log("ResetLevel()");
+            SetPaused(false);
             OnResetLevel?.Invoke();
             _stateMachine.Enter<LoadLevelState,string>(Constants.Location); 
         }
-        
+        private void SetPaused(bool isPaused)
+        {
+            _pauseService.Pause();
+            _globalTimer.SetPaused(isPaused);
+        }
         private void SelectOk()
         {
-            _globalTimer.SetPaused(false);
-            _globalTimer.SetPaused(false);
             _panel.SetActive(false);
             _saveLoadService.ExitFromLocation(true);
+            SetPaused(false);
             OnClickExitToMenu?.Invoke();
         }
         

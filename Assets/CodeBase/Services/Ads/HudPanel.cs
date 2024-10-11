@@ -35,11 +35,12 @@ namespace Service.Ads
         public Action OnResetLevel;
 
         public void Init(SaveLoadService saveLoadService, SceneInitializer sceneInitializer, WaveManager waveManager,
-            LocationManager locationManager)
+            LocationManager locationManager,GlobalTimer globalTimer)
         {
             _saveLoadService = saveLoadService;
             _waveManager = waveManager;
             _sceneInitializer = sceneInitializer;
+            _globalTimer = globalTimer;
             _store.Initialize(_sceneInitializer, _saveLoadService,_globalTimer);
             _menuPanel.Initialize(_saveLoadService,_globalTimer);
             _resursesCanvas.Initialize(_store.GetWallet());

@@ -11,9 +11,12 @@ using Infrastructure.Points;
 using Infrastructure.StateMachine;
 using Infrastructure.StateMachine.States;
 using Infrastructure.Tutorial;
+using Service;
 using Service.Ads;
 using Service.Audio;
 using Service.SaveLoad;
+using Services.PauseService;
+using UI;
 using UI.Levels;
 using UnityEngine;
 using UnityEngine.Events;
@@ -34,6 +37,7 @@ namespace Infrastructure.Logic.Inits
         [SerializeField] private Camera _cameraPhysical;
         [SerializeField] private Camera _cameraUI;
         [SerializeField] private EventSystem _eventSystem;
+         [SerializeField] private GlobalTimer _globalTimer;
         private SceneObjectManager _sceneObjectManager;
 
          private LocationManager _locationManager;
@@ -42,7 +46,6 @@ namespace Infrastructure.Logic.Inits
         private SaveLoadService _saveLoadService;
         private PlayerCharacterInitializer _playerCharacterInitializer;
          private GameObject _location;
-         
 
         private GameBootstrapper _gameBootstrapper;
         private WaveManager _waveManager;
@@ -53,7 +56,7 @@ namespace Infrastructure.Logic.Inits
         public Action OnClickContinue;
         private TimerDisplay _timerDisplay;
         public List<Character> availableCharacters = new ();
-
+        private IPauseService _pauseService;
         public bool IsStartedTutorial => _isTutorialLevel;
         private bool _isTutorialLevel;
         
@@ -92,7 +95,7 @@ namespace Infrastructure.Logic.Inits
 
              InitializeEnemies();
              AddListener();
-             _hudPanel.Init(_saveLoadService,this,_waveManager,_locationManager );
+             _hudPanel.Init(_saveLoadService,this,_waveManager,_locationManager,_globalTimer );
              
             Debug.Log("Finish _playerCharacterInitializer();");
 
@@ -101,7 +104,7 @@ namespace Infrastructure.Logic.Inits
             
             _movePointController.Initialize(this, _saveLoadService);
             Debug.Log("Finish _movePointController();");
-            
+            _pauseService = AllServices.Container.Single<IPauseService>();
         }
 
         private void SetInitializers(LocationPrefab location)
@@ -203,13 +206,17 @@ namespace Infrastructure.Logic.Inits
          private void OnClickExitToMenu()
          {
              _saveLoadService.Save();
-             _saveLoadService.GetGameBootstrapper().GetStateMachine().Enter<LoadLevelState,string>(Constants.Menu); 
-             _saveLoadService.ClearSpawnData();
-             _playerCharacterInitializer.ClearData();
-             //Destroy(_location.gameObject);
-             Destroy(transform.parent.gameObject);
+             _stateMachine.Enter<LoadLevelState,string>(Constants.Menu);
              
+         _saveLoadService.ClearSpawnData();
+             _playerCharacterInitializer.ClearData();
+             _pauseService.Pause();
+             //Destroy(_location.gameObject);
+             // Destroy(transform.parent.gameObject);
+
          }
+
+        
 
          private void ResetLevel()
          {
