@@ -57,11 +57,10 @@ namespace UI.Report
         private Wallet _wallet;
         private LocationManager _locationManager;
         private IPauseService _pauseService;
-        public void Init(SaveLoadService saveLoadService, GlobalTimer globalTimer, Store store,
+        public void Init(SaveLoadService saveLoadService , Store store,
             LocationManager locationManager)
         {
             _saveLoadService = saveLoadService;
-            _globalTimer=globalTimer;
             _locationManager = locationManager;
             _stateMachine = saveLoadService.GetGameBootstrapper().GetStateMachine();
             _panel.SetActive(false);
@@ -78,8 +77,8 @@ namespace UI.Report
         private IEnumerator Show()
         {
             yield return new WaitForSeconds(4f);
-            
-            _globalTimer.SetPaused(true);
+
+            SetPaused(true);
             
             if (_isLastHumanoidDie)
             {
@@ -138,8 +137,7 @@ namespace UI.Report
         }
         private void SetPaused(bool isPaused)
         {
-            _pauseService.Pause();
-            _globalTimer.SetPaused(isPaused);
+            _pauseService.SetPause(isPaused);
         }
         private void SelectOk()
         {

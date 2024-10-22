@@ -10,12 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bd6c0d2ccd13496f9b37c58e31406e86, type: 3}
-  m_Name: EnemyFemale
+  m_Name: Smoker
   m_EditorClassIdentifier: 
-  maxHealth: 40
-  rangeAttack: 0.6
-  damage: 15
-  _prefabCharacter: {fileID: 9066399932422974978, guid: 17c7bfdd44e51f644a9fb7d0b08c24bf, type: 3}
-  _prefabCharacterItems: []
-  level: 1
-  _minLevelForHumanoid: 0
+  Type: 1
+  MaxHealth: 60
+  RangeAttack: 4
+  Damage: 20
+  Price: 0
+  Level: 2

@@ -4,7 +4,7 @@ namespace Services.PauseService
 {
     public interface IPauseService:IService
     {
-        void Pause();
+        void SetPause(bool isPaused);
         void Resume();
         bool IsPaused { get; }
     }

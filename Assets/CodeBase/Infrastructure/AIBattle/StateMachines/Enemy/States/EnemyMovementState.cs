@@ -39,6 +39,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         {
             StopCoroutine(CheckDistance());
             _character.GetComponent<Humanoid>().OnMove -= OnTargetChangePoint;
+            Disable();
         }
 
         public override void OnTakeGranadeDamage()
@@ -47,7 +48,11 @@ namespace Infrastructure.AIBattle.EnemyAI.States
             _isStopping = true;
             StateMachine.EnterBehavior<EnemyStunningState>();
         }
-        
+
+        protected override void OnEnabled()
+        {
+            saveLoadService.OnSetActiveHumanoid+=OnSetActiveHumanoid;
+        }
         private void Start()
         {
             _agent = GetComponent<NavMeshAgent>();
@@ -56,7 +61,6 @@ namespace Infrastructure.AIBattle.EnemyAI.States
             _agent.stoppingDistance=_stoppingDistance;
             _isStopping = false;
            // StopRandomly();
-           saveLoadService.OnSetActiveHumanoid+=OnSetActiveHumanoid;
         }
         
         public void InitCharacter(Character targetCharacter)

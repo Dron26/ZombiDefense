@@ -35,7 +35,7 @@ namespace Characters.Humanoids.AbstractLevel
         public override void Initialize()
         {
             IsLife = true;
-            _currentHealth = CharacterData.Health;
+            _currentHealth = base.CharacterData.Health;
             _animator = GetComponent<Animator>();
             _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
             _fxController = GetComponent<FXController>();

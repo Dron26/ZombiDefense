@@ -110,7 +110,7 @@ namespace Infrastructure.Logic.Inits
         private void SetInitializers(LocationPrefab location)
         {
             _playerCharacterInitializer = location.GetPlayer;
-            _waveManager = location.GetEnemy;
+            _waveManager = location.GetWaveManager;
             _cameraInputMovement.Initialize(location.CameraData); 
             LighInformer.SetLight(location.IsNight);
         }
@@ -210,7 +210,7 @@ namespace Infrastructure.Logic.Inits
              
          _saveLoadService.ClearSpawnData();
              _playerCharacterInitializer.ClearData();
-             _pauseService.Pause();
+             _pauseService.SetPause(true);
              //Destroy(_location.gameObject);
              // Destroy(transform.parent.gameObject);
 

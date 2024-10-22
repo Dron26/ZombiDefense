@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Animation;
+using Data;
 using Infrastructure.AIBattle;
 using Infrastructure.AIBattle.EnemyAI;
 using Infrastructure.AIBattle.EnemyAI.States;
@@ -8,6 +9,7 @@ using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
 using Service.Audio;
 using Service.SaveLoad;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
@@ -17,11 +19,11 @@ namespace Enemies.AbstractEntity
     [RequireComponent(typeof(EnemyStateMachine))]
     public abstract class Enemy : MonoCache, IDamageable
     {
-        [SerializeField] private float _maxHealth;
-        [SerializeField] private float _rangeAttack = 1.2f;
-        [SerializeField] private int _damage;
-        [SerializeField] private int _level;
-        [SerializeField] private int _price;
+        private float _maxHealth;
+         private float _rangeAttack;
+         private int _damage;
+         private int _level;
+         private int _price;
 
         public event Action<EnemyEventType,ItemType> OnEnemyEvent;
         public event Action OnTakeGranadeDamage;
@@ -41,15 +43,14 @@ namespace Enemies.AbstractEntity
         private Animator _animator;
         private EnemyAnimController _enemyAnimController;
         private EnemyFXController _fxController;
-        private SaveLoadService _saveLoadService;
         private NavMeshAgent _agent;
         private EnemyDieState _enemyDieState;
-        
+        private List<GameObject> _prefabEnemyItems; 
         private readonly float _minHealth = 0;
         private float _health;
         private bool _isLife = true;
         private int _indexInWave;
-
+private  EnemyData _data;
         private void Awake()
         {
             _animator = GetComponent<Animator>();
@@ -58,22 +59,26 @@ namespace Enemies.AbstractEntity
             _enemyDieState = GetComponent<EnemyDieState>();
         }
         
-        public void Initialize(SaveLoadService saveLoadService, AudioManager audioManager)
+        public void Initialize( AudioManager audioManager,EnemyData data)
         {
-            _saveLoadService=saveLoadService;
             _audioManager = audioManager;
             _enemyDieState.OnRevival += OnRevival;
-
-            SetStartData();
+            _data = data;
+            SetData();
         }
         
-        private void SetStartData()
+        private void SetData()
         {
             _isLife = true;
+            _maxHealth = _data.MaxHealth;
+            _rangeAttack = _data.RangeAttack;
             _health = _maxHealth;
-           
-            SetSkin();
-            SetNavMeshSpeed();
+            _damage=_data.Damage;
+            _price = _data.Price;
+            _level=_data.Level;
+            
+            SetRandomSkin();
+            SetRandomNavMeshSpeed();
 
             OnInitialized?.Invoke(this);
         }
@@ -86,22 +91,21 @@ namespace Enemies.AbstractEntity
 
         public AudioManager GetAudioController() => _audioManager;
         
-        private void OnRevival(Enemy enemy) => SetStartData();
+        private void OnRevival(Enemy enemy) => SetData();
 
         public int GetPrice() => _price;
         
-        private void SetSkin()
+        private void SetRandomSkin()
         {
             SkinGroup[] skinsGroup = GetComponentsInChildren<SkinGroup>();
 
             foreach (SkinGroup group in skinsGroup)
             {
                 group.Initialize();
-                group.SetMesh(Random.Range(0, group.GetCountMeshes()));
             }
         }
 
-        private void SetNavMeshSpeed()
+        private void SetRandomNavMeshSpeed()
         {
             _agent = GetComponent<NavMeshAgent>();
             float minSpeed = 0.6f;
@@ -123,6 +127,7 @@ namespace Enemies.AbstractEntity
 
         private void Die( ItemType itemItemType)
         {
+            _isLife = false;
             OnDeath?.Invoke(this);
             OnAction(EnemyEventType.Death, itemItemType);
             EnemyStateMachine stateMachine = GetComponent<EnemyStateMachine>();
@@ -158,8 +163,6 @@ namespace Enemies.AbstractEntity
         
                 if (_health <= 0)
                 {
-                    _saveLoadService.SetInactiveEnemy(this);
-                    _isLife = false;
                     Die(itemType);
                 }
             }

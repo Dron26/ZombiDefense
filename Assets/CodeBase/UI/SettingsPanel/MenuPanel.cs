@@ -7,6 +7,7 @@ using Infrastructure.StateMachine.States;
 using Service;
 using Service.Audio;
 using Service.SaveLoad;
+using Services.PauseService;
 using UI.Buttons;
 using UnityEngine;
 using UnityEngine.UI;
@@ -38,13 +39,12 @@ namespace UI.SettingsPanel
         private GameStateMachine _stateMachine;
         private SaveLoadService _saveLoadService;
         private GameBootstrapper _gameBootstrapper;
+        private IPauseService _pauseService;
 
         public Action OnClickExitToMenu;
-        private GlobalTimer _globalTimer;
         
-        public void Initialize(SaveLoadService saveLoadService, GlobalTimer globalTimer)
+        public void Initialize(SaveLoadService saveLoadService)
         {
-            _globalTimer=globalTimer;
             _stateMachine = saveLoadService.GetGameBootstrapper().GetStateMachine();
             _panel.SetActive(true);
             _gameBootstrapper=FindObjectOfType<GameBootstrapper>();
@@ -55,6 +55,7 @@ namespace UI.SettingsPanel
             _panel.SetActive(false);
             _exitPanel.SetActive(false);
             _leaderboardWindow.SetActive(false);
+            _pauseService = AllServices.Container.Single<IPauseService>();
         }
 
         private void InitializeButton()
@@ -71,7 +72,7 @@ namespace UI.SettingsPanel
 
         private void SwitchState()
         {
-            _globalTimer.SetPaused(!_panel.activeSelf);
+            _pauseService.SetPause(!_panel.activeSelf);
             _audioManager.SetMenuEnabled(!_panel.activeSelf);
             _panel.SetActive(!_panel.activeSelf);
             _resursePanel.SetActive(!_resursePanel.activeSelf); 

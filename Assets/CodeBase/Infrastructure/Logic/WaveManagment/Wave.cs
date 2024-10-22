@@ -6,50 +6,37 @@ using UnityEngine;
 
 namespace Infrastructure.Logic.WaveManagment
 {
-    public class Wave : MonoCache
+    public class Waveп : MonoCache
     {
-        [SerializeField] private List<Enemy> _enemies;
+        [SerializeField] private List<EnemyData> _enemies= new List<EnemyData>();
         [SerializeField] private List<int> _enemyCount;
         [SerializeField] private int _timeBetweenWaves;
+         private WaveData _waveData;
         public int TimeBetweenWaves => _timeBetweenWaves;
-        public void AddData(List<Enemy> enemies, List<int> enemyCount)
+        public void SetData(WaveData waveData)
         {
-            _enemies = new List<Enemy>();
+            _enemies = new List<EnemyData>();
             _enemyCount = new List<int>();
             
-            foreach (var value in enemies)
+            foreach (var value in waveData.Enemies)
             {
                 _enemies.Add(value);
             }
 
-            foreach (var value in enemyCount)
+            foreach (var value in waveData.EnemyCount)
             {
                 _enemyCount.Add(value);
             }
         }
         
-        public List<Enemy> GetEnemies()
+        public List<EnemyData> GetEnemies()
         {
-            return new List<Enemy>(_enemies);
+            return new List<EnemyData>(_enemies);
         }
 
         public List<int> GetEnemyCount()
         {
             return new List<int>(_enemyCount);
-        }
-        
-        private int _delayTimes;
-        public int Level => _level;
-        private int _level;
-
-        public void SetTime(int delayTime)
-        {
-            _delayTimes=delayTime;
-        }
-
-        public int GetTime(int index)
-        {
-            return _delayTimes;
         }
     }
 }

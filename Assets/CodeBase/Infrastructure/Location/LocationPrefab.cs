@@ -13,7 +13,7 @@ namespace Infrastructure.Location
         [SerializeField] private CameraData _cameraData;
         [SerializeField] private bool _isNight;
         public PlayerCharacterInitializer GetPlayer => _playerCharacterInitializer;
-        public WaveManager GetEnemy => _waveManager;
+        public WaveManager GetWaveManager => _waveManager;
         public CameraData CameraData => _cameraData;
         public bool IsNight => _isNight;
     }

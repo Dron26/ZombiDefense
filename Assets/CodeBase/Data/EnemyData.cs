@@ -1,26 +1,17 @@
 using System.Collections.Generic;
+using Enemies;
 using UnityEngine;
 
 namespace Data
 {
-    [CreateAssetMenu(fileName = "New Enemys Data", menuName = "Enemies/Enemys Data")]
+    [CreateAssetMenu(fileName = "EnemyData", menuName = "EnemyData")]
     public class EnemyData : ScriptableObject
     {
-        [SerializeField] private float maxHealth = 40f;
-        [SerializeField] private float rangeAttack = 1.2f;
-        [SerializeField] private int damage = 15;
-        [SerializeField] private GameObject _prefabCharacter;
-        [SerializeField] private  List<GameObject>_prefabCharacterItems;
-        [SerializeField] private int level = 1;
-        [SerializeField] private int _minLevelForHumanoid = 0;
-
-        public float MaxHealth => maxHealth;
-        public float RangeAttack => rangeAttack;
-        public int Damage => damage;
-        
-        public GameObject PrefabCharacter => _prefabCharacter;
-        public  List<GameObject>PrefabCharacterItems => _prefabCharacterItems;
-        public int Level { get => level; set => level = value; }
-        public int MinLevelForHumanoid =>_minLevelForHumanoid;
+        public EnemyType Type;
+         public float MaxHealth;
+         public float RangeAttack;
+         public int Damage;
+         public int Price;
+         public int Level;
     }
 }

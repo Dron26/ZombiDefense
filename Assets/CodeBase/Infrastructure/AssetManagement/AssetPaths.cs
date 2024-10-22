@@ -13,10 +13,13 @@ namespace Infrastructure.AssetManagement
         public static readonly string Items = "Prefab/Store/Items/";
         public static readonly string Equipment = "Prefab/Store/Items/EquipmentData/";
         public static readonly string SmallWeapon = "Prefab/Store/Items/SmallWeaponData/";
-        public static readonly string CharactersData = "Prefab/Store/Characters/PlayerCharacters/Characters/Data/";
+        public static readonly string CharactersData = "Prefab/Store/Characters/Player/Prefab/Data/";
         public static readonly string ItemsData = "Prefab/Store/Items/ItemsData/";
         public static readonly string WeaponPrefabs = "Prefab/Store/Items/WeaponPrefabs/";
         public static readonly string EquipmentPrefabs = "Prefab/Store/Items/EquipmentPrefabs/";
-        public static readonly string Characters = "Prefab/Store/Characters/PlayerCharacters/Characters/";
+        public static readonly string CharactersPrefab = "Prefab/Store/Characters/Player/Prefab/";
+        public static readonly string EnemyPrefab = "Enemy/Prefab/";
+        public static readonly string EnemyData = "Enemy/Prefab/Data/";
+        public static readonly string WavesContainerData ="Enemy/Waves/Data/Containers/";
     }
 }

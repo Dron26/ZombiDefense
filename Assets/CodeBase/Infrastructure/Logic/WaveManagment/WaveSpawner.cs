@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using Data;
 using Enemies.AbstractEntity;
 using Infrastructure.AIBattle.EnemyAI.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
@@ -9,6 +11,7 @@ using Service.SaveLoad;
 using UI.Levels;
 using UnityEngine;
 using UnityEngine.Events;
+
 
 namespace Infrastructure.Logic.WaveManagment
 {
@@ -23,18 +26,16 @@ namespace Infrastructure.Logic.WaveManagment
         private WaveManager _waveManager;
         private AudioManager _audioManager;
         private SaveLoadService _saveLoadService;
-        private List<Wave> _groupWave = new();
-        private EnemyFactory _enemyFactory;
-        private List<List<Enemy>> _createdEnemies = new();
-        private List<int> _activatedEnemies = new();
-        private int _maxEnemyOnLocation = new();
-        private int _currentIndexEnemyNumber;
-
+        private List<List<Enemy>> _createdWave = new();
+        private List<int> _activatedWavesNumber = new();
         private List<SpawnPoint> _spawnPoints = new();
+        private EnemyFactory _enemyFactory;
+        private int _maxEnemyOnLocation = new();
+        private int _currentIndexEnemyOnWave;
         private List<Enemy> _inactiveEnemys = new();
         private int NumberKilledEnemies => _saveLoadService.GetNumberKilledEnemies();
         private int _numberKilledEnemies;
-
+        public List<int> _enemyCount;
         //private float _cycleTimer;
         // private float _cycleDuration;
         private int _countActivatedEnemiesWave;
@@ -43,7 +44,10 @@ namespace Infrastructure.Logic.WaveManagment
         private float _stepDelayTime;
         private bool _isStopSpawning;
         private bool _isStopRevival = false;
-        
+        private int _spawnPointsCount ;
+        private List<float> _spawnPointDelayTime = new();
+        private int DelayTimeCount=4;
+        System.Random _systemRandom = new System.Random();
         public void Initialize(AudioManager audioManager, EnemyFactory enemyFactory, WaveManager waveManager)
         {
             _enemyFactory = enemyFactory;
@@ -54,19 +58,33 @@ namespace Infrastructure.Logic.WaveManagment
             AddListener();
         }
 
-        private void SetData(Wave waveData)
+        
+
+        private void SetData(WaveData waveData)
         {
             Debug.Log("SetWaveData");
             ClearData();
             SetSpawnPoint();
             SetWave(waveData);
         }
-
-        private void SetWave(Wave wave)
+        
+        private void SetWave(WaveData waveData)
         {
-            _groupWave.Add(wave);
+            _enemyCount= waveData.EnemyCount;
+            _spawnPointsCount = _spawnPoints.Count;
+            StartFillPool(waveData);
+            FillTimeQueue();
             _currentIndexWave++ ;
-            StartFillPool(wave);
+        }
+
+        private void FillTimeQueue()
+        {
+            
+            for (int i = 0; i < DelayTimeCount; i++)
+            {
+                float j = _systemRandom.Next(0, DelayTimeCount) / 2.0f; 
+                _spawnPointDelayTime.Add(_systemRandom.Next(0, _spawnPoints.Count)+j);
+            }
         }
 
         private void SetSpawnPoint()
@@ -77,35 +95,38 @@ namespace Infrastructure.Logic.WaveManagment
             }
         }
 
-        private void StartFillPool(Wave wave)
+        private void StartFillPool(WaveData waveData)
         {
             Debug.Log("StartFillPool");
-
-            int x = wave.GetEnemies().Count;
             _maxEnemyOnWave = 0;
-            _createdEnemies.Add(new List<Enemy>());
-            _currentIndexEnemyNumber = _createdEnemies.Count-1;
-            _activatedEnemies.Add(_createdEnemies.Count-1);
-            for (int i = 0; i < x; i++)
+            _createdWave.Add(new List<Enemy>());
+            _currentIndexEnemyOnWave = _createdWave.Count-1;
+            _activatedWavesNumber.Add(_createdWave.Count-1);
+            List<EnemyData> enemies = waveData.Enemies;
+            
+            for (int i = 0; i < enemies.Count; i++)
             {
-                
-                
-                
                 int count = 0;
-
-
-                for (int j = 0; j < _spawnPoints.Count; j++)
+                
+                for (int j = 0; j < _spawnPointsCount; j++)
                 {
-                    Enemy newEnemy = _enemyFactory.Create(wave.GetEnemies()[i].gameObject);
+                    Enemy newEnemy = _enemyFactory.Create(enemies[i].Type);
+                    newEnemy.OnDeath += OnEnemyDeath;
                     PreparEnemy(newEnemy, _spawnPoints[j]);
-                    _createdEnemies[_currentIndexEnemyNumber].Add(newEnemy);
+                    _createdWave[_currentIndexEnemyOnWave].Add(newEnemy);
 
                     count++;
 
-                    if (count == wave.GetEnemyCount()[i])
+                    if (count == waveData.EnemyCount[i])
                     {
+                        
                         _maxEnemyOnWave += count;
                         break;
+                    }
+
+                    if (count== _spawnPointsCount)
+                    {
+                        j = 0;
                     }
                 }
             }
@@ -113,20 +134,26 @@ namespace Infrastructure.Logic.WaveManagment
             _numberKilledEnemies = 0;
             OnSpawnPointsReady?.Invoke();
         }
+        
 
         private void PreparEnemy(Enemy enemy, SpawnPoint spawnPoint)
         {
             enemy.gameObject.layer = LayerMask.NameToLayer("Character");
             enemy.GetComponent<EnemyDieState>().OnRevival += OnEnemyRevival;
-            enemy.gameObject.transform.parent = spawnPoint.transform;
-            enemy.StartPosition = spawnPoint.transform.position;
-            enemy.transform.position = enemy.StartPosition;
-            enemy.OnDeath += OnEnemyDeath;
-            enemy.SetIndex(_currentIndexEnemyNumber);
+            Transform spawnPointTransform = spawnPoint.transform;
+            Transform enemyTransform = enemy.transform;
+            enemyTransform.SetParent(spawnPoint.transform);
+            enemy.StartPosition = spawnPointTransform.position;
+            enemyTransform.position = enemy.StartPosition;
+            enemy.SetIndex(_currentIndexEnemyOnWave);
             enemy.gameObject.SetActive(false);
         }
 
         public void OnStartSpawn()
+        {
+        StartCoroutine(StartSpawn());
+        }
+        public IEnumerator StartSpawn()
         {
             int number = 0;
 
@@ -134,14 +161,14 @@ namespace Infrastructure.Logic.WaveManagment
             _countActivatedEnemiesWave = 0;
             
            
-                foreach (Enemy enemy in _createdEnemies[_createdEnemies.Count-1])
+                foreach (Enemy enemy in _createdWave[_createdWave.Count-1])
                 {
                     if (_isStopSpawning == false)
                     {
                         enemy.transform.localPosition = enemy.StartPosition;
-
+                        float i = _systemRandom.Next(0, DelayTimeCount) / 2.0f; 
+                        yield return new WaitForSeconds(i);
                         Activated(enemy);
-
                         _countActivatedEnemiesWave++;
 
                         if (_countActivatedEnemiesWave == _maxEnemyOnWave)
@@ -160,24 +187,17 @@ namespace Infrastructure.Logic.WaveManagment
                     {
                         break;
                     }
-                
+                    
+                    
             }
 
             OnStartedWave?.Invoke();
             _maxEnemyOnLocation = _saveLoadService.GetActiveEnemy().Count;
             _numberKilledEnemies = 0;
+            StopCoroutine(StartSpawn());
         }
 
-        
-        //     if (!enemy.IsLife()&&!enemy.GetComponent<EnemyDieState>().IsFalled)
-        //     {
-        //         enemy.transform.localPosition = enemy.StartPosition;
-        //     }
-        // else
-        // {
-        //     Activated(enemy);
-        // }
-        
+     
         private void Activated(Enemy enemy)
         {
             if (_isStopSpawning == false)
@@ -188,11 +208,11 @@ namespace Infrastructure.Logic.WaveManagment
 
                 int index = enemy.IndexInWave;
                 
-                _activatedEnemies[index]++;
+                _activatedWavesNumber[index]++;
 
                
                 
-                if (_activatedEnemies[index] == _groupWave[_activatedEnemies.Count-1].GetEnemyCount()[index])
+                if (_activatedWavesNumber[index] == _createdWave[index].Count)
                 {
                     StopRevival(index);
                 }
@@ -202,13 +222,19 @@ namespace Infrastructure.Logic.WaveManagment
         public void StopSpawn()
         {
             _isStopSpawning = true;
-            
-                StopRevival(_createdEnemies.Count-1);
+            StopCoroutine(StartSpawn());
+                StopRevival(_createdWave.Count-1);
         }
 
         private void OnEnemyDeath(Enemy enemy)
         {
             _saveLoadService.EnemyDeath(enemy);
+            _numberKilledEnemies++;
+            
+            if (_numberKilledEnemies == _maxEnemyOnLocation)
+            {
+                EndWave();
+            }
         }
 
         private void OnEnemyRevival(Enemy enemy)
@@ -220,7 +246,7 @@ namespace Infrastructure.Logic.WaveManagment
         {
             _isStopRevival = true;
 
-            foreach (Enemy enemy in _createdEnemies[index])
+            foreach (Enemy enemy in _createdWave[index])
             {
                 EnemyDieState enemyDieState = enemy.GetComponent<EnemyDieState>();
                 enemyDieState.StopRevival(_isStopRevival);
@@ -246,7 +272,7 @@ namespace Infrastructure.Logic.WaveManagment
 
         private void ClearEnemies()
         {
-            foreach (var enemies in _createdEnemies)
+            foreach (var enemies in _createdWave)
             {
                 foreach (var enemy in enemies)
                 {
@@ -255,23 +281,11 @@ namespace Infrastructure.Logic.WaveManagment
             }
         }
 
-        private void OnSetInactiveEnemy()
-        {
-            _numberKilledEnemies++;
-
-            _saveLoadService.SetKilledEnemiesOnWave();
-
-            if (_numberKilledEnemies == _maxEnemyOnLocation)
-            {
-                EndWave();
-            }
-        }
-
         private void AddListener()
         {
             _waveManager.OnSetWave += SetData;
             _waveManager.StartSpawn += OnStartSpawn;
-            _saveLoadService.OnSetInactiveEnemy += OnSetInactiveEnemy;
+           // _saveLoadService.OnSetInactiveEnemy += OnSetInactiveEnemy;
         }
     }
 }

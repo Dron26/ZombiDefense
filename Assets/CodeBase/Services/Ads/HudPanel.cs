@@ -23,7 +23,6 @@ namespace Service.Ads
         [SerializeField] private Store _store;
         [SerializeField] private MenuPanel _menuPanel;
         [SerializeField] private TimerDisplay _timerDisplay;
-        [SerializeField] private GlobalTimer _globalTimer;
         [SerializeField] private ResursesCanvas _resursesCanvas;
         [SerializeField] private ReportPanel _reportPanel;
         
@@ -40,11 +39,10 @@ namespace Service.Ads
             _saveLoadService = saveLoadService;
             _waveManager = waveManager;
             _sceneInitializer = sceneInitializer;
-            _globalTimer = globalTimer;
-            _store.Initialize(_sceneInitializer, _saveLoadService,_globalTimer);
-            _menuPanel.Initialize(_saveLoadService,_globalTimer);
+            _store.Initialize(_sceneInitializer, _saveLoadService);
+            _menuPanel.Initialize(_saveLoadService);
             _resursesCanvas.Initialize(_store.GetWallet());
-            _reportPanel.Init(_saveLoadService,_globalTimer,_store, locationManager);
+            _reportPanel.Init(_saveLoadService,_store, locationManager);
             _saveLoadService.SetRaycasterPanel(GetButtonPanel().GetComponent<GraphicRaycaster>());
             GetComponent<RaycastHitChecker>().Initialize(_saveLoadService);
             _timerDisplay.Initialize(_saveLoadService,_store.GetWallet(),_waveManager);

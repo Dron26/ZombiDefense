@@ -16,7 +16,7 @@ namespace Services.PauseService
         public event Action OnResumed;
         private float _timePause = 0;
         private float _timeNormal = 1;
-        
+
         public void Subscribe(IPauseListener listener)
         {
             if (!_pauseListeners.Contains(listener))
@@ -33,34 +33,21 @@ namespace Services.PauseService
                 _pauseListeners.Remove(listener);
             }
         }
-        
-        
+
+
         // Метод для постановки игры на паузу
-        public void Pause()
+        public void SetPause()
         {
             if (_isPaused) return;
             _isPaused = true;
+            
+            _timeNormal = Time.timeScale;
+            Time.timeScale = _timePause;
+            
             foreach (var listener in _pauseListeners)
             {
                 listener.OnPaused();
             }
-            
-                if (_isPaused)
-                {
-                    _timeNormal=Time.timeScale;
-                    
-                    if (_timeNormal == 0)
-                    {
-                        _timeNormal = 1;
-                    }
-                    
-                    Time.timeScale = _timePause;
-                }
-                else
-                {
-                    Time.timeScale = _timeNormal;
-                }
-                
         }
 
         // Метод для снятия игры с паузы
@@ -68,12 +55,13 @@ namespace Services.PauseService
         {
             if (!_isPaused) return;
             _isPaused = false;
+            Time.timeScale = _timeNormal;
             foreach (var listener in _pauseListeners)
             {
                 listener.OnResumed();
             }
         }
-        
+
         public void TogglePause()
         {
             if (_isPaused)
@@ -82,7 +70,21 @@ namespace Services.PauseService
             }
             else
             {
-                Pause();
+                SetPause();
+            }
+        }
+
+        public void SetPause(bool isPaused)
+        {
+            if (isPaused)
+            {
+                SetPause();
+               
+            }
+            else
+            {
+                Resume();
+                
             }
         }
     }

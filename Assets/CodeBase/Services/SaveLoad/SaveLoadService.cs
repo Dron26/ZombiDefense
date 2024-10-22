@@ -46,7 +46,7 @@ namespace Service.SaveLoad
         private int _maxEnemiesOnScene;
         private GraphicRaycaster _raycastPanel;
         private EventSystem _eventSystem;
-        private int _timeBeforeNextWave;
+        private int _timeBeforeNextWave=5;
         private bool _isDay;
         private bool _isExitFromLocation;
         private void Awake()
@@ -174,13 +174,7 @@ namespace Service.SaveLoad
 
         public void SetInactiveEnemy(Enemy inactiveEnemy)
         {
-            _gameData.ChangeInactiveEnemy(inactiveEnemy);
-            OnSetInactiveEnemy?.Invoke();
-
-            if (_gameData.ReadActiveEnemy().Count==1)
-            { 
-                LastEnemyRemained?.Invoke();
-            }
+            
         }
         
         public int GetCountEnemy() => 
@@ -372,6 +366,15 @@ namespace Service.SaveLoad
 
         public void EnemyDeath(Enemy enemy)
         {
+            _gameData.ChangeInactiveEnemy(enemy);
+            
+            SetKilledEnemiesOnWave();
+            
+            if (_gameData.ReadActiveEnemy().Count==1)
+            { 
+                LastEnemyRemained?.Invoke();
+            }
+            
             _gameData.ChangeNumberKilledEnemies();
             OnEnemyDeath?.Invoke(enemy);
         }

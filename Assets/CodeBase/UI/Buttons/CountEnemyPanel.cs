@@ -1,3 +1,4 @@
+using Enemies.AbstractEntity;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Service.SaveLoad;
 using TMPro;
@@ -13,7 +14,7 @@ namespace UI.Buttons
         public void Initialize(SaveLoadService saveLoadService)
         {
             _saveLoadService= saveLoadService;
-            saveLoadService.OnSetInactiveEnemy += SetInactive;
+            saveLoadService.OnEnemyDeath += OnEnemyDeath;
             SetCount(_saveLoadService.MaxEnemiesOnScene);
         }
 
@@ -23,7 +24,7 @@ namespace UI.Buttons
             _text.text=_countEnemy.ToString();
         }
         
-        private void SetInactive()
+        private void OnEnemyDeath(Enemy enemy)
         {
             _countEnemy--;
             SetCount(_countEnemy);

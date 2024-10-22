@@ -4,7 +4,7 @@ using Infrastructure.Logic.WeaponManagment;
 
 namespace Enemies.Aliens
 {
-    public class SimpleWalker : Enemy,IDamageable
+    public class Simple : Enemy,IDamageable
     {
         private int _levelNumber = 1;
         private int _minDamage = 30;

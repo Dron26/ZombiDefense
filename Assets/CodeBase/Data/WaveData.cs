@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
 using Enemies.AbstractEntity;
-using Infrastructure.BaseMonoCache.Code.MonoCache;
 using UnityEngine;
 
 namespace Data
 {
-    [Serializable]
-    public class WaveData : MonoCache
+    [CreateAssetMenu(fileName = "WaveData", menuName = "WaveData")]
+    public class WaveData : ScriptableObject
     {
-        
+        public List<EnemyData> Enemies;
+        public List<int> EnemyCount;
     }
 }

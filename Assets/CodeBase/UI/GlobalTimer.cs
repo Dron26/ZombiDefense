@@ -91,7 +91,7 @@ namespace UI
                 _isPanelActive = !_isPanelActive;
         }
 
-        public void SetPaused(bool isActive)
+        public void SetPause(bool isActive)
         {
             
             if (isActive)

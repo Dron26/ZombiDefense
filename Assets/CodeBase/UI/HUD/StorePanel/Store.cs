@@ -11,6 +11,8 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using Infrastructure.Points;
+using Service;
+using Services.PauseService;
 using UI.Buttons;
 
 namespace UI.HUD.StorePanel
@@ -40,7 +42,7 @@ namespace UI.HUD.StorePanel
         [SerializeField] private Camera _cameraUI;
         [SerializeField] private Camera _characterVisual;
         private Wallet _wallet;
-
+        private IPauseService _pauseService;
         private int _moneyAmount;
         private WorkPointGroup _workPointGroup;
         private bool isButtonPanelOpen = true;
@@ -53,20 +55,18 @@ namespace UI.HUD.StorePanel
         private bool _isPanelActive = false;
         public Action<bool> IsStoreActive;
         public Action<WorkPoint> OnBoughtUpgrade;
-        private GlobalTimer _globalTimer;
         private int _medicineBoxPrice = 100;
         private int _weaponBoxPrice = 200;
         private WorkPoint _selectedWorkPoint;
         private BoxStore _boxStore;
         public event Action <BoxData> OnBoughtBox;
         public event Action <CharacterData> OnBoughtCharacter;
-        public void Initialize(SceneInitializer initializer, SaveLoadService saveLoadService, GlobalTimer globalTimer)
+        public void Initialize(SceneInitializer initializer, SaveLoadService saveLoadService )
         {
             _wallet = GetComponent<Wallet>();
             _boxStore = GetComponent<BoxStore>();
+            _pauseService = AllServices.Container.Single<IPauseService>();
             
-            
-            _globalTimer = globalTimer;
             _storePanel.gameObject.SetActive(!_storePanel.activeSelf);
             _saveLoadService = saveLoadService;
             _sceneInitializer = initializer;
@@ -174,7 +174,7 @@ namespace UI.HUD.StorePanel
         public void SwitchStorePanel()
         {
             _isPanelActive = !_isPanelActive;
-            _globalTimer.SetPaused(_isPanelActive);
+            _pauseService.SetPause(_isPanelActive);
             SwitchPanels(_isPanelActive);
             SwitchCameras(_isPanelActive);
         }

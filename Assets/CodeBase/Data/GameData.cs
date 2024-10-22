@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Characters.Humanoids.AbstractLevel;
 using Enemies.AbstractEntity;
 using Infrastructure.Location;
-using Infrastructure.Logic.WaveManagment;
 using Service;
 using Service.Audio;
 using UI.Levels;
@@ -45,8 +44,6 @@ namespace Data
         public int  SelectedLocationId;
         
         private bool _isAuthorized = false;
-        [NonSerialized] 
-        public List<Wave> _waves;
         [NonSerialized] 
         private List<Character> AvaibelCharacters;
         [NonSerialized] 

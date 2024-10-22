@@ -5,19 +5,9 @@ namespace Enemies
 {
    public class SkinGroup : MonoBehaviour
    {
-      [SerializeField] private List <SkinnedMeshRenderer> meshes = new List<SkinnedMeshRenderer>();
-
       public void Initialize()
-      {
-      
-      }
-
-      public int GetCountMeshes()
-      {
-         return meshes.Count;
-      } public void SetMesh(int number)
-      {
-         meshes[number].gameObject.SetActive(true);
+      { 
+         transform.GetChild(Random.Range(0, transform.childCount)).gameObject.SetActive(true);
       }
    }
 }
