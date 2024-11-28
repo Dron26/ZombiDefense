@@ -536,6 +536,7 @@ GameObject:
   - component: {fileID: 7749758222512740754}
   - component: {fileID: 7749758222512740751}
   - component: {fileID: 4752768606860665347}
+  - component: {fileID: 9020143013024883203}
   m_Layer: 6
   m_Name: Sniper
   m_TagString: Untagged
@@ -596,6 +597,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartPosition: {x: 0, y: 0, z: 0}
+  _skinContainer: {fileID: 0}
 --- !u!114 &7749758222512740757
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -608,9 +610,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f830727607e4ae4b44550dac031f891, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ItemType: 0
+  Light: {fileID: 0}
+  ItemData: {fileID: 0}
   _itemType: 4
   _radius: {fileID: 8400220844978845180}
   _weaponContainer: {fileID: 7749758222512757004}
+  _damage: 0
 --- !u!114 &7749758222512740762
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -759,6 +765,20 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &9020143013024883203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7749758222512820258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94171a06a50245c3ba4e8cfe3583966a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _throwForce: 0
+  proc: 0.5
 --- !u!1 &7749758222512832522
 GameObject:
   m_ObjectHideFlags: 0

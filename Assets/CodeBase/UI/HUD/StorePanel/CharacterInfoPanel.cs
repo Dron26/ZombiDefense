@@ -16,13 +16,13 @@ namespace UI.HUD.StorePanel
         [SerializeField] private TextMeshProUGUI _infoWindow;
 
         private CharacterStore _characterStore;
-        private Character _character;
+        private CharacterData _character;
 
         public void SetParametrs()
         {
             gameObject.SetActive(true);
             _character = _characterStore.SelectedCharacter;
-            _damageWindow.text = _character.GetComponent<WeaponController>().Damage.ToString();
+            _damageWindow.text = _character.ItemData.Damage.ToString();
             _nameWindow.text = LeanLocalization.GetTranslationText(_character.Type.ToString());
             _healthWindow.text = _character.Health.ToString();
             

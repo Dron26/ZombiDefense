@@ -1,4 +1,5 @@
 using Infrastructure.AIBattle.AdditionalEquipment;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Infrastructure.Logic.WeaponManagment
@@ -8,7 +9,6 @@ namespace Infrastructure.Logic.WeaponManagment
         private ItemData _itemData;
         [SerializeField] private  ParticleSystem _particleGunshot;
         [SerializeField] private  ParticleSystem _particleEject;
-        [SerializeField] private  Light _weaponLight;
 
         public override int Damage => _itemData.Damage;
         public override float Range => _itemData.Range;
@@ -23,7 +23,6 @@ namespace Infrastructure.Logic.WeaponManagment
 
         public ParticleSystem GetParticleGunshot=>_particleGunshot;
          public ParticleSystem GetParticleEject=>_particleEject;
-         public Light GetWeaponLigt=>_weaponLight;
 
          public override ItemType ItemType { get; }
          public override void Initialize(ItemData itemData) => _itemData = itemData;

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Enemies.AbstractEntity;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using UnityEngine;
@@ -17,7 +18,7 @@ namespace Infrastructure.AIBattle
         public readonly int IsHit = Animator.StringToHash("IsHit");
         public readonly int IsThrewGrenade = Animator.StringToHash("IsThrewGrenade");
         public readonly int Die = Animator.StringToHash("Die");
-
+        public Action OnSetedAnimInfo;
         [SerializeField] private  AnimationClip[] _walkAnimationClips;
         [SerializeField] private  AnimationClip[] _screamAnimationClips;
     
@@ -69,12 +70,13 @@ namespace Infrastructure.AIBattle
         
         private void SetAnimInfo()
         {
+            animatorController = _animator.runtimeAnimatorController;
+           
             List<int>animHashNames = new();
 
             animHashNames.Add(IsShoot);
             animHashNames.Add(Reload);
                 
-            animatorController = _animator.runtimeAnimatorController;
 
             foreach (int name in animHashNames)
             {
@@ -83,6 +85,8 @@ namespace Infrastructure.AIBattle
                 float animationLength = clip.length;
                 _animInfo.Add(name, animationLength);
             }
+
+            OnSetedAnimInfo?.Invoke();
         }
         
         private string GetAnimatorParameterName(int nameHash)

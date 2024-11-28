@@ -1,9 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections;
-using TMPro;
 using UI;
-using UnityEngine.Events;
 
 public class LoadingCurtain : MonoBehaviour
 {

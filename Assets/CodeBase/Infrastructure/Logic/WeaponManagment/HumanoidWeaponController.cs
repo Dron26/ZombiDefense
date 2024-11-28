@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Characters.Humanoids.AbstractLevel;
 using Data;
 using Data.Upgrades;
 using Infrastructure.AIBattle;
@@ -20,9 +21,9 @@ namespace Infrastructure.Logic.WeaponManagment
     public class HumanoidWeaponController : WeaponController,IWeaponController
     {
 
-        [SerializeField] private ItemType _itemType;
+         private ItemType _weaponType;
         [SerializeField] private SpriteRenderer _radius;
-        [SerializeField] private GameObject _weaponContainer;
+        [SerializeField] private WeaponContainer _weaponContainer;
         public bool CanThrowGranade => _canThrowGranade;
         public Action ChangeWeapon;
         public Action<Weapon> OnInitialized;
@@ -50,10 +51,14 @@ namespace Infrastructure.Logic.WeaponManagment
         public void SetWeapon(Transform weaponTransform) =>
             _weaponPrefab.transform.parent = weaponTransform;
 
-        public override void Initialize()
+        public override void Initialize(CharacterData data)
         {
-            SetAnimInfo();
-            SetWeapon();
+            _grenadeThrower = GetComponent<GrenadeThrower>();
+            _grenadeThrower.OnThrowed += OnThrowedGranade;
+            _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
+            _playerCharacterAnimController.OnSetedAnimInfo+=SetAnimInfo;
+            
+            SetWeapon(data);
             SetLight();
             SetRadius();
 
@@ -63,9 +68,7 @@ namespace Infrastructure.Logic.WeaponManagment
         public float GetSpreadAngle() => ItemData.SpreadAngle;
 
         public void SetUpgrade(UpgradeData upgradeData, int level) => SetDamage(upgradeData.Damage);
-
-        public void UIInitialize() => SetWeapon();
-
+        
         public void SetPoint(WorkPoint workPoint)
         {
             _damage = (_damage * workPoint.UpPrecent) / 100;
@@ -97,36 +100,33 @@ namespace Infrastructure.Logic.WeaponManagment
 
         public void SetAdditionalWeaponButton(AdditionalWeaponButton additionalWeaponButton) => additionalWeaponButton.OnClickButton += ThrowGranade;
 
-        private void Awake()
-        {
-            _grenadeThrower = GetComponent<GrenadeThrower>();
-            _grenadeThrower.OnThrowed += OnThrowedGranade;
-            _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
-        }
-
         private void SetDamage(int damage) => _damage += damage;
         
         private void SetAnimInfo()
         {
+            
             foreach (KeyValuePair<int, float> info in _playerCharacterAnimController.GetAnimInfo())
             {
                 _weaponAnimInfo.Add(info.Key, info.Value);
             }
         }
 
-        private void SetWeapon()
+        private void SetWeapon(CharacterData data)
         {
-            string path = AssetPaths.ItemsData + _itemType;
+            _weaponType=data.ItemData.Type;
+            string path = AssetPaths.ItemsData + _weaponType;
             ItemData itemData = Resources.Load<ItemData>(path);
 
-            path = AssetPaths.WeaponPrefabs + _itemType;
-            GameObject weapon = Instantiate(Resources.Load<GameObject>(path),_weaponContainer.transform);
+            _weaponContainer.SetItem(_weaponType);
+           
+            //path = AssetPaths.WeaponPrefabs + _itemType;
+           // GameObject weapon = Instantiate(Resources.Load<GameObject>(path),_weaponContainer.transform);
             
             //Prefab/Store/Items/WeaponPrefabs/Pistol
-            
-            _weapon =  weapon.GetComponent<Weapon>();
+            //_weapon =  weapon.GetComponent<Weapon>();
+            _weapon =  _weaponContainer.GetItem();
             _weapon.Initialize(itemData);
-            Light = _weapon.GetWeaponLigt;
+            Light = _weapon.GetComponentInChildren<Light>();
             Damage = _weapon.Damage;
             _range = _weapon.Range;
             

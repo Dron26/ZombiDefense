@@ -8,8 +8,6 @@ using Infrastructure.AIBattle.EnemyAI.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
 using Service.Audio;
-using Service.SaveLoad;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
@@ -37,6 +35,7 @@ namespace Enemies.AbstractEntity
         public float Health => _health;
         public int Level => _level;
         public int IndexInWave => _indexInWave;
+        public EnemyData Data => _data;
         
         private List<SkinGroup> _skinGroups = new();
         private AudioManager _audioManager;
@@ -50,7 +49,8 @@ namespace Enemies.AbstractEntity
         private float _health;
         private bool _isLife = true;
         private int _indexInWave;
-private  EnemyData _data;
+        private  EnemyData _data;
+        
         private void Awake()
         {
             _animator = GetComponent<Animator>();
@@ -76,8 +76,7 @@ private  EnemyData _data;
             _damage=_data.Damage;
             _price = _data.Price;
             _level=_data.Level;
-            
-            SetRandomSkin();
+          //  SetRandomSkin();
             SetRandomNavMeshSpeed();
 
             OnInitialized?.Invoke(this);
@@ -95,15 +94,7 @@ private  EnemyData _data;
 
         public int GetPrice() => _price;
         
-        private void SetRandomSkin()
-        {
-            SkinGroup[] skinsGroup = GetComponentsInChildren<SkinGroup>();
-
-            foreach (SkinGroup group in skinsGroup)
-            {
-                group.Initialize();
-            }
-        }
+        
 
         private void SetRandomNavMeshSpeed()
         {
@@ -177,5 +168,6 @@ public enum EnemyEventType
     Death,
     TakeSmokerDamage,
     TakeSimpleWalkerDamage,
-    TakeGranadeDamage
+    TakeGranadeDamage,
+    Update
 }

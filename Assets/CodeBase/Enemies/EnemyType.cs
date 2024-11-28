@@ -2,7 +2,8 @@ namespace Enemies
 {
     public enum EnemyType
     {
-        Simple,
+        SimpleM,
+        SimpleF,
         Smoker
     }
 }

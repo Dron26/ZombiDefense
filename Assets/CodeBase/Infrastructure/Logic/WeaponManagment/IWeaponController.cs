@@ -1,10 +1,9 @@
-using Data.Upgrades;
+using Characters.Humanoids.AbstractLevel;
 using Infrastructure.Location;
-using UI.Buttons;
 
 public interface IWeaponController
 {
-    public void Initialize();
+    public void Initialize(CharacterData data);
     public void SetPoint(WorkPoint workPoint);
     public void SetSelected(bool isSelected);
 }

@@ -14,5 +14,7 @@ namespace Characters.Humanoids.AbstractLevel
         public SpriteRenderer Ring;
         public Sprite Sprite;
         public bool CanMove;
+        public RuntimeAnimatorController CharacterController;
+
     }
 }

@@ -6,6 +6,7 @@ using Infrastructure.AIBattle;
 using Infrastructure.AIBattle.AdditionalEquipment;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
+using Infrastructure.AssetManagement;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
 using Infrastructure.Logic.WeaponManagment;
@@ -30,17 +31,37 @@ namespace Characters.Humanoids.AbstractLevel
         private int _minHealth = 0;
         private bool _isBuyed = false;
         public bool IsBuyed => _isBuyed;
+        public SkinContainer _skinContainer;
         public AudioManager GetAudioManager() => AudioManager;
         
         public override void Initialize()
         {
             IsLife = true;
             _currentHealth = base.CharacterData.Health;
+           // _skinContainer = GetComponent<SkinContainer>();
+            _skinContainer.SetSkin(CharacterData.Type);
             _animator = GetComponent<Animator>();
             _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
             _fxController = GetComponent<FXController>();
+            SetController();
         }
-        
+
+        private void SetController()
+        {
+            string path = "Prefab/Store/Characters/Player/Animation/Controller/"+CharacterData.Type;
+            Debug.Log("Loading controller from path: " + path);
+
+            RuntimeAnimatorController controller = Resources.Load<RuntimeAnimatorController>(path);
+            if (controller == null)
+            {
+                Debug.LogError("Controller not found at path: " + path);
+                return;
+            }
+
+            Debug.Log("Controller loaded successfully: " + controller.name);
+            _animator.runtimeAnimatorController = controller;
+        }
+
         public override void SetAudioManager(AudioManager audioManager)
         {
             if (audioManager == null)

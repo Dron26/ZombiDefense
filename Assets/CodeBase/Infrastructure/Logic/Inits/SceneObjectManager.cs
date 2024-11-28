@@ -24,7 +24,6 @@ public class SceneObjectManager : MonoCache
     private BoxStore _boxStore;
     private CharacterStore _characterStore;
     private BoxFactory _boxFactory;
-    private HumanoidFactory _humanoidFactory;
     private CharacterFactory _characterFactory;
     
     [SerializeField]private ItemFactory _itemFactory;
@@ -88,7 +87,7 @@ public class SceneObjectManager : MonoCache
         character.SetAudioManager(_audioManager);
         
         WeaponController weaponController  = prefab.GetComponent<WeaponController>();
-        weaponController.Initialize();
+        weaponController.Initialize(characterData);
         
         Transform characterTransform = prefab.transform;
         SetTransformParametrs(characterTransform);

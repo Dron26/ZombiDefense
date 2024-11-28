@@ -21,6 +21,5 @@ namespace Infrastructure.AIBattle.AdditionalEquipment
         public bool IsGranade;
         public int GrenadeId;
         public ParticleSystem ExplosionEffect;
-        
     }
 }

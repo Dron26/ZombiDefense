@@ -20,7 +20,6 @@ namespace Infrastructure.Logic.Inits
     public class PlayerCharacterInitializer : MonoCache
     {
         [SerializeField] private WorkPointGroup _workPointsGroup;
-        [SerializeField] private HumanoidFactory _humanoidFactory;
         [SerializeField] private RobotFactory _robotFactory;
         private List<WorkPoint> _workPoints = new();
         private static readonly List<Character> _activeCharacters = new();
@@ -139,9 +138,6 @@ namespace Infrastructure.Logic.Inits
                 }
             }
         }
-
-        public HumanoidFactory GetFactory() =>
-            _humanoidFactory;
 
         public WorkPointGroup GetWorkPointGroup() =>
             _workPointsGroup;

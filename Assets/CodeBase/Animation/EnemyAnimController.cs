@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Data;
+using Enemies;
 using Enemies.AbstractEntity;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
@@ -36,27 +38,35 @@ namespace Animation
         private Animator _animator;
         private AnimatorOverrideController _animatorOverrideController;
         private Dictionary<int, float> _animInfo = new();
-        private RuntimeAnimatorController animatorController;
-
-
+        private EnemyData _data;
+        
         public void Awake()
         {
             if (TryGetComponent(out Enemy enemy))
             {
                 enemy.OnEnemyEvent += HandleEnemyEvent;
+                enemy.OnInitialized += Initialize; 
                 _animator = GetComponent<Animator>();
-                //enemy.OnTakeDamage += OnHitFX;
-                // enemy.OnDeath += OnDieFX;
-                SetAnimInfo();
+                SetSkin();
             }
         }
 
+        private void Initialize(Enemy enemy)
+        {
+            _data = enemy.Data;
+            
+            
+            //enemy.OnTakeDamage += OnHitFX;
+            // enemy.OnDeath += OnDieFX;
+            
+            SetAnimInfo();
+        }
+
+        
         private void SetAnimInfo()
         {
             List<int> animHashNames = new();
             animHashNames.Add(Walk);
-
-            animatorController = _animator.runtimeAnimatorController;
 
             foreach (int name in animHashNames)
             {
@@ -69,6 +79,19 @@ namespace Animation
             SetRandomAnimation();
         }
 
+        private void SetSkin()
+        {
+            GroupContainer groupContainer = GetComponentInChildren<GroupContainer>();
+            
+            SkinGroup[] skinsGroup = groupContainer.GetComponentsInChildren<SkinGroup>();
+        
+            foreach (SkinGroup group in skinsGroup)
+            {
+                group.Initialize();
+            }
+        }
+        
+        
         public void SetRandomAnimation()
         {
             _animatorOverrideController = new AnimatorOverrideController(_animator.runtimeAnimatorController);
@@ -119,7 +142,7 @@ namespace Animation
                     break;
             }
         }
-
+        
         private void OnGranadeDamage()
         {
             //_animator.SetTrigger(Die);
@@ -164,7 +187,7 @@ namespace Animation
 
         private AnimationClip GetAnimationClip(string clipName)
         {
-            foreach (var clip in animatorController.animationClips)
+            foreach (var clip in _animator.runtimeAnimatorController.animationClips)
             {
                 if (clip.name == clipName)
                 {

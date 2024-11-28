@@ -1,3 +1,4 @@
+using Characters.Humanoids.AbstractLevel;
 using Data.Upgrades;
 using Infrastructure.AIBattle.AdditionalEquipment;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
@@ -15,7 +16,7 @@ namespace Infrastructure.Logic.WeaponManagment
         
         public void SetUpgrade(UpgradeData upgradeData, int level) => SetDamage(upgradeData.Damage);
 
-        public virtual void Initialize(){}
+        public virtual void Initialize(CharacterData data){}
 
         public virtual void SetPoint(WorkPoint workPoint){}
 

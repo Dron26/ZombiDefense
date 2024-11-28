@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 3438307147572246870}
   - component: {fileID: 3438307147572246859}
   - component: {fileID: -3071788025695603787}
+  - component: {fileID: 3165623581358702539}
   m_Layer: 6
   m_Name: Sergeant
   m_TagString: Untagged
@@ -82,6 +83,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartPosition: {x: 0, y: 0, z: 0}
+  _skinContainer: {fileID: 0}
 --- !u!114 &3438307147572246878
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -166,9 +168,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f830727607e4ae4b44550dac031f891, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ItemType: 0
+  Light: {fileID: 0}
+  ItemData: {fileID: 0}
   _itemType: 1
   _radius: {fileID: 4672821449565800170}
   _weaponContainer: {fileID: 3438307147572263368}
+  _damage: 0
 --- !u!114 &3438307147572246864
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -245,6 +251,20 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &3165623581358702539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3438307147572064486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94171a06a50245c3ba4e8cfe3583966a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _throwForce: 0
+  proc: 0.5
 --- !u!1 &3438307147572068424
 GameObject:
   m_ObjectHideFlags: 0
@@ -1052,6 +1072,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c0b45d9be794c3a9c48088a93af6bcd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _items: []
 --- !u!1 &3438307147572265646
 GameObject:
   m_ObjectHideFlags: 0

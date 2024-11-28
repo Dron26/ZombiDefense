@@ -4,9 +4,12 @@ namespace Characters.Humanoids.AbstractLevel
     {
         Soldier,
         Sergeant,
-        Grenadier,
         Scout,
+        Grenadier,
         Sniper,
+        Gunner,
+        Flammer,
+        Engineer,
         Turret
     }
 }

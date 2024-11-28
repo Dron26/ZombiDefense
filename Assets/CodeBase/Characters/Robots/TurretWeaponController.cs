@@ -1,4 +1,5 @@
 using System;
+using Characters.Humanoids.AbstractLevel;
 using Data.Upgrades;
 using Infrastructure.Location;
 using Infrastructure.Logic.WeaponManagment;
@@ -34,13 +35,13 @@ namespace Characters.Robots
         public Action OnSelected;
         private GrenadeThrower _grenadeThrower;
 
-        public override void Initialize()
+        public override void Initialize(CharacterData data)
         {
             _turretGun = transform.GetComponentInChildren<TurretGun>();
             SetWeaponParametrs();
             ChangeWeapon?.Invoke();
             SetShootingRadiusSprite();
-            OnInitialized?.Invoke(_weapon);
+          //  OnInitialized?.Invoke(_weapon);
         }
 
         private void SetWeaponParametrs()

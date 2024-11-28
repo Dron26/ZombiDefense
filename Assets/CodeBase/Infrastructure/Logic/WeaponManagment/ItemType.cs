@@ -6,10 +6,12 @@ namespace Infrastructure.Logic.WeaponManagment
         Rifle,
         Submachinegun,
         Shotgun,
-        SniperRifle,
-        Grenade,
-        HeavyMachineGun,
+        Sniper,
+        Heavymachinegun,
+        Flammer,
+        Medigun,
         Turret,
-        MedicalKit
+        MedicalKit,
+        Grenade,
     }
 }

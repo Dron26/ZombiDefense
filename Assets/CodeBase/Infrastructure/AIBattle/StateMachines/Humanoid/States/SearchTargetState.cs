@@ -63,7 +63,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
                 
                 if (closestEnemyIndex != -1)
                 {
-                    _enemy = saveLoadService.GetActiveEnemy()[closestEnemyIndex];
+                    _enemy = SaveLoadService.GetActiveEnemy()[closestEnemyIndex];
 
                     float _currentRange = Vector3.Distance(transform.position, _enemy.transform.position);
                     
@@ -156,7 +156,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         private int GetClosestEnemyIndex()
         {
             int closestEnemyIndex = -1;
-            List<Enemy> enemyGroup = saveLoadService.GetActiveEnemy();
+            List<Enemy> enemyGroup = SaveLoadService.GetActiveEnemy();
             if (enemyGroup.Count>0)
             {
                 foreach (Enemy enemy in enemyGroup)
@@ -167,7 +167,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
                     }
                     
                 }
-                _enemyTransforms = saveLoadService.GetActiveEnemy()
+                _enemyTransforms = SaveLoadService.GetActiveEnemy()
                     .Select(enemy => enemy.transform)
                     .ToArray();
             

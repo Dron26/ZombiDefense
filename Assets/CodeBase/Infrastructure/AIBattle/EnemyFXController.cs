@@ -113,7 +113,7 @@ namespace Infrastructure.AIBattle
             //     Debug.LogWarning($"No particle effects found for weapon name '{_weapon}'.");
             // }
 
-            if (_item!=ItemType.SniperRifle)
+            if (_item!=ItemType.Sniper)
             {
                 int randomIndex = Random.Range(0, _particlesHitLite.Count);
                 _particlesHitLite[randomIndex].Play();

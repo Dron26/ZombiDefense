@@ -6,7 +6,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
     public abstract class State : MonoCache, ISwitcherState
     {
         protected PlayerCharactersStateMachine PlayerCharactersStateMachine;
-        protected SaveLoadService saveLoadService;
+        protected SaveLoadService SaveLoadService;
 
         public void EnterBehavior() =>
             enabled = true;
@@ -16,7 +16,7 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         public void Init(PlayerCharactersStateMachine playerCharactersStateMachine, SaveLoadService saveLoadService  )
         {
             PlayerCharactersStateMachine = playerCharactersStateMachine;
-            this.saveLoadService = saveLoadService;
+            this.SaveLoadService = saveLoadService;
         }
     }
 }

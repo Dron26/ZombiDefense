@@ -50,7 +50,7 @@ namespace Infrastructure.AIBattle.StateMachines.Robot.States
             
             while (_isSearhing)
             {
-                _enemyTransforms = saveLoadService.GetActiveEnemy()
+                _enemyTransforms = SaveLoadService.GetActiveEnemy()
                     .Select(enemy => enemy.transform)
                     .ToArray();
             
@@ -58,7 +58,7 @@ namespace Infrastructure.AIBattle.StateMachines.Robot.States
                 
                 if (closestEnemyIndex != -1)
                 {
-                    _enemy = saveLoadService.GetActiveEnemy()[closestEnemyIndex];
+                    _enemy = SaveLoadService.GetActiveEnemy()[closestEnemyIndex];
 
                     float _currentRange = Vector3.Distance(transform.position, _enemy.transform.position);
                     float rangeAttack = _humanoidWeaponController.GetRangeAttack();

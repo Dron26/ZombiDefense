@@ -556,6 +556,7 @@ GameObject:
   - component: {fileID: 5763427100804377081}
   - component: {fileID: 5763427100804377060}
   - component: {fileID: -1360060782885372861}
+  - component: {fileID: 7028429708128482096}
   m_Layer: 6
   m_Name: Scout
   m_TagString: Untagged
@@ -616,6 +617,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartPosition: {x: 0, y: 0, z: 0}
+  _skinContainer: {fileID: 0}
 --- !u!114 &5763427100804377073
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -700,9 +702,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f830727607e4ae4b44550dac031f891, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ItemType: 0
+  Light: {fileID: 0}
+  ItemData: {fileID: 0}
   _itemType: 2
   _radius: {fileID: 8465361154536865934}
   _weaponContainer: {fileID: 5763427100804262247}
+  _damage: 0
 --- !u!114 &5763427100804377087
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -779,6 +785,20 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &7028429708128482096
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5763427100804456521}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94171a06a50245c3ba4e8cfe3583966a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _throwForce: 0
+  proc: 0.5
 --- !u!1 &5763427100804466271
 GameObject:
   m_ObjectHideFlags: 0

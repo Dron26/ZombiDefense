@@ -150,6 +150,7 @@ namespace Infrastructure.Logic.Inits
         private void SetInfo()
         {
             int countCreated = _playerCharacterInitializer.CoutnCreated;
+            
             if (ordered == countCreated)
             {
                 SetInfoCompleted?.Invoke();
