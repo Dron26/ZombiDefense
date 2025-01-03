@@ -10,13 +10,15 @@ using UnityEngine;
 
 namespace Characters.Humanoids.AbstractLevel
 {
-    public abstract class Character : MonoCache,IDamageable
+    public abstract class Character : Entity,IDamageable
     {
         public CharacterData CharacterData=> _characterData;
         public int Price => _characterData.Price;
         public bool IsMove => IsMoving;
         protected bool IsMoving;
-        public bool IsLife { get; protected set; }
+        
+        public override bool IsLife() => _isLife;
+        private bool _isLife = true;
         public Sprite Sprite => _characterData.Sprite;
         public bool CanMove => _characterData.CanMove;
 
@@ -30,10 +32,10 @@ namespace Characters.Humanoids.AbstractLevel
         public abstract void SetUpgrade(UpgradeData upgrade, int level);
 
         public void SetPoint(WorkPoint workPoint) {}
-
         public void Initialize(CharacterData characterData)
         {
             _characterData = characterData;
+            _isLife = true;
             Initialize();
             OnInitialize?.Invoke(this);
         }
@@ -41,10 +43,15 @@ namespace Characters.Humanoids.AbstractLevel
         public abstract void Initialize();
 
         public abstract void SetAudioManager(AudioManager audioManager);
-        public void ApplyDamage(float damage, ItemType itemType)
+        public override void ApplyDamage(float damage, ItemType itemType)
         {
             int value = Convert.ToInt32(damage); 
             ApplyDamage(value);
+        }
+
+        protected virtual void Die()
+        {
+            _isLife = false;
         }
     }
 }

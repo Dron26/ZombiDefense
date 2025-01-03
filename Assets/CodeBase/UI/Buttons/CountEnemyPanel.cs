@@ -24,7 +24,7 @@ namespace UI.Buttons
             _text.text=_countEnemy.ToString();
         }
         
-        private void OnEnemyDeath(Enemy enemy)
+        private void OnEnemyDeath(Entity enemy)
         {
             _countEnemy--;
             SetCount(_countEnemy);

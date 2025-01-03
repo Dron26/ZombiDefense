@@ -11,14 +11,14 @@ GameObject:
   - component: {fileID: 2532071828987346496}
   - component: {fileID: 2532071828988640864}
   - component: {fileID: 2532071828989770912}
-  - component: {fileID: 3917274954107357593}
+  - component: {fileID: 7875779371254412173}
   m_Layer: 6
   m_Name: Submachinegun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2532071828987346496
 Transform:
   m_ObjectHideFlags: 0
@@ -88,7 +88,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &3917274954107357593
+--- !u!114 &7875779371254412173
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -102,7 +102,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _particleGunshot: {fileID: 3221064474918657085}
   _particleEject: {fileID: 5062970081834864260}
-  _weaponLight: {fileID: 1028494303468726788}
 --- !u!1 &6108437234560009232
 GameObject:
   m_ObjectHideFlags: 0
@@ -325,11 +324,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fc87673490fd94145ac0109fc69166d8, type: 3}
---- !u!108 &1028494303468726788 stripped
-Light:
-  m_CorrespondingSourceObject: {fileID: 3536020831311924226, guid: fc87673490fd94145ac0109fc69166d8, type: 3}
-  m_PrefabInstance: {fileID: 4564268654106945030}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8488812765900169242 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5375565213594109468, guid: fc87673490fd94145ac0109fc69166d8, type: 3}

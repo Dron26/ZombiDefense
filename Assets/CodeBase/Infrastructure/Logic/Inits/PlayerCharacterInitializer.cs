@@ -66,8 +66,7 @@ namespace Infrastructure.Logic.Inits
             
             if (character.TryGetComponent(out Humanoid humanoid))
             {
-                DieState dieState = humanoid.GetComponent<DieState>();
-                dieState.OnDeath += OnDeath;
+                humanoid.OnEntityDeath += OnDeath;
             }
             if (character.TryGetComponent(out Turret turret))
             {
@@ -119,8 +118,9 @@ namespace Infrastructure.Logic.Inits
             }
         }
 
-        private void OnDeath(Character character)
+        private void OnDeath(Entity entity)
         {
+            Character character = entity.GetComponent<Character>();
             _inactiveCharacetrs.Add(character);
             _activeCharacters.Remove(character);
             SetLocalParametrs();

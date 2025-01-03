@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Characters.Humanoids.AbstractLevel;
 using Enemies.AbstractEntity;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using UnityEngine;
@@ -19,6 +20,7 @@ namespace Infrastructure.AIBattle
         public readonly int IsThrewGrenade = Animator.StringToHash("IsThrewGrenade");
         public readonly int Die = Animator.StringToHash("Die");
         public Action OnSetedAnimInfo;
+        private Character _character;
         [SerializeField] private  AnimationClip[] _walkAnimationClips;
         [SerializeField] private  AnimationClip[] _screamAnimationClips;
     
@@ -26,19 +28,21 @@ namespace Infrastructure.AIBattle
         private AnimatorOverrideController animatorOverrideController;
         private Dictionary<int, float> _animInfo=new();
 
-        private RuntimeAnimatorController animatorController;
+        private RuntimeAnimatorController _animatorController;
         private void Awake()
         {
             _animator = GetComponent<Animator>();
             
-            SetAnimInfo();
+            if (TryGetComponent(out Character charcter))
+            {
+                _character=charcter;
+                _character.OnInitialize+= OnInitialize;
+            }
         }
 
-        public void SetRandomAnimation()
-        {  animatorOverrideController = new AnimatorOverrideController(_animator.runtimeAnimatorController);
-            _animator.runtimeAnimatorController = animatorOverrideController;
-            int randomIndex = UnityEngine.Random.Range(0, _walkAnimationClips.Length);
-            animatorOverrideController["Walk"] = _walkAnimationClips[randomIndex];
+        private void OnInitialize(Character obj)
+        {
+            SetAnimInfo(obj.CharacterData.Type);
         }
 
         public void OnShoot(bool satate)
@@ -68,16 +72,21 @@ namespace Infrastructure.AIBattle
         }
         
         
-        private void SetAnimInfo()
+        private void SetAnimInfo(CharacterType type)
         {
-            animatorController = _animator.runtimeAnimatorController;
+            _animator = GetComponent<Animator>();
+            _animator.runtimeAnimatorController = _character.CharacterData.CharacterController;
+            _animatorController = _animator.runtimeAnimatorController;
            
             List<int>animHashNames = new();
 
             animHashNames.Add(IsShoot);
-            animHashNames.Add(Reload);
-                
-
+            
+            if (type!=CharacterType.Flammer&&type!=CharacterType.Engeneer)
+            {
+                animHashNames.Add(Reload);
+            }
+            
             foreach (int name in animHashNames)
             {
                 string animName = GetAnimatorParameterName(name);
@@ -103,7 +112,7 @@ namespace Infrastructure.AIBattle
 
         private AnimationClip GetAnimationClip(string clipName)
         {
-            foreach (var clip in animatorController.animationClips)
+            foreach (var clip in _animatorController.animationClips)
             {
                 if (clip.name == clipName)
                 {

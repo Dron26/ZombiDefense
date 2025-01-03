@@ -19,8 +19,10 @@ namespace UI.Buttons
         private HumanoidWeaponController _humanoidWeaponController;
         public Action OnClickButton;
 private bool _haveAdditionalWeapon;
+private SaveLoadService _saveLoadService;
         public void Initialize(SaveLoadService saveLoadService)
         {
+            _saveLoadService = saveLoadService;
             saveLoadService.OnSelectedNewCharacter+=OnSelectedNewCharacter;
             _weapon.onClick.AddListener(() =>TryThrowGranade());
         }
@@ -77,7 +79,11 @@ private bool _haveAdditionalWeapon;
                 }
             }
         }
-    
-    
+
+        protected void OnDestroy()
+        {
+            _saveLoadService.OnSelectedNewCharacter-=OnSelectedNewCharacter;
+            _weapon.onClick.RemoveListener(() =>TryThrowGranade());
+        }
     }
 }

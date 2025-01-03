@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Characters.Humanoids.AbstractLevel;
+using Characters.Robots;
 using Data;
 using Infrastructure.AIBattle;
 using Infrastructure.AIBattle.AdditionalEquipment;
@@ -10,7 +11,10 @@ using Infrastructure.Location;
 using Infrastructure.Logic.Inits;
 using Infrastructure.Logic.WeaponManagment;
 using Infrastructure.Points;
+using Interface;
+using Service;
 using Service.Audio;
+using Service.SaveLoad;
 using UI.HUD.StorePanel;
 using UnityEngine;
 using UnityEngine.Events;
@@ -34,7 +38,9 @@ public class SceneObjectManager : MonoCache
     private WorkPoint _selectedWorkPoint;
     private Store _store;
     private MovePointController _movePointController;
-    public void Initialize(Store store, MovePointController movePointController, AudioManager audioManager)
+    private SaveLoadService _saveLoadService;
+    public void Initialize(Store store, MovePointController movePointController, AudioManager audioManager,
+        SaveLoadService saveLoadService)
     {
         _store=store;
         _movePointController = movePointController;
@@ -42,6 +48,7 @@ public class SceneObjectManager : MonoCache
         _characterFactory=GetComponent<CharacterFactory>();
         _boxFactory=GetComponent<BoxFactory>();
         _itemFactory=GetComponent<ItemFactory>();
+        _saveLoadService = saveLoadService;
         AddListener();
     }
 
@@ -86,12 +93,23 @@ public class SceneObjectManager : MonoCache
         character.OnInitialize += OnBuildedCharacter;
         character.SetAudioManager(_audioManager);
         
-        WeaponController weaponController  = prefab.GetComponent<WeaponController>();
-        weaponController.Initialize(characterData);
-        
         Transform characterTransform = prefab.transform;
         SetTransformParametrs(characterTransform);
-        character.Initialize(characterData);
+        
+        if (characterData.Type!= CharacterType.Turret)
+        {
+            WeaponController weaponController  = prefab.GetComponent<WeaponController>();
+            weaponController.Initialize(characterData);
+            character.Initialize(characterData);
+        }
+        else
+        {
+            TurretWeaponController weaponController  = prefab.GetComponent<TurretWeaponController>();
+            weaponController.Initialize(characterData);
+            Turret turret=prefab.GetComponent<Turret>();
+            turret.SetSaveLoadService(_saveLoadService);
+            turret.Initialize(characterData);
+        }
     }
 
     private void SetTransformParametrs(Transform transform)
@@ -102,8 +120,10 @@ public class SceneObjectManager : MonoCache
         transform.rotation = Quaternion.Euler(0f, randomAngle, 0f);
     }
     
-    private void OnBuildedCharacter( Character character)
+    private void OnBuildedCharacter(Character character)
     {
+        AllServices.Container.Single<ISearchService>().AddEntity(character);
+
         CreatedHumanoid?.Invoke(character);
     }
     
@@ -111,8 +131,7 @@ public class SceneObjectManager : MonoCache
     {
         _selectedWorkPoint.SetWeaponBox(box);
     }
-     
-
+    
     private void PlaceBoxOnScene(Transform boxTransform,Transform pointTransform)
     {
         boxTransform.parent = pointTransform;
@@ -144,10 +163,4 @@ public class SceneObjectManager : MonoCache
         _store.OnBoughtUpgrade-=OnBoughtUpgrade;
         _movePointController.OnClickPoint += OnSelectedNewPoint;
     }
-}
-
-
-
-namespace Infrastructure.Factories.FactoryWarriors.Humanoids
-{
 }

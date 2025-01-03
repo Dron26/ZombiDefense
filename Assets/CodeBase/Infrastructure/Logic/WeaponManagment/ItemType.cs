@@ -9,9 +9,10 @@ namespace Infrastructure.Logic.WeaponManagment
         Sniper,
         Heavymachinegun,
         Flammer,
-        Medigun,
+        Medium,
         Turret,
         MedicalKit,
         Grenade,
+        Enemy
     }
 }

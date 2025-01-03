@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 7803912805061910061}
   - component: {fileID: 8447378197905981359}
   - component: {fileID: 8006172991220628406}
+  - component: {fileID: 1132095474845428966}
   m_Layer: 0
   m_Name: SceneInitializer
   m_TagString: Untagged
@@ -185,6 +186,7 @@ MonoBehaviour:
   _cameraUI: {fileID: 3970863866817895854}
   _eventSystem: {fileID: 570791067988469314}
   _globalTimer: {fileID: 464131504309011141}
+  _entitySearchService: {fileID: 1132095474845428966}
   availableCharacters: []
 --- !u!114 &7789322449996127429
 MonoBehaviour:
@@ -260,6 +262,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 149dbd70198841b0a220afd78fa256a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1132095474845428966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7789322449996127425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76d9d4aa5a514a4ca1e76b812028ebec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &1539487609320228323

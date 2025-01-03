@@ -36,7 +36,7 @@ namespace Characters.Robots
         {
             _saveLoadService=saveLoadService;
             _raycastHitChecker = GetComponent<RaycastHitChecker>();
-            _raycastHitChecker.Initialize(saveLoadService);
+            _raycastHitChecker.Initialize(_saveLoadService);
         }
 
         public override void ApplyDamage(int getDamage)

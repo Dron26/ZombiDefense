@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Enemies;
 using UnityEngine;
 
@@ -13,5 +12,11 @@ namespace Data
          public int Damage;
          public int Price;
          public int Level;
+         public bool IsExplosive;
+         public int ExplosiveDamage;
+         public float ExplosionRadius;
+         
+         public RuntimeAnimatorController CharacterController;
+         public float NavMeshSpeed;
     }
 }

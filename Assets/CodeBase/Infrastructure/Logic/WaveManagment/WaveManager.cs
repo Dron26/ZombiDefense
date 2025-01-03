@@ -23,7 +23,7 @@ namespace Infrastructure.Logic.WaveManagment
         private WaveSpawner _waveSpawner;
         private int _currentFilledWave = 0;
         private bool isWaitingForNextWave = false;
-
+        public WaveSpawner WaveSpawner => _waveSpawner;
         private List<Enemy> enemies = new List<Enemy>();
         private bool _isContinueGame;
         private bool _isStartedWave;
@@ -46,22 +46,31 @@ namespace Infrastructure.Logic.WaveManagment
             _wavesContainerData = Resources.Load<WavesContainerData>(path);
             _groupWaveData=_wavesContainerData.GroupWaveData;;
         }
+
+        private void Awake()
+        {
+            _waveSpawner = GetComponent<WaveSpawner>();
+            _enemyFactory = GetComponent<EnemyFactory>();
+        }
+
         public void Initialize(SaveLoadService saveLoadService, SceneInitializer sceneInitializer)
         {
             _sceneInitializer = sceneInitializer;
             _saveLoadService = saveLoadService;
-            InitializeContainer();
-            _enemyFactory = GetComponent<EnemyFactory>();
+            
             _enemyFactory.Initialize( _sceneInitializer.GetAudioController());
-            _waveSpawner = GetComponent<WaveSpawner>();
             _waveSpawner.Initialize(_sceneInitializer.GetAudioController(), _enemyFactory, this);
             _canFillWave = true;
-            SetMaxCountEnemy();
+            
             AddListener();
+            
+            InitializeContainer();
+            SetMaxCountEnemy();
         }
         
         public void SetWaveData()
         {
+            
             if (_canFillWave)
             {
                 OnSetWave?.Invoke(_groupWaveData[_currentFilledWave]);

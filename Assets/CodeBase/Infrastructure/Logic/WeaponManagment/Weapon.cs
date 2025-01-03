@@ -19,12 +19,11 @@ namespace Infrastructure.Logic.WeaponManagment
         public int MaxAmmo => _itemData.MaxAmmo;
         public int TimeBeforeExplosion => _itemData.TimeBeforeExplosion;
         public float SpreadAngle=>_itemData.SpreadAngle;
-        public bool IsShotgun=>ItemType== ItemType.Shotgun;
 
         public ParticleSystem GetParticleGunshot=>_particleGunshot;
          public ParticleSystem GetParticleEject=>_particleEject;
 
-         public override ItemType ItemType { get; }
+         public override ItemType ItemType => _itemData.Type;
          public override void Initialize(ItemData itemData) => _itemData = itemData;
     }
 }

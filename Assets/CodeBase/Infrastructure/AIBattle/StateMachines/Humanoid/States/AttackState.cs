@@ -1,6 +1,10 @@
-﻿using Enemies.AbstractEntity;
+﻿using System.Collections.Generic;
+using DG.Tweening;
+using Enemies.AbstractEntity;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
 using Infrastructure.Logic.WeaponManagment;
+using Interface;
+using Service;
 using UnityEngine;
 
 namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
@@ -9,8 +13,8 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
     {
         private readonly WaitForSeconds _waitForSeconds = new(0.1f);
 
-        private Enemy _enemy = null;
-
+        private Entity _enemy;
+        private Transform _transformEnemy;
         private float _currentRange;
 
         private PlayerCharacterAnimController _playerCharacterAnimController;
@@ -18,28 +22,22 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
         private Characters.Humanoids.AbstractLevel.Humanoid _humanoid;
         private HumanoidWeaponController _humanoidWeaponController;
         private bool _isShotgun;
-
-        //private bool _isAttacked;
+        private SphereCollider _attackTrigger;
         private bool _isAttacking;
         private bool _isReloading;
         private Weapon _activeWeapon;
-
+        private List<Enemy> _enemiesInRange = new();
         private int _maxAmmo;
+        private int _ammoCount;
 
-        //  private float _reloadTime;
-        private float _fireRate;
         private float _damage;
         private float _range;
-        public int _ammoCount;
-
-        float _firstRadius;
-        float _secondRadius;
-        float _thirdRadius;
+        private float _maxRadius;
         private float[] _radiusList;
         private float[] _damageList;
-        private float _maxRadius;
+
         private bool _isTargetSet;
-        
+
         private void Awake()
         {
             _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
@@ -50,26 +48,27 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
         }
 
         private void Start()
-        { 
+        {
             PlayerCharactersStateMachine.OnStartMove += StartMove;
         }
 
         protected override void OnEnabled()
         {
             Debug.Log("OnEnabled()");
-            if (_isAttacking == false & _isReloading == false)
+            if (!_isAttacking && !_isReloading)
             {
                 Attack();
             }
         }
 
-        public void InitEnemy(Enemy targetEnemy)
+        public void InitEnemy(Entity targetEnemy)
         {
             Debug.Log("InitEnemy()");
             _enemy = targetEnemy;
+            _transformEnemy = _enemy.transform;
             _isTargetSet = true;
 
-            if (_isAttacking == false & _isReloading == false)
+            if (!_isAttacking && !_isReloading)
             {
                 Attack();
             }
@@ -80,29 +79,30 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
             Debug.Log("Attack()");
             if (_enemy.IsLife())
             {
-                if (_ammoCount == 0 && _isReloading == false)
+                if (_ammoCount == 0 && !_isReloading)
                 {
-                    Debug.Log("Reload()");
                     Reload();
                 }
-                
-                if (_isAttacking == false & _isReloading == false)
+                else if (!_isAttacking && !_isReloading)
                 {
-                    _currentRange = Vector3.Distance(transform.position, _enemy.transform.position);
-                    float rangeAttack = _humanoidWeaponController.GetRangeAttack();
-
-                    if (_currentRange <= rangeAttack & _ammoCount > 0)
+                    _currentRange = Vector3.Distance(transform.position, _transformEnemy.position);
+                    if (_currentRange <= _range && _ammoCount > 0)
                     {
                         _isAttacking = true;
                         _isTargetSet = false;
 
-                        
+                        transform.DOLookAt(_transformEnemy.position, 0.1f);
                         _playerCharacterAnimController.OnShoot(true);
                     }
                 }
             }
             else
             {
+                if (_activeWeapon.ItemType == ItemType.Medium)
+                {
+                    _fxController.OnAttackFXStop();
+                }
+
                 ChangeState<SearchTargetState>();
             }
         }
@@ -117,9 +117,11 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
                 ApplyDamageToEnemiesInRange();
             }
             else
+            {
                 _enemy.ApplyDamage(_damage, _humanoidWeaponController.ItemType);
+            }
 
-            if (_ammoCount == 0 & _isReloading == false)
+            if (_ammoCount == 0 && !_isReloading)
             {
                 Reload();
             }
@@ -127,7 +129,6 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
             {
                 Attack();
             }
-
         }
 
         private void Reload()
@@ -158,62 +159,60 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
         {
             float angle = _humanoidWeaponController.GetSpreadAngle();
             Vector3 attackDirection = _enemy.transform.position - transform.position;
-
-            Collider[] hitColliders = Physics.OverlapSphere(transform.position, _maxRadius, LayerMask.GetMask("Enemy"));
-
-            foreach (Collider hitCollider in hitColliders)
+            _enemiesInRange=AllServices.Container.Single<ISearchService>().GetEntitiesInRange<Enemy>(transform.position, _maxRadius);
+            foreach (var enemy in _enemiesInRange)
             {
-                if (hitCollider.TryGetComponent(out Enemy enemy))
+                if (enemy.IsLife())
                 {
-                    if (enemy.IsLife())
+                    Vector3 directionToEnemy = enemy.transform.position - transform.position;
+                    float angleToEnemy = Vector3.Angle(attackDirection, directionToEnemy);
+
+                    if (angleToEnemy <= angle)
                     {
-                        Vector3 directionToEnemy = enemy.transform.position - transform.position;
-                        float angleToEnemy = Vector3.Angle(attackDirection, directionToEnemy);
+                        float distance = Vector3.Distance(transform.position, enemy.transform.position);
+                        float damagePercent = CalculateDamagePercent(distance);
 
-                        // Проверяем, находится ли враг внутри угла атаки
-                        if (angleToEnemy <= angle)
-                        {
-                            float distance = Vector3.Distance(transform.position, enemy.transform.position);
-                            float damagePercent = 0;
-
-                            for (int i = 0; i < _radiusList.Length; i++)
-                            {
-                                if (distance <= _radiusList[i])
-                                {
-                                    damagePercent = _damageList[i];
-                                    break;
-                                }
-                            }
-
-                            enemy.ApplyDamage(_humanoidWeaponController.Damage * damagePercent,
-                                _humanoidWeaponController.ItemType); // применяем урон
-                        }
+                        enemy.ApplyDamage(_damage * damagePercent, _humanoidWeaponController.ItemType);
                     }
                 }
             }
         }
 
+        private float CalculateDamagePercent(float distance)
+        {
+            for (int i = 0; i < _radiusList.Length; i++)
+            {
+                if (distance <= _radiusList[i])
+                {
+                    return _damageList[i];
+                }
+            }
+
+            return 0;
+        }
+
         private void OnWeaponChanged()
         {
             _activeWeapon = _humanoidWeaponController.GetActiveItemData();
-            _isShotgun = _activeWeapon.IsShotgun;
             _maxAmmo = _activeWeapon.MaxAmmo;
             _ammoCount = _maxAmmo;
-            //  _reloadTime = _weaponController.ReloadTime;
-            _fireRate = _activeWeapon.FireRate;
-            _range = _activeWeapon.Range;
             _damage = _humanoidWeaponController.Damage;
+            _range = _activeWeapon.Range;
 
-            if (_isShotgun)
+            if (_activeWeapon.SpreadAngle > 0)
             {
-                _firstRadius = _humanoidWeaponController.GetSpread();
-                _secondRadius = _humanoidWeaponController.GetSpread() * 0.6f;
-                _thirdRadius = _humanoidWeaponController.GetSpread() * 0.3f;
-
-                _radiusList = new[] { _firstRadius, _secondRadius, _thirdRadius };
-
-                _damageList = new[] { 1.3f, 1f, _damage * 0.026f };
+                _isShotgun = true;
+                _radiusList = new[]
+                {
+                    _humanoidWeaponController.GetSpreadAngle() * 0.4f,
+                    _humanoidWeaponController.GetSpreadAngle() * 0.6f, _humanoidWeaponController.GetSpreadAngle()
+                };
+                _damageList = new[] { 1.3f, 1f, _damage * 0.5f };
                 _maxRadius = _radiusList[0];
+            }
+            else
+            {
+                _isShotgun = false;
             }
         }
 
@@ -235,7 +234,7 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
         private void StartMove()
         {
             Debug.Log("StartMove()");
-            if (_isAttacking == true||_isReloading==true)
+            if (_isAttacking || _isReloading)
             {
                 _playerCharacterAnimController.ReloadWeapon(false);
                 _isReloading = false;
@@ -244,4 +243,4 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
             }
         }
     }
-} 
+}

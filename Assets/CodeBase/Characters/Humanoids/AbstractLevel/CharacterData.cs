@@ -13,7 +13,9 @@ namespace Characters.Humanoids.AbstractLevel
         public int Price;
         public SpriteRenderer Ring;
         public Sprite Sprite;
+        public bool HaveAttachments;
         public bool CanMove;
+        public bool HaveWeaponLight;
         public RuntimeAnimatorController CharacterController;
 
     }

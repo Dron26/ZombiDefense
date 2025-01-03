@@ -104,7 +104,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6444152899539090889}
   m_Layer: 0
-  m_Name: GunFlash (1)
+  m_Name: GunFlash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -137,13 +137,14 @@ GameObject:
   - component: {fileID: 4694598602066610280}
   - component: {fileID: 4694598602063710280}
   - component: {fileID: 4694598602064710280}
+  - component: {fileID: 3687670072948118607}
   m_Layer: 0
   m_Name: Heavymachinegun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4694598602066610280
 Transform:
   m_ObjectHideFlags: 0
@@ -212,6 +213,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &3687670072948118607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4694598602066908232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abb217199da0455a9a030aa72df1a973, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _particleGunshot: {fileID: 3169727377492572822}
+  _particleEject: {fileID: 8973760680452634978}
 --- !u!1 &7263302813939669361
 GameObject:
   m_ObjectHideFlags: 0
@@ -317,6 +332,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8294fa0376059bd4ea33de81b9b24ec1, type: 3}
+--- !u!198 &8973760680452634978 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 8152726016106162781, guid: 8294fa0376059bd4ea33de81b9b24ec1, type: 3}
+  m_PrefabInstance: {fileID: 985583354888377151}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &9099037882152575924 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8352831954813333643, guid: 8294fa0376059bd4ea33de81b9b24ec1, type: 3}
@@ -394,5 +414,10 @@ PrefabInstance:
 --- !u!4 &2968501532047472058 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5399547329657051128, guid: 940ba601eb38c064f9ef2a107604b814, type: 3}
+  m_PrefabInstance: {fileID: 7195969190408905282}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &3169727377492572822 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 5197177728985209044, guid: 940ba601eb38c064f9ef2a107604b814, type: 3}
   m_PrefabInstance: {fileID: 7195969190408905282}
   m_PrefabAsset: {fileID: 0}

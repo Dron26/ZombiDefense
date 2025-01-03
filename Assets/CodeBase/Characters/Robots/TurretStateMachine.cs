@@ -16,8 +16,6 @@ namespace Characters.Robots
         [SerializeField] private int _damage;
         [SerializeField] private float _timeShotsInterval;
         [SerializeField] private GameObject _gun;
-        [SerializeField] private GameObject _kk
-            ;
         private bool _isTargetSet;
         private bool _isAutoFind;
         private bool _isSelected;
@@ -28,6 +26,7 @@ namespace Characters.Robots
         private Coroutine currentTurnCoroutine;
         private RaycastHitChecker _raycastHitChecker;
         private TurretGun _turretGun;
+        private Enemy _enemy;
         private bool _isTurning;
         public float maxTurnTime = 1f; // максимальное время поворота
         public float _maxTurnAngle = 180.0f; // максимальный угол, при котором персонаж поворачивается
@@ -165,46 +164,59 @@ namespace Characters.Robots
         {
             if (other.TryGetComponent<Enemy>(out Enemy enemy)&&_isTargetSet==false)
             {
-                enemy.OnDeath+= StopAttack;
+                _enemy = enemy;
+                enemy.OnEnemyEvent+= HandleEnemyEvent;
                 StopCoroutine(IdleState());
-                StartCoroutine(AttackState(enemy));
+                StartCoroutine(AttackState());
             }
         }
-
+        
+        private void HandleEnemyEvent(EnemyEventType eventType,ItemType itemType)
+        {
+            switch (eventType)
+            {
+                case EnemyEventType.Death:
+                    StopAttack();
+                    break;
+            }
+        }
         private void OnTriggerExit(Collider other)
         {
             
             if (other.TryGetComponent<Enemy>(out Enemy enemy))
             {
-                enemy.OnDeath-= StopAttack;
-                StartCoroutine(IdleState());
-                StopAttack(enemy);
+                if (_enemy==enemy)
+                {
+                    _enemy.OnEnemyEvent-=HandleEnemyEvent;
+                    StartCoroutine(IdleState());
+                    StopAttack();
+                }
             }
         }
-        private IEnumerator AttackState(Enemy enemy)
+        private IEnumerator AttackState()
         {
             _isTargetSet = true;
             _isSearch = false;
             
-            while (enemy.IsLife()&&_isTargetSet)
+            while (_enemy.IsLife()&&_isTargetSet)
             {
                 if (_isAutoFind)
                 {
-                    _gun.transform.LookAt(enemy.transform);
+                    _gun.transform.LookAt(_enemy.transform);
                 }
                 
                 _fxController.OnAttackFX();
-                enemy.ApplyDamage(_damage, ItemType.Turret);
+                _enemy.ApplyDamage(_damage, ItemType.Turret);
                 _shotsInterval = new WaitForSeconds(_timeShotsInterval);
                 yield return _shotsInterval;
             }
         }
 
-        private void StopAttack(Enemy enemy)
+        private void StopAttack()
         {
             _isTargetSet = false;
             _fxController.OnAttackFXStop();
-            StopCoroutine(AttackState(enemy));
+            StopCoroutine(AttackState());
         }
 
         public  void SetUpgrade(UpgradeData upgrade, int level)

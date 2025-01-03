@@ -171,7 +171,6 @@ namespace Infrastructure.AIBattle.StateMachines.Robots.States
         private void OnWeaponChanged()
         {
             _activeWeapon = _humanoidWeaponController.GetActiveItemData();
-            _isShotgun = _activeWeapon.IsShotgun;
             _maxAmmo = _activeWeapon.MaxAmmo;
             _ammoCount = _maxAmmo;
             //  _reloadTime = _weaponController.ReloadTime;
@@ -179,11 +178,11 @@ namespace Infrastructure.AIBattle.StateMachines.Robots.States
             _range = _activeWeapon.Range;
             _damage = _humanoidWeaponController.Damage;
 
-            if (_isShotgun)
+            if (_activeWeapon.SpreadAngle>0)
             {
-                _firstRadius = _humanoidWeaponController.GetSpread();
-                _secondRadius = _humanoidWeaponController.GetSpread() * 0.6f;
-                _thirdRadius = _humanoidWeaponController.GetSpread() * 0.3f;
+                _firstRadius = _humanoidWeaponController.GetSpreadAngle();
+                _secondRadius = _humanoidWeaponController.GetSpreadAngle() * 0.6f;
+                _thirdRadius = _humanoidWeaponController.GetSpreadAngle() * 0.3f;
 
                 _radiusList = new[] { _firstRadius, _secondRadius, _thirdRadius };
 

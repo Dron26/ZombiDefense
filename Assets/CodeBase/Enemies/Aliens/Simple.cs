@@ -16,7 +16,7 @@ namespace Enemies.Aliens
 
         public override void AdditionalDamage(float getDamage, ItemType itemItemType)
         {
-            if (Level == _levelNumber && _minDamage>=getDamage)
+            if (_minDamage>=getDamage)
             {
                 OnAction(EnemyEventType.TakeSimpleWalkerDamage,itemItemType);
             }

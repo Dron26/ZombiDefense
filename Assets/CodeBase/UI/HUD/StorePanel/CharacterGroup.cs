@@ -37,8 +37,13 @@ namespace UI.HUD.StorePanel
             if (index != -1&&_selectedIndex!=index)
             {
                 _characters[index].SetActive(true);
-                _animator.runtimeAnimatorController = _characterControllers[index];
-                animController.OnShoot(true);
+
+                if (type!=CharacterType.Turret)
+                {
+                    _animator.runtimeAnimatorController = _characterControllers[index];
+                }
+                
+               // animController.OnShoot(true);
             }
             
             

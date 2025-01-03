@@ -38,14 +38,15 @@ namespace Characters.Robots
         public override void Initialize(CharacterData data)
         {
             _turretGun = transform.GetComponentInChildren<TurretGun>();
-            SetWeaponParametrs();
+            SetWeaponParametrs(data);
             ChangeWeapon?.Invoke();
             SetShootingRadiusSprite();
           //  OnInitialized?.Invoke(_weapon);
         }
 
-        private void SetWeaponParametrs()
+        private void SetWeaponParametrs(CharacterData data)
         {
+            _weapon.Initialize(data.ItemData);
             ItemType = _weapon.ItemType;
             _damage = _weapon.Damage;
             _range = _weapon.Range;

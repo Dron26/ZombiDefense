@@ -199,14 +199,14 @@ GameObject:
   - component: {fileID: 9057235628591102131}
   - component: {fileID: 9057235628589807763}
   - component: {fileID: 9057235628588677715}
-  - component: {fileID: -2659364372863128536}
+  - component: {fileID: 2524785827322812384}
   m_Layer: 6
   m_Name: SniperRifle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &9057235628591102131
 Transform:
   m_ObjectHideFlags: 0
@@ -277,7 +277,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &-2659364372863128536
+--- !u!114 &2524785827322812384
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -291,7 +291,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _particleGunshot: {fileID: 5023077026472798751}
   _particleEject: {fileID: 3406199702747396262}
-  _weaponLight: {fileID: 9220548086854637684}
 --- !u!1001 &978856078830351051
 PrefabInstance:
   m_ObjectHideFlags: 0

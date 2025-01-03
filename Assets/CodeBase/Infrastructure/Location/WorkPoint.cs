@@ -207,6 +207,7 @@ namespace Infrastructure.Location
 
         public void OnPointerClick(PointerEventData eventData)
         {
+            PointerEventData newEventData= eventData;
                 SetSelected(true);
                 CheckCharacter();
                 OnSelected?.Invoke(this);

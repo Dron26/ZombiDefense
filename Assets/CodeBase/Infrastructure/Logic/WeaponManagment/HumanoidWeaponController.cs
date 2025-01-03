@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Characters;
 using Characters.Humanoids.AbstractLevel;
 using Data;
 using Data.Upgrades;
@@ -12,7 +13,6 @@ using Infrastructure.Logic.Inits;
 using UI.Buttons;
 using UnityEngine;
 
-
 namespace Infrastructure.Logic.WeaponManagment
 {
     
@@ -20,16 +20,15 @@ namespace Infrastructure.Logic.WeaponManagment
 
     public class HumanoidWeaponController : WeaponController,IWeaponController
     {
-
-         private ItemType _weaponType;
         [SerializeField] private SpriteRenderer _radius;
         [SerializeField] private WeaponContainer _weaponContainer;
+        [SerializeField] private AttachmentSetter _attachmentSetter;
         public bool CanThrowGranade => _canThrowGranade;
         public Action ChangeWeapon;
         public Action<Weapon> OnInitialized;
         public Action OnChangeGranade;
-        public float GetRangeAttack() => _range;
-        public float GetSpread() => _spread;
+        public float GetRangeAttack() => _weapon.Range;
+        public float GetSpreadAngle() => _spread;
 
         public Weapon GetActiveItemData() => _weapon;
         private Weapon _weapon;
@@ -40,7 +39,7 @@ namespace Infrastructure.Logic.WeaponManagment
         private List<Grenade> _granades = new();
         public int _damage;
         private float _reloadTime;
-        private float _spread = 8;
+        private float _spread ;
         private float _fireRate;
         private float _range;
         private bool _isGranade;
@@ -51,6 +50,9 @@ namespace Infrastructure.Logic.WeaponManagment
         public void SetWeapon(Transform weaponTransform) =>
             _weaponPrefab.transform.parent = weaponTransform;
 
+        private CharacterType _characterType;
+        
+
         public override void Initialize(CharacterData data)
         {
             _grenadeThrower = GetComponent<GrenadeThrower>();
@@ -59,14 +61,16 @@ namespace Infrastructure.Logic.WeaponManagment
             _playerCharacterAnimController.OnSetedAnimInfo+=SetAnimInfo;
             
             SetWeapon(data);
-            SetLight();
+            
+            if (data.HaveAttachments)
+            {
+                SetAttachment(data);
+            }
+            
             SetRadius();
 
             OnInitialized?.Invoke(_weapon);
         }
-
-        public float GetSpreadAngle() => ItemData.SpreadAngle;
-
         public void SetUpgrade(UpgradeData upgradeData, int level) => SetDamage(upgradeData.Damage);
         
         public void SetPoint(WorkPoint workPoint)
@@ -113,11 +117,16 @@ namespace Infrastructure.Logic.WeaponManagment
 
         private void SetWeapon(CharacterData data)
         {
-            _weaponType=data.ItemData.Type;
-            string path = AssetPaths.ItemsData + _weaponType;
+            ItemType=data.ItemData.Type;
+            string path = AssetPaths.ItemsData + ItemType;
             ItemData itemData = Resources.Load<ItemData>(path);
 
-            _weaponContainer.SetItem(_weaponType);
+            if (data.HaveWeaponLight)
+            {
+                SetLight();
+            }
+            
+            _weaponContainer.SetItem(ItemType);
            
             //path = AssetPaths.WeaponPrefabs + _itemType;
            // GameObject weapon = Instantiate(Resources.Load<GameObject>(path),_weaponContainer.transform);
@@ -126,14 +135,16 @@ namespace Infrastructure.Logic.WeaponManagment
             //_weapon =  weapon.GetComponent<Weapon>();
             _weapon =  _weaponContainer.GetItem();
             _weapon.Initialize(itemData);
-            Light = _weapon.GetComponentInChildren<Light>();
             Damage = _weapon.Damage;
             _range = _weapon.Range;
-            
+            _spread= _weapon.SpreadAngle;
             ChangeWeapon?.Invoke();
         }
 
-        private void SetLight() => Light.gameObject.SetActive(LighInformer.HasLight);
+        private void SetLight()
+        {
+                Light.gameObject.SetActive(LighInformer.HasLight);
+        }
 
         private void SetRadius() => _radius.transform.localScale=new Vector3(_range/3.6f, _range/3.6f, 1);
 
@@ -161,7 +172,11 @@ namespace Infrastructure.Logic.WeaponManagment
             }
         }
 
-
+        private void SetAttachment(CharacterData data)
+        {
+            _characterType = data.Type;
+            _attachmentSetter.SetAttachments(_characterType);
+        }
         private void OnThrowedGranade()
         {
             _granades.RemoveAt(0);

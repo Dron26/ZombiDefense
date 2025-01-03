@@ -85,7 +85,7 @@ namespace Infrastructure.Points
                 {
                     if (isChracterSelected)
                     {
-                        if (_selectedCharacter.IsLife && !_selectedCharacter.IsMove)
+                        if (_selectedCharacter.IsLife() && !_selectedCharacter.IsMove)
                         {
                             isPointToMoveTaked = false;
                         }
@@ -117,7 +117,7 @@ namespace Infrastructure.Points
             }
             else if (isChracterSelected)
             {
-                if (_selectedCharacter.IsLife && !_selectedCharacter.IsMove)
+                if (_selectedCharacter.IsLife() && !_selectedCharacter.IsMove)
                 {
                     Debug.Log("selectOldPoint");
                     if (newPoint.IsBusy == false && isPointToMoveTaked)

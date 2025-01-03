@@ -169,7 +169,7 @@ namespace Service.SaveLoad
             _gameData.ChangeActiveEnemy(activeEnemy);
         }
 
-        public List<Enemy> GetActiveEnemy( ) => 
+        public List<Entity> GetActiveEnemy( ) => 
             _gameData.ReadActiveEnemy();
 
         public void SetInactiveEnemy(Enemy inactiveEnemy)

@@ -4,6 +4,8 @@ namespace Enemies
     {
         SimpleM,
         SimpleF,
-        Smoker
+        Smoker,
+        Fatman,
+        BigGuy
     }
 }

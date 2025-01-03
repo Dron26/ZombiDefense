@@ -9,7 +9,7 @@ namespace Characters.Humanoids.AbstractLevel
         Sniper,
         Gunner,
         Flammer,
-        Engineer,
+        Engeneer,
         Turret
     }
 }

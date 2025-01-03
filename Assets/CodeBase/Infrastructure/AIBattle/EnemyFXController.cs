@@ -1,4 +1,6 @@
+using System.Collections;
 using System.Collections.Generic;
+using Enemies;
 using Enemies.AbstractEntity;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
@@ -9,10 +11,11 @@ namespace Infrastructure.AIBattle
 {
     public class EnemyFXController : MonoCache
     {
-        [SerializeField] private List<ParticleSystem> _particlesHit;
         [SerializeField] private List<ParticleSystem> _particlesHitLite;
         [SerializeField] private List<ParticleSystem> _particlesHitSniperRifle;
+        [SerializeField] private List<ParticleSystem> _particlesFire;
         [SerializeField] private List<List<ParticleSystem>> _particlesGroup = new();
+        [SerializeField] private ParticleSystem _particleExplosion;
         [SerializeField] private ParticleSystem _particleTankDie;
         [SerializeField] private ParticleSystem _particleTankDie1;
         [SerializeField] private List<ItemType> _weaponNames;
@@ -22,16 +25,16 @@ namespace Infrastructure.AIBattle
         [SerializeField] private float _areaHeight = 0.1f;
         [SerializeField] private float _minParticleScale = 1f;
         [SerializeField] private float _maxParticleScale = 1f;
-        
         private ItemType _item;
         private AudioManager _audioManager;
-
+private bool _isFireParticlePlay;
+private EnemyType _enemyType;
         private void Awake()
         {
             if (TryGetComponent(out Enemy enemy))
             {
                 enemy.OnEnemyEvent += HandleEnemyEvent;
-                enemy.OnInitialized += SetAudio; 
+                enemy.OnInitialized += SetData; 
                 //enemy.OnTakeDamage += OnHitFX;
                // enemy.OnDeath += OnDieFX;
                 
@@ -41,6 +44,11 @@ namespace Infrastructure.AIBattle
         private void HandleEnemyEvent(EnemyEventType eventType,ItemType itemType)
         {
             _item=itemType;
+
+            if (_item==ItemType.Flammer)
+            {
+                OnHitFire();
+            }
             
             switch (eventType)
             {
@@ -57,9 +65,37 @@ namespace Infrastructure.AIBattle
             }
         }
 
-        private void SetAudio(Enemy enemy)
+        private void OnHitFire()
+        {
+            if (!_isFireParticlePlay)
+            {
+                StartCoroutine(FireAttackTimer());
+            }
+        }
+
+        private IEnumerator FireAttackTimer()
+        {
+            foreach (var particle in _particlesFire)
+            {
+                particle.gameObject.SetActive(true);
+                particle.Play();
+                _isFireParticlePlay = true;
+            }
+            
+            yield return new WaitForSeconds(3f);
+            
+            foreach (var particle in _particlesFire)
+            {
+                particle.Stop();
+                particle.gameObject.SetActive(false);
+            }
+            _isFireParticlePlay = false;
+        }
+
+        private void SetData(Enemy enemy)
         {
             _audioManager = enemy.GetAudioController();
+            _enemyType=enemy.Data.Type;
         }
 
         public void OnTankDeathFX()
@@ -78,16 +114,19 @@ namespace Infrastructure.AIBattle
 
         public void OnDieFX()
         {
-            if (_bloodFlowing)
+            if (_enemyType== EnemyType.Smoker)
             {
-                _bloodFlowing.Stop();
-            }
-            else
-            {
-                _bloodFlowing.Play();
+                SmokerExplosion();
             }
         }
-        
+
+        private void SmokerExplosion()
+        {
+            ParticleSystem particleExplosion = Instantiate(_particleTankDie, transform.position, Quaternion.identity);
+            particleExplosion.Play();
+            
+        }
+
         public void PlayRandomParticleEffect()
         {
             
@@ -158,7 +197,7 @@ namespace Infrastructure.AIBattle
         {
             if (TryGetComponent(out Enemy enemy))
             {
-                enemy.OnInitialized -= SetAudio;
+                enemy.OnInitialized -= SetData;
             }
         }
     }

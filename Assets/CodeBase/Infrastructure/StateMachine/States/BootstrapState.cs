@@ -50,6 +50,7 @@ namespace Infrastructure.StateMachine.States
             _services.RegisterSingle<ISaveLoadService>(new SaveLoadService());
             _services.RegisterSingle<IResourceLoadService >(new ResourceLoaderService());
             _services.RegisterSingle<IPauseService>(_pauseService);
+            _services.RegisterSingle<ISearchService>((new EntitySearchService()));
         }
     }
 }

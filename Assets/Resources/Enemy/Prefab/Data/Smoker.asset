@@ -12,9 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6c0d2ccd13496f9b37c58e31406e86, type: 3}
   m_Name: Smoker
   m_EditorClassIdentifier: 
-  Type: 1
+  Type: 2
   MaxHealth: 60
   RangeAttack: 4
   Damage: 20
   Price: 0
-  Level: 2
+  Level: 1
+  IsExplosive: 0
+  ExplosiveDamage: 30
+  ExplosionRadius: 10
+  CharacterController: {fileID: 9100000, guid: 52b2bb2d7c6902a478351e69784acd94, type: 2}
+  NavMeshSpeed: 0.55

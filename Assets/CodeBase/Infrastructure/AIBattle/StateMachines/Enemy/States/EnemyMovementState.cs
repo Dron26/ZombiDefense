@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Animation;
 using Characters.Humanoids.AbstractLevel;
+using Data;
 using Enemies.AbstractEntity;
 using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
 using UnityEngine;
@@ -26,16 +27,17 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         private bool _isTargetSet = false;
         private float _trackingProbability = 0.5f;
         private bool _isWalking;
+        private float _speed=0;
         private void Awake()
         {
             _animator = GetComponent<Animator>();
             _enemyAnimController = GetComponent<EnemyAnimController>();
             _isWalking = false;
             _enemy = GetComponent<Enemy>();
-            _enemy.OnDeath += OnDeath;
+            _enemy.OnEntityDeath += OnDeath;
         }
 
-        private void OnDeath(Enemy enemy)
+        private void OnDeath(Entity enemy)
         {
             StopCoroutine(CheckDistance());
             _character.GetComponent<Humanoid>().OnMove -= OnTargetChangePoint;
@@ -56,7 +58,8 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         private void Start()
         {
             _agent = GetComponent<NavMeshAgent>();
-            _agent.speed = 1;
+            _speed = _enemy.Data.NavMeshSpeed;
+            _agent.speed = _speed;
             _stoppingDistance = _enemy.GetRangeAttack();
             _agent.stoppingDistance=_stoppingDistance;
             _isStopping = false;
@@ -97,7 +100,7 @@ namespace Infrastructure.AIBattle.EnemyAI.States
         private void Move()
         {
     
-            if (_character != null && _character.IsLife)
+            if (_character != null && _character.IsLife())
             {
                 
                 if (_agent.isOnNavMesh)
@@ -117,28 +120,31 @@ namespace Infrastructure.AIBattle.EnemyAI.States
 
         private void ChangeState<TState>() where TState : IEnemySwitcherState
         {
-            StopCoroutine(CheckDistance());
-            StopCoroutine(CheckSoldierPosition());
+            if (isActiveAndEnabled)
+            {
+                StopCoroutine(CheckDistance());
+                StopCoroutine(CheckSoldierPosition());
             
-            if (_agent==null )
-            {
-                _agent = GetComponent<NavMeshAgent>();
+                if (_agent==null )
+                {
+                    _agent = GetComponent<NavMeshAgent>();
+                }
+                if (_agent.isOnNavMesh)
+                {
+                    _agent.isStopped = true;
+                }
+                _animator.SetBool(_enemyAnimController.Walk, false);
+                _isTargetSet = false;
+                _isWalking=false;
+                StateMachine.EnterBehavior<TState>();
             }
-            if (_agent.isOnNavMesh)
-            {
-                _agent.isStopped = true;
-            }
-            _animator.SetBool(_enemyAnimController.Walk, false);
-            _isTargetSet = false;
-            _isWalking=false;
-            StateMachine.EnterBehavior<TState>();
         }
         
         private IEnumerator CheckDistance()
         {
-            while (_character.IsLife&&_enemy.IsLife())
+            while (_character.IsLife()&&_enemy.IsLife())
             {
-                if (!_character.IsLife)
+                if (!_character.IsLife())
                 {
                     _animator.SetBool(_enemyAnimController.Walk, false);
                     ChangeState<EnemySearchTargetState>();

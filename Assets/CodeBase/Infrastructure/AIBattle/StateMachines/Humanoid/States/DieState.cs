@@ -23,8 +23,6 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         private  IEnumerator WaitAfterDie()
         {
             _humanoid=GetComponent<Humanoid>();
-            OnDeath?.Invoke(_humanoid);
-            
             _humanoid.GetComponent<Rigidbody>().useGravity=false;
             _humanoid.GetComponent<Collider>().enabled = false;
             _agent.enabled = false;
@@ -32,12 +30,13 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
             
             StartCoroutine(Fall());
             yield return  _wait;
-            
-            _humanoid.gameObject.SetActive(false);
-            _humanoid.gameObject.transform.position = _humanoid.StartPosition;
-            
-            Destroy(gameObject);
-            
+
+            if (_humanoid!=null)
+            {
+                _humanoid.gameObject.SetActive(false);
+                _humanoid.gameObject.transform.position = _humanoid.StartPosition;
+                Destroy(gameObject);
+            }
             yield break;
         }
         private  IEnumerator Fall()

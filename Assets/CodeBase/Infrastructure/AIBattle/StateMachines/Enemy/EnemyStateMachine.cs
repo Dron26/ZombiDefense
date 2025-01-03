@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
 using Animation;
+using Enemies;
 using Enemies.AbstractEntity;
 using Infrastructure.AIBattle.EnemyAI.States;
+using Infrastructure.AIBattle.StateMachines.Robots.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.Inits;
+using Infrastructure.Logic.WeaponManagment;
 using Service.SaveLoad;
 using UnityEngine;
 
@@ -29,6 +32,7 @@ namespace Infrastructure.AIBattle.EnemyAI{
         {
             _enemy = GetComponent<Enemy>();
             _enemy.OnTakeGranadeDamage += OnTriggerEnterGranade;
+            _enemy.OnEnemyEvent+= OnEnemyEvent;
             _sceneInitializer=FindObjectOfType<SceneInitializer>(); 
             _saveLoadService=_sceneInitializer.GetSaveLoad();
             _allBehaviors = new Dictionary<Type, IEnemySwitcherState>
@@ -46,6 +50,14 @@ namespace Infrastructure.AIBattle.EnemyAI{
                 behavior.Value.ExitBehavior();
             }
 
+        }
+
+        private void OnEnemyEvent(EnemyEventType arg1, ItemType arg2)
+        {
+            if (arg1==EnemyEventType.Death&&_enemy.Data.Type==EnemyType.Smoker)
+            {
+                EnterBehavior<EnemyAttackState>();
+            }
         }
 
         private void OnTriggerEnterGranade()

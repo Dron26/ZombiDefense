@@ -14,7 +14,7 @@ namespace Infrastructure.AIBattle.StateMachines.Robot.States
     public class SeachTargetState: State
     {
         private AttackState _attackState;
-        private Enemy _enemy;
+        private Entity _enemy;
         private HumanoidWeaponController _humanoidWeaponController;
         private Transform[] _enemyTransforms;
         private bool _isSearhing;

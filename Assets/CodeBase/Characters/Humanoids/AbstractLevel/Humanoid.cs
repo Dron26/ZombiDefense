@@ -10,6 +10,7 @@ using Infrastructure.AssetManagement;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
 using Infrastructure.Logic.WeaponManagment;
+using Interface;
 using Service.Audio;
 using UnityEngine;
 
@@ -25,18 +26,19 @@ namespace Characters.Humanoids.AbstractLevel
         public Vector3 StartPosition;
         private Animator _animator;
         public Action OnMove;
-       
+
         private int _currentHealth;
         private bool _isTakeDamagePlay;
         private int _minHealth = 0;
         private bool _isBuyed = false;
+        private bool _isWeaponInitialized = false;
         public bool IsBuyed => _isBuyed;
         public SkinContainer _skinContainer;
         public AudioManager GetAudioManager() => AudioManager;
         
         public override void Initialize()
         {
-            IsLife = true;
+            _isWeaponInitialized = false;
             _currentHealth = base.CharacterData.Health;
            // _skinContainer = GetComponent<SkinContainer>();
             _skinContainer.SetSkin(CharacterData.Type);
@@ -62,6 +64,11 @@ namespace Characters.Humanoids.AbstractLevel
             _animator.runtimeAnimatorController = controller;
         }
 
+        private void OnWeaponInitialized(Weapon obj)
+        {
+            _isWeaponInitialized = true;
+        }
+
         public override void SetAudioManager(AudioManager audioManager)
         {
             if (audioManager == null)
@@ -76,7 +83,7 @@ namespace Characters.Humanoids.AbstractLevel
             if (_currentHealth <= 0)
             {
                 _animator.SetTrigger(_playerCharacterAnimController.Die);
-                IsLife = false;
+                
                 Die();
             }
             else
@@ -87,17 +94,18 @@ namespace Characters.Humanoids.AbstractLevel
                     _animator.SetTrigger(_playerCharacterAnimController.IsHit);
                 }
 
-                _fxController.OnHitFX();
+              //  _fxController.OnHitFX();
                 _currentHealth -= Mathf.Clamp(getDamage, _minHealth, _currentHealth);
             }
         }
 
         public override void SetUpgrade(UpgradeData upgrade, int level) => _currentHealth += upgrade.Health;
 
-        private void Die()
+        protected override  void Die()
         {
             PlayerCharactersStateMachine stateMachine = GetComponent<PlayerCharactersStateMachine>();
             stateMachine.EnterBehavior<DieState>();
+            RaiseEntityEvent();
         }
 
         

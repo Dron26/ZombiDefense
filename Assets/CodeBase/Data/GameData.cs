@@ -53,7 +53,7 @@ namespace Data
         [NonSerialized] 
         private List<Character> ActiveCharacters = new();
         [NonSerialized] 
-        private List<Enemy> ActiveEnemy = new();
+        private List<Entity> ActiveEnemy = new();
         [NonSerialized] 
         private List<Character> InactiveCharacters = new();
 
@@ -139,12 +139,12 @@ namespace Data
             ActiveEnemy.Add(activeEnemy);
         }
 
-        public List<Enemy> ReadActiveEnemy() =>
-            new List<Enemy>(ActiveEnemy);
+        public List<Entity> ReadActiveEnemy() =>
+            new List<Entity>(ActiveEnemy);
 
-        public void ChangeInactiveEnemy(Enemy inactiveEnemy)
+        public void ChangeInactiveEnemy(Entity entity)
         {
-            ActiveEnemy.Remove(inactiveEnemy);
+            ActiveEnemy.Remove(entity);
         }
 
         public int ReadCountEnemy() =>

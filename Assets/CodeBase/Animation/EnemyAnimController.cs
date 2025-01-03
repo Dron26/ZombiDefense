@@ -94,9 +94,11 @@ namespace Animation
         
         public void SetRandomAnimation()
         {
+            
+            _animator = GetComponent<Animator>();
+            _animator.runtimeAnimatorController = _data.CharacterController;
             _animatorOverrideController = new AnimatorOverrideController(_animator.runtimeAnimatorController);
-            _animator.runtimeAnimatorController = _animatorOverrideController;
-
+            
             Dictionary<string, AnimationClip[]> animationClips = new Dictionary<string, AnimationClip[]>
             {
                 { "Walk", _walkClips },

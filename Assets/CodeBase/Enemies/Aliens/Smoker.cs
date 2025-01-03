@@ -45,7 +45,7 @@ public class Smoker : Enemy,IDamageable
                 if (collider.TryGetComponent( out Humanoid humanoid))
                 {
                     humanoid.gameObject.transform.LookAt(transform.position);
-                    humanoid.ApplyDamage(calculatedDamage );
+                    humanoid.ApplyDamage(calculatedDamage,itemItemType);
                 }
 
                 ;
