@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using Characters.Humanoids.AbstractLevel;
-using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
 using Infrastructure.AIBattle.StateMachines.Humanoid.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.Inits;
-using Service.SaveLoad;
+using Services.SaveLoad;
 using UnityEngine;
 
-namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
+namespace Infrastructure.AIBattle.StateMachines.Humanoid
 {
     [RequireComponent(typeof(FXController))]
     [RequireComponent(typeof(Rigidbody))]

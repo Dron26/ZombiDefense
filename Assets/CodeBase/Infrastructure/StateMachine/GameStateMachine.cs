@@ -4,9 +4,7 @@ using Common;
 using Data.Settings.Language;
 using Infrastructure.Factories.FactoryGame;
 using Infrastructure.StateMachine.States;
-using Service;
-using Service.Ads;
-using Service.SaveLoad;
+using Services;
 using Services.PauseService;
 using UnityEngine;
 

@@ -1,19 +1,20 @@
 using System;
-using Enemies.AbstractEntity;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
-using UnityEngine;
 
-public abstract class Entity : MonoCache
+namespace Enemies.AbstractEntity
 {
-    public event Action<Entity> OnEntityDeath;
-    
-    protected void RaiseEntityEvent()
+    public abstract class Entity : MonoCache
     {
-        OnEntityDeath?.Invoke(this);
-    }
-
-    public abstract bool IsLife();
+        public event Action<Entity> OnEntityDeath;
     
-    public abstract void ApplyDamage(float damage, ItemType itemType);
+        protected void RaiseEntityEvent()
+        {
+            OnEntityDeath?.Invoke(this);
+        }
+
+        public abstract bool IsLife();
+    
+        public abstract void ApplyDamage(float damage, ItemType itemType);
+    }
 }

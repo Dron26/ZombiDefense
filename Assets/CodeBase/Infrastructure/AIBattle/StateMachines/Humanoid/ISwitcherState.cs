@@ -1,6 +1,6 @@
-﻿using Service.SaveLoad;
+﻿using Services.SaveLoad;
 
-namespace Infrastructure.AIBattle.PlayerCharacterStateMachine
+namespace Infrastructure.AIBattle.StateMachines.Humanoid
 {
     public interface ISwitcherState
     {

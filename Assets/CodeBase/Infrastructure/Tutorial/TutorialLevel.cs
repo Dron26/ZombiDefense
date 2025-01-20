@@ -260,24 +260,23 @@ namespace Infrastructure.Tutorial
             _buttons=images;
         }
     }
-}
 
-public enum TutorialDialogKey
-{
-    WelcomeToTheTutorial,
-    WarningTutorial,
-    StoreTutorial,
-    PointUpTutorial,
-    AdditionalTutorial,
-    HidePanelTutorial,
-    TimePanelTutorial,
-    MoneyPanelTutorial,
-    MenuPanelTutorial,
-    MoveBetweenTutorial,
-    RadiusAttackTutorial,
-    TakeMedicalKit,
-    ReadyTutorial,
-}
+    public enum TutorialDialogKey
+    {
+        WelcomeToTheTutorial,
+        WarningTutorial,
+        StoreTutorial,
+        PointUpTutorial,
+        AdditionalTutorial,
+        HidePanelTutorial,
+        TimePanelTutorial,
+        MoneyPanelTutorial,
+        MenuPanelTutorial,
+        MoveBetweenTutorial,
+        RadiusAttackTutorial,
+        TakeMedicalKit,
+        ReadyTutorial,
+    }
 
 //  Здравия желаю Капитан! Зомби наступают по всем фронтам и  мы сильно ограничены по времени, поэтому постараюсь быстро ввести тебя в курс дела.
 //  Будь внимателен, я буду подсвечивать элементы управления и обьяснять их назначения. Не перебивай, все вопросы потом.
@@ -299,3 +298,4 @@ public enum TutorialDialogKey
 //
 //
 // 
+}

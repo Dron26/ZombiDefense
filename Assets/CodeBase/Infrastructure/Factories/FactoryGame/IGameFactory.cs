@@ -1,4 +1,4 @@
-using Service;
+using Services;
 using UnityEngine;
 
 namespace Infrastructure.Factories.FactoryGame

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Characters;
 using Characters.Humanoids.AbstractLevel;
+using Characters.Robots;
 using Data;
 using Data.Upgrades;
 using Infrastructure.AIBattle;
@@ -16,7 +17,7 @@ using UnityEngine;
 namespace Infrastructure.Logic.WeaponManagment
 {
     
-    [RequireComponent(typeof(GrenadeThrower))]
+    [RequireComponent(typeof(ObjectThrower))]
 
     public class HumanoidWeaponController : WeaponController,IWeaponController
     {
@@ -33,7 +34,7 @@ namespace Infrastructure.Logic.WeaponManagment
         public Weapon GetActiveItemData() => _weapon;
         private Weapon _weapon;
         private GameObject _weaponPrefab;
-        private GrenadeThrower _grenadeThrower;
+        private ObjectThrower _objectThrower;
         private PlayerCharacterAnimController _playerCharacterAnimController;
         private Dictionary<int, float> _weaponAnimInfo = new();
         private List<Grenade> _granades = new();
@@ -55,8 +56,8 @@ namespace Infrastructure.Logic.WeaponManagment
 
         public override void Initialize(CharacterData data)
         {
-            _grenadeThrower = GetComponent<GrenadeThrower>();
-            _grenadeThrower.OnThrowed += OnThrowedGranade;
+            _objectThrower = GetComponent<ObjectThrower>();
+            _objectThrower.OnThrowed += OnThrowedGranade;
             _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
             _playerCharacterAnimController.OnSetedAnimInfo+=SetAnimInfo;
             
@@ -98,7 +99,7 @@ namespace Infrastructure.Logic.WeaponManagment
             if (_granades.Count > 0)
             {
                 _canThrowGranade = false;
-                _grenadeThrower.ThrowGrenade(_granades[0]);
+                _objectThrower.ThrowGrenade(_granades[0]);
             }
         }
 
@@ -120,11 +121,7 @@ namespace Infrastructure.Logic.WeaponManagment
             ItemType=data.ItemData.Type;
             string path = AssetPaths.ItemsData + ItemType;
             ItemData itemData = Resources.Load<ItemData>(path);
-
-            if (data.HaveWeaponLight)
-            {
-                SetLight();
-            }
+            
             
             _weaponContainer.SetItem(ItemType);
            
@@ -138,6 +135,13 @@ namespace Infrastructure.Logic.WeaponManagment
             Damage = _weapon.Damage;
             _range = _weapon.Range;
             _spread= _weapon.SpreadAngle;
+            
+            if (data.HaveWeaponLight)
+            {
+                Light = _weapon.Light;
+                SetLight();
+            }
+            
             ChangeWeapon?.Invoke();
         }
 

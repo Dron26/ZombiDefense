@@ -2,12 +2,12 @@ using Data.Settings.Language;
 using Infrastructure.AssetManagement;
 using Infrastructure.Factories.FactoryGame;
 using Interface;
-using Service;
-using Service.Ads;
-using Service.Localization;
-using Service.PlayerAuthorization;
-using Service.SaveLoad;
+using Services;
+using Services.Ads;
+using Services.Localization;
 using Services.PauseService;
+using Services.PlayerAuthorization;
+using Services.SaveLoad;
 
 namespace Infrastructure.StateMachine.States
 {

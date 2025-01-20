@@ -2,17 +2,16 @@ using System;
 using System.Collections.Generic;
 using Characters.Humanoids.AbstractLevel;
 using Data;
-using Infrastructure.AIBattle.PlayerCharacterStateMachine;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
 using Infrastructure.Logic.Inits;
-using Service.SaveLoad;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using Infrastructure.Points;
-using Service;
+using Services;
 using Services.PauseService;
+using Services.SaveLoad;
 using UI.Buttons;
 
 namespace UI.HUD.StorePanel
@@ -75,7 +74,7 @@ namespace UI.HUD.StorePanel
             _boxStore.Initialize(_saveLoadService,_wallet);
             SetCharacterInitializer();
             _storePanel.gameObject.SetActive(!_storePanel.activeSelf);
-            _adsStore.Initialize(_wallet);
+                // _adsStore.Initialize(_wallet);
             _wallet.Initialize(_saveLoadService);
             
             AddListener();
@@ -122,7 +121,7 @@ namespace UI.HUD.StorePanel
         {
             ShowPanelAdsForMoney();
             _storePanel.gameObject.SetActive(false);
-            _adsStore.gameObject.SetActive(true);
+                //  _adsStore.gameObject.SetActive(true);
         }
 
         private void CheckPointInfo(WorkPoint workPoint)

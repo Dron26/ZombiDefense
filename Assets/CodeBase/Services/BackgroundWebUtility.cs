@@ -1,10 +1,11 @@
 using System;
-using Agava.WebUtility;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Interface;
+using Services.PauseService;
 using UnityEngine;
+//using Agava.WebUtility;
 
-namespace Service
+namespace Services
 {
     public class BackgroundWebUtility:MonoCache,IPauseHandler
     {
@@ -32,15 +33,15 @@ namespace Service
             }
         }
         
-        protected override void OnEnabled()
-        {
-            WebApplication.InBackgroundChangeEvent += OnInBackgroundChange;
-        }
-
-        protected override void OnDisabled()
-        {
-            WebApplication.InBackgroundChangeEvent -= OnInBackgroundChange;
-        }
+        // protected override void OnEnabled()
+        // {
+        //     WebApplication.InBackgroundChangeEvent += OnInBackgroundChange;
+        // }
+        //
+        // protected override void OnDisabled()
+        // {
+        //     WebApplication.InBackgroundChangeEvent -= OnInBackgroundChange;
+        // }
 
         public void SetPaused(bool isPaused)
         {

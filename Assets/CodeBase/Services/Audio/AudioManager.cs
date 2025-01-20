@@ -1,9 +1,9 @@
 using System;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Service.SaveLoad;
+using Services.SaveLoad;
 using UnityEngine;
 
-namespace Service.Audio
+namespace Services.Audio
 {
     public class AudioManager : MonoCache
     {

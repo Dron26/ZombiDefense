@@ -1,8 +1,8 @@
 ﻿using Characters.Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
-using Service.Audio;
-using Service.GeneralFactory;
+using Services.Audio;
+using Services.GeneralFactory;
 using UnityEngine;
 using UnityEngine.Events;
 

@@ -1,20 +1,16 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using Common;
-using Data;
-using Infrastructure;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.Logic.Inits;
 using Infrastructure.StateMachine;
 using Infrastructure.StateMachine.States;
 using Lean.Localization;
-using Service;
-using Service.SaveLoad;
+using Services;
 using Services.PauseService;
+using Services.SaveLoad;
 using TMPro;
 using UI.HUD.StorePanel;
-using UI.Levels;
+using UI.Locations;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -172,15 +168,15 @@ namespace UI.Report
             RemoveListener();
         }
     }
-}
 
-public enum ReportKey
-{
-    SurvivorsEnemies,
-    Survivors,
-    Dead,
-    Killed,
-    Profit,
-    DeadOffer,
-    TasksCompleted
+    public enum ReportKey
+    {
+        SurvivorsEnemies,
+        Survivors,
+        Dead,
+        Killed,
+        Profit,
+        DeadOffer,
+        TasksCompleted
+    }
 }

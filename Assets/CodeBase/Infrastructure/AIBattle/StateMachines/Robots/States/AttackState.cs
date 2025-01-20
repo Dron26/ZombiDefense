@@ -1,6 +1,6 @@
 
 using Enemies.AbstractEntity;
-using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
+using Infrastructure.AIBattle.StateMachines.Humanoid.States;
 using Infrastructure.Logic.WeaponManagment;
 using UnityEngine;
 
@@ -9,7 +9,7 @@ namespace Infrastructure.AIBattle.StateMachines.Robots.States
     public class AttackState:State
     {
         private readonly WaitForSeconds _waitForSeconds = new(0.1f);
-        private Enemy _enemy = null;
+        private Enemies.AbstractEntity.Enemy _enemy = null;
         private float _currentRange;
         private RobotFXController _fxController;
         private Characters.Robots.Turret _turret;
@@ -52,7 +52,7 @@ namespace Infrastructure.AIBattle.StateMachines.Robots.States
             }
         }
 
-        public void InitEnemy(Enemy targetEnemy)
+        public void InitEnemy(Enemies.AbstractEntity.Enemy targetEnemy)
         {
             _enemy = targetEnemy;
             _isTargetSet = true;
@@ -138,7 +138,7 @@ namespace Infrastructure.AIBattle.StateMachines.Robots.States
 
             foreach (Collider hitCollider in hitColliders)
             {
-                if (hitCollider.TryGetComponent(out Enemy enemy))
+                if (hitCollider.TryGetComponent(out Enemies.AbstractEntity.Enemy enemy))
                 {
                     if (enemy.IsLife())
                     {

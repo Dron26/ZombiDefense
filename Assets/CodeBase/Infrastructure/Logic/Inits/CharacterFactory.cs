@@ -1,12 +1,12 @@
 using Characters.Humanoids.AbstractLevel;
 using Infrastructure.AssetManagement;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Service.Audio;
-using Service.GeneralFactory;
+using Services.Audio;
+using Services.GeneralFactory;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Infrastructure.Factories.FactoryWarriors.Humanoids
+namespace Infrastructure.Logic.Inits
 {
     public class CharacterFactory : MonoCache, IServiceFactory
     {

@@ -1,5 +1,5 @@
 
-         namespace UI.Levels
+         namespace UI.Locations
         {
             public class Location
             {

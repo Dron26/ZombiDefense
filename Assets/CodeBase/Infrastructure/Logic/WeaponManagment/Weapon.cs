@@ -9,6 +9,7 @@ namespace Infrastructure.Logic.WeaponManagment
         private ItemData _itemData;
         [SerializeField] private  ParticleSystem _particleGunshot;
         [SerializeField] private  ParticleSystem _particleEject;
+        [SerializeField] private  Light _light;
 
         public override int Damage => _itemData.Damage;
         public override float Range => _itemData.Range;
@@ -22,6 +23,7 @@ namespace Infrastructure.Logic.WeaponManagment
 
         public ParticleSystem GetParticleGunshot=>_particleGunshot;
          public ParticleSystem GetParticleEject=>_particleEject;
+         public Light Light=>_light;
 
          public override ItemType ItemType => _itemData.Type;
          public override void Initialize(ItemData itemData) => _itemData = itemData;

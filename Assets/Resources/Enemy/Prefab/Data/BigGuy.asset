@@ -12,11 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6c0d2ccd13496f9b37c58e31406e86, type: 3}
   m_Name: BigGuy
   m_EditorClassIdentifier: 
-  Type: 3
+  prefab: {fileID: 1987840046212651601, guid: 0fadc543136a3b047b44c56dda0eed51, type: 3}
+  Type: 4
   MaxHealth: 100
-  RangeAttack: 3
+  RangeAttack: 1
   Damage: 15
   Price: 0
   Level: 1
+  IsThrower: 0
+  IsPolice: 0
+  IsSpecial: 0
+  HasShield: 0
+  ShieldHealth: 0
+  ThrowRangeAttack: 0
+  ThrowAbility: {fileID: 0}
+  ExplosiveAbility: {fileID: 0}
   CharacterController: {fileID: 9100000, guid: 3576e717558f2bb4d87aba262e9cf2c9, type: 2}
   NavMeshSpeed: 0.6

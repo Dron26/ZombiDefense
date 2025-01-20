@@ -2,9 +2,11 @@ using Characters.Humanoids.AbstractLevel;
 using Data.Upgrades;
 using Infrastructure.AIBattle.AdditionalEquipment;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.Location;using UnityEngine;
+using Infrastructure.Location;
+using Infrastructure.Logic.WeaponManagment;
+using UnityEngine;
 
-namespace Infrastructure.Logic.WeaponManagment
+namespace Characters.Robots
 {
     public abstract class WeaponController : MonoCache,IWeaponController
     {

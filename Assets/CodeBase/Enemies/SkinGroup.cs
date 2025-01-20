@@ -5,9 +5,17 @@ namespace Enemies
 {
    public class SkinGroup : MonoBehaviour
    {
-      public void Initialize()
+      public bool IsSpecial;
+      public void Initialize(int index)
       {
-         transform.GetChild(Random.Range(0, transform.childCount)).gameObject.SetActive(true);
+         if (IsSpecial)
+         {
+            transform.GetChild(index).gameObject.SetActive(true);
+         }
+         else
+         {
+            transform.GetChild(Random.Range(0, transform.childCount)).gameObject.SetActive(true);
+         }
       }
    }
 }

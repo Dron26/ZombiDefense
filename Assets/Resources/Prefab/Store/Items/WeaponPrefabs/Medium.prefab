@@ -133,6 +133,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _particleGunshot: {fileID: 8201193849795002496}
   _particleEject: {fileID: 7186034838229492016}
+  _light: {fileID: 8181470464584258632}
 --- !u!1 &6602855547361428495
 GameObject:
   m_ObjectHideFlags: 0
@@ -333,9 +334,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5129448583502104669}
     m_Modifications:
+    - target: {fileID: 1080642322609664, guid: 69cd5bfdab535e54f87fbb6abae1a60b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1202526821136328, guid: 69cd5bfdab535e54f87fbb6abae1a60b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1293375810718194, guid: 69cd5bfdab535e54f87fbb6abae1a60b, type: 3}
       propertyPath: m_Name
       value: FX_LazerBeam_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1524227872595228, guid: 69cd5bfdab535e54f87fbb6abae1a60b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4024550603966756, guid: 69cd5bfdab535e54f87fbb6abae1a60b, type: 3}
       propertyPath: m_RootOrder
@@ -386,6 +399,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 198048785800816542, guid: 69cd5bfdab535e54f87fbb6abae1a60b, type: 3}
+      propertyPath: CollisionModule.enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 198048785800816542, guid: 69cd5bfdab535e54f87fbb6abae1a60b, type: 3}
       propertyPath: ShapeModule.radius.value
       value: 0.0001
       objectReference: {fileID: 0}
@@ -407,6 +424,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 198247378542393116, guid: 69cd5bfdab535e54f87fbb6abae1a60b, type: 3}
       propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 198247378542393116, guid: 69cd5bfdab535e54f87fbb6abae1a60b, type: 3}
+      propertyPath: NoiseModule.enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 198247378542393116, guid: 69cd5bfdab535e54f87fbb6abae1a60b, type: 3}
@@ -470,6 +491,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 198734450288274560, guid: 69cd5bfdab535e54f87fbb6abae1a60b, type: 3}
+      propertyPath: NoiseModule.enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 198734450288274560, guid: 69cd5bfdab535e54f87fbb6abae1a60b, type: 3}
       propertyPath: InitialModule.startColor.maxColor.g
       value: 1
       objectReference: {fileID: 0}
@@ -526,6 +551,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 199708068262547784, guid: 69cd5bfdab535e54f87fbb6abae1a60b, type: 3}
+      propertyPath: m_MaxParticleSize
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 199708068262547784, guid: 69cd5bfdab535e54f87fbb6abae1a60b, type: 3}
       propertyPath: m_Materials.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -536,6 +565,10 @@ PrefabInstance:
     - target: {fileID: 199933949388554732, guid: 69cd5bfdab535e54f87fbb6abae1a60b, type: 3}
       propertyPath: m_Materials.Array.size
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 199940065448080036, guid: 69cd5bfdab535e54f87fbb6abae1a60b, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 199940065448080036, guid: 69cd5bfdab535e54f87fbb6abae1a60b, type: 3}
       propertyPath: m_Materials.Array.size

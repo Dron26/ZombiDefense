@@ -6,16 +6,15 @@ using Enemies.AbstractEntity;
 using Infrastructure;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
+using Infrastructure.Logic.WeaponManagment;
 using Newtonsoft.Json;
-using Service.Audio;
-using Service.PlayerAuthorization;
-using UI.HUD.StorePanel;
-using UI.Levels;
+using Services.PlayerAuthorization;
+using UI.Locations;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Service.SaveLoad
+namespace Services.SaveLoad
 {
     public class SaveLoadService :MonoCache,ISaveLoadService
     {
@@ -36,7 +35,7 @@ namespace Service.SaveLoad
         private YandexAuthorization _authorization=new();
         public event Action OnClearSpawnData;
         private GameBootstrapper _gameBootstrapper;
-        private bool IsAuthorized => _authorization.IsAuthorized();
+       // private bool IsAuthorized => _authorization.IsAuthorized();
         public bool IsSelectContinueGame => _isSelectContinueGame;
         public int MaxEnemiesOnScene => _maxEnemiesOnScene;
         public bool IsExitFromLocation=>_isExitFromLocation;
@@ -51,8 +50,6 @@ namespace Service.SaveLoad
         private bool _isExitFromLocation;
         private void Awake()
         {
-            
-                
             if (!PlayerPrefs.HasKey(Key))
             {
                 _gameData = new GameData();
@@ -63,14 +60,14 @@ namespace Service.SaveLoad
                 _gameData = JsonConvert.DeserializeObject<GameData>(PlayerPrefs.GetString(Key));
             }
 
-            _authorization.OnAuthorizeSuccessCallback += OnAuthorizeSuccess;
+         //   _authorization.OnAuthorizeSuccessCallback += OnAuthorizeSuccess;
             OnGameStart();
         }
         
-        private void OnAuthorizeSuccess()
-        {
-            _gameData.SetStatusAuthorization(IsAuthorized);
-        }
+        // private void OnAuthorizeSuccess()
+        // {
+        //     _gameData.SetStatusAuthorization(IsAuthorized);
+        // }
 
         public void SetTimeBeforeNextWave(int time)
         {
@@ -366,7 +363,6 @@ namespace Service.SaveLoad
 
         public void EnemyDeath(Enemy enemy)
         {
-            _gameData.ChangeInactiveEnemy(enemy);
             
             SetKilledEnemiesOnWave();
             
@@ -376,6 +372,7 @@ namespace Service.SaveLoad
             }
             
             _gameData.ChangeNumberKilledEnemies();
+            _gameData.ChangeInactiveEnemy(enemy);
             OnEnemyDeath?.Invoke(enemy);
         }
 

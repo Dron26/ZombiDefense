@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Boot.SO;
 using Common;
-using Data;
 using Infrastructure.AssetManagement;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Factories.FactoryLocation;
@@ -11,12 +9,11 @@ using Infrastructure.Location;
 using Infrastructure.StateMachine;
 using Infrastructure.StateMachine.States;
 using Interface;
-using Service;
-using Service.SaveLoad;
-using UI.Locations;
+using Services;
+using Services.SaveLoad;
 using UnityEngine;
 
-namespace UI.Levels
+namespace UI.Locations
 {
     
     public class LocationManager:MonoCache

@@ -1,4 +1,7 @@
-interface IBoxButton
+namespace UI.HUD.StorePanel
 {
-    void SwitchStateButton(bool isActive);
+    interface IBoxButton
+    {
+        void SwitchStateButton(bool isActive);
+    }
 }

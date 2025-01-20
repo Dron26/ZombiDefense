@@ -4,14 +4,14 @@ using Data;
 using Data.Upgrades;
 using Infrastructure.AIBattle;
 using Infrastructure.AIBattle.AdditionalEquipment;
-using Infrastructure.AIBattle.PlayerCharacterStateMachine;
-using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
+using Infrastructure.AIBattle.StateMachines.Humanoid;
+using Infrastructure.AIBattle.StateMachines.Humanoid.States;
 using Infrastructure.AssetManagement;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
 using Infrastructure.Logic.WeaponManagment;
 using Interface;
-using Service.Audio;
+using Services.Audio;
 using UnityEngine;
 
 namespace Characters.Humanoids.AbstractLevel
@@ -80,10 +80,16 @@ namespace Characters.Humanoids.AbstractLevel
         
         public override void ApplyDamage(int getDamage)
         {
-            if (_currentHealth <= 0)
+            
+            Debug.Log("_currentHealth");
+            Debug.Log(_currentHealth);
+            
+            Debug.Log("getDamage");
+            Debug.Log(getDamage);
+            if (_currentHealth < 1)
             {
                 _animator.SetTrigger(_playerCharacterAnimController.Die);
-                
+                base.Die();
                 Die();
             }
             else
@@ -103,6 +109,7 @@ namespace Characters.Humanoids.AbstractLevel
 
         protected override  void Die()
         {
+            _fxController.OnAttackFXStop();
             PlayerCharactersStateMachine stateMachine = GetComponent<PlayerCharactersStateMachine>();
             stateMachine.EnterBehavior<DieState>();
             RaiseEntityEvent();

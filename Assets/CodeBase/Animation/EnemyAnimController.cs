@@ -23,8 +23,9 @@ namespace Animation
         public readonly int Threw = Animator.StringToHash("Threw");
         public readonly int GranadeTakeDamage = Animator.StringToHash("GranadeTakeDamage");
         public readonly int WakeUp = Animator.StringToHash("WakeUp");
-        public AnimationClip _currentClip;
+        public AnimationClip CurrentClip;
         
+        [Space(10)] [Header("AnimationClip")] 
         [SerializeField] private AnimationClip[] _walkClips;
         [SerializeField] private AnimationClip[] _runClips;
         [SerializeField] private AnimationClip[] _attackClips;
@@ -35,48 +36,55 @@ namespace Animation
         [SerializeField] private AnimationClip[] _idleClips;
         [SerializeField] private AnimationClip[] _takeDamageClips;
         [SerializeField] private AnimationClip[] _takeGranadeClips;
+        
+        [SerializeField] private AnimationClip _shieldbearerClip;
+        
         private Animator _animator;
         private AnimatorOverrideController _animatorOverrideController;
         private Dictionary<int, float> _animInfo = new();
         private EnemyData _data;
-        
-        public void Awake()
+        private Enemy _enemy;
+        private bool _isThrower;
+        private bool _isShieldbearer;
+        private AnimationClip _tempClip;
+        protected override void OnEnabled()
         {
             if (TryGetComponent(out Enemy enemy))
             {
-                enemy.OnEnemyEvent += HandleEnemyEvent;
-                enemy.OnInitialized += Initialize; 
+                _enemy = enemy;
+                _enemy.OnEnemyEvent += HandleEnemyEvent;
+                _enemy.OnInitialized += Initialize;
                 _animator = GetComponent<Animator>();
-                SetSkin();
             }
         }
 
-        private void Initialize(Enemy enemy)
+        private void Initialize()
         {
-            _data = enemy.Data;
-            
-            
+            _data = _enemy.Data;
+            _isThrower = _data.IsThrower;
+            _isShieldbearer = _data.HasShield;
             //enemy.OnTakeDamage += OnHitFX;
             // enemy.OnDeath += OnDieFX;
             
+            SetSkin();
             SetAnimInfo();
+            SetAnimation();
         }
 
         
         private void SetAnimInfo()
         {
-            List<int> animHashNames = new();
-            animHashNames.Add(Walk);
+            List<int> animHashNames = new() { Walk };
 
             foreach (int name in animHashNames)
             {
                 string animName = GetAnimatorParameterName(name);
                 AnimationClip clip = GetAnimationClip(animName);
-                float animationLength = clip.length;
-                _animInfo.Add(name, animationLength);
+                if (clip != null)
+                {
+                    _animInfo.Add(name, clip.length);
+                }
             }
-
-            SetRandomAnimation();
         }
 
         private void SetSkin()
@@ -84,21 +92,46 @@ namespace Animation
             GroupContainer groupContainer = GetComponentInChildren<GroupContainer>();
             
             SkinGroup[] skinsGroup = groupContainer.GetComponentsInChildren<SkinGroup>();
-        
-            foreach (SkinGroup group in skinsGroup)
+
+            if (!_data.IsSpecial&&!_data.IsPolice)
             {
-                group.Initialize();
+                foreach (SkinGroup group in skinsGroup)
+                {
+                    if (!group.IsSpecial)
+                    {
+                        group.Initialize(0);
+                    }
+                }
+            }
+            else
+            {
+                SetSpecial( groupContainer);
             }
         }
-        
-        
-        public void SetRandomAnimation()
+
+        private void SetSpecial(GroupContainer groupContainer)
         {
-            
-            _animator = GetComponent<Animator>();
+            if (_data.IsPolice)
+            {
+                int index = (Random.Range(0, groupContainer.PoliceBody.transform.childCount));
+                groupContainer.PoliceHead.Initialize(index);
+                groupContainer.PoliceBody.Initialize(index);
+                groupContainer.PoliceLeg.Initialize(index);
+            }
+            else if (_data.IsSpecial)    
+            {
+                int index = (Random.Range(0, groupContainer.SpecialHead.transform.childCount));
+                groupContainer.SpecialHead.Initialize(index);
+                groupContainer.SpecialBody.Initialize(index);
+                groupContainer.SpecialLeg.Initialize(index);
+            }
+        }
+
+        public void SetAnimation()
+        {
             _animator.runtimeAnimatorController = _data.CharacterController;
             _animatorOverrideController = new AnimatorOverrideController(_animator.runtimeAnimatorController);
-            
+
             Dictionary<string, AnimationClip[]> animationClips = new Dictionary<string, AnimationClip[]>
             {
                 { "Walk", _walkClips },
@@ -115,14 +148,11 @@ namespace Animation
             {
                 int randomIndex = Random.Range(0, animationClip.Value.Length);
                 _animatorOverrideController[animationClip.Key] = animationClip.Value[randomIndex];
-                
-                // if (animationClip.Key== "Attack")
-                // {
-                //     AnimationEvent animationEvent = new AnimationEvent();
-                //     animationEvent.time = animationClip.Value[randomIndex].length-0.2f;
-                //     animationEvent.functionName = "AttackEnd";
-                //     animationClip.Value[randomIndex].AddEvent(animationEvent);
-                // }
+            }
+
+            if (_isThrower)
+            {
+                _animatorOverrideController["Attack"] = animationClips["Attack"][0];
             }
         }
 
@@ -161,11 +191,6 @@ namespace Animation
         public void OnAttack(bool isActive)
         {
             _animator.SetBool(IsAttack, isActive);
-            
-            if (isActive)
-            {
-                _currentClip= _animator.GetCurrentAnimatorClipInfo(0)[0].clip;
-            }
         }
 
         public void OnGranadeTakeDamage()
@@ -222,6 +247,11 @@ namespace Animation
         {
             _animator.SetBool(Walk, false);
             _animator.SetTrigger(IsHit);
+        }
+
+        public void WasShieldShattered()
+        {
+            _animatorOverrideController["Walk"] = _tempClip;
         }
     }
 }

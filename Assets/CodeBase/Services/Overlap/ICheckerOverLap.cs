@@ -1,4 +1,4 @@
-﻿namespace Service.Overlap
+﻿namespace Services.Overlap
 {
     public interface ICheckerOverLap : IService
     {

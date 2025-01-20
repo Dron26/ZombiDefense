@@ -3,10 +3,9 @@ using System.Threading.Tasks;
 using Infrastructure;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.StateMachine;
-using Service;
-using Service.Audio;
-using Service.SaveLoad;
-using UI.Levels;
+using Services.Audio;
+using Services.SaveLoad;
+using UI.Locations;
 using UI.SettingsPanel;
 using UnityEngine;
 

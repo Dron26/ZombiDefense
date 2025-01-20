@@ -1,10 +1,12 @@
 using System;
 using Common;
 using Data.Upgrades;
+using Enemies;
+using Enemies.AbstractEntity;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
 using Infrastructure.Logic.WeaponManagment;
-using Service.Audio;
+using Services.Audio;
 using Unity.VisualScripting;
 using UnityEngine;
 

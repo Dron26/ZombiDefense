@@ -12,14 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6c0d2ccd13496f9b37c58e31406e86, type: 3}
   m_Name: Smoker
   m_EditorClassIdentifier: 
+  prefab: {fileID: 4667134088787838576, guid: dd72909979388bf4c9d334e0c22f1d48, type: 3}
   Type: 2
   MaxHealth: 60
-  RangeAttack: 4
+  RangeAttack: 3
   Damage: 20
   Price: 0
   Level: 1
-  IsExplosive: 0
-  ExplosiveDamage: 30
-  ExplosionRadius: 10
+  IsThrower: 0
+  IsPolice: 0
+  IsSpecial: 0
+  HasShield: 0
+  ShieldHealth: 0
+  ThrowRangeAttack: 0
+  ThrowAbility: {fileID: 0}
+  ExplosiveAbility: {fileID: 0}
   CharacterController: {fileID: 9100000, guid: 52b2bb2d7c6902a478351e69784acd94, type: 2}
   NavMeshSpeed: 0.55

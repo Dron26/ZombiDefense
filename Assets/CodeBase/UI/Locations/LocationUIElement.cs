@@ -2,7 +2,7 @@ using Infrastructure.BaseMonoCache.Code.MonoCache;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UI.Levels
+namespace UI.Locations
 {
     public class LocationUIElement : MonoCache
     {

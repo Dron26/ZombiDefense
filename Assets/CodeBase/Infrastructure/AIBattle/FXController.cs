@@ -1,10 +1,9 @@
 ﻿using System;
 using Characters.Humanoids.AbstractLevel;
 using Infrastructure.AIBattle.AdditionalEquipment;
-using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
-using Service.Audio;
+using Services.Audio;
 using UnityEngine;
 
 namespace Infrastructure.AIBattle
@@ -30,8 +29,8 @@ namespace Infrastructure.AIBattle
         {
             if (TryGetComponent(out Character character))
             { 
-                this._character=character;
-                this._character.OnInitialize+=SetAudio;
+                _character=character;
+                _character.OnInitialize+=SetAudio;
             }
              
              _humanoidWeaponController= GetComponent<HumanoidWeaponController>();
@@ -50,8 +49,8 @@ namespace Infrastructure.AIBattle
 
         public void OnAttackFX()
         {
-            _audioSource.PlayOneShot(_shoot);
-            _particleGunshotSingle.Play();
+                _audioSource.PlayOneShot(_shoot);
+                _particleGunshotSingle.Play();
         }
         
         public void OnTankDeathFX()

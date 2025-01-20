@@ -3,7 +3,7 @@ using Characters.Humanoids.AbstractLevel;
 using Infrastructure.AIBattle;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
-using Service.SaveLoad;
+using Services.SaveLoad;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,7 +15,7 @@ namespace UI.Buttons
         [SerializeField] private Button _weapon;
 
         private Character _character;
-        private GrenadeThrower _grenadeThrower;
+        private ObjectThrower _objectThrower;
         private HumanoidWeaponController _humanoidWeaponController;
         public Action OnClickButton;
 private bool _haveAdditionalWeapon;
@@ -38,12 +38,12 @@ private SaveLoadService _saveLoadService;
             {
                 if (_humanoidWeaponController.CanThrowGranade)
                 {
-                    _grenadeThrower = _character.gameObject.GetComponent<GrenadeThrower>();
+                    _objectThrower = _character.gameObject.GetComponent<ObjectThrower>();
                     _weapon.interactable=true;
                 }
                 else
                 {
-                    _grenadeThrower = null;
+                    _objectThrower = null;
                     _weapon.interactable=false;
                 }
             }

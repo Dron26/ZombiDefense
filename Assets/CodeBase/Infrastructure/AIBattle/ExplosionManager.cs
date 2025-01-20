@@ -1,29 +1,32 @@
-using Enemies.AbstractEntity;
+using Enemies;
 using Infrastructure.Logic.WeaponManagment;
 using UnityEngine;
 
-public class ExplosionManager : MonoBehaviour
+namespace Infrastructure.AIBattle
 {
-    
-    private float _sourceVolume;
-    
-    public void ExecuteExplosion(Vector3 explosionPosition, float explosionRadius, int damage, ParticleSystem explosionEffect,float volumeAudio)
+    public class ExplosionManager : MonoBehaviour
     {
-        _sourceVolume = volumeAudio;
-        GameObject exploded = Instantiate(explosionEffect.gameObject, explosionPosition, Quaternion.identity);
-        exploded.GetComponent<ParticleSystem>().Play();
-        int enemyLayer = LayerMask.GetMask("Character");
-        Collider[] colliders = Physics.OverlapSphere(explosionPosition, explosionRadius, enemyLayer);
-
-        foreach (Collider collider in colliders)
+    
+        private float _sourceVolume;
+    
+        public void ExecuteExplosion(Vector3 explosionPosition, float explosionRadius, int damage, ParticleSystem explosionEffect,float volumeAudio)
         {
-            float distance = Vector3.Distance(collider.transform.position, explosionPosition);
-            float damagePercentage = Mathf.Clamp01(1 - distance / explosionRadius);
-            int calculatedDamage = Mathf.RoundToInt(damagePercentage * damage);
+            _sourceVolume = volumeAudio;
+            GameObject exploded = Instantiate(explosionEffect.gameObject, explosionPosition, Quaternion.identity);
+            exploded.GetComponent<ParticleSystem>().Play();
+            int enemyLayer = LayerMask.GetMask("Character");
+            Collider[] colliders = Physics.OverlapSphere(explosionPosition, explosionRadius, enemyLayer);
 
-            if (collider.TryGetComponent(out IDamageable damageable))
+            foreach (Collider collider in colliders)
             {
-                damageable.ApplyDamage(calculatedDamage, ItemType.Grenade);
+                float distance = Vector3.Distance(collider.transform.position, explosionPosition);
+                float damagePercentage = Mathf.Clamp01(1 - distance / explosionRadius);
+                int calculatedDamage = Mathf.RoundToInt(damagePercentage * damage);
+
+                if (collider.TryGetComponent(out IDamageable damageable))
+                {
+                    damageable.ApplyDamage(calculatedDamage, ItemType.Grenade);
+                }
             }
         }
     }

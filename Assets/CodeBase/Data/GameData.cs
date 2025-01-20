@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using Characters.Humanoids.AbstractLevel;
 using Enemies.AbstractEntity;
 using Infrastructure.Location;
-using Service;
-using Service.Audio;
-using UI.Levels;
+using Services;
+using UI.Locations;
 using UnityEngine;
 
 namespace Data

@@ -1,4 +1,7 @@
-public interface  IPauseHandler
+namespace Services.PauseService
 {
-    void SetPaused(bool isPaused);
+    public interface  IPauseHandler
+    {
+        void SetPaused(bool isPaused);
+    }
 }

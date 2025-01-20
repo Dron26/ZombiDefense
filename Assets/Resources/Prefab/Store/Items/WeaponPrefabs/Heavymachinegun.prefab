@@ -144,7 +144,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4694598602066610280
 Transform:
   m_ObjectHideFlags: 0
@@ -227,6 +227,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _particleGunshot: {fileID: 3169727377492572822}
   _particleEject: {fileID: 8973760680452634978}
+  _light: {fileID: 1048359243374271700}
 --- !u!1 &7263302813939669361
 GameObject:
   m_ObjectHideFlags: 0
@@ -349,6 +350,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6444152899539090889}
     m_Modifications:
+    - target: {fileID: 5197331581931953858, guid: 940ba601eb38c064f9ef2a107604b814, type: 3}
+      propertyPath: looping
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5197456321088493370, guid: 940ba601eb38c064f9ef2a107604b814, type: 3}
+      propertyPath: looping
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5396457486689780060, guid: 940ba601eb38c064f9ef2a107604b814, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5397208435563889506, guid: 940ba601eb38c064f9ef2a107604b814, type: 3}
       propertyPath: m_Name
       value: GunFlash

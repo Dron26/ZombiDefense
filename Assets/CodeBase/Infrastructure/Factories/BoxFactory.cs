@@ -1,13 +1,9 @@
-using Data;
-using Infrastructure.AIBattle;
 using Infrastructure.AssetManagement;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.Location;
 using Infrastructure.Logic.WeaponManagment;
-using Service.SaveLoad;
 using UnityEngine;
 
-namespace Infrastructure.Factories.FactoriesBox
+namespace Infrastructure.Factories
 {
     public class BoxFactory:MonoCache
     {

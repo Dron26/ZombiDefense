@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using DG.Tweening;
 using Enemies.AbstractEntity;
-using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
 using Infrastructure.Logic.WeaponManagment;
 using Interface;
-using Service;
+using Services;
 using UnityEngine;
 
 namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
@@ -21,7 +20,7 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
         private FXController _fxController;
         private Characters.Humanoids.AbstractLevel.Humanoid _humanoid;
         private HumanoidWeaponController _humanoidWeaponController;
-        private bool _isShotgun;
+        private bool _isSpecialWeapon;
         private SphereCollider _attackTrigger;
         private bool _isAttacking;
         private bool _isReloading;
@@ -29,13 +28,12 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
         private List<Enemy> _enemiesInRange = new();
         private int _maxAmmo;
         private int _ammoCount;
-
         private float _damage;
         private float _range;
-        private float _maxRadius;
+        private float _maxRange;
         private float[] _radiusList;
         private float[] _damageList;
-
+        private float _accumulationDamage;
         private bool _isTargetSet;
 
         private void Awake()
@@ -90,21 +88,27 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
                     {
                         _isAttacking = true;
                         _isTargetSet = false;
-
-                        transform.DOLookAt(_transformEnemy.position, 0.1f);
+                        
                         _playerCharacterAnimController.OnShoot(true);
+                        
+                        if (_activeWeapon.ItemType == ItemType.Medium||_activeWeapon.ItemType == ItemType.Flammer)
+                        {
+                            _fxController.OnAttackFX();
+                        }
                     }
                 }
             }
             else
             {
-                if (_activeWeapon.ItemType == ItemType.Medium)
+                if (_activeWeapon.ItemType == ItemType.Medium||_activeWeapon.ItemType == ItemType.Flammer)
                 {
                     _fxController.OnAttackFXStop();
                 }
 
                 ChangeState<SearchTargetState>();
             }
+            
+            transform.DOLookAt(_transformEnemy.position, 0.1f);
         }
 
         public void FinishAnimationAttackPlay()
@@ -112,13 +116,13 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
             _isAttacking = false;
             _ammoCount--;
 
-            if (_isShotgun)
+            if (_isSpecialWeapon)
             {
                 ApplyDamageToEnemiesInRange();
             }
             else
             {
-                _enemy.ApplyDamage(_damage, _humanoidWeaponController.ItemType);
+                _enemy.ApplyDamage(_damage, _activeWeapon.ItemType);
             }
 
             if (_ammoCount == 0 && !_isReloading)
@@ -151,31 +155,46 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
 
         private void ChangeState<TState>() where TState : State
         {
+            _accumulationDamage = 0;
             Debug.Log("AttackChangeState()");
             PlayerCharactersStateMachine.EnterBehavior<TState>();
         }
 
         private void ApplyDamageToEnemiesInRange()
         {
-            float angle = _humanoidWeaponController.GetSpreadAngle();
-            Vector3 attackDirection = _enemy.transform.position - transform.position;
-            _enemiesInRange=AllServices.Container.Single<ISearchService>().GetEntitiesInRange<Enemy>(transform.position, _maxRadius);
-            foreach (var enemy in _enemiesInRange)
-            {
-                if (enemy.IsLife())
+                float angle = _activeWeapon.SpreadAngle;
+                Vector3 attackDirection = _enemy.transform.position - transform.position;
+                _enemiesInRange = AllServices.Container.Single<ISearchService>()
+                    .GetEntitiesInRange<Enemies.AbstractEntity.Enemy>(transform.position, _maxRange);
+
+                foreach (var enemy in _enemiesInRange)
                 {
-                    Vector3 directionToEnemy = enemy.transform.position - transform.position;
-                    float angleToEnemy = Vector3.Angle(attackDirection, directionToEnemy);
-
-                    if (angleToEnemy <= angle)
+                    if (enemy.IsLife())
                     {
-                        float distance = Vector3.Distance(transform.position, enemy.transform.position);
-                        float damagePercent = CalculateDamagePercent(distance);
+                        Vector3 directionToEnemy = enemy.transform.position - transform.position;
+                        float angleToEnemy = Vector3.Angle(attackDirection, directionToEnemy);
 
-                        enemy.ApplyDamage(_damage * damagePercent, _humanoidWeaponController.ItemType);
+                        if (angleToEnemy <= angle)
+                        {
+                            float distance = Vector3.Distance(transform.position, enemy.transform.position);
+                            float damagePercent = CalculateDamagePercent(distance);
+
+                            if (_activeWeapon.ItemType != ItemType.Medium)
+                            {
+                                enemy.ApplyDamage(_damage * damagePercent, _activeWeapon.ItemType);
+                            }
+                            else
+                            {
+                                _accumulationDamage += _damage;
+                                enemy.ApplyDamage(_accumulationDamage, _activeWeapon.ItemType);
+                                Debug.Log(_accumulationDamage);
+                            }
+
+                        }
                     }
                 }
-            }
+
+                Attack();
         }
 
         private float CalculateDamagePercent(float distance)
@@ -196,23 +215,31 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
             _activeWeapon = _humanoidWeaponController.GetActiveItemData();
             _maxAmmo = _activeWeapon.MaxAmmo;
             _ammoCount = _maxAmmo;
-            _damage = _humanoidWeaponController.Damage;
+            _damage = _activeWeapon.Damage;
             _range = _activeWeapon.Range;
 
             if (_activeWeapon.SpreadAngle > 0)
             {
-                _isShotgun = true;
+                _isSpecialWeapon = true;
                 _radiusList = new[]
                 {
-                    _humanoidWeaponController.GetSpreadAngle() * 0.4f,
-                    _humanoidWeaponController.GetSpreadAngle() * 0.6f, _humanoidWeaponController.GetSpreadAngle()
+                    _activeWeapon.Range * 0.4f,
+                    _activeWeapon.Range * 0.6f, _activeWeapon.Range
                 };
-                _damageList = new[] { 1.3f, 1f, _damage * 0.5f };
-                _maxRadius = _radiusList[0];
+                _damageList = new[] { 1.3f, 1f,  0.5f };
+
+                if (_activeWeapon.ItemType == ItemType.Medium)
+                {
+                    _maxRange = _radiusList[2]*2;
+                }
+                else
+                {
+                    _maxRange = _radiusList[2];
+                }
             }
             else
             {
-                _isShotgun = false;
+                _isSpecialWeapon = false;
             }
         }
 

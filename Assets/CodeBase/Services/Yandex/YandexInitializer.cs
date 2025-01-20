@@ -1,10 +1,8 @@
 using System.Collections;
-using Agava.YandexGames;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Service.Ads;
 using UnityEngine.Events;
 
-namespace Service.Yandex
+namespace Services.Yandex
 {
     public class YandexInitializer : MonoCache
     {
@@ -12,27 +10,27 @@ namespace Service.Yandex
         
         private void Awake()
         {
-            DontDestroyOnLoad(gameObject);
-            YandexAdsService yandexAdsService=new YandexAdsService();
-            yandexAdsService.Initialize();
-            
-            YandexGamesSdk.CallbackLogging = true;
+           // DontDestroyOnLoad(gameObject);
+           // Completed?.Invoke();
+            // YandexAdsService yandexAdsService=new YandexAdsService();
+            // yandexAdsService.Initialize();
+            //
+            // YandexGamesSdk.CallbackLogging = true;
         }
 
         private IEnumerator Start()
         {
 #if !UNITY_WEBGL || UNITY_EDITOR
-            Completed?.Invoke();
+           // Completed?.Invoke();
             yield break;
 #endif
-
-            yield return YandexGamesSdk.Initialize();
-
-            if (YandexGamesSdk.IsInitialized)
-            {
-                Completed?.Invoke();
-            }
-            
+            Completed?.Invoke();
+            // yield return YandexGamesSdk.Initialize();
+            //
+            // if (YandexGamesSdk.IsInitialized)
+            // {
+            //     Completed?.Invoke();
+            // }
         }
     }
 }

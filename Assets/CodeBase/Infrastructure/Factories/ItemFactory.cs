@@ -4,7 +4,7 @@ using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
 using UnityEngine;
 
-namespace Infrastructure.Factories.FactoriesBox
+namespace Infrastructure.Factories
 {
     public class ItemFactory : MonoCache
     {

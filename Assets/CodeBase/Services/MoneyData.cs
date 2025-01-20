@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Service
+namespace Services
 {
     [Serializable]
     public class MoneyData

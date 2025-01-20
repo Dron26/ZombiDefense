@@ -1,10 +1,9 @@
 ﻿using System.Collections;
-using Characters.Humanoids.AbstractLevel;
 using Infrastructure.Location;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
+namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
 {
     public class MovementState : State
     {
@@ -15,12 +14,12 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         private float _minDistance = 0.3f;
         private bool _reachedDestination = true;
         private bool _isSetDestination = false;
-        private Humanoid _humanoid;
+        private Characters.Humanoids.AbstractLevel.Humanoid _humanoid;
         private Coroutine _coroutine;
 
         private void Awake()
         {
-            _humanoid=GetComponent<Humanoid>();
+            _humanoid=GetComponent<Characters.Humanoids.AbstractLevel.Humanoid>();
             _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
             _agent = GetComponent<NavMeshAgent>();
             _agent.stoppingDistance = 0f; // Задайте минимальную дистанцию остановки

@@ -6,6 +6,11 @@ namespace Enemies
         SimpleF,
         Smoker,
         Fatman,
-        BigGuy
+        BigGuy,
+        SimpleFThrower,
+        SimpleMPolice,
+        SimpleMPoliceShieldbearer,
+        SimpleMSpecial,
+        SimpleMSpecialShieldbearer
     }
 }

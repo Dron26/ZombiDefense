@@ -1,19 +1,13 @@
 using System;
 using System.Collections.Generic;
-using Data;
-using Infrastructure.AssetManagement;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.StateMachine;
-using Infrastructure.StateMachine.States;
-using Interface;
-using Service;
-using Service.SaveLoad;
+using Services.SaveLoad;
 using TMPro;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
 
-namespace UI.Levels
+namespace UI.Locations
 {
     public class LocationMap:MonoCache
     {

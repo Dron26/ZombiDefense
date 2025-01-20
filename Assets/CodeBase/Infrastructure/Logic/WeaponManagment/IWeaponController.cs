@@ -1,9 +1,12 @@
 using Characters.Humanoids.AbstractLevel;
 using Infrastructure.Location;
 
-public interface IWeaponController
+namespace Infrastructure.Logic.WeaponManagment
 {
-    public void Initialize(CharacterData data);
-    public void SetPoint(WorkPoint workPoint);
-    public void SetSelected(bool isSelected);
+    public interface IWeaponController
+    {
+        public void Initialize(CharacterData data);
+        public void SetPoint(WorkPoint workPoint);
+        public void SetSelected(bool isSelected);
+    }
 }

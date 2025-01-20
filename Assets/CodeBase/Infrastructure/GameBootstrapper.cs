@@ -3,10 +3,10 @@ using Data.Settings.Language;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.StateMachine;
 using Infrastructure.StateMachine.States;
-using Service.SaveLoad;
-using Service.Yandex;
 using Services.PauseService;
-using UI.Levels;
+using Services.SaveLoad;
+using Services.Yandex;
+using UI.Locations;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -31,7 +31,8 @@ namespace Infrastructure
 
         public void Start()
         {
-            _yandexInitializer.Completed += Init;
+           // _yandexInitializer.Completed += Init;
+            Init();
         }
 
         private  void  Init()

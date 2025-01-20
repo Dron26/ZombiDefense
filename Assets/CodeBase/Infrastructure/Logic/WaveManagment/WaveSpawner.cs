@@ -3,18 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using Data;
 using Enemies.AbstractEntity;
-using Infrastructure.AIBattle.EnemyAI.States;
+using Infrastructure.AIBattle.StateMachines.EnemyAI.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Factories.FactoryWarriors.Enemies;
 using Interface;
-using Service;
-using Service.Audio;
-using Service.SaveLoad;
-using UI.Levels;
+using Services;
+using Services.Audio;
+using Services.SaveLoad;
 using UnityEngine;
-using UnityEngine.Events;
-using Enemy = Enemies.AbstractEntity.Enemy;
-
+using Random = System.Random;
 
 namespace Infrastructure.Logic.WaveManagment
 {
@@ -41,7 +38,7 @@ namespace Infrastructure.Logic.WaveManagment
         private int _numberKilledEnemies;
         public List<int> _enemyCount;
         //private float _cycleTimer;
-        // private float _cycleDuration;
+        //private float _cycleDuration;
         private int _countActivatedEnemiesWave;
         private int _maxEnemyOnWave;
         private int _currentIndexWave;
@@ -51,7 +48,7 @@ namespace Infrastructure.Logic.WaveManagment
         private int _spawnPointsCount ;
         private List<float> _spawnPointDelayTime = new();
         private int DelayTimeCount=4;
-        System.Random _systemRandom = new System.Random();
+        Random _systemRandom = new Random();
         
         public void Initialize(AudioManager audioManager, EnemyFactory enemyFactory, WaveManager waveManager)
         {
@@ -280,9 +277,12 @@ namespace Infrastructure.Logic.WaveManagment
         {
             foreach (var enemies in _createdWave)
             {
-                foreach (var enemy in enemies)
+                if (enemies.Count > 0)
                 {
-                    enemy.GetComponent<EnemyDieState>().SetDestroyed();
+                    foreach (var enemy in enemies)
+                    {
+                        enemy.GetComponent<EnemyDieState>().SetDestroyed();
+                    }
                 }
             }
         }

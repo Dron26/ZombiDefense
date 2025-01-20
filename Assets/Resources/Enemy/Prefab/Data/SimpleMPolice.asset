@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd6c0d2ccd13496f9b37c58e31406e86, type: 3}
+  m_Name: SimpleMPolice
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 9066399932422974978, guid: 45b9d38448e3b2c4abb8e1b3520e4546, type: 3}
+  Type: 6
+  MaxHealth: 60
+  RangeAttack: 2
+  Damage: 15
+  Price: 0
+  Level: 0
+  IsThrower: 0
+  IsPolice: 1
+  IsSpecial: 0
+  HasShield: 0
+  ShieldHealth: 0
+  ThrowRangeAttack: 0
+  ThrowAbility: {fileID: 0}
+  ExplosiveAbility: {fileID: 0}
+  CharacterController: {fileID: 9100000, guid: 7d401bf8949afbc4499839c0f8248cdd, type: 2}
+  NavMeshSpeed: 1.25

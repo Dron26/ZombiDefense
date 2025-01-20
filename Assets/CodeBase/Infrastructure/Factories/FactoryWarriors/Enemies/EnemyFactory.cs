@@ -4,8 +4,8 @@ using Enemies;
 using Enemies.AbstractEntity;
 using Infrastructure.AssetManagement;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Service.Audio;
-using Service.SaveLoad;
+using Services.Audio;
+using Services.SaveLoad;
 using UnityEngine;
 
 namespace Infrastructure.Factories.FactoryWarriors.Enemies
@@ -13,22 +13,25 @@ namespace Infrastructure.Factories.FactoryWarriors.Enemies
     public class EnemyFactory : MonoCache
     {
         private AudioManager _audioManager;
+        private SaveLoadService _saveLoadService;
         
         public Enemy Create(EnemyType type)
         {
-            string pathPrefab =AssetPaths.EnemyPrefab + type;
-            GameObject prefab = Instantiate(Resources.Load<GameObject>(pathPrefab));
-            prefab.gameObject.layer = LayerMask.NameToLayer("Character");
-            Enemy enemyComponent = prefab.GetComponent<Enemy>();
             string pathData = AssetPaths.EnemyData + type;
             EnemyData data = Resources.Load<EnemyData>(pathData);
-            enemyComponent.Initialize(_audioManager,data);
+            
+            string pathPrefab =AssetPaths.EnemyPrefab + type;
+            GameObject prefab = Instantiate(data.prefab);
+            prefab.gameObject.layer = LayerMask.NameToLayer("Character");
+            Enemy enemyComponent = prefab.GetComponent<Enemy>();
+            enemyComponent.Initialize(_audioManager,data,_saveLoadService);
             return enemyComponent;
         }
 
-        public void Initialize( AudioManager audioManager)
+        public void Initialize(AudioManager audioManager, SaveLoadService saveLoadService)
         {
             _audioManager=audioManager;
+            _saveLoadService=saveLoadService;
         }
     }
 }

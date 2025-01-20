@@ -1,9 +1,9 @@
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Service.SaveLoad;
+using Services.SaveLoad;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Service.Reset
+namespace Services.Reset
 {
     public class ResetProgress : MonoCache
     {

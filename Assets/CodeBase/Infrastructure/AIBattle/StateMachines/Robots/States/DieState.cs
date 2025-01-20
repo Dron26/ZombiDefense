@@ -1,6 +1,6 @@
 using System.Collections;
 using Characters.Humanoids.AbstractLevel;
-using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
+using Infrastructure.AIBattle.StateMachines.Humanoid.States;
 using UnityEngine;
 using UnityEngine.AI;
 

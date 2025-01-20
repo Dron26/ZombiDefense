@@ -2,15 +2,15 @@ using System;
 using System.Collections.Generic;
 using Characters.Humanoids.AbstractLevel;
 using Characters.Robots;
-using Infrastructure.AIBattle.PlayerCharacterStateMachine;
-using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
+using Enemies.AbstractEntity;
+using Infrastructure.AIBattle.StateMachines.Humanoid.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Factories.FactoryWarriors.Humanoids;
 using Infrastructure.Factories.FactoryWarriors.Robots;
 using Infrastructure.Location;
 using Infrastructure.Points;
-using Service.Audio;
-using Service.SaveLoad;
+using Services.Audio;
+using Services.SaveLoad;
 using UI.HUD.StorePanel;
 using UnityEngine;
 using UnityEngine.Events;
@@ -43,7 +43,7 @@ namespace Infrastructure.Logic.Inits
         {
              _sceneObjectManager=sceneObjectManager;
             _saveLoadService = saveLoadService;
-            _sceneObjectManager.CreatedHumanoid += OnCreatedCharacted;
+            _sceneObjectManager.CreatedHumanoid +=  OnCreatedCharacted;
             _robotFactory.CreatedRobot += OnCreatedCharacted;
             _robotFactory.Initialize(audioManager,_saveLoadService);
             _workPointsGroup.Initialize(_saveLoadService);

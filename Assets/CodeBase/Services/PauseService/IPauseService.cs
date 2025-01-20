@@ -1,5 +1,3 @@
-using Service;
-
 namespace Services.PauseService
 {
     public interface IPauseService:IService

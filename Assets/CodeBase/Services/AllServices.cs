@@ -1,7 +1,4 @@
-using Infrastructure.AssetManagement;
-using UI;
-
-namespace Service
+namespace Services
 {
     public class AllServices
     {

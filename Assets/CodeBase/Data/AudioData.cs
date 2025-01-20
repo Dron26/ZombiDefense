@@ -1,6 +1,6 @@
 using System;
 
-namespace Service.Audio
+namespace Data
 {
     [Serializable]
     public class AudioData

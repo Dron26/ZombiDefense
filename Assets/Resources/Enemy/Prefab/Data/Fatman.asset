@@ -12,14 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6c0d2ccd13496f9b37c58e31406e86, type: 3}
   m_Name: Fatman
   m_EditorClassIdentifier: 
+  prefab: {fileID: 4667134088787838576, guid: 42fbe22be88322c4e800781881cd9a4f, type: 3}
   Type: 3
   MaxHealth: 70
-  RangeAttack: 6
+  RangeAttack: 1
   Damage: 60
   Price: 0
   Level: 1
-  IsExplosive: 0
-  ExplosiveDamage: 0
-  ExplosionRadius: 0
+  IsThrower: 0
+  IsPolice: 0
+  IsSpecial: 0
+  HasShield: 0
+  ShieldHealth: 0
+  ThrowRangeAttack: 0
+  ThrowAbility: {fileID: 0}
+  ExplosiveAbility: {fileID: 0}
   CharacterController: {fileID: 9100000, guid: bf9782d3a0da65f41ab35f925e4510a1, type: 2}
   NavMeshSpeed: 0.55

@@ -1,6 +1,6 @@
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 
-namespace Infrastructure.AIBattle
+namespace Data
 {
     public class GranadeData:MonoCache
     {

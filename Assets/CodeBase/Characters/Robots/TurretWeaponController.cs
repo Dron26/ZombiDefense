@@ -1,6 +1,7 @@
 using System;
 using Characters.Humanoids.AbstractLevel;
 using Data.Upgrades;
+using Infrastructure.AIBattle;
 using Infrastructure.Location;
 using Infrastructure.Logic.WeaponManagment;
 using UnityEngine;
@@ -33,7 +34,7 @@ namespace Characters.Robots
         private TurretGun _turretGun;
         private GameObject _radiusObject;
         public Action OnSelected;
-        private GrenadeThrower _grenadeThrower;
+        private ObjectThrower _objectThrower;
 
         public override void Initialize(CharacterData data)
         {

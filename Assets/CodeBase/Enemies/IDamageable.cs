@@ -1,8 +1,9 @@
-
-using System;
 using Infrastructure.Logic.WeaponManagment;
 
-public interface IDamageable
+namespace Enemies
 {
-    public void ApplyDamage(float damage, ItemType itemType);
+    public interface IDamageable
+    {
+        public void ApplyDamage(float damage, ItemType itemType);
+    }
 }

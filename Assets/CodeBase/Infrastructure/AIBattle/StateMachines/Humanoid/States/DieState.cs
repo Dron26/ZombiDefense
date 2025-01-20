@@ -1,15 +1,14 @@
 using System.Collections;
-using Characters.Humanoids.AbstractLevel;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
+namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
 {
     public class DieState : State
     {
-        public delegate void HumanoidDeathHandler(Humanoid humanoid);
+        public delegate void HumanoidDeathHandler(Characters.Humanoids.AbstractLevel.Humanoid humanoid);
         public event HumanoidDeathHandler OnDeath;
-        private Humanoid _humanoid;
+        private Characters.Humanoids.AbstractLevel.Humanoid _humanoid;
         private WaitForSeconds _wait;
         private float _waitTime=5f;
         private NavMeshAgent _agent;
@@ -22,7 +21,8 @@ namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
         }
         private  IEnumerator WaitAfterDie()
         {
-            _humanoid=GetComponent<Humanoid>();
+            
+            _humanoid=GetComponent<Characters.Humanoids.AbstractLevel.Humanoid>();
             _humanoid.GetComponent<Rigidbody>().useGravity=false;
             _humanoid.GetComponent<Collider>().enabled = false;
             _agent.enabled = false;

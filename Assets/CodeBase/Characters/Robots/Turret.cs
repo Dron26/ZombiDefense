@@ -2,10 +2,10 @@ using System;
 using Characters.Humanoids.AbstractLevel;
 using Data.Upgrades;
 using Infrastructure.AIBattle;
-using Infrastructure.AIBattle.PlayerCharacterStateMachine;
-using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
-using Service.Audio;
-using Service.SaveLoad;
+using Infrastructure.AIBattle.StateMachines.Humanoid;
+using Infrastructure.AIBattle.StateMachines.Humanoid.States;
+using Services.Audio;
+using Services.SaveLoad;
 using UnityEngine;
 
 namespace Characters.Robots
@@ -14,8 +14,7 @@ namespace Characters.Robots
     [RequireComponent(typeof(RobotFXController))]
     [RequireComponent(typeof(TurretStateMachine))]
     [RequireComponent(typeof(RaycastHitChecker))]
-    
-    public  class Turret : Character
+    public class Turret : Character
     {
         private RobotFXController _fxController;
         private AudioManager _audioManager;
@@ -23,7 +22,6 @@ namespace Characters.Robots
         public Action<Humanoid> OnDataLoad;
         private int _currentHealth;
         private int _maxHealth;
-        private bool _isLife = true;
         private bool _isTakeDamagePlay;
         private int _minHealth = 0;
         private bool _isBuyed = false;
@@ -32,20 +30,25 @@ namespace Characters.Robots
         private RaycastHitChecker _raycastHitChecker;
         private TurretWeaponController _turretWeaponController;
         private SaveLoadService _saveLoadService;
+
         public void SetSaveLoadService(SaveLoadService saveLoadService)
         {
-            _saveLoadService=saveLoadService;
+            _saveLoadService = saveLoadService;
             _raycastHitChecker = GetComponent<RaycastHitChecker>();
-            _raycastHitChecker.Initialize(_saveLoadService);
+            if (_raycastHitChecker != null)
+            {
+                _raycastHitChecker.Initialize(_saveLoadService);
+            }
+            else
+            {
+                Debug.LogError("RaycastHitChecker component is missing on Turret.");
+            }
         }
 
         public override void ApplyDamage(int getDamage)
         {
-           // Debug.Log(_currentHealth);
-
             if (_currentHealth <= 0)
             {
-                _isLife = false;
                 Die();
             }
             else
@@ -60,17 +63,25 @@ namespace Characters.Robots
             }
         }
 
-        public void Die()
+        protected override void Die()
         {
+            base.Die(); 
             PlayerCharactersStateMachine stateMachine = GetComponent<PlayerCharactersStateMachine>();
-            stateMachine.EnterBehavior<DieState>();
+            if (stateMachine != null)
+            {
+                stateMachine.EnterBehavior<DieState>();
+            }
+            else
+            {
+                Debug.LogError("PlayerCharactersStateMachine component is missing on Turret.");
+            }
         }
 
         public AudioManager GetAudioController()
         {
             return _audioManager;
         }
-        
+
         private void SetUpgradeFromPoint(int upPrecent)
         {
             _currentHealth += (_maxHealth * upPrecent) / 100;
@@ -78,9 +89,9 @@ namespace Characters.Robots
 
         public void SetAvailable(bool isBuyed)
         {
-            isBuyed = isBuyed;
+            _isBuyed = isBuyed; 
         }
-        
+
         public override void SetUpgrade(UpgradeData upgrade, int level)
         {
             _maxHealth += upgrade.Health;
@@ -89,17 +100,26 @@ namespace Characters.Robots
 
         public override void Initialize()
         {
-            _turretWeaponController= GetComponent<TurretWeaponController>();
+            _turretWeaponController = GetComponent<TurretWeaponController>();
             _fxController = GetComponent<RobotFXController>();
-            GetComponent<TurretStateMachine>().Initialize(_raycastHitChecker,_fxController,_turretWeaponController);
+            TurretStateMachine stateMachine = GetComponent<TurretStateMachine>();
+            if (stateMachine != null)
+            {
+                stateMachine.Initialize(_raycastHitChecker, _fxController, _turretWeaponController);
+            }
+            else
+            {
+                Debug.LogError("TurretStateMachine component is missing on Turret.");
+            }
+
             _maxHealth = Health;
-            _currentHealth=_maxHealth;
+            _currentHealth = _maxHealth;
             OnInitialize?.Invoke(this);
         }
 
         public override void SetAudioManager(AudioManager audioManager)
         {
-            _audioManager=audioManager;
+            _audioManager = audioManager;
         }
 
         private void AddHealth(int health)
@@ -107,9 +127,6 @@ namespace Characters.Robots
             _currentHealth += health;
         }
 
-        public void UIInitialize()
-        {
-            throw new NotImplementedException();
-        }
+        // Удален метод UIInitialize, так как он не используется
     }
 }

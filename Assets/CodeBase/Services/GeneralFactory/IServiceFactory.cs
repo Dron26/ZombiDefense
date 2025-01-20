@@ -1,4 +1,4 @@
-﻿namespace Service.GeneralFactory
+﻿namespace Services.GeneralFactory
 {
     public interface IServiceFactory : IService
     {

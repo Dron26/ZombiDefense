@@ -1,10 +1,13 @@
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using UnityEngine;
 
-public  class GranadeAudioPlayer:MonoCache
+namespace Infrastructure.AIBattle
 {
-    public void PlaySound(AudioClip clip, Vector3 position, float volume)
+    public  class GranadeAudioPlayer:MonoCache
     {
-        AudioSource.PlayClipAtPoint(clip, position, volume);
+        public void PlaySound(AudioClip clip, Vector3 position, float volume)
+        {
+            AudioSource.PlayClipAtPoint(clip, position, volume);
+        }
     }
 }

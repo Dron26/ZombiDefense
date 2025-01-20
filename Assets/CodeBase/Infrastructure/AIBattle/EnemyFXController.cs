@@ -4,7 +4,7 @@ using Enemies;
 using Enemies.AbstractEntity;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
-using Service.Audio;
+using Services.Audio;
 using UnityEngine;
 
 namespace Infrastructure.AIBattle
@@ -25,42 +25,45 @@ namespace Infrastructure.AIBattle
         [SerializeField] private float _areaHeight = 0.1f;
         [SerializeField] private float _minParticleScale = 1f;
         [SerializeField] private float _maxParticleScale = 1f;
+        [SerializeField] private Transform _container;
+
         private ItemType _item;
         private AudioManager _audioManager;
-private bool _isFireParticlePlay;
-private EnemyType _enemyType;
+        private bool _isFireParticlePlay;
+        private EnemyType _enemyType;
+        private AudioSource _audioSource;
+        private Enemy _enemy;
+        private WaitForSeconds _waitThrower;
+        private WaitForSeconds _waitFire;
         private void Awake()
         {
             if (TryGetComponent(out Enemy enemy))
             {
-                enemy.OnEnemyEvent += HandleEnemyEvent;
-                enemy.OnInitialized += SetData; 
+                _enemy = enemy;
+                _enemy.OnEnemyEvent += HandleEnemyEvent;
+                _enemy.OnInitialized += SetData;
                 //enemy.OnTakeDamage += OnHitFX;
-               // enemy.OnDeath += OnDieFX;
-                
+                // enemy.OnDeath += OnDieFX;
+                _waitThrower = new WaitForSeconds(0.5f);
+                _waitFire = new WaitForSeconds(3f);
             }
         }
-        
-        private void HandleEnemyEvent(EnemyEventType eventType,ItemType itemType)
-        {
-            _item=itemType;
 
-            if (_item==ItemType.Flammer)
-            {
-                OnHitFire();
-            }
-            
+        private void HandleEnemyEvent(EnemyEventType eventType, ItemType itemType)
+        {
+            _item = itemType;
+
             switch (eventType)
             {
                 case EnemyEventType.Death:
                     OnDieFX();
                     break;
                 case EnemyEventType.TakeDamage:
+                    OnTakeDamage();
                     break;
                 case EnemyEventType.TakeSmokerDamage:
                     break;
                 case EnemyEventType.TakeSimpleWalkerDamage:
-                    OnSimpleWalkerDamage();
                     break;
             }
         }
@@ -81,40 +84,64 @@ private EnemyType _enemyType;
                 particle.Play();
                 _isFireParticlePlay = true;
             }
-            
-            yield return new WaitForSeconds(3f);
-            
+
+            yield return _waitFire;
+
             foreach (var particle in _particlesFire)
             {
                 particle.Stop();
                 particle.gameObject.SetActive(false);
             }
+
             _isFireParticlePlay = false;
         }
 
-        private void SetData(Enemy enemy)
+        private void SetData()
         {
-            _audioManager = enemy.GetAudioController();
-            _enemyType=enemy.Data.Type;
+            _audioManager = _enemy.GetAudioController();
+            _audioSource = _audioManager.GetSoundSource();
+            _enemyType = _enemy.Data.Type;
         }
+        public IEnumerator OnThrowFlesh(Vector3 position)
+        {
+            ParticleSystem particleThrow = new ParticleSystem();
+            
+            particleThrow=Instantiate(_enemy.Data.ThrowAbility.ThrowerComponent, _container.position, _container.transform.rotation,_container);
 
+            particleThrow.Play();
+            
+            yield return _waitThrower;
+            
+            Instantiate(_enemy.Data.ThrowAbility.ToxicBoiling, position+_enemy.Data.ThrowAbility.ToxicBoiling.transform.position,  _enemy.Data.ThrowAbility.ToxicBoiling.transform.rotation);
+
+            yield break;
+        }
+        
+        
         public void OnTankDeathFX()
         {
-            ParticleSystem particleTankDie = Instantiate(_particleTankDie, transform.position, Quaternion.identity);
-            ParticleSystem particleTankDie1 = Instantiate(_particleTankDie1, transform.position, Quaternion.identity);
+            ParticleSystem particleTankDie = Instantiate(_particleTankDie, _container.position, Quaternion.identity);
+            ParticleSystem particleTankDie1 = Instantiate(_particleTankDie1, _container.position, Quaternion.identity);
 
             particleTankDie.Play();
             particleTankDie1.Play();
         }
 
-        public void OnSimpleWalkerDamage()
+        public void OnTakeDamage()
         {
-            PlayRandomParticleEffect();
+            if (_item == ItemType.Flammer)
+            {
+                OnHitFire();
+            }
+            else
+            {
+                PlayRandomParticleEffect();
+            }
         }
 
         public void OnDieFX()
         {
-            if (_enemyType== EnemyType.Smoker)
+            if (_enemyType == EnemyType.Smoker)
             {
                 SmokerExplosion();
             }
@@ -122,46 +149,18 @@ private EnemyType _enemyType;
 
         private void SmokerExplosion()
         {
-            ParticleSystem particleExplosion = Instantiate(_particleTankDie, transform.position, Quaternion.identity);
+            ParticleSystem particleExplosion =
+                Instantiate(_particleExplosion, _container.position, Quaternion.identity);
             particleExplosion.Play();
-            
+            _audioSource.PlayOneShot(_enemy.Data.ExplosiveAbility.ExplosionClip);
         }
 
         public void PlayRandomParticleEffect()
         {
-            
-            // if (_particleByType.TryGetValue(_weapon, out List<ParticleSystem> effect))
-            // {
-            //     if (effect.Count > 0)
-            //     {
-            //         int randomIndex = UnityEngine.Random.Range(0, effect.Count);
-            //         ParticleSystem particleSystem = effect[randomIndex];
-            //
-            //         //SetRandomParticlePosition(particleSystem);
-            //         //SetRandomParticleScale(particleSystem);
-            //
-            //         particleSystem.Play();
-            //     }
-            //     else
-            //     {
-            //         Debug.LogWarning($"No particle effects found for weapon name '{_weapon}'.");
-            //     }
-            // }
-            // else
-            // {
-            //     Debug.LogWarning($"No particle effects found for weapon name '{_weapon}'.");
-            // }
-
-            if (_item!=ItemType.Sniper)
-            {
-                int randomIndex = Random.Range(0, _particlesHitLite.Count);
-                _particlesHitLite[randomIndex].Play();
-            }
-            else
-            {
-                int randomIndex = Random.Range(0, _particlesHitSniperRifle.Count);
-                _particlesHitSniperRifle[randomIndex].Play();
-            }
+            int randomIndex = Random.Range(0, _particlesHitLite.Count);
+            ParticleSystem particle = Instantiate(_particlesHitLite[randomIndex], _container.position, Quaternion.identity);
+                
+            particle.Play();
         }
 
         private void SetRandomParticlePosition(ParticleSystem particleSystem)
@@ -180,19 +179,6 @@ private EnemyType _enemyType;
             particleSystem.transform.localScale = new Vector3(randomScale, randomScale, randomScale);
         }
 
-        private void SetFirstHit()
-        {
-            int maxChance = 20;
-            int chance = 14;
-
-            float randomNumber = UnityEngine.Random.Range(0, maxChance);
-
-            if (randomNumber == chance)
-            {
-                _bloodFlowing.Play();
-            }
-        }
-
         protected override void OnDisable()
         {
             if (TryGetComponent(out Enemy enemy))
@@ -200,5 +186,7 @@ private EnemyType _enemyType;
                 enemy.OnInitialized -= SetData;
             }
         }
+
+        
     }
 }

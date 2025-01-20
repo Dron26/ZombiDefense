@@ -3,7 +3,7 @@ using System.Linq;
 using Interface;
 using UnityEngine;
 
-namespace Service
+namespace Services
 {
     public class ResourceLoaderService:IResourceLoadService
     {

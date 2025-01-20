@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using CameraMain;
 using Characters.Humanoids.AbstractLevel;
 using Common;
-using Infrastructure.AIBattle.PlayerCharacterStateMachine;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
 using Infrastructure.Logic.WaveManagment;
@@ -11,13 +10,14 @@ using Infrastructure.Points;
 using Infrastructure.StateMachine;
 using Infrastructure.StateMachine.States;
 using Infrastructure.Tutorial;
-using Service;
-using Service.Ads;
-using Service.Audio;
-using Service.SaveLoad;
+using Interface;
+using Services;
+using Services.Ads;
+using Services.Audio;
 using Services.PauseService;
+using Services.SaveLoad;
 using UI;
-using UI.Levels;
+using UI.Locations;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -37,7 +37,6 @@ namespace Infrastructure.Logic.Inits
         [SerializeField] private Camera _cameraUI;
         [SerializeField] private EventSystem _eventSystem;
         [SerializeField] private GlobalTimer _globalTimer;
-        [SerializeField] private EntitySearchService _entitySearchService;
 
         private SceneObjectManager _sceneObjectManager;
         private LocationManager _locationManager;
@@ -91,7 +90,6 @@ namespace Infrastructure.Logic.Inits
             
             _sceneObjectManager = GetComponent<SceneObjectManager>();
             
-            _entitySearchService.Initialize(_sceneObjectManager, _waveManager.WaveSpawner,_saveLoadService);
             _playerCharacterInitializer.Initialize(_audioManager, this, _saveLoadService, _sceneObjectManager);
             Debug.Log("Finish _playerCharacterInitializer();");
 
@@ -179,10 +177,7 @@ namespace Infrastructure.Logic.Inits
 
         protected override void OnDisabled()
         {
-            _playerCharacterInitializer.CreatedCharacter -= SetInfo;
-            _playerCharacterInitializer.LastHumanoidDie -= _waveManager.StopSpawn;
-            _waveManager.OnReadySpawning -= ReadyToSpawning;
-            _timerDisplay.OnClickReady -= _waveManager.Spawn;
+            RemoveListener();
         }
 
         public HudPanel GetHudPanel()
@@ -215,6 +210,8 @@ namespace Infrastructure.Logic.Inits
             _saveLoadService.ClearSpawnData();
             _playerCharacterInitializer.ClearData();
             _pauseService.SetPause(true);
+            AllServices.Container.Single<ISearchService>().ClearAllEntities();
+            
             //Destroy(_location.gameObject);
             // Destroy(transform.parent.gameObject);
         }
@@ -247,6 +244,8 @@ namespace Infrastructure.Logic.Inits
             _loadingCurtain.OnClicked -= OnClikedCurtain;
             _playerCharacterInitializer.CreatedCharacter -= SetInfo;
             _playerCharacterInitializer.LastHumanoidDie -= OnLastHumanoidDie;
+            _waveManager.OnReadySpawning -= ReadyToSpawning;
+            _timerDisplay.OnClickReady -= _waveManager.Spawn;
         }
 
         private void OnDestroy()

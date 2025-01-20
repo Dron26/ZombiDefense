@@ -1,4 +1,4 @@
-using Service.Ads;
+using Services.Ads;
 
 namespace Infrastructure
 {

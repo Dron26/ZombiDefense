@@ -1,7 +1,7 @@
 ﻿using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Service.SaveLoad;
+using Services.SaveLoad;
 
-namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
+namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
 {
     public abstract class State : MonoCache, ISwitcherState
     {

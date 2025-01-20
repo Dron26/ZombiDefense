@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Linq;
 using Enemies.AbstractEntity;
-using Infrastructure.AIBattle.PlayerCharacterStateMachine.States;
 using Infrastructure.AIBattle.StateMachines.Humanoid.States;
 using Infrastructure.Logic.WeaponManagment;
 using Unity.Collections;
@@ -9,11 +8,11 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Infrastructure.AIBattle.StateMachines.Robot.States
+namespace Infrastructure.AIBattle.StateMachines.Robots.States
 {
     public class SeachTargetState: State
     {
-        private AttackState _attackState;
+        private Humanoid.States.AttackState _attackState;
         private Entity _enemy;
         private HumanoidWeaponController _humanoidWeaponController;
         private Transform[] _enemyTransforms;
@@ -36,7 +35,7 @@ namespace Infrastructure.AIBattle.StateMachines.Robot.States
         {
             timeout = new WaitForSeconds(time);
             _humanoidWeaponController = GetComponent<HumanoidWeaponController>();
-            _attackState = GetComponent<AttackState>();
+            _attackState = GetComponent<Humanoid.States.AttackState>();
         }
 
         protected override void OnEnabled()
@@ -80,7 +79,7 @@ namespace Infrastructure.AIBattle.StateMachines.Robot.States
             if (_enemy.IsLife())
             {
                 _attackState.InitEnemy(_enemy);
-                PlayerCharactersStateMachine.EnterBehavior<AttackState>();
+                PlayerCharactersStateMachine.EnterBehavior<Humanoid.States.AttackState>();
             }
         }
         

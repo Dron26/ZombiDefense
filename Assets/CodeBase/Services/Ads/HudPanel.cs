@@ -3,18 +3,18 @@ using Characters.Robots;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.Inits;
 using Infrastructure.Logic.WaveManagment;
-using Service.SaveLoad;
+using Services.SaveLoad;
 using UI;
 using UI.Buttons;
 using UI.HUD.StorePanel;
-using UI.Levels;
+using UI.Locations;
 using UI.Report;
 using UI.Resurse;
 using UI.SettingsPanel;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Service.Ads
+namespace Services.Ads
 {
     [RequireComponent(typeof(RaycastHitChecker))]
     public class HudPanel:MonoCache

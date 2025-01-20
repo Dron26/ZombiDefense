@@ -1,6 +1,6 @@
 using UnityEngine.EventSystems;
 
-namespace Service.Inputs
+namespace Services.Inputs
 {
     public interface IInputService:IDragHandler, IBeginDragHandler, IEndDragHandler
     {}

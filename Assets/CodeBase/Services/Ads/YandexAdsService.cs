@@ -1,8 +1,6 @@
 using System;
-using System.Collections;
-using Agava.YandexGames;
 
-namespace Service.Ads
+namespace Services.Ads
 {
     public class YandexAdsService : IAdsService
     {
@@ -14,21 +12,21 @@ namespace Service.Ads
         public event Action<string> OnShowInterstitialAdError;
         public event Action OnOfflineInterstitialAd;
 
-        public bool IsInitialized() =>
-            YandexGamesSdk.IsInitialized;
-
-        public IEnumerator Initialize()
-        {
-            yield return YandexGamesSdk.Initialize(OnInitializeSuccess);
-        }
-
-        public void ShowVideoAd() =>
-            VideoAd.Show(onCloseCallback: OnClosedVideoAd, onErrorCallback: OnShowVideoAdError,
-                onRewardedCallback: OnRewardedAd);
-
-        public void ShowInterstitialAd() =>
-            InterstitialAd.Show(onCloseCallback: OnClosedInterstitialAd, onErrorCallback: OnShowInterstitialAdError,
-                onOfflineCallback: OnOfflineInterstitialAd);
+        // public bool IsInitialized() =>
+        //     YandexGamesSdk.IsInitialized;
+        //
+        // public IEnumerator Initialize()
+        // {
+        //     yield return YandexGamesSdk.Initialize(OnInitializeSuccess);
+        // }
+        //
+        // public void ShowVideoAd() =>
+        //     VideoAd.Show(onCloseCallback: OnClosedVideoAd, onErrorCallback: OnShowVideoAdError,
+        //         onRewardedCallback: OnRewardedAd);
+        //
+        // public void ShowInterstitialAd() =>
+        //     InterstitialAd.Show(onCloseCallback: OnClosedInterstitialAd, onErrorCallback: OnShowInterstitialAdError,
+        //         onOfflineCallback: OnOfflineInterstitialAd);
         
     }
 }

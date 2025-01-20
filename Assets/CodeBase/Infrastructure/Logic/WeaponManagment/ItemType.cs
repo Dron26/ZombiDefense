@@ -13,6 +13,7 @@ namespace Infrastructure.Logic.WeaponManagment
         Turret,
         MedicalKit,
         Grenade,
-        Enemy
+        Enemy,
+        EnemyExplosion
     }
 }

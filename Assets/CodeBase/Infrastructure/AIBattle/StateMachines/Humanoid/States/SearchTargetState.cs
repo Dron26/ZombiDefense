@@ -1,12 +1,11 @@
 ﻿using System.Collections;
 using Enemies.AbstractEntity;
-using Infrastructure.AIBattle.StateMachines.Humanoid.States;
 using Infrastructure.Logic.WeaponManagment;
 using Interface;
-using Service;
+using Services;
 using UnityEngine;
 
-namespace Infrastructure.AIBattle.PlayerCharacterStateMachine.States
+namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
 {
     public class SearchTargetState : State
     {

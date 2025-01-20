@@ -1,7 +1,7 @@
 using System;
 using Data.Settings.Language;
 
-namespace Service.Localization
+namespace Services.Localization
 {
     public interface ILocalizationService : IService
     {

@@ -1,7 +1,6 @@
 using Characters.Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
-using Service.Audio;
 using UnityEngine;
 
 namespace Infrastructure.AIBattle

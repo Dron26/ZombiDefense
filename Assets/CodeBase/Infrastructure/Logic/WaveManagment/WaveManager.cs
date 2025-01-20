@@ -6,7 +6,7 @@ using Infrastructure.AssetManagement;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Factories.FactoryWarriors.Enemies;
 using Infrastructure.Logic.Inits;
-using Service.SaveLoad;
+using Services.SaveLoad;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -58,7 +58,7 @@ namespace Infrastructure.Logic.WaveManagment
             _sceneInitializer = sceneInitializer;
             _saveLoadService = saveLoadService;
             
-            _enemyFactory.Initialize( _sceneInitializer.GetAudioController());
+            _enemyFactory.Initialize( _sceneInitializer.GetAudioController(),_saveLoadService);
             _waveSpawner.Initialize(_sceneInitializer.GetAudioController(), _enemyFactory, this);
             _canFillWave = true;
             
@@ -112,8 +112,6 @@ namespace Infrastructure.Logic.WaveManagment
 
         private void OnWaveFilled()
         {
-           
-            
             _currentFilledWave++;
             if (_currentFilledWave == 1) OnReadySpawning?.Invoke();
 
