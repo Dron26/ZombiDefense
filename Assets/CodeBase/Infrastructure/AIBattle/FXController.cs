@@ -16,6 +16,7 @@ namespace Infrastructure.AIBattle
         [SerializeField] private ParticleSystem _particleDie;
         [SerializeField] private ParticleSystem _particleTankDie;
         [SerializeField] private ParticleSystem _particleTankDie1;
+        
        
         private AudioClip _shoot;
          private AudioClip _reload;

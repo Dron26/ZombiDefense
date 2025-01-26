@@ -26,7 +26,9 @@ namespace Infrastructure.AIBattle
         [SerializeField] private float _minParticleScale = 1f;
         [SerializeField] private float _maxParticleScale = 1f;
         [SerializeField] private Transform _container;
-
+        [SerializeField] private ParticleSystem _impactDirt;
+        [SerializeField] private GameObject _shield;
+        
         private ItemType _item;
         private AudioManager _audioManager;
         private bool _isFireParticlePlay;
@@ -166,9 +168,8 @@ namespace Infrastructure.AIBattle
         private void SetRandomParticlePosition(ParticleSystem particleSystem)
         {
             // Задаем случайные координаты внутри области
-            float randomX = UnityEngine.Random.Range(-_areaWidth / 2f, _areaWidth / 2f);
             float randomY = UnityEngine.Random.Range(-_areaHeight / 2f, _areaHeight / 2f);
-            Vector3 randomPosition = new Vector3(randomX, randomY, 0f);
+            Vector3 randomPosition = new Vector3(0f, randomY, 0f);
             particleSystem.transform.position = transform.position + randomPosition;
         }
 
@@ -187,6 +188,12 @@ namespace Infrastructure.AIBattle
             }
         }
 
-        
+
+        public void ShieldDamage()
+        {
+            ParticleSystem particle = Instantiate(_impactDirt);
+            SetRandomParticlePosition(particle);
+            particle.Play();
+        }
     }
 }

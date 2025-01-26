@@ -194,6 +194,7 @@ namespace Enemies.AbstractEntity
                     if (_shieldHealth > 0)
                     {
                         _shieldHealth -= Mathf.Clamp(damage, 0, _shieldMaxHealth);
+                        _fxController.ShieldDamage();
                     }
                     else
                     {

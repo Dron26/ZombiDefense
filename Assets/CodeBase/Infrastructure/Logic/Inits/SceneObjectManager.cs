@@ -113,7 +113,7 @@ namespace Infrastructure.Logic.Inits
 
         private void SetTransformParametrs(Transform transform)
         {
-            transform.localPosition = Vector3.zero;
+            // transform.localPosition = Vector3.zero;
             transform.tag="PlayerUnit";
             float randomAngle = Random.Range(0f, 360f);
             transform.rotation = Quaternion.Euler(0f, randomAngle, 0f);

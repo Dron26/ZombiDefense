@@ -27,6 +27,7 @@ namespace Infrastructure.Logic.WaveManagment
         private WaveManager _waveManager;
         private AudioManager _audioManager;
         private SaveLoadService _saveLoadService;
+        private Dictionary<int, List<Enemy>> CreatedWave;
         private List<List<Enemy>> _createdWave = new();
         private List<int> _activatedWavesNumber = new();
         private List<SpawnPoint> _spawnPoints = new();
@@ -58,6 +59,8 @@ namespace Infrastructure.Logic.WaveManagment
             _saveLoadService = _waveManager.GetSaveLoad();
             _stepDelayTime = 0.73f;
             AddListener();
+            
+            CreatedWave = new Dictionary<int, List<Enemy>>();
         }
 
         
@@ -102,8 +105,9 @@ namespace Infrastructure.Logic.WaveManagment
             Debug.Log("StartFillPool");
             _maxEnemyOnWave = 0;
             _createdWave.Add(new List<Enemy>());
-            _currentIndexEnemyOnWave = _createdWave.Count-1;
-            _activatedWavesNumber.Add(_createdWave.Count-1);
+            CreatedWave.Add(CreatedWave.Count,new List<Enemy>());
+            _currentIndexEnemyOnWave = CreatedWave.Count-1;
+            _activatedWavesNumber.Add(CreatedWave.Count-1);
             List<EnemyData> enemies = waveData.Enemies;
             
             for (int i = 0; i < enemies.Count; i++)
@@ -115,7 +119,7 @@ namespace Infrastructure.Logic.WaveManagment
                     Enemy newEnemy = _enemyFactory.Create(enemies[i].Type);
                     newEnemy.OnEntityDeath += OnEntityDeath;
                     PreparEnemy(newEnemy, _spawnPoints[j]);
-                    _createdWave[_currentIndexEnemyOnWave].Add(newEnemy);
+                    CreatedWave[_currentIndexEnemyOnWave].Add(newEnemy);
 
                     count++;
 
@@ -175,7 +179,7 @@ namespace Infrastructure.Logic.WaveManagment
             _countActivatedEnemiesWave = 0;
             
            
-                foreach (Enemy enemy in _createdWave[_createdWave.Count-1])
+                foreach (Enemy enemy in CreatedWave[_createdWave.Count-1])
                 {
                     if (_isStopSpawning == false)
                     {
@@ -226,7 +230,7 @@ namespace Infrastructure.Logic.WaveManagment
                 AllServices.Container.Single<ISearchService>().AddEntity(enemy);
                 OnActivedCharacter?.Invoke(enemy);
                 
-                if (_activatedWavesNumber[index] == _createdWave[index].Count)
+                if (_activatedWavesNumber[index] == CreatedWave[index].Count)
                 {
                     StopRevival(index);
                 }
@@ -237,7 +241,7 @@ namespace Infrastructure.Logic.WaveManagment
         {
             _isStopSpawning = true;
             StopCoroutine(StartSpawn());
-                StopRevival(_createdWave.Count-1);
+                StopRevival(CreatedWave.Count-1);
         }
 
         private void OnEnemyRevival(Enemy enemy)
@@ -249,7 +253,7 @@ namespace Infrastructure.Logic.WaveManagment
         {
             _isStopRevival = true;
 
-            foreach (Enemy enemy in _createdWave[index])
+            foreach (Enemy enemy in CreatedWave[index])
             {
                 EnemyDieState enemyDieState = enemy.GetComponent<EnemyDieState>();
                 enemyDieState.StopRevival(_isStopRevival);
@@ -259,7 +263,7 @@ namespace Infrastructure.Logic.WaveManagment
         private void EndWave()
         {
             
-            if (_waveManager.CurrentFilledWave == _waveManager.TotalWaves) 
+            if (_waveManager.CurrentStartedWave == _waveManager.TotalWaves) 
                 _saveLoadService.SetCompletedLocationId();
             
             if (_waveManager.CurrentFilledWave < _waveManager.TotalWaves)
@@ -275,16 +279,31 @@ namespace Infrastructure.Logic.WaveManagment
 
         private void ClearEnemies()
         {
-            foreach (var enemies in _createdWave)
+            for (int i = 0; i < CreatedWave.Count; i++)
             {
-                if (enemies.Count > 0)
+                if (CreatedWave[i] != null)
                 {
-                    foreach (var enemy in enemies)
+                    for (int j = 0; j <  CreatedWave[i].Count; j++)
                     {
-                        enemy.GetComponent<EnemyDieState>().SetDestroyed();
+                        CreatedWave[i][j].GetComponent<EnemyDieState>().SetDestroyed();
                     }
+                
+                    CreatedWave[i].Clear();
                 }
             }
+            
+            // foreach (var enemies in CreatedWave)
+            // {
+            //     if (enemies.Count > 0)
+            //     {
+            //         foreach (var enemy in enemies)
+            //         {
+            //             enemy.GetComponent<EnemyDieState>().SetDestroyed();
+            //         }
+            //     }
+            // }
+            
+            // _createdWave = new();
         }
 
         private void AddListener()
