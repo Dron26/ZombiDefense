@@ -1,51 +1,61 @@
 using System;
 using System.Collections.Generic;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Infrastructure.StateMachine;
+using Services.SaveLoad;
 using TMPro;
-using UI.Locations;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class LocationUIManager : MonoCache
+namespace UI.Locations
 {
-    [SerializeField] private TMP_Text _cashText;
-    [SerializeField] private GameObject _locationContainer;
-
-    private List<LocationUIElement> _locationUIElements;
-    private LocationManager _locationManager;
-    private Action<int> _onLocationSelected;
-
-    public void Initialize(LocationManager locationManager, Action<int> onLocationSelected)
+    public class LocationUIManager:MonoCache
     {
-        _locationManager = locationManager;
-        _onLocationSelected = onLocationSelected;
-        InitializeUIElements();
-    }
 
-    private void InitializeUIElements()
-    {
-        _locationUIElements = new List<LocationUIElement>();
-        foreach (Transform child in _locationContainer.transform)
+        [SerializeField] private GameObject _locationContainer;
+
+        private List<LocationUIElement> _locationUIElements;
+        private LocationManager _locationManager;
+        public Action OnSelectLocation;
+        private SaveLoadService _saveLoadService;
+        public void Initialize(SaveLoadService saveLoadService, LocationManager locationManager)
         {
-            var uiElement = child.GetComponent<LocationUIElement>();
-            if (uiElement != null)
+            _locationManager = locationManager;
+            _saveLoadService=saveLoadService;
+            InitializeUIElements();
+        }
+
+        private void InitializeUIElements()
+        {
+            _locationUIElements = new List<LocationUIElement>();
+            
+            foreach (Transform child in _locationContainer.transform)
             {
-                _locationUIElements.Add(uiElement);
-                uiElement.Initialize(_locationManager.GetLocationById(uiElement.Id));
-                uiElement.OnClick += HandleLocationClick;
+                var uiElement = child.GetComponent<LocationUIElement>();
+                if (uiElement != null)
+                {
+                    _locationUIElements.Add(uiElement);
+                    
+                    Location location = _locationManager.GetLocationById(uiElement.Id);
+                    uiElement.Initialize(location.IsLocked,location.IsCompleted);
+                    uiElement.OnClick += HandleLocationClick;
+                }
             }
         }
-    }
 
-    private void HandleLocationClick(int id)
-    {
-        _onLocationSelected?.Invoke(id);
-    }
-
-    protected override void OnDisabled()
-    {
-        foreach (var uiElement in _locationUIElements)
+        private void HandleLocationClick(int id)
         {
-            uiElement.OnClick -= HandleLocationClick;
+            _saveLoadService.SetSelectedLocationId(id);
+            OnSelectLocation?.Invoke();
+           
+        }
+
+        protected override void OnDisabled()
+        {
+            foreach (var uiElement in _locationUIElements)
+            {
+                uiElement.OnClick -= HandleLocationClick;
+            }
         }
     }
 }

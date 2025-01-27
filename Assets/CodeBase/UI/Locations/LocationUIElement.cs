@@ -14,19 +14,23 @@
         private Button _button;
         public int Id => _id;
         public event Action<int> OnClick;
+        private bool _isLocked;
+        private bool _isCompleted;
 
-        public void Initialize(Location location)
+        public void Initialize(bool isLocked, bool isCompleted)
         {
             _button = GetComponent<Button>();
             _button.onClick.AddListener(() => OnClick?.Invoke(_id));
-            UpdateUI(location);
+            _isLocked=isLocked;
+            _isCompleted=isCompleted;
+            UpdateUI();
         }
 
-        public void UpdateUI(Location location)
+        public void UpdateUI()
         {
-            _lockedImage.enabled = location.IsLocked;
-            _unlockedImage.enabled = !location.IsLocked;
-            _selectImage.enabled = location.IsCompleted;
-            _button.interactable = !location.IsLocked;
+            _lockedImage.enabled = _isLocked;
+            _unlockedImage.enabled = !_isLocked;
+            _selectImage.enabled = _isCompleted;
+            _button.interactable = _isCompleted;
         }
     }

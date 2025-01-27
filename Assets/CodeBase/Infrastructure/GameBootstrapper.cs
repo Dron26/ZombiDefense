@@ -39,7 +39,7 @@ namespace Infrastructure
         private void Init()
         {
             Language language = GetLanguage();
-            _game = new Game(this, _loadingCurtain, language, _pauseService);
+            _game = new Game(this, _loadingCurtain, language, _pauseService,_saveLoadService);
             _game.StateMashine.Enter<BootstrapState>();
         }
 

@@ -18,16 +18,18 @@ namespace Infrastructure.StateMachine.States
         private readonly SceneLoader _sceneLoader;
         private readonly AllServices _services;
         private readonly PauseService _pauseService;
+        private readonly SaveLoadService _saveLoadService;
         private  Language _language;
 
         public BootstrapState(GameStateMachine stateMachine, SceneLoader sceneLoader, AllServices allServices,
-            Language language, PauseService pauseService)
+            Language language, PauseService pauseService, SaveLoadService saveLoadService)
         {
             _stateMachine = stateMachine;   
             _sceneLoader = sceneLoader;
             _services = allServices;
             _language = language;
             _pauseService=pauseService;
+            _saveLoadService = saveLoadService;
             RegisterServices();
         }
 
@@ -47,7 +49,7 @@ namespace Infrastructure.StateMachine.States
             _services.RegisterSingle<IAdsService>((new YandexAdsService()));
             _services.RegisterSingle<ILeaderboardService>((new YandexLeaderboardService()));
             _services.RegisterSingle<IAuthorization>((new YandexAuthorization()));
-            _services.RegisterSingle<ISaveLoadService>(new SaveLoadService());
+            _services.RegisterSingle<SaveLoadService>(_saveLoadService);
             _services.RegisterSingle<IResourceLoadService >(new ResourceLoaderService());
             _services.RegisterSingle<IPauseService>(_pauseService);
             _services.RegisterSingle<ISearchService>((new EntitySearchService()));

@@ -51,7 +51,7 @@ namespace Infrastructure.StateMachine.States
         private void CreateGeneralMenu()
         {
             GameObject generalMenu = _gameFactory.CreateMenu();
-            generalMenu.GetComponentInChildren<GeneralMenuManager>().Initialize(_stateMachine);
+            generalMenu.GetComponentInChildren<GeneralMenu>().Initialize(_stateMachine);
             _stateMachine.Enter<GameLoopState>();
         }
 

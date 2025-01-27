@@ -1,8 +1,10 @@
 using System;
 using System.Threading.Tasks;
+using Common;
 using Infrastructure;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.StateMachine;
+using Infrastructure.StateMachine.States;
 using Services;
 using Services.Audio;
 using Services.SaveLoad;
@@ -12,24 +14,23 @@ using UnityEngine;
 
 namespace UI.GeneralMenu
 {
-    public class GeneralMenuManager:MonoCache
+    public class GeneralMenu:MonoCache
     {
         [SerializeField] private GameObject _leaderboardPanel;
         
        
-        [SerializeField] private LocationMap _locationMap;
+        [SerializeField] private LocationUIManager _locationUIManager;
         [SerializeField]private  SettingPanel _settingPanel;
         [SerializeField] private GameObject _menuPanel;
         [SerializeField] private GameObject _locationPanel;
         [SerializeField]private AudioManager _audioManager;
+        [SerializeField] private LocationManager _locationManager;
         
         private SaveLoadService _saveLoadService;
         private GameStateMachine _stateMachine;
         private LoadingCurtain _loadingCurtain  ;
         private GameBootstrapper _gameBootstrapper; 
         
-        private LocationManager _locationManager;
-        private LocationUIManager _locationUIManager;
         
         public  void Initialize( GameStateMachine stateMachine)
         {
@@ -53,14 +54,11 @@ namespace UI.GeneralMenu
         private void InitializeLocationSystem()
         {
             // Создаем и инициализируем LocationManager
-            _locationManager = new LocationManager();
             _locationManager.Initialize(_stateMachine);
 
             // Создаем и инициализируем LocationUIManager
-            _locationUIManager = new LocationUIManager();
-            _locationUIManager.Initialize(_locationManager, HandleLocationSelected);
-            
-            _locationMap.Initialize( _saveLoadService,_locationManager);
+            _locationUIManager.Initialize(_saveLoadService,_locationManager);
+            _locationUIManager.OnSelectLocation += SwicthScene;
         }
         
         
@@ -83,17 +81,22 @@ namespace UI.GeneralMenu
             
                 _loadingCurtain.OnLoaded();
         }
+        
+        private void SwicthScene()
+        {
+            _saveLoadService.Save();
+            _stateMachine.Enter<LoadLevelState, string>(Constants.Location);
+            Destroy(gameObject);
+        }
 
         private void AddListener()
         {
             _loadingCurtain.OnClicked += OnClikedCurtain;
-            _locationMap.OnSelectLocation += _locationManager.SetSelectedLocationId;
         }
 
         private void RemoveListener()
         {
             _loadingCurtain.OnClicked -= OnClikedCurtain;
-            _locationMap.OnSelectLocation -= _locationManager.SetSelectedLocationId;
         }
 
         private void OnDestroy()

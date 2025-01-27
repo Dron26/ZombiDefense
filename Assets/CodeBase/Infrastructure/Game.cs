@@ -4,6 +4,7 @@ using Infrastructure.StateMachine;
 using Lean.Localization;
 using Services;
 using Services.PauseService;
+using Services.SaveLoad;
 
 namespace Infrastructure
 {
@@ -12,9 +13,9 @@ namespace Infrastructure
         public readonly GameStateMachine StateMashine;
         
         public Game(GameBootstrapper corountineRunner, LoadingCurtain curtain, Language language,
-            PauseService pauseService)
+            PauseService pauseService, SaveLoadService saveLoadService)
         {
-            StateMashine = new GameStateMachine(new SceneLoader(corountineRunner),AllServices.Container ,curtain,language,pauseService);
+            StateMashine = new GameStateMachine(new SceneLoader(corountineRunner),AllServices.Container ,curtain,language,pauseService,saveLoadService);
         }
     }
 }

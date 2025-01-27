@@ -26,6 +26,7 @@ namespace UI.Locations
         private LocationFactory _locationFactory = new LocationFactory();
         private LocationDataLoader _locationDataLoader;
         public List<Location> GetLocations() => _locations;
+        
         public void Initialize(GameStateMachine stateMachine)
         {
             _saveLoadService=AllServices.Container.Single<SaveLoadService>();;
@@ -53,7 +54,7 @@ namespace UI.Locations
         }
         public LocationPrefab CreateLocation(int locationId)
         {
-            GameObject locationPrefab = _locationFactory.Create(locationId.ToString());
+            GameObject locationPrefab = _locationFactory.Create(locationId);
             return locationPrefab.GetComponent<LocationPrefab>();
         }
 
@@ -62,13 +63,10 @@ namespace UI.Locations
             _locations[_saveLoadService.GetSelectedLocationId()].SetCompleted(true);
         }
 
-        public void SetSelectedLocationId(int id)
-        {
-            _saveLoadService.SetSelectedLocationId(id);
-        }
+        
         private void SetLocations()
         {
-            _locationDataLoader.LoadLocations();
+            _locations=_locationDataLoader.LoadLocations();
         }
     }
 }

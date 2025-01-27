@@ -433,7 +433,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3598096710210351959}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -472,10 +472,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _id: 1
-  _isTutorial: 0
-  _isLocked: 1
-  _locked: {fileID: 3138887607830409762}
-  _unlocked: {fileID: 263384874958186515}
+  _lockedImage: {fileID: 3138887607830409762}
+  _unlockedImage: {fileID: 263384874958186515}
+  _selectImage: {fileID: 4073274271761336091}
 --- !u!114 &5547880230038005055
 MonoBehaviour:
   m_ObjectHideFlags: 0
