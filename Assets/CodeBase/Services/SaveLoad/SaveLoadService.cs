@@ -28,7 +28,7 @@ namespace Services.SaveLoad
         public Action<int> OnChangeEnemiesCountOnWave;
         public Action<Enemy> OnEnemyDeath;
         public event Action LastEnemyRemained;
-        public event Action OnSetCompletedLocation;
+        public event Action OnLocationCompleted;
         public int TimeTimeBeforeNextWave=> _timeBeforeNextWave;
         private LoadingCurtain _loadingCurtain;
         public int MaxEnemiesOnWave=>_maxEnemiesOnWave;
@@ -245,24 +245,23 @@ namespace Services.SaveLoad
         }
         
         
-        public void SetCompletedLocationId()
+        
+        
+        
+        public void LocationCompleted()
         {
-            _gameData.SetCompletedLocationId();
-            OnSetCompletedLocation?.Invoke();
+            _gameData.LocationCompleted();
+            OnLocationCompleted?.Invoke();
         }
         
         public List<int> GetCompletedLocationId()
         {
-            return _gameData.GetCompletedLocationId();
+            return _gameData.GetCompletedLocations();
         }
         
         public void SetLocationsDatas(List<Location> locationDatas)
         {
             _gameData.ChangeLocationsDatas(locationDatas);
-        }
-        public List<Location> GetLocationGroup()
-        {
-            return _gameData.LocationGroup;
         }
         
         public void SetSelectedLocationId( int  id)
@@ -281,6 +280,11 @@ namespace Services.SaveLoad
         //     _saveLoadService.SetSelectedLocation();
         //     _stateMachine.Enter<LoadLevelState,string>(ConstantsData.Level); 
         // }
+        
+        
+        
+        
+        
         public void SetNumberKilledEnemies()
         {
             

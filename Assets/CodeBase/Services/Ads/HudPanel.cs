@@ -33,8 +33,7 @@ namespace Services.Ads
         public Action OnStartSpawn;
         public Action OnResetLevel;
 
-        public void Init(SaveLoadService saveLoadService, SceneInitializer sceneInitializer, WaveManager waveManager,
-            LocationManager locationManager,GlobalTimer globalTimer)
+        public void Init(SaveLoadService saveLoadService, SceneInitializer sceneInitializer, WaveManager waveManager,GlobalTimer globalTimer)
         {
             _saveLoadService = saveLoadService;
             _waveManager = waveManager;
@@ -42,7 +41,7 @@ namespace Services.Ads
             _store.Initialize(_sceneInitializer, _saveLoadService);
             _menuPanel.Initialize(_saveLoadService);
             _resursesCanvas.Initialize(_store.GetWallet());
-            _reportPanel.Init(_saveLoadService,_store, locationManager);
+            _reportPanel.Init(_saveLoadService,_store);
             _saveLoadService.SetRaycasterPanel(GetButtonPanel().GetComponent<GraphicRaycaster>());
             GetComponent<RaycastHitChecker>().Initialize(_saveLoadService);
             _timerDisplay.Initialize(_saveLoadService,_store.GetWallet(),_waveManager);

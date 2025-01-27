@@ -264,7 +264,7 @@ namespace Infrastructure.Logic.WaveManagment
         {
             
             if (_waveManager.CurrentStartedWave == _waveManager.TotalWaves) 
-                _saveLoadService.SetCompletedLocationId();
+                _saveLoadService.LocationCompleted();
             
             if (_waveManager.CurrentFilledWave < _waveManager.TotalWaves)
                 OnCompletedWave?.Invoke();

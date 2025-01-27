@@ -242,56 +242,56 @@ namespace Infrastructure.Location
         }
 
 
-        private IEnumerator SelectedCircleActivated()
-        {
-            _selectedCircle.transform.localScale = _startScale;
-            bool isUp= true;
-            bool isDown= false;
-            
-            while (_isSelected)
+            private IEnumerator SelectedCircleActivated()
             {
-                if (isUp)
+                _selectedCircle.transform.localScale = _startScale;
+                bool isUp= true;
+                bool isDown= false;
+                
+                while (_isSelected)
                 {
-                    while (isUp)
+                    if (isUp)
                     {
-                        if (_selectedCircle.transform.localScale.x<_maxScale.x)
+                        while (isUp)
                         {
-                            float time = Time.deltaTime;
-                            _selectedCircle.transform.localScale+=time*(_selectedCircle.transform.localScale);
+                            if (_selectedCircle.transform.localScale.x<_maxScale.x)
+                            {
+                                float time = Time.deltaTime;
+                                _selectedCircle.transform.localScale+=time*(_selectedCircle.transform.localScale);
+                            }
+                            else
+                            {
+                                isUp=false;
+                                isDown=true;
+                            }
+                            
+                            yield return null;
                         }
-                        else
+                       
+                    }
+                    else
+                    {
+                        while (isDown)
                         {
-                            isUp=false;
-                            isDown=true;
+                            if (_selectedCircle.transform.localScale.x>_minScale.x)
+                            {
+                                float time = Time.deltaTime;
+                                _selectedCircle.transform.localScale-=time*(_selectedCircle.transform.localScale);
+                            }
+                            else
+                            {
+                                isDown=false;
+                                isUp=true;
+                            }
+                            yield return null;
                         }
-                        
-                        yield return null;
                     }
                    
+                    yield return null;
+                    
                 }
-                else
-                {
-                    while (isDown)
-                    {
-                        if (_selectedCircle.transform.localScale.x>_minScale.x)
-                        {
-                            float time = Time.deltaTime;
-                            _selectedCircle.transform.localScale-=time*(_selectedCircle.transform.localScale);
-                        }
-                        else
-                        {
-                            isDown=false;
-                            isUp=true;
-                        }
-                        yield return null;
-                    }
-                }
-               
-                yield return null;
                 
+                _selectedCircle.transform.localScale = _startScale;
             }
-            
-            _selectedCircle.transform.localScale = _startScale;
-        }
     }
 }

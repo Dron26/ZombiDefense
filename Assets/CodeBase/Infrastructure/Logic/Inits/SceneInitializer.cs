@@ -4,6 +4,7 @@ using CameraMain;
 using Characters.Humanoids.AbstractLevel;
 using Common;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Infrastructure.Factories.FactoryLocation;
 using Infrastructure.Location;
 using Infrastructure.Logic.WaveManagment;
 using Infrastructure.Points;
@@ -39,7 +40,6 @@ namespace Infrastructure.Logic.Inits
         [SerializeField] private GlobalTimer _globalTimer;
 
         private SceneObjectManager _sceneObjectManager;
-        private LocationManager _locationManager;
         private LoadingCurtain _loadingCurtain;
         public HudPanel Window => _hudPanel;
         private SaveLoadService _saveLoadService;
@@ -69,8 +69,9 @@ namespace Infrastructure.Logic.Inits
             _gameBootstrapper = FindObjectOfType<GameBootstrapper>();
             _saveLoadService = _gameBootstrapper.GetSaveLoad();
             _saveLoadService.SetEvenSystem(_eventSystem);
-            _locationManager = _gameBootstrapper.GetLocationManager();
-            LocationPrefab location = _locationManager.CreateLocation();
+
+            LocationFactory _locationFactory = new LocationFactory();
+            LocationPrefab location = _locationFactory.Create(_saveLoadService.GetSelectedLocationId()).GetComponent<LocationPrefab>();
             SetInitializers(location);
             LoadCharacters();
             Debug.Log("Finish LoadCharacters();");
@@ -95,7 +96,7 @@ namespace Infrastructure.Logic.Inits
 
             InitializeEnemies();
             AddListener();
-            _hudPanel.Init(_saveLoadService, this, _waveManager, _locationManager, _globalTimer);
+            _hudPanel.Init(_saveLoadService, this, _waveManager, _globalTimer);
 
             Debug.Log("Finish _playerCharacterInitializer();");
 

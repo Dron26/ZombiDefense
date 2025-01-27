@@ -22,7 +22,6 @@ namespace UI.HUD.StorePanel
     {
         [SerializeField] private GameObject _storePanel;
         [SerializeField] private CharacterStore _characterStore;
-        [SerializeField] private CharacterStore _eliteCharacterStore;
         [SerializeField] private GameObject _buttonGroup;
         [SerializeField] private AdsStore _adsStore;
         [SerializeField] private GameObject _applyAdsMoneyWindow;
@@ -113,7 +112,6 @@ namespace UI.HUD.StorePanel
             _applyAdsMoneyWindow.gameObject.SetActive(!_applyAdsMoneyWindow.gameObject);
             _characterStore.gameObject.SetActive(!_characterStore.gameObject.activeSelf);
             _characterStoreRotation.gameObject.SetActive(!_characterStoreRotation.gameObject.activeSelf);
-            _eliteCharacterStore.gameObject.SetActive(!_eliteCharacterStore.gameObject.activeSelf);
             _buttonGroup.gameObject.SetActive(!_buttonGroup.gameObject.activeSelf);
         }
 
@@ -199,9 +197,7 @@ namespace UI.HUD.StorePanel
 
         public CharacterStore GetCharacterStore() => _characterStore;
         public BoxStore GetBoxStore() => _boxStore;
-
-        public CharacterStore GetVipCharacterStore() => _eliteCharacterStore;
-
+        
         public Wallet GetWallet() => _wallet;
         
         private void AddListener()
@@ -229,7 +225,6 @@ namespace UI.HUD.StorePanel
             _saveLoadService.OnSelectedNewPoint -= CheckPointInfo;
             _characterStore.BuyCharacter -= BuyCharacter;
             _characterStore.OnMoneyEmpty -= ShowPanelAdsForMoney;
-            _eliteCharacterStore.BuyCharacter -= BuyCharacter;
             _pointUpgradePanel.OnSelectedButton -= (BuyPointUp);
             _boxStore.BuyBox+=OnBuyBox;
         }

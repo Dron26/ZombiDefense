@@ -9,58 +9,48 @@ using UnityEngine;
 
 namespace Data
 {
-    [Serializable] 
+    [Serializable]
     public class GameData
     {
-        public MoneyData  MoneyData= new MoneyData();
+        public MoneyData MoneyData = new MoneyData();
         public PersonalAchievements PersonalAchievements = new PersonalAchievements();
         public TimeStatistics TimeStatistics = new TimeStatistics();
+
         public AudioData AudioData = new AudioData();
-      //  public int NumberKilledEnemies;
-      //  public int AllNumberKilledEnemies;
-        
-        
+        //  public int NumberKilledEnemies;
+        //  public int AllNumberKilledEnemies;
+
+
         public int TotalPlayTime;
         public int PlayTimeToday;
         public int CompletedLevel;
-        
+
         public int Points;
         public List<int> LevelCharacters = new List<int>();
         public List<int> AmountCharacters = new List<int>();
         public bool IsAuthorized => _isAuthorized;
         public List<int> _passedLevels;
-        [NonSerialized]
-        public List<Location> LocationGroup=new();
+        [NonSerialized] public List<Location> LocationGroup = new();
 
-        [NonSerialized]
-        public bool IsFirstStart = true;
-        
-        [NonSerialized] 
-        public Camera CameraUI;
-        [NonSerialized] 
-        public Camera CameraPhysical;
-        [NonSerialized] 
-        public int  SelectedLocationId;
-        
+        [NonSerialized] public bool IsFirstStart = true;
+
+        [NonSerialized] public Camera CameraUI;
+        [NonSerialized] public Camera CameraPhysical;
+        [NonSerialized] public int SelectedLocationId;
+
         private bool _isAuthorized = false;
-        [NonSerialized] 
-        private List<Character> AvaibelCharacters;
-        [NonSerialized] 
-        private WorkPoint SelectedPoint;
-        [NonSerialized] 
-        private Character SelectedCharacter;
-        [NonSerialized] 
-        private List<Character> ActiveCharacters = new();
-        [NonSerialized] 
-        private List<Entity> ActiveEnemy = new();
-        [NonSerialized] 
-        private List<Character> InactiveCharacters = new();
+        [NonSerialized] private List<Character> AvaibelCharacters;
+        [NonSerialized] private WorkPoint SelectedPoint;
+        [NonSerialized] private Character SelectedCharacter;
+        [NonSerialized] private List<Character> ActiveCharacters = new();
+        [NonSerialized] private List<Entity> ActiveEnemy = new();
+        [NonSerialized] private List<Character> InactiveCharacters = new();
 
         public GameData()
         {
             _passedLevels = new List<int>();
         }
-        
+
         public void AddHumanoidAndCount(List<int> levels, List<int> amount)
         {
             for (int i = 0; i < levels.Count; i++)
@@ -148,7 +138,7 @@ namespace Data
 
         public int ReadCountEnemy() =>
             ActiveEnemy.Count;
-        
+
         public void ChangeCameras(Camera cameraPhysical, Camera cameraUI)
         {
             CameraPhysical = cameraPhysical;
@@ -157,53 +147,55 @@ namespace Data
 
         public Camera ReadPhysicalCamera()
         {
-           return  CameraPhysical;
+            return CameraPhysical;
         }
-        
+
         public Camera ReadUICamera()
         {
-            return  CameraUI;
+            return CameraUI;
         }
 
         public void SetStatusAuthorization(bool isAuthorized)
         {
-           _isAuthorized = isAuthorized;
+            _isAuthorized = isAuthorized;
         }
 
-        
-        
-        public int ReadAllNumberKilledEnemies() => 
+
+        public int ReadAllNumberKilledEnemies() =>
             PersonalAchievements.NumberKilledEnemies;
 
-        public int ReadDayNumberKilledEnemies() => 
+        public int ReadDayNumberKilledEnemies() =>
             PersonalAchievements.DayNumberKilledEnemies;
 
-        public int ReadAllAmountMoney() => 
+        public int ReadAllAmountMoney() =>
             MoneyData.AllAmountMoney;
 
-        public void OnGameStart() => 
+        public void OnGameStart() =>
             TimeStatistics.OnGameStart();
 
-        public void OnGameEnd() => 
+        public void OnGameEnd() =>
             TimeStatistics.OnGameEnd();
 
-        public void ReadTotalPlayTime() => 
+        public void ReadTotalPlayTime() =>
             TimeStatistics.GetPlayTimeToday();
-        
-        public void ReadPlayTimeToday()=> 
+
+        public void ReadPlayTimeToday() =>
             TimeStatistics.GetPlayTimeToday();
+
+
+        #region Location
 
         public void SetSelectedLocationId(int id)
         {
-            SelectedLocationId=id;
+            SelectedLocationId = id;
         }
 
-        public void SetCompletedLocationId()
+        public void LocationCompleted()
         {
             _passedLevels.Add(SelectedLocationId);
         }
-        
-        public List<int> GetCompletedLocationId()
+
+        public List<int> GetCompletedLocations()
         {
             return _passedLevels;
         }
@@ -212,26 +204,33 @@ namespace Data
         {
             LocationGroup = new List<Location>(locationsDatas);
         }
-        
+
+        #endregion
+
+        #region Report
+
         public void ChangeNumberKilledEnemies()
         {
             PersonalAchievements.AddKilledEnemy();
         }
-        
+
         public void ClearNumberKilledEnemies()
         {
-            PersonalAchievements=new PersonalAchievements();
+            PersonalAchievements = new PersonalAchievements();
         }
-        
+
         public void ChangeSurvivalCount()
         {
             PersonalAchievements.SetSurvival(ActiveCharacters.Count);
         }
-        
+
         public void ChangeDeadMercenaryCount()
         {
             PersonalAchievements.SetDeadMercenary(InactiveCharacters.Count);
         }
+
+        #endregion
+
 
         public void ClearSpawnLocationData()
         {

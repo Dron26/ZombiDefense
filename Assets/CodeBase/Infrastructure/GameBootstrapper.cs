@@ -14,13 +14,14 @@ namespace Infrastructure
 {
     public class GameBootstrapper : MonoCache, ICoroutineRunner
     {
-        [SerializeField]private YandexInitializer _yandexInitializer; 
-        
+        [SerializeField] private YandexInitializer _yandexInitializer;
+        [SerializeField] private LoadingCurtain _loadingCurtain;
+        [SerializeField] private PauseService _pauseService;
+
         private Game _game;
-       [SerializeField] private LoadingCurtain _loadingCurtain;
         private SaveLoadService _saveLoadService;
-        [SerializeField] private LocationManager _locationManager;
-        [SerializeField] private PauseService _pauseService ;
+
+
         private void Awake()
         {
             DontDestroyOnLoad(this);
@@ -31,30 +32,29 @@ namespace Infrastructure
 
         public void Start()
         {
-           // _yandexInitializer.Completed += Init;
+            // _yandexInitializer.Completed += Init;
             Init();
         }
 
-        private  void  Init()
+        private void Init()
         {
             Language language = GetLanguage();
-            _game = new Game(this,_loadingCurtain,language,_pauseService);
+            _game = new Game(this, _loadingCurtain, language, _pauseService);
             _game.StateMashine.Enter<BootstrapState>();
-            _locationManager = GetComponent<LocationManager>();
-            _locationManager.Init(_game.StateMashine,_saveLoadService);
         }
-        
-        public YandexInitializer GetYandexInitializer() => 
+
+        public YandexInitializer GetYandexInitializer() =>
             _yandexInitializer;
-        
-        public SaveLoadService GetSaveLoad() => 
+
+        public SaveLoadService GetSaveLoad() =>
             _saveLoadService;
 
         public LoadingCurtain GetLoadingCurtain() =>
             _loadingCurtain;
 
         public GameStateMachine GetStateMachine() =>
-        _game.StateMashine;
+            _game.StateMashine;
+
         private Language GetLanguage()
         {
             switch (Application.systemLanguage)
@@ -66,11 +66,6 @@ namespace Infrastructure
                 default:
                     return Language.EN;
             }
-        }
-
-        public LocationManager GetLocationManager()
-        {
-            return _locationManager;
         }
     }
 }

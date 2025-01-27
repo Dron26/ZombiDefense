@@ -7,7 +7,6 @@ namespace Boot.SO
     public class LocationData : ScriptableObject
     {
         public int Id;
-        public int _maxEnemyOnLevel;
         public bool IsTutorial;
         public bool IsLocked=true;
         public bool IsCompleted;

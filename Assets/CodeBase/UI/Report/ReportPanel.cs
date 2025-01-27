@@ -51,13 +51,10 @@ namespace UI.Report
         private bool _isLastHumanoidDie;
         private GameStateMachine _stateMachine;
         private Wallet _wallet;
-        private LocationManager _locationManager;
         private IPauseService _pauseService;
-        public void Init(SaveLoadService saveLoadService , Store store,
-            LocationManager locationManager)
+        public void Init(SaveLoadService saveLoadService , Store store)
         {
             _saveLoadService = saveLoadService;
-            _locationManager = locationManager;
             _stateMachine = saveLoadService.GetGameBootstrapper().GetStateMachine();
             _panel.SetActive(false);
             _wallet=store.GetWallet();
@@ -150,7 +147,7 @@ namespace UI.Report
             _continue.onClick.AddListener(SelectOk);
             
             _saveLoadService.LastHumanoidDie+=OnLastHumanoidDie;
-            _saveLoadService.OnSetCompletedLocation+=ShowReport;
+            _saveLoadService.OnLocationCompleted+=ShowReport;
         }
 
         private void RemoveListener()
@@ -160,7 +157,7 @@ namespace UI.Report
             _continue.onClick.RemoveListener(SelectOk);
             
             _saveLoadService.LastHumanoidDie-=OnLastHumanoidDie;
-            _saveLoadService.OnSetCompletedLocation-=ShowReport;
+            _saveLoadService.OnLocationCompleted-=ShowReport;
         }
 
         private void OnDestroy()
