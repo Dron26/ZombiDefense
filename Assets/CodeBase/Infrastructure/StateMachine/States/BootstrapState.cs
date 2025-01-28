@@ -53,6 +53,13 @@ namespace Infrastructure.StateMachine.States
             _services.RegisterSingle<IResourceLoadService >(new ResourceLoaderService());
             _services.RegisterSingle<IPauseService>(_pauseService);
             _services.RegisterSingle<ISearchService>((new EntitySearchService()));
+            
+            _services.RegisterSingle<IDataPersistence>(new DataPersistence());
+            _services.RegisterSingle<ICharacterHandler>(new CharacterHandler(_saveLoadService.Characters));
+            _services.RegisterSingle<IEnemyHandler>(new EnemyHandler(_saveLoadService.Enemies));
+            _services.RegisterSingle<ICurrencyHandler>(new CurrencyHandler(_saveLoadService.Money));
+            _services.RegisterSingle<IUIHandler>(new UIHandler());
+            
         }
     }
 }

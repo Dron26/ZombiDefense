@@ -11,6 +11,7 @@ using Services;
 using Services.Audio;
 using Services.SaveLoad;
 using UnityEngine;
+using EnemyData = Data.EnemyData;
 using Random = System.Random;
 
 namespace Infrastructure.Logic.WaveManagment
@@ -35,7 +36,7 @@ namespace Infrastructure.Logic.WaveManagment
         private int _maxEnemyOnLocation = new();
         private int _currentIndexEnemyOnWave;
         private List<Enemy> _inactiveEnemys = new();
-        private int NumberKilledEnemies => _saveLoadService.GetNumberKilledEnemies();
+        private int NumberKilledEnemies => _saveLoadService.Achievements.NumberKilledEnemies;
         private int _numberKilledEnemies;
         public List<int> _enemyCount;
         //private float _cycleTimer;
@@ -144,7 +145,7 @@ namespace Infrastructure.Logic.WaveManagment
         private void OnEntityDeath(Entity entity)
         { 
             Enemy enemy =entity.GetComponent<Enemy>();
-            _saveLoadService.EnemyDeath(enemy);
+            _saveLoadService.Enemies.EnemyDeath(enemy);
             _numberKilledEnemies++;
             
             if (_numberKilledEnemies == _maxEnemyOnLocation)
@@ -210,7 +211,7 @@ namespace Infrastructure.Logic.WaveManagment
             }
 
             OnStartedWave?.Invoke();
-            _maxEnemyOnLocation = _saveLoadService.GetActiveEnemy().Count;
+            _maxEnemyOnLocation = _saveLoadService.Enemies.GetActiveEnemyCount();
             _numberKilledEnemies = 0;
             StopCoroutine(StartSpawn());
         }
@@ -222,7 +223,7 @@ namespace Infrastructure.Logic.WaveManagment
             {
                 enemy.transform.position = enemy.StartPosition;
                 enemy.gameObject.SetActive(true);
-                _saveLoadService.SetActiveEnemy(enemy);
+                _saveLoadService.Enemies.AddActiveEnemy(enemy);
 
                 int index = enemy.IndexInWave;
                 

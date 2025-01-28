@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Linq;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Lean.Localization;
 using Services.SaveLoad;
@@ -13,7 +14,7 @@ namespace Infrastructure.Logic.WaveManagment
     public class TimerDisplay : MonoCache
     { 
          public int zombiesRemainingToStartTimer = 1;
-        public int _zombiesRemaining => _saveLoadService.GetActiveEnemy().Count;
+         public int _zombiesRemaining => _saveLoadService.Characters.ActiveCharacters.ToList().Count;
         [SerializeField] private int bonusCoinsPerSecond = 5;
         [SerializeField] private GameObject _timerPanel;
         [SerializeField] private GameObject _additionalPanel;
@@ -64,7 +65,7 @@ namespace Infrastructure.Logic.WaveManagment
         private IEnumerator ShowSpawnTimer()
         {
             _isStartClick = false;
-            timerDuration = _saveLoadService.TimeTimeBeforeNextWave;
+            timerDuration = _saveLoadService.Locations.TimeTimeBeforeNextWave;
             _timerPanel.SetActive(true);
             _additionalPanel.SetActive(true);
             skipButton.gameObject.SetActive(true);

@@ -39,7 +39,7 @@ namespace Infrastructure.Logic.WaveManagment
         private WavesContainerData _wavesContainerData;
         public List<WaveData> _groupWaveData;
         public List<List<int>> _groupEnemyCount;
-        public int LocationId => _saveLoadService.GetSelectedLocationId();
+        public int LocationId => _saveLoadService.Locations.SelectedLocationId;
         private void InitializeContainer()
         {
             string path =AssetPaths.WavesContainerData + LocationId;
@@ -102,7 +102,7 @@ namespace Infrastructure.Logic.WaveManagment
                 }
             }
             
-            _saveLoadService.SetMaxEnemyOnScene(count);
+            _saveLoadService.Locations.SetMaxEnemyOnScene(count);
         }
         
         public void StopSpawn()

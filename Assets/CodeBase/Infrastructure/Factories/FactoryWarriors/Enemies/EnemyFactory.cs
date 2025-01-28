@@ -7,6 +7,7 @@ using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Services.Audio;
 using Services.SaveLoad;
 using UnityEngine;
+using EnemyData = Data.EnemyData;
 
 namespace Infrastructure.Factories.FactoryWarriors.Enemies
 {

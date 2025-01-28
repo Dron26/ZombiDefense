@@ -71,11 +71,10 @@ namespace Infrastructure.Logic.Inits
             _saveLoadService.SetEvenSystem(_eventSystem);
 
             LocationFactory _locationFactory = new LocationFactory();
-            LocationPrefab location = _locationFactory.Create(_saveLoadService.GetSelectedLocationId()).GetComponent<LocationPrefab>();
+            LocationPrefab location = _locationFactory.Create(_saveLoadService.Locations.SelectedLocationId).GetComponent<LocationPrefab>();
             SetInitializers(location);
             LoadCharacters();
             Debug.Log("Finish LoadCharacters();");
-            _saveLoadService.SetAvailableCharacters(availableCharacters);
 
             Debug.Log("Finish SetAvailableCharacters();");
             _saveLoadService.SetCameras(_cameraPhysical, _cameraUI);
@@ -208,7 +207,7 @@ namespace Infrastructure.Logic.Inits
             _saveLoadService.Save();
             _stateMachine.Enter<LoadLevelState, string>(Constants.Menu);
 
-            _saveLoadService.ClearSpawnData();
+            _saveLoadService.Enemies.ClearEnemies();
             _playerCharacterInitializer.ClearData();
             _pauseService.SetPause(true);
             AllServices.Container.Single<ISearchService>().ClearAllEntities();
@@ -220,7 +219,7 @@ namespace Infrastructure.Logic.Inits
 
         private void ResetLevel()
         {
-            _saveLoadService.ClearSpawnData();
+            _saveLoadService.Enemies.ClearEnemies();
             _playerCharacterInitializer.ClearData();
             // Destroy(_location.gameObject);
             // Destroy(transform.parent.gameObject);

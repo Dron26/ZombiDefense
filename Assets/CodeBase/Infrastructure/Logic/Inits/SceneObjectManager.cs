@@ -16,6 +16,7 @@ using Services.SaveLoad;
 using UI.HUD.StorePanel;
 using UnityEngine;
 using UnityEngine.Events;
+using CharacterData = Characters.Humanoids.AbstractLevel.CharacterData;
 
 namespace Infrastructure.Logic.Inits
 {

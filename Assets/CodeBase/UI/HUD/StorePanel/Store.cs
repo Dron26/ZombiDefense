@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Characters.Humanoids.AbstractLevel;
 using Data;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
@@ -13,6 +14,7 @@ using Services;
 using Services.PauseService;
 using Services.SaveLoad;
 using UI.Buttons;
+using CharacterData = Characters.Humanoids.AbstractLevel.CharacterData;
 
 namespace UI.HUD.StorePanel
 {
@@ -68,7 +70,7 @@ namespace UI.HUD.StorePanel
             _storePanel.gameObject.SetActive(!_storePanel.activeSelf);
             _saveLoadService = saveLoadService;
             _sceneInitializer = initializer;
-            _moneyAmount = _saveLoadService.ReadAmountMoney();
+            _moneyAmount = _saveLoadService.Money.AllAmountMoney;
             _workPointGroup = _sceneInitializer.GetPlayerCharacterInitializer().GetWorkPointGroup();
             _boxStore.Initialize(_saveLoadService,_wallet);
             SetCharacterInitializer();
@@ -83,7 +85,7 @@ namespace UI.HUD.StorePanel
         {
             _characterInitializer = _sceneInitializer.GetPlayerCharacterInitializer();
             //_characterInitializer.OnClickWorkpoint += CheckPointInfo;
-            _characters = _saveLoadService.GetAvailableCharacters();
+            _characters = _saveLoadService.Characters.AvailableCharacters.ToList();
             
             _characterStore.Initialize( this);
             

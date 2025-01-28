@@ -45,31 +45,32 @@ namespace Infrastructure.AIBattle.StateMachines.Robots.States
 
         private IEnumerator Search()
         {
-            _isSearhing = true;
-            
-            while (_isSearhing)
-            {
-                _enemyTransforms = SaveLoadService.GetActiveEnemy()
-                    .Select(enemy => enemy.transform)
-                    .ToArray();
-            
-                int closestEnemyIndex = GetClosestEnemyIndex(transform.position);
-                
-                if (closestEnemyIndex != -1)
-                {
-                    _enemy = SaveLoadService.GetActiveEnemy()[closestEnemyIndex];
-
-                    float _currentRange = Vector3.Distance(transform.position, _enemy.transform.position);
-                    float rangeAttack = _humanoidWeaponController.GetRangeAttack();
-                    
-                    if (_currentRange <= rangeAttack && !_isTurning&&_enemy.IsLife())
-                    {
-                        LookEnemyPosition(_enemy.transform);
-                    }
-                }
-                
-                yield return timeout;
-            }
+            // _isSearhing = true;
+            //
+            // while (_isSearhing)
+            // {
+            //     _enemyTransforms = SaveLoadService.DataEnemies.ActiveEnemies.ToList()
+            //         .Select(enemy => enemy.transform)
+            //         .ToArray();
+            //
+            //     int closestEnemyIndex = GetClosestEnemyIndex(transform.position);
+            //     
+            //     if (closestEnemyIndex != -1)
+            //     {
+            //         _enemy = SaveLoadService.GetActiveEnemy()[closestEnemyIndex];
+            //
+            //         float _currentRange = Vector3.Distance(transform.position, _enemy.transform.position);
+            //         float rangeAttack = _humanoidWeaponController.GetRangeAttack();
+            //         
+            //         if (_currentRange <= rangeAttack && !_isTurning&&_enemy.IsLife())
+            //         {
+            //             LookEnemyPosition(_enemy.transform);
+            //         }
+            //     }
+            //     
+            //     yield return timeout;
+            // }
+            yield return null;
         }
         
         private void ChangeState()

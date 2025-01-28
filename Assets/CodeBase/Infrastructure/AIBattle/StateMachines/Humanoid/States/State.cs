@@ -16,7 +16,7 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
         public void Init(PlayerCharactersStateMachine playerCharactersStateMachine, SaveLoadService saveLoadService  )
         {
             PlayerCharactersStateMachine = playerCharactersStateMachine;
-            this.SaveLoadService = saveLoadService;
+            SaveLoadService = saveLoadService;
         }
     }
 }

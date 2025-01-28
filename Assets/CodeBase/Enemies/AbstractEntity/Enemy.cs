@@ -11,6 +11,7 @@ using Services.Audio;
 using Services.SaveLoad;
 using UnityEngine;
 using UnityEngine.AI;
+using EnemyData = Data.EnemyData;
 using Random = UnityEngine.Random;
 
 namespace Enemies.AbstractEntity
