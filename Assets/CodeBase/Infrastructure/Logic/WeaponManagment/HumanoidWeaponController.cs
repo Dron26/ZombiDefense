@@ -13,6 +13,7 @@ using Infrastructure.Location;
 using Infrastructure.Logic.Inits;
 using UI.Buttons;
 using UnityEngine;
+using CharacterData = Characters.Humanoids.AbstractLevel.CharacterData;
 
 namespace Infrastructure.Logic.WeaponManagment
 {
@@ -52,7 +53,6 @@ namespace Infrastructure.Logic.WeaponManagment
             _weaponPrefab.transform.parent = weaponTransform;
 
         private CharacterType _characterType;
-        
 
         public override void Initialize(CharacterData data)
         {
@@ -126,7 +126,7 @@ namespace Infrastructure.Logic.WeaponManagment
             _weaponContainer.SetItem(ItemType);
            
             //path = AssetPaths.WeaponPrefabs + _itemType;
-           // GameObject weapon = Instantiate(Resources.Load<GameObject>(path),_weaponContainer.transform);
+            // GameObject weapon = Instantiate(Resources.Load<GameObject>(path),_weaponContainer.transform);
             
             //Prefab/Store/Items/WeaponPrefabs/Pistol
             //_weapon =  weapon.GetComponent<Weapon>();
@@ -147,7 +147,7 @@ namespace Infrastructure.Logic.WeaponManagment
 
         private void SetLight()
         {
-                Light.gameObject.SetActive(LighInformer.HasLight);
+            Light.gameObject.SetActive(LighInformer.HasLight);
         }
 
         private void SetRadius() => _radius.transform.localScale=new Vector3(_range/3.6f, _range/3.6f, 1);

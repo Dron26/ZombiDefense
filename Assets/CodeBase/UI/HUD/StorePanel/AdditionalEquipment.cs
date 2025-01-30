@@ -2,8 +2,9 @@ using System;
 using System.Collections;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
+using Interface;
+using Services;
 using Services.SaveLoad;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,14 +20,14 @@ namespace UI.HUD.StorePanel
         private Button _buttonAdditionalPanel;
         public event Action OnSelectedMedicineBox;
         public event Action OnSelectedWeaponBox;
+        private GameEventBroadcaster _eventBroadcaster;
 
-        private SaveLoadService _saveLoadService;
         private bool _isWeaponActive;
         private bool _isMedicineActive;
         private bool _isSelected;
-        public void Initialize(SaveLoadService saveLoadService)
+        public void Initialize()
         {
-            _saveLoadService = saveLoadService;
+            _eventBroadcaster=AllServices.Container.Single<GameEventBroadcaster>(); 
 
             AddListener();
             
@@ -37,7 +38,7 @@ namespace UI.HUD.StorePanel
         }
         private void AddListener()
         {
-            _saveLoadService.OnSelectedNewPoint += CheckPointInfo;
+            _eventBroadcaster.OnSelectedNewPoint += CheckPointInfo;
             _medicineBoxButton.OnSelected+=SelectedMedicineBox;
             weaponBoxButton.OnSelected+=SelectedWeaponBox;
         }
@@ -98,7 +99,7 @@ namespace UI.HUD.StorePanel
 
         private void RemoveListener()
         {
-            _saveLoadService.OnSelectedNewPoint -= CheckPointInfo;
+            _eventBroadcaster.OnSelectedNewPoint -= CheckPointInfo;
             
             _medicineBoxButton.OnSelected-=SelectedMedicineBox;
             weaponBoxButton.OnSelected-=SelectedWeaponBox;

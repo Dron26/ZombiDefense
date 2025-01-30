@@ -1,17 +1,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Characters.Humanoids.AbstractLevel;
 using Infrastructure.AIBattle;
 using Infrastructure.AIBattle.AdditionalEquipment;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
+using Services;
 using Services.SaveLoad;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using UnityEngine.UIElements;
 
 namespace Infrastructure.Location
 {
@@ -27,6 +26,8 @@ namespace Infrastructure.Location
         public bool IsBusy => _isBusy;
         public bool IsSelected => _isSelected;
         public int Level => _level;
+        public int Id => _id;
+        private int _id;
         public int UpPrecent => _upPrecent;
 
         public bool IsHaveMedicineBox => _isHaveMedicineBox;
@@ -42,10 +43,10 @@ namespace Infrastructure.Location
         private Collider _collider;
         private int _level;
         private int _upPrecent=100;
-        SaveLoadService _saveLoadService;
         private MedicalKit _medicalKit;
         private AdditionalBox _weaponBox;
         private bool _isHaveWeaponBox;
+        private CharacterHandler _characterHandler;
         
         private Vector3 _startScale;
         private Vector3 _maxScale;
@@ -168,7 +169,7 @@ namespace Infrastructure.Location
                 if (_isSelected)
                 {
                     SetToWeapon();
-                    _saveLoadService.SetSelectedCharacter(_character);
+                    _characterHandler.SetSelectedCharacter(_character);
                     _character.SetPoint(this);
                     _isBusy = true;
                 }
@@ -208,15 +209,16 @@ namespace Infrastructure.Location
         public void OnPointerClick(PointerEventData eventData)
         {
             PointerEventData newEventData= eventData;
-                SetSelected(true);
-                CheckCharacter();
-                OnSelected?.Invoke(this);
+            SetSelected(true);
+            CheckCharacter();
+            OnSelected?.Invoke(this);
             
         }
 
-        public void SetSaveLoad(SaveLoadService saveLoadService)
+        public void Initialize(int id)
         {
-            _saveLoadService = saveLoadService;
+            _characterHandler=AllServices.Container.Single<CharacterHandler>();
+            _id = id;
         }
 
         public void SelectedForMove(bool isSelected)
@@ -242,56 +244,56 @@ namespace Infrastructure.Location
         }
 
 
-            private IEnumerator SelectedCircleActivated()
+        private IEnumerator SelectedCircleActivated()
+        {
+            _selectedCircle.transform.localScale = _startScale;
+            bool isUp= true;
+            bool isDown= false;
+                
+            while (_isSelected)
             {
-                _selectedCircle.transform.localScale = _startScale;
-                bool isUp= true;
-                bool isDown= false;
-                
-                while (_isSelected)
+                if (isUp)
                 {
-                    if (isUp)
+                    while (isUp)
                     {
-                        while (isUp)
+                        if (_selectedCircle.transform.localScale.x<_maxScale.x)
                         {
-                            if (_selectedCircle.transform.localScale.x<_maxScale.x)
-                            {
-                                float time = Time.deltaTime;
-                                _selectedCircle.transform.localScale+=time*(_selectedCircle.transform.localScale);
-                            }
-                            else
-                            {
-                                isUp=false;
-                                isDown=true;
-                            }
+                            float time = Time.deltaTime;
+                            _selectedCircle.transform.localScale+=time*(_selectedCircle.transform.localScale);
+                        }
+                        else
+                        {
+                            isUp=false;
+                            isDown=true;
+                        }
                             
-                            yield return null;
-                        }
+                        yield return null;
+                    }
                        
-                    }
-                    else
-                    {
-                        while (isDown)
-                        {
-                            if (_selectedCircle.transform.localScale.x>_minScale.x)
-                            {
-                                float time = Time.deltaTime;
-                                _selectedCircle.transform.localScale-=time*(_selectedCircle.transform.localScale);
-                            }
-                            else
-                            {
-                                isDown=false;
-                                isUp=true;
-                            }
-                            yield return null;
-                        }
-                    }
-                   
-                    yield return null;
-                    
                 }
-                
-                _selectedCircle.transform.localScale = _startScale;
+                else
+                {
+                    while (isDown)
+                    {
+                        if (_selectedCircle.transform.localScale.x>_minScale.x)
+                        {
+                            float time = Time.deltaTime;
+                            _selectedCircle.transform.localScale-=time*(_selectedCircle.transform.localScale);
+                        }
+                        else
+                        {
+                            isDown=false;
+                            isUp=true;
+                        }
+                        yield return null;
+                    }
+                }
+                   
+                yield return null;
+                    
             }
+                
+            _selectedCircle.transform.localScale = _startScale;
+        }
     }
 }

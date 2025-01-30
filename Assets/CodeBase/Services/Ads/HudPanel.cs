@@ -3,11 +3,11 @@ using Characters.Robots;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.Inits;
 using Infrastructure.Logic.WaveManagment;
+using Interface;
 using Services.SaveLoad;
 using UI;
 using UI.Buttons;
 using UI.HUD.StorePanel;
-using UI.Locations;
 using UI.Report;
 using UI.Resurse;
 using UI.SettingsPanel;
@@ -27,30 +27,30 @@ namespace Services.Ads
         [SerializeField] private ReportPanel _reportPanel;
         
         public Action OnClickExitToMenu;
-        private SaveLoadService _saveLoadService;
         private SceneInitializer _sceneInitializer;
         private WaveManager _waveManager;
         public Action OnStartSpawn;
         public Action OnResetLevel;
+        private GameEventBroadcaster _eventBroadcaster;
 
         public void Init(SaveLoadService saveLoadService, SceneInitializer sceneInitializer, WaveManager waveManager,GlobalTimer globalTimer)
         {
-            _saveLoadService = saveLoadService;
             _waveManager = waveManager;
             _sceneInitializer = sceneInitializer;
-            _store.Initialize(_sceneInitializer, _saveLoadService);
-            _menuPanel.Initialize(_saveLoadService);
+            _store.Initialize(_sceneInitializer );
+            _menuPanel.Initialize(saveLoadService);
             _resursesCanvas.Initialize(_store.GetWallet());
-            _reportPanel.Init(_saveLoadService,_store);
-            _saveLoadService.SetRaycasterPanel(GetButtonPanel().GetComponent<GraphicRaycaster>());
-            GetComponent<RaycastHitChecker>().Initialize(_saveLoadService);
-            _timerDisplay.Initialize(_saveLoadService,_store.GetWallet(),_waveManager);
+            _reportPanel.Init(_store);
+            AllServices.Container.Single<UIHandler>().SetRaycaster(GetButtonPanel().GetComponent<GraphicRaycaster>());
+            _eventBroadcaster=AllServices.Container.Single<GameEventBroadcaster>();
+            GetComponent<RaycastHitChecker>().Initialize();
+            _timerDisplay.Initialize(_store.GetWallet(),_waveManager);
             AddListener();
         }
 
         private void StartTimer()
         {
-            _saveLoadService.OnSetActiveHumanoid -= StartTimer;
+            _eventBroadcaster.OnSetActiveHumanoid -= StartTimer;
             if (_sceneInitializer.IsStartedTutorial) return;
             
             _timerDisplay.StartTimer();
@@ -91,7 +91,7 @@ namespace Services.Ads
         private void AddListener()
         {
             _sceneInitializer.OnClickContinue+= StartTimer;
-            _saveLoadService.OnSetActiveHumanoid += StartTimer;
+            _eventBroadcaster.OnSetActiveHumanoid += StartTimer;
             _menuPanel.OnClickExitToMenu+= OnClickExit;
             _reportPanel.OnClickExitToMenu+= OnClickExit;
             //_reportPanel.OnStayInLication += StartContinueSpawn;
@@ -103,8 +103,9 @@ namespace Services.Ads
             _sceneInitializer.OnClickContinue-= StartTimer;
             _menuPanel.OnClickExitToMenu-= OnClickExit;
             _reportPanel.OnClickExitToMenu-= OnClickExit;
-           // _reportPanel.OnStayInLication -= StartContinueSpawn;
+            // _reportPanel.OnStayInLication -= StartContinueSpawn;
             _reportPanel.OnResetLevel -= ResetLevel;
+            _eventBroadcaster.OnSetActiveHumanoid -= StartTimer;
         }
 
         private void ResetLevel()

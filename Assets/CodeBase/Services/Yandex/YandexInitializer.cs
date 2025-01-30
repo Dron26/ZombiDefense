@@ -10,8 +10,8 @@ namespace Services.Yandex
         
         private void Awake()
         {
-           // DontDestroyOnLoad(gameObject);
-           // Completed?.Invoke();
+            // DontDestroyOnLoad(gameObject);
+            // Completed?.Invoke();
             // YandexAdsService yandexAdsService=new YandexAdsService();
             // yandexAdsService.Initialize();
             //
@@ -21,7 +21,7 @@ namespace Services.Yandex
         private IEnumerator Start()
         {
 #if !UNITY_WEBGL || UNITY_EDITOR
-           // Completed?.Invoke();
+            // Completed?.Invoke();
             yield break;
 #endif
             Completed?.Invoke();

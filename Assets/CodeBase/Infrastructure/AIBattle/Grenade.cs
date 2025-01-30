@@ -1,7 +1,7 @@
 using System.Collections;
 using Infrastructure.AIBattle.AdditionalEquipment;
-using UnityEngine;
 using Infrastructure.Logic.WeaponManagment;
+using UnityEngine;
 
 namespace Infrastructure.AIBattle
 {

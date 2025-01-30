@@ -1,9 +1,10 @@
+using System;
 using Infrastructure.AIBattle.AdditionalEquipment;
 using UnityEngine;
 
 namespace Characters.Humanoids.AbstractLevel
 {
-    [System.Serializable]
+    [Serializable]
     [CreateAssetMenu(menuName = "CharacterData")]
     public class CharacterData : ScriptableObject
     {

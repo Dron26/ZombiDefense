@@ -1,4 +1,3 @@
-using Agava.YandexGames;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using TMPro;
 using UnityEngine;

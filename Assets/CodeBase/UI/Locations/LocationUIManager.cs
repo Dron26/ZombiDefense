@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.StateMachine;
+using Interface;
+using Services;
 using Services.SaveLoad;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace UI.Locations
 {
@@ -36,8 +35,8 @@ namespace UI.Locations
                 {
                     _locationUIElements.Add(uiElement);
                     
-                    Location location = _locationManager.GetLocationById(uiElement.Id);
-                    uiElement.Initialize(location.IsLocked,location.IsCompleted);
+                    LocationData locationData = _locationManager.GetLocationById(uiElement.Id);
+                    uiElement.Initialize(locationData.IsLocked,locationData.IsCompleted);
                     uiElement.OnClick += HandleLocationClick;
                 }
             }
@@ -45,7 +44,7 @@ namespace UI.Locations
 
         private void HandleLocationClick(int id)
         {
-            _saveLoadService.SetSelectedLocationId(id);
+            AllServices.Container.Single<LocationHandler>().SetSelectedLocationId(id);
             OnSelectLocation?.Invoke();
            
         }

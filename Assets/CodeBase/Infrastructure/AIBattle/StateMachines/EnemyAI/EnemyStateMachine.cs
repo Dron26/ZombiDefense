@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Animation;
-using Characters.Humanoids.AbstractLevel;
 using Enemies.AbstractEntity;
 using Infrastructure.AIBattle.StateMachines.EnemyAI.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.Logic.Inits;
 using Services.SaveLoad;
 using UnityEngine;
 using UnityEngine.AI;

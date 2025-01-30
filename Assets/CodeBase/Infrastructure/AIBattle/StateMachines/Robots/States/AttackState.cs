@@ -1,4 +1,4 @@
-
+using Characters.Robots;
 using Enemies.AbstractEntity;
 using Infrastructure.AIBattle.StateMachines.Humanoid.States;
 using Infrastructure.Logic.WeaponManagment;
@@ -9,10 +9,10 @@ namespace Infrastructure.AIBattle.StateMachines.Robots.States
     public class AttackState:State
     {
         private readonly WaitForSeconds _waitForSeconds = new(0.1f);
-        private Enemies.AbstractEntity.Enemy _enemy = null;
+        private Enemy _enemy = null;
         private float _currentRange;
         private RobotFXController _fxController;
-        private Characters.Robots.Turret _turret;
+        private Turret _turret;
         private HumanoidWeaponController _humanoidWeaponController;
         private bool _isShotgun;
         private bool _isAttacking;
@@ -34,7 +34,7 @@ namespace Infrastructure.AIBattle.StateMachines.Robots.States
         private void Awake()
         {
             _fxController = GetComponent<RobotFXController>();
-            _turret = GetComponent<Characters.Robots.Turret>();
+            _turret = GetComponent<Turret>();
             _humanoidWeaponController = GetComponent<HumanoidWeaponController>();
             _humanoidWeaponController.ChangeWeapon += OnWeaponChanged;
         }
@@ -52,7 +52,7 @@ namespace Infrastructure.AIBattle.StateMachines.Robots.States
             }
         }
 
-        public void InitEnemy(Enemies.AbstractEntity.Enemy targetEnemy)
+        public void InitEnemy(Enemy targetEnemy)
         {
             _enemy = targetEnemy;
             _isTargetSet = true;
@@ -138,7 +138,7 @@ namespace Infrastructure.AIBattle.StateMachines.Robots.States
 
             foreach (Collider hitCollider in hitColliders)
             {
-                if (hitCollider.TryGetComponent(out Enemies.AbstractEntity.Enemy enemy))
+                if (hitCollider.TryGetComponent(out Enemy enemy))
                 {
                     if (enemy.IsLife())
                     {

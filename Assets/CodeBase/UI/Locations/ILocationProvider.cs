@@ -1,21 +1,23 @@
 using System;
 using System.Collections.Generic;
 using Infrastructure.Location;
-using UI.Locations;
 
-public interface ILocationProvider
+namespace UI.Locations
 {
-    List<Location> GetLocations();
-    Location GetLocationById(int id);
-}
+    public interface ILocationProvider
+    {
+        List<LocationData> GetLocations();
+        LocationData GetLocationById(int id);
+    }
 
-public interface ILocationLoader
-{
-    LocationPrefab LoadLocation(int locationId);
-}
+    public interface ILocationLoader
+    {
+        LocationPrefab LoadLocation(int locationId);
+    }
 
-public interface ILocationUIManager
-{
-    void Initialize(ILocationProvider locationProvider, Action<int> onLocationSelected);
-    void UpdateUI();
+    public interface ILocationUIManager
+    {
+        void Initialize(ILocationProvider locationProvider, Action<int> onLocationSelected);
+        void UpdateUI();
+    }
 }

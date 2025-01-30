@@ -1,5 +1,3 @@
-using Characters.Humanoids.AbstractLevel;
-using Data;
 using Enemies;
 using Enemies.AbstractEntity;
 using Infrastructure.AssetManagement;
@@ -7,14 +5,13 @@ using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Services.Audio;
 using Services.SaveLoad;
 using UnityEngine;
-using EnemyData = Data.EnemyData;
+using EnemyData = Enemies.EnemyData;
 
 namespace Infrastructure.Factories.FactoryWarriors.Enemies
 {
     public class EnemyFactory : MonoCache
     {
         private AudioManager _audioManager;
-        private SaveLoadService _saveLoadService;
         
         public Enemy Create(EnemyType type)
         {
@@ -25,14 +22,13 @@ namespace Infrastructure.Factories.FactoryWarriors.Enemies
             GameObject prefab = Instantiate(data.prefab);
             prefab.gameObject.layer = LayerMask.NameToLayer("Character");
             Enemy enemyComponent = prefab.GetComponent<Enemy>();
-            enemyComponent.Initialize(_audioManager,data,_saveLoadService);
+            enemyComponent.Initialize(_audioManager,data);
             return enemyComponent;
         }
 
-        public void Initialize(AudioManager audioManager, SaveLoadService saveLoadService)
+        public void Initialize(AudioManager audioManager)
         {
             _audioManager=audioManager;
-            _saveLoadService=saveLoadService;
         }
     }
 }

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Characters.Humanoids.AbstractLevel;
 using Enemies.AbstractEntity;
 using Services;
 using UnityEngine;
@@ -16,4 +15,3 @@ namespace Interface
         public  T [] GetEntitiesInCircularRange<T>(Vector3 position, float maxRange, float minRange) where T : Entity;
     }
 }
-

@@ -1,5 +1,3 @@
-using System;
-
 namespace Infrastructure.Logic.Inits
 {
     public static class LighInformer

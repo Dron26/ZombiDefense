@@ -18,21 +18,21 @@ namespace UI.Buttons
         private ObjectThrower _objectThrower;
         private HumanoidWeaponController _humanoidWeaponController;
         public Action OnClickButton;
-private bool _haveAdditionalWeapon;
-private SaveLoadService _saveLoadService;
+        private bool _haveAdditionalWeapon;
+        private SaveLoadService _saveLoadService;
         public void Initialize(SaveLoadService saveLoadService)
         {
             _saveLoadService = saveLoadService;
             saveLoadService.OnSelectedNewCharacter+=OnSelectedNewCharacter;
             _weapon.onClick.AddListener(() =>TryThrowGranade());
         }
-       private void Start()
+        private void Start()
         {
             _weapon.interactable=false;
         }
 
     
-       private void SwitchPanelState()
+        private void SwitchPanelState()
         {
             if (_haveAdditionalWeapon)
             {

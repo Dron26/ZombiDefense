@@ -2,7 +2,8 @@ using System;
 using System.Collections;
 using System.Linq;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Lean.Localization;
+using Interface;
+using Services;
 using Services.SaveLoad;
 using TMPro;
 using UI.HUD.StorePanel;
@@ -13,8 +14,7 @@ namespace Infrastructure.Logic.WaveManagment
 {
     public class TimerDisplay : MonoCache
     { 
-         public int zombiesRemainingToStartTimer = 1;
-         public int _zombiesRemaining => _saveLoadService.Characters.ActiveCharacters.ToList().Count;
+        public int zombiesRemainingToStartTimer = 1;
         [SerializeField] private int bonusCoinsPerSecond = 5;
         [SerializeField] private GameObject _timerPanel;
         [SerializeField] private GameObject _additionalPanel;
@@ -23,27 +23,30 @@ namespace Infrastructure.Logic.WaveManagment
         [SerializeField] private Button skipButton;
         public Action OnClickReady;
 
-        private  SaveLoadService _saveLoadService;
         private Wallet _wallet;
         private string _nextWave = "The next wave";
         private string _bonus = "Bonus";
-        private bool _isHumanoidReady=> _saveLoadService.GetActiveCharacters().Count > 0;
+        
         private int bonusCoins;
         private bool _isStartClick = false;
-         private float timerDuration ;
-         private WaveManager _waveManager;
-
+        private float timerDuration ;
+        private WaveManager _waveManager;
+        private EnemyHandler _enemyHandler;
+        private LocationHandler _locationHandler;
+        private GameEventBroadcaster _eventBroadcaster;
+        
         public void Disabled()
         {
             RemoveListener();
         }
 
-        public void Initialize(SaveLoadService saveLoadService, Wallet wallet, WaveManager waveManager)
+        public void Initialize( Wallet wallet, WaveManager waveManager)
         {
             _waveManager=waveManager;
-             _saveLoadService = saveLoadService;
-             _wallet=wallet;
-          
+            _wallet=wallet;
+            _eventBroadcaster = AllServices.Container.Single<GameEventBroadcaster>();
+            _enemyHandler = AllServices.Container.Single<EnemyHandler>();
+            _locationHandler=AllServices.Container.Single<LocationHandler>();
             AddListener();
         }
 
@@ -65,7 +68,7 @@ namespace Infrastructure.Logic.WaveManagment
         private IEnumerator ShowSpawnTimer()
         {
             _isStartClick = false;
-            timerDuration = _saveLoadService.Locations.TimeTimeBeforeNextWave;
+            timerDuration = _waveManager.WaveSpawner.TimeTimeBeforeNextWave;
             _timerPanel.SetActive(true);
             _additionalPanel.SetActive(true);
             skipButton.gameObject.SetActive(true);
@@ -85,7 +88,7 @@ namespace Infrastructure.Logic.WaveManagment
        
         private void SkipTimer()
         {
-            if (_isHumanoidReady&&_isStartClick==false)
+            if (_enemyHandler.GetActiveEnemy().Count > 0&&_isStartClick==false)
             {
                 _isStartClick = true;
                 FinishShowTimer();
@@ -120,13 +123,13 @@ namespace Infrastructure.Logic.WaveManagment
         private void AddListener()
         {
             skipButton.onClick.AddListener(SkipTimer);
-            _saveLoadService.LastEnemyRemained+=SetSpawnStarted;
+            _eventBroadcaster.LastEnemyRemained+=SetSpawnStarted;
         }
 
         private void RemoveListener()
         {
             skipButton.onClick.RemoveListener(SkipTimer);
-            _saveLoadService.LastEnemyRemained-=SetSpawnStarted;
+            _eventBroadcaster.LastEnemyRemained-=SetSpawnStarted;
         }
     }
-}                                              
+}

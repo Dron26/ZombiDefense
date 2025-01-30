@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Characters.Humanoids.AbstractLevel;
 
-namespace Services.SaveLoad
+namespace Data
 {
     public class CharacterData
     {
@@ -22,11 +22,24 @@ namespace Services.SaveLoad
         public void AddInactiveCharacter(Character character) => _inactiveCharacters.Add(character);
         public void AddAvailableCharacter(Character character) => _availableCharacters.Add(character);
 
-        public void ClearCharacters()
+        public void ClearActiveCharacters()
         {
             _activeCharacters.Clear();
+        }
+        public void ClearInactiveCharacters()
+        {
             _inactiveCharacters.Clear();
+        }
+        public void ClearAvailableCharacters()
+        {
             _availableCharacters.Clear();
+        }
+
+        public void Reset()
+        {
+            ClearActiveCharacters();
+            ClearInactiveCharacters();
+            ClearAvailableCharacters();
         }
     }
 }

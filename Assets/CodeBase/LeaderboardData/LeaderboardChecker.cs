@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using TMPro;
-using UnityEngine;
+
 public class LeaderboardChecker : MonoCache
 {
 //     [SerializeField] private List<TMP_Text> _placesTexts;

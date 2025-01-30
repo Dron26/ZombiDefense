@@ -1,5 +1,3 @@
-using System;
-using Infrastructure.BaseMonoCache.Code.MonoCache;
 using UnityEngine;
 
 namespace Animation

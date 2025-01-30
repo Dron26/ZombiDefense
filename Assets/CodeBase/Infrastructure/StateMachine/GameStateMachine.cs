@@ -24,7 +24,7 @@ namespace Infrastructure.StateMachine
 
             _states = new Dictionary<Type, IExitebleState>
             {
-                [typeof(BootstrapState)] = new BootstrapState(this,sceneLoader, services,language,pauseService,saveLoadService),
+                [typeof(BootstrapState)] = new BootstrapState(this,sceneLoader, services,language,pauseService,saveLoadService,loadingCurtain),
                 [typeof(LoadLevelState)] = new LoadLevelState(this,sceneLoader, services.Single<IGameFactory>(),sceneNames),
                 [typeof(GameLoopState)] = new GameLoopState(this,loadingCurtain),
             };
@@ -60,7 +60,7 @@ namespace Infrastructure.StateMachine
         private List<string> GetSceneNames()
         {
             List<string> names = new() { Constants.Initial, Constants.Menu, Constants.Location };
-             return  names;
+            return  names;
 
         }
     }

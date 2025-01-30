@@ -1,4 +1,5 @@
 using Interface;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Services.SaveLoad
@@ -7,6 +8,7 @@ namespace Services.SaveLoad
     {
         private LoadingCurtain _curtain;
         private GraphicRaycaster _raycaster;
+        private EventSystem _eventSystem;
 
         public void SetCurtain(LoadingCurtain curtain) => 
             _curtain = curtain;
@@ -15,7 +17,12 @@ namespace Services.SaveLoad
 
         public void SetRaycaster(GraphicRaycaster raycaster) => 
             _raycaster = raycaster;
-
         public GraphicRaycaster GetRaycaster() => _raycaster;
+        
+        public void SetEvenSystem(EventSystem eventSystem)
+        {
+            _eventSystem=eventSystem;
+        }
+        public EventSystem GetEventSystem()=> _eventSystem;
     }
 }

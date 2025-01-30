@@ -1,5 +1,6 @@
 using Data;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Services;
 using Services.Audio;
 using Services.SaveLoad;
 using UnityEngine;
@@ -85,10 +86,10 @@ namespace UI.SettingsPanel
             
             SetPause(!isActive);
 
-            _audioDataSettings = _saveLoadService.GetAudioData();
+            _audioDataSettings =AllServices.Container.Single<AudioSettingsHandler>().GetAudioData();
             _currentVolumeMusic = _audioDataSettings.CurrentVolumeMusic;
             _currentVolumeSound = _audioDataSettings.CurrentVolumeSound;
-           _musicEnabled = _audioDataSettings.MusicEnabled;
+            _musicEnabled = _audioDataSettings.MusicEnabled;
             _soundEnabled = _audioDataSettings.SoundEnabled;
             SetSliders();
             SetButtons();

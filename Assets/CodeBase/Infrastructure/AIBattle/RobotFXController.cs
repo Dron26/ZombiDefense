@@ -15,11 +15,11 @@ namespace Infrastructure.AIBattle
         [SerializeField] private ParticleSystem _particleTankDie1;
        
         private AudioClip _shoot;
-         private AudioClip _reload;
-      //  private AudioSource _audioSource;
+        private AudioClip _reload;
+        //  private AudioSource _audioSource;
         private Weapon _weapon;
-      //  private AudioManager _audioManager;
-  //      private WeaponController _weaponController;
+        //  private AudioManager _audioManager;
+        //      private WeaponController _weaponController;
         private Humanoid _humanoid;
         
         private void Awake()
@@ -31,18 +31,18 @@ namespace Infrastructure.AIBattle
             // }
              
 //             _weaponController= GetComponent<WeaponController>();
-  //           _weaponController.OnInitialized += SetWeapon;
+            //           _weaponController.OnInitialized += SetWeapon;
         }
 
         private void SetAudio(Humanoid _humanoid)
         {
-          //  _audioManager=_humanoid.GetAudioController();
-         //   _audioSource= _audioManager.GetSoundSource();
+            //  _audioManager=_humanoid.GetAudioController();
+            //   _audioSource= _audioManager.GetSoundSource();
         }
 
         public void OnAttackFX()
         {
-           // _audioSource.PlayOneShot(_shoot);
+            // _audioSource.PlayOneShot(_shoot);
             _particleGunshotSingle.Play();
         }
         
@@ -68,12 +68,12 @@ namespace Infrastructure.AIBattle
         public void OnDieFX()
         {
             //_particleDie.Play();
-           // _audioDie.Play();
+            // _audioDie.Play();
         }
 
         public void OnReloadFX()
         {
-         //   _audioSource.PlayOneShot(_reload);
+            //   _audioSource.PlayOneShot(_reload);
         }
         public void SetWeapon(Weapon weapon)
         {
@@ -84,8 +84,8 @@ namespace Infrastructure.AIBattle
         
         protected override void  OnDisable()
         {
-           // _humanoid.RemoveObserver(this);
-          //  _weaponController.RemoveObserver(this);
+            // _humanoid.RemoveObserver(this);
+            //  _weaponController.RemoveObserver(this);
         }
     }
 }

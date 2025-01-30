@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Characters.Humanoids;
 using Characters.Humanoids.AbstractLevel;
 using Data.Upgrades;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Services.SaveLoad;
-using TextMesh_Pro.Examples___Extras.Scripts;
 using UI.HUD.StorePanel;
 using UnityEngine;
 

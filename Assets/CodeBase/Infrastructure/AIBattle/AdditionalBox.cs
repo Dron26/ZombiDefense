@@ -1,10 +1,8 @@
 using System.Collections.Generic;
 using Data;
 using Infrastructure.AIBattle.AdditionalEquipment;
-using Infrastructure.AssetManagement;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
-using UnityEngine;
 
 namespace Infrastructure.AIBattle
 {

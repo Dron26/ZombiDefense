@@ -1,16 +1,11 @@
 ﻿using System;
-using Common;
-using Data;
 using Data.Upgrades;
 using Infrastructure.AIBattle;
 using Infrastructure.AIBattle.AdditionalEquipment;
 using Infrastructure.AIBattle.StateMachines.Humanoid;
 using Infrastructure.AIBattle.StateMachines.Humanoid.States;
-using Infrastructure.AssetManagement;
-using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
 using Infrastructure.Logic.WeaponManagment;
-using Interface;
 using Services.Audio;
 using UnityEngine;
 
@@ -40,7 +35,7 @@ namespace Characters.Humanoids.AbstractLevel
         {
             _isWeaponInitialized = false;
             _currentHealth = base.CharacterData.Health;
-           // _skinContainer = GetComponent<SkinContainer>();
+            // _skinContainer = GetComponent<SkinContainer>();
             _skinContainer.SetSkin(CharacterData.Type);
             _animator = GetComponent<Animator>();
             _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
@@ -100,7 +95,7 @@ namespace Characters.Humanoids.AbstractLevel
                     _animator.SetTrigger(_playerCharacterAnimController.IsHit);
                 }
 
-              //  _fxController.OnHitFX();
+                //  _fxController.OnHitFX();
                 _currentHealth -= Mathf.Clamp(getDamage, _minHealth, _currentHealth);
             }
         }

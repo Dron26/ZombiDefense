@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using DG.Tweening;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace UI
 {

@@ -1,6 +1,5 @@
-
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using Data;
 using Enemies.AbstractEntity;
 using Interface;
@@ -10,10 +9,13 @@ namespace Services.SaveLoad
     public class EnemyHandler:IEnemyHandler
     {
         private readonly EnemyData _enemyData;
-
+        private AchievementsHandler _achievementsHandler;
+        private GameEventBroadcaster _eventBroadcaster;
         public EnemyHandler(EnemyData enemyData)
         {
             _enemyData = enemyData;
+            _achievementsHandler = AllServices.Container.Single<AchievementsHandler>();
+            _eventBroadcaster= AllServices.Container.Single<GameEventBroadcaster>();
         }
 
         public void SetActiveEnemy(Enemy enemy) => 
@@ -27,11 +29,22 @@ namespace Services.SaveLoad
 
         public void EnemyDeath(Enemy enemy)
         {
-            _enemyData.ChangeNumberKilledEnemies();
+            if (_enemyData.GetActiveEnemyCount() == 1)
+            {
+                _eventBroadcaster.InvokeLastEnemyRemained();
+            }
+
+            _achievementsHandler.AddKilledEnemy();
+            _eventBroadcaster.InvokeOnEnemyDeath(enemy);
             SetInactiveEnemy(enemy);
         }
 
         public int GetEnemyCount() =>
             _enemyData.GetActiveEnemyCount();
+
+        public void Reset()
+        {
+            _enemyData.ClearEnemies();
+        }
     }
 }

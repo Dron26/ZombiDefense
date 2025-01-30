@@ -42,7 +42,7 @@ namespace Characters.Robots
             SetWeaponParametrs(data);
             ChangeWeapon?.Invoke();
             SetShootingRadiusSprite();
-          //  OnInitialized?.Invoke(_weapon);
+            //  OnInitialized?.Invoke(_weapon);
         }
 
         private void SetWeaponParametrs(CharacterData data)

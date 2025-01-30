@@ -5,6 +5,8 @@ using Infrastructure.AIBattle.StateMachines.Humanoid.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
 using Infrastructure.Logic.Inits;
+using Interface;
+using Services;
 using Services.SaveLoad;
 using UI.HUD.StorePanel;
 using UnityEngine;
@@ -31,15 +33,17 @@ namespace Infrastructure.Points
         private bool isPointToMoveTaked;
         [SerializeField] private WorkPoint _startPoint;
         private Store store;
-        private SaveLoadService _saveLoadService;
         private bool isMovementOver = false;
-
-        public void Initialize(SceneInitializer sceneInitializer, SaveLoadService saveLoadService)
+        private CharacterHandler _characterHandler;
+        private LocationHandler _locationHandler;
+        
+        public void Initialize(SceneInitializer sceneInitializer )
         {
-            _saveLoadService = saveLoadService;
+            _characterHandler=AllServices.Container.Single<CharacterHandler>();
+            _locationHandler=AllServices.Container.Single<LocationHandler>();
             _sceneInitializer = sceneInitializer;
             _characterInitializer = sceneInitializer.GetPlayerCharacterInitializer();
-            _activeCharacters = _saveLoadService.GetActiveCharacters();
+            _activeCharacters = _characterHandler.GetActiveCharacters();
             _workPointGroup = _characterInitializer.GetWorkPointGroup();
             FillWorkPoints();
             _workPointGroup.OnSelectedPoint += OnSelectedPoint;
@@ -61,15 +65,15 @@ namespace Infrastructure.Points
             _selectedPoint = _workPoints[0];
             _previousMovePoint = _workPoints[0];
             _currentPoint = _workPoints[0]; //  _selectedPoint.SetSelected(true);
-            _saveLoadService.SetSelectedPoint(_selectedPoint);
+            _locationHandler.SetSelectedPointId(0);
             OnClickPoint?.Invoke(_selectedPoint);
         }
 
         public void OnSelectedPoint(WorkPoint newPoint)
         {
             OnClickPoint?.Invoke(newPoint);
-            isChracterSelected = _saveLoadService.GetSelectedCharacter();
-            _selectedCharacter = _saveLoadService.GetSelectedCharacter();
+            isChracterSelected = _characterHandler.GetSelectedCharacter();
+            _selectedCharacter = _characterHandler.GetSelectedCharacter();
 
 
             if (_selectedPoint != newPoint)
@@ -103,7 +107,7 @@ namespace Infrastructure.Points
 
                 _selectedPoint.SetSelected(false);
                 _selectedPoint = newPoint;
-                _saveLoadService.SetSelectedPoint(_selectedPoint);
+                _locationHandler.SetSelectedPointId(_selectedPoint.Id);
 
 
                 if (newPoint.IsBusy == false && isChracterSelected && isPointToMoveTaked == false)

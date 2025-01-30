@@ -4,14 +4,14 @@ using System.Linq;
 using Characters.Humanoids.AbstractLevel;
 using Data;
 using Enemies.AbstractEntity;
+using Infrastructure;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
 using Infrastructure.Logic.WeaponManagment;
 using Newtonsoft.Json;
-using Services.PlayerAuthorization;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
+using CharacterData = Data.CharacterData;
 
 namespace Services.SaveLoad
 {
@@ -20,15 +20,16 @@ namespace Services.SaveLoad
         private const string Key = "Key";
 
         private GameData _gameData;
+        public GameData GameData=>_gameData;
         private EventSystem _eventSystem;
-        // Доступ к подклассам
         public CharacterData Characters => _gameData.Characters;
         public EnemyData Enemies => _gameData.EnemyData;
-        public AchievementsData Achievements => _gameData.Achievements;
+        public AchievementsData AchievementsData => _gameData.AchievementsData;
         public MoneyData Money => _gameData.Money;
-        public LocationData Locations => _gameData.Locations;
+        public Location Location => _gameData.Location;
         
         public CameraState CameraState=>_gameData.CameraState;
+        public AudioData AudioData=>_gameData.AudioData;
 
         public event Action OnSetActiveHumanoid;
         public event Action LastHumanoidDie;
@@ -42,6 +43,8 @@ namespace Services.SaveLoad
         private int _timeBeforeNextWave = 5;
         private bool _isSelectContinueGame;
         private bool _isExitFromLocation;
+        private GameBootstrapper _gameBootstrapper;
+        public GameBootstrapper GameBootstrapper=>_gameBootstrapper;
 
         public bool IsSelectContinueGame => _isSelectContinueGame;
         public bool IsExitFromLocation => _isExitFromLocation;
@@ -60,14 +63,8 @@ namespace Services.SaveLoad
 
             OnGameStart();
         }
-
-        private void InitializeGameData()
-        {
-            // Установить стартовые параметры
-            Money.AddMoney(300000);
-            Save();
-        }
-
+        
+       
         public void Save()
         {
             var settings = new JsonSerializerSettings
@@ -88,12 +85,12 @@ namespace Services.SaveLoad
         public void ResetProgress()
         {
             _gameData = new GameData();
-            InitializeGameData();
+           // InitializeGameData();
         }
 
         public void SetSelectedPoint(WorkPoint point)
         {
-            Locations.ChangeSelectedPoint(point);
+            Location.ChangeSelectedPoint(point);
             OnSelectedNewPoint?.Invoke(point);
         }
 
@@ -108,6 +105,8 @@ namespace Services.SaveLoad
             Characters.SetSelectedCharacter(character);
             OnSelectedNewCharacter?.Invoke(character);
         }
+        
+    
 
         public Character GetSelectedCharacter() => Characters.SelectedCharacter;
 
@@ -121,55 +120,6 @@ namespace Services.SaveLoad
             OnSetActiveHumanoid?.Invoke();
         }
 
-        public List<Character> GetActiveCharacters() => new List<Character>(Characters.ActiveCharacters);
-
-        public void SetInactiveHumanoids(List<Character> inactiveHumanoids)
-        {
-            foreach (var character in inactiveHumanoids)
-            {
-                Characters.AddInactiveCharacter(character);
-            }
-        }
-
-        public List<Character> GetInactiveHumanoids() => new List<Character>(Characters.InactiveCharacters);
-
-        public void AddActiveEnemy(Enemy enemy)
-        {
-            Enemies.AddActiveEnemy(enemy);
-        }
-
-        public void RemoveActiveEnemy(Enemy enemy)
-        {
-            Enemies.RemoveActiveEnemy(enemy);
-        }
-
-        public List<Enemy> GetActiveEnemies() => new List<Enemy>(Enemies.ActiveEnemies);
-
-        public void EnemyDeath(Enemy enemy)
-        {
-            RemoveActiveEnemy(enemy);
-
-            if (Enemies.GetActiveEnemyCount() == 1)
-            {
-                LastEnemyRemained?.Invoke();
-            }
-
-            Achievements.AddKilledEnemy();
-            OnEnemyDeath?.Invoke(enemy);
-        }
-
-        public void LocationCompleted()
-        {
-            Locations.CompleteCurrentLocation();
-            OnLocationCompleted?.Invoke();
-        }
-
-        public List<int> GetCompletedLocationIds() => Locations.CompletedLocations.ToList();
-
-        public void SetMaxEnemiesOnWave(int count)
-        {
-            _timeBeforeNextWave = count;
-        }
 
         private void OnGameStart()
         {
@@ -187,42 +137,14 @@ namespace Services.SaveLoad
             OnGameEnd();
         }
         
-        public void SetEvenSystem(EventSystem eventSystem)
-        {
-            _eventSystem=eventSystem;
-        }
-        public EventSystem GetEventSystem()=> _eventSystem;
-        
-        
         public void SetCameras(Camera cameraPhysical, Camera cameraUI)
         {
             _gameData.CameraState.SetCameras(cameraPhysical, cameraUI);
         }
-
-        public Camera GetPhysicalCamera() => _gameData.CameraState.PhysicalCamera;
-
-        public Camera GetUICamera() => _gameData.CameraState.UICamera;
-        public void OnLastHumanoidDie()
-        {
-            LastHumanoidDie?.Invoke();
-        }
-        public void EnemyDeath(Enemy enemy)
-        {
-            
-            SetKilledEnemiesOnWave();
-            
-            if (_gameData.ReadActiveEnemy().Count==1)
-            { 
-                LastEnemyRemained?.Invoke();
-            }
-            
-            _gameData.ChangeNumberKilledEnemies();
-            _gameData.ChangeInactiveEnemy(enemy);
-            OnEnemyDeath?.Invoke(enemy);
-        }
-
-
-
         
+        public void SetGameBootstrapper(GameBootstrapper gameBootstrapper)
+        {
+            _gameBootstrapper=gameBootstrapper;
+        }
     }
 }

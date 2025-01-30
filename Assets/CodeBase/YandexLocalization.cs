@@ -1,9 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Lean.Localization;
-using Agava.YandexGames;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Lean.Localization;
+using UnityEngine;
 
 public class YandexLocalization : MonoCache
 {

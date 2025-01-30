@@ -1,5 +1,3 @@
-using System;
-using System.Threading.Tasks;
 using Common;
 using Infrastructure;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
@@ -48,7 +46,7 @@ namespace UI.GeneralMenu
             AddListener();
 
             InitializeLocationSystem();
-           // _locationPanel.SetActive(!isActive);
+            // _locationPanel.SetActive(!isActive);
         }
         
         private void InitializeLocationSystem()
@@ -77,9 +75,9 @@ namespace UI.GeneralMenu
 
         private void Start()
         {
-        //    _yandexLeaderboard.Initialize(CreateLeaderboard());
+            //    _yandexLeaderboard.Initialize(CreateLeaderboard());
             
-                _loadingCurtain.OnLoaded();
+            _loadingCurtain.OnLoaded();
         }
         
         private void SwicthScene()

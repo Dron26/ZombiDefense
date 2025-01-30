@@ -168,7 +168,7 @@ namespace Infrastructure.AIBattle
         private void SetRandomParticlePosition(ParticleSystem particleSystem)
         {
             // Задаем случайные координаты внутри области
-            float randomY = UnityEngine.Random.Range(-_areaHeight / 2f, _areaHeight / 2f);
+            float randomY = Random.Range(-_areaHeight / 2f, _areaHeight / 2f);
             Vector3 randomPosition = new Vector3(0f, randomY, 0f);
             particleSystem.transform.position = transform.position + randomPosition;
         }
@@ -176,7 +176,7 @@ namespace Infrastructure.AIBattle
         private void SetRandomParticleScale(ParticleSystem particleSystem)
         {
             // Меняем размер частицы в небольших диапазонах
-            float randomScale = UnityEngine.Random.Range(_minParticleScale, _maxParticleScale);
+            float randomScale = Random.Range(_minParticleScale, _maxParticleScale);
             particleSystem.transform.localScale = new Vector3(randomScale, randomScale, randomScale);
         }
 

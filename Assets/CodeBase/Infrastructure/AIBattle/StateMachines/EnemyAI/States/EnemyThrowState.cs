@@ -4,6 +4,7 @@ using Characters.Humanoids.AbstractLevel;
 using Data;
 using Enemies;
 using UnityEngine;
+using EnemyData = Enemies.EnemyData;
 
 namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
 {

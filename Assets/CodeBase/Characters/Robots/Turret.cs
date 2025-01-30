@@ -29,15 +29,13 @@ namespace Characters.Robots
         public bool IsBuyed => _isBuyed;
         private RaycastHitChecker _raycastHitChecker;
         private TurretWeaponController _turretWeaponController;
-        private SaveLoadService _saveLoadService;
 
-        public void SetSaveLoadService(SaveLoadService saveLoadService)
+        public void SetSaveLoadService()
         {
-            _saveLoadService = saveLoadService;
             _raycastHitChecker = GetComponent<RaycastHitChecker>();
             if (_raycastHitChecker != null)
             {
-                _raycastHitChecker.Initialize(_saveLoadService);
+                _raycastHitChecker.Initialize();
             }
             else
             {

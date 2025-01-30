@@ -1,78 +1,80 @@
 using System.Collections.Generic;
 using System.Linq;
-using Boot.SO;
 using Infrastructure.AssetManagement;
 using Interface;
 using Services;
 using Services.SaveLoad;
-using UI.Locations;
 
-public class LocationDataLoader
+namespace UI.Locations
 {
-    private readonly IResourceLoadService _resourceLoadService;
-    private readonly SaveLoadService _saveLoadService;
-
-    public LocationDataLoader(SaveLoadService saveLoadService)
+    public class LocationDataLoader
     {
-        _resourceLoadService =  AllServices.Container.Single<IResourceLoadService>();
-        _saveLoadService = saveLoadService;
-    }
-
-    public List<Location> LoadLocations()
-    {
-        List<Location> locations = new List<Location>();
-        string pathLocations = AssetPaths.LocationsData;
-        int count = GetterFolderCount.GetFolderItemsCount(pathLocations);
-
-        // Загрузка данных локаций
-        for (int i = 0; i < count; i++)
+        private readonly IResourceLoadService _resourceLoadService;
+        private readonly SaveLoadService _saveLoadService;
+        private readonly LocationHandler _locationHandler;
+        public LocationDataLoader(SaveLoadService saveLoadService)
         {
-            string id = i.ToString();
-            LocationData data = _resourceLoadService.Load<LocationData>($"{pathLocations}{id}");
-            locations.Add(new Location(data.Id, data.IsTutorial, data.IsLocked, data.IsCompleted));
+            _resourceLoadService =  AllServices.Container.Single<IResourceLoadService>();
+            _saveLoadService = saveLoadService;
+            _locationHandler=AllServices.Container.Single<LocationHandler>();
         }
 
-        // Настройка начальных состояний
-        InitializeLocations(locations);
-
-        // Синхронизация с сохраненными данными
-        SyncWithSaveData(locations);
-
-        return locations;
-    }
-
-    private void InitializeLocations(List<Location> locations)
-    {
-        // Первая локация всегда разблокирована
-        locations[0].SetLock(false);
-    }
-
-    private void SyncWithSaveData(List<Location> locations)
-    {
-        List<int> completedLocationsId = _saveLoadService.GetCompletedLocationId();
-
-        // Если нет завершенных локаций, добавляем первую
-        if (completedLocationsId.Count == 0)
+        public List<LocationData> LoadLocations()
         {
-            completedLocationsId.Add(0);
-        }
+            List<LocationData> locations = new List<LocationData>();
+            string pathLocations = AssetPaths.LocationsData;
+            int count = GetterFolderCount.GetFolderItemsCount(pathLocations);
 
-        // Обновление состояний локаций на основе сохраненных данных
-        foreach (var id in completedLocationsId)
-        {
-            Location location = locations.FirstOrDefault(x => x.Id == id);
-            if (location != null)
+            // Загрузка данных локаций
+            for (int i = 0; i < count; i++)
             {
-                location.SetCompleted(true);
-                location.SetLock(false);
-
-                // Разблокируем следующую локацию
-                Location nextLocation = locations.FirstOrDefault(x => x.Id == id + 1);
-                nextLocation?.SetLock(false);
+                string id = i.ToString();
+                LocationData data = _resourceLoadService.Load<LocationData>($"{pathLocations}{id}");
+                locations.Add(new LocationData(data.Id, data.IsTutorial, data.IsLocked, data.IsCompleted));
             }
+
+            // Настройка начальных состояний
+            InitializeLocations(locations);
+
+            // Синхронизация с сохраненными данными
+            SyncWithSaveData(locations);
+
+            return locations;
         }
 
-        // Сохраняем обновленные данные
-        _saveLoadService.SetLocationsDatas(locations);
+        private void InitializeLocations(List<LocationData> locations)
+        {
+            // Первая локация всегда разблокирована
+            locations[0].SetLock(false);
+        }
+    
+        private void SyncWithSaveData(List<LocationData> locations)
+        {
+            List<int> completedLocationsId = _locationHandler.GetCompletedLocationId();
+
+            // Если нет завершенных локаций, добавляем первую
+            if (completedLocationsId.Count == 0)
+            {
+                completedLocationsId.Add(0);
+            }
+
+            // Обновление состояний локаций на основе сохраненных данных
+            foreach (var id in completedLocationsId)
+            {
+                LocationData locationData = locations.FirstOrDefault(x => x.Id == id);
+                if (locationData != null)
+                {
+                    locationData.SetCompleted(true);
+                    locationData.SetLock(false);
+
+                    // Разблокируем следующую локацию
+                    LocationData nextLocationData = locations.FirstOrDefault(x => x.Id == id + 1);
+                    nextLocationData?.SetLock(false);
+                }
+            }
+
+            // Сохраняем обновленные данные
+            _locationHandler.SetLocationsDatas(locations);
+        }
     }
 }

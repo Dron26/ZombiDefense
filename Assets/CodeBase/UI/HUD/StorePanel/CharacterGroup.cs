@@ -43,7 +43,7 @@ namespace UI.HUD.StorePanel
                     _animator.runtimeAnimatorController = _characterControllers[index];
                 }
                 
-               // animController.OnShoot(true);
+                // animController.OnShoot(true);
             }
             
             

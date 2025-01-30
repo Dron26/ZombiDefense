@@ -1,9 +1,7 @@
 using System;
-using Data;
 using Infrastructure;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.StateMachine;
-using Infrastructure.StateMachine.States;
 using Services;
 using Services.Audio;
 using Services.PauseService;
@@ -37,7 +35,7 @@ namespace UI.SettingsPanel
         [SerializeField]private AudioManager _audioManager;
         
         private GameStateMachine _stateMachine;
-        private SaveLoadService _saveLoadService;
+        private SaveLoadService ;
         private GameBootstrapper _gameBootstrapper;
         private IPauseService _pauseService;
 
@@ -45,7 +43,7 @@ namespace UI.SettingsPanel
         
         public void Initialize(SaveLoadService saveLoadService)
         {
-            _stateMachine = saveLoadService.GetGameBootstrapper().GetStateMachine();
+            _stateMachine = saveLoadService.GameBootstrapper.GetStateMachine();
             _panel.SetActive(true);
             _gameBootstrapper=FindObjectOfType<GameBootstrapper>();
             _saveLoadService = saveLoadService;

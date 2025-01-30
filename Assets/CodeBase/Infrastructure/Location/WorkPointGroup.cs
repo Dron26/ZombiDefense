@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Services.SaveLoad;
@@ -15,9 +14,8 @@ namespace Infrastructure.Location
         public UnityAction<WorkPoint> OnSelectPointToMove;
         public UnityAction<WorkPoint> OnSelectedPoint;
         public UnityAction<WorkPoint> OnSelectedStartPoint;
-        private SaveLoadService _saveLoadService;
         
-        private void TakeAllWorkPoints()
+        public void Initialize()
         {
             for (int i = 0; i < transform.childCount; i++)
             {
@@ -26,7 +24,7 @@ namespace Infrastructure.Location
                 if (workPoint != null)
                 {
                     workPoint.OnSelected += OnSelected;
-                    workPoint.SetSaveLoad(_saveLoadService);
+                    workPoint.Initialize(i);
                     _workPoints.Add(workPoint);
                 }
             }
@@ -58,10 +56,6 @@ namespace Infrastructure.Location
         }
 
 
-        public void Initialize(SaveLoadService saveLoadService)
-        {
-            _saveLoadService=saveLoadService;
-            TakeAllWorkPoints();
-        }
+        
     }
 }

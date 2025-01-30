@@ -5,10 +5,10 @@ using Characters.Robots;
 using Enemies.AbstractEntity;
 using Infrastructure.AIBattle.StateMachines.Humanoid.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.Factories.FactoryWarriors.Humanoids;
 using Infrastructure.Factories.FactoryWarriors.Robots;
 using Infrastructure.Location;
 using Infrastructure.Points;
+using Services;
 using Services.Audio;
 using Services.SaveLoad;
 using UI.HUD.StorePanel;
@@ -35,18 +35,16 @@ namespace Infrastructure.Logic.Inits
         private int _coutnCreated;
         public int CoutnOrdered => _countOrdered;
         private int _countOrdered;
-        private SaveLoadService _saveLoadService;
 
         public Action LastHumanoidDie;
 
         public void Initialize(AudioManager audioManager, SceneInitializer sceneInitializer, SaveLoadService saveLoadService,SceneObjectManager sceneObjectManager)
         {
-             _sceneObjectManager=sceneObjectManager;
-            _saveLoadService = saveLoadService;
+            _sceneObjectManager=sceneObjectManager;
             _sceneObjectManager.CreatedHumanoid +=  OnCreatedCharacted;
             _robotFactory.CreatedRobot += OnCreatedCharacted;
-            _robotFactory.Initialize(audioManager,_saveLoadService);
-            _workPointsGroup.Initialize(_saveLoadService);
+            _robotFactory.Initialize(audioManager);
+            _workPointsGroup.Initialize();
             FillWorkPoints();
             _store = sceneInitializer.Window.GetStoreOnPlay();
             _movePointController = sceneInitializer.GetMovePointController();
@@ -70,7 +68,7 @@ namespace Infrastructure.Logic.Inits
             }
             if (character.TryGetComponent(out Turret turret))
             {
-                turret.SetSaveLoadService(_saveLoadService);
+                turret.SetSaveLoadService();
             }
            
             _movePointController.SelectedPoint.SetCharacter(character);
@@ -103,7 +101,7 @@ namespace Infrastructure.Logic.Inits
             else if(character.TryGetComponent( out Turret turret))
             {
                 _countOrdered++;
-            //    CreateTurret(turret, transform);
+                //    CreateTurret(turret, transform);
                 _workPointsGroup.OnSelected(_movePointController.SelectedPoint);
             }
         }
@@ -149,8 +147,8 @@ namespace Infrastructure.Logic.Inits
 
         private void SetLocalParametrs()
         {
-            _saveLoadService.SetActiveCharacters(_activeCharacters);
-            _saveLoadService.SetInactiveHumanoids(_inactiveCharacetrs);
+            AllServices.Container.Single<CharacterHandler>().SetActiveCharacters(_activeCharacters);
+            AllServices.Container.Single<CharacterHandler>().SetInactiveHumanoids(_inactiveCharacetrs);
         }
 
         public void ClearData()

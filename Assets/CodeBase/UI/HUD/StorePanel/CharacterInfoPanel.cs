@@ -1,7 +1,5 @@
 using Characters.Humanoids.AbstractLevel;
-using Characters.Robots;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.Logic.WeaponManagment;
 using Lean.Localization;
 using TMPro;
 using UnityEngine;

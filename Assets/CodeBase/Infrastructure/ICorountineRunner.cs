@@ -3,8 +3,8 @@ using UnityEngine;
 
 namespace Infrastructure
 {
-  public interface ICoroutineRunner
-  {
-    Coroutine StartCoroutine(IEnumerator coroutine);
-  }
+    public interface ICoroutineRunner
+    {
+        Coroutine StartCoroutine(IEnumerator coroutine);
+    }
 }

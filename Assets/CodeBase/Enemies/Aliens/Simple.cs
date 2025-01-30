@@ -1,5 +1,4 @@
-﻿using System;
-using Enemies.AbstractEntity;
+﻿using Enemies.AbstractEntity;
 using Infrastructure.Logic.WeaponManagment;
 
 namespace Enemies.Aliens

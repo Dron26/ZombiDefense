@@ -1,5 +1,4 @@
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using UnityEngine.Serialization;
 
 namespace Data
 {

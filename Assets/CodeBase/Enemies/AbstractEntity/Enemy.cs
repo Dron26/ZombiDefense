@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using Animation;
-using Data;
 using Infrastructure.AIBattle;
 using Infrastructure.AIBattle.StateMachines.EnemyAI;
 using Infrastructure.AIBattle.StateMachines.EnemyAI.States;
-using Infrastructure.Logic.Inits;
 using Infrastructure.Logic.WeaponManagment;
 using Services.Audio;
-using Services.SaveLoad;
 using UnityEngine;
 using UnityEngine.AI;
-using EnemyData = Data.EnemyData;
+using EnemyData = Enemies.EnemyData;
 using Random = UnityEngine.Random;
 
 namespace Enemies.AbstractEntity
@@ -54,7 +51,6 @@ namespace Enemies.AbstractEntity
         private EnemyData _data;
         private EnemyStateMachine _stateMachine;
         private ObjectThrower _objectThrower;
-        private SaveLoadService _saveLoadService;
         private bool _isShieldbearer;
         private float _shieldHealth;
         private float _shieldMaxHealth;
@@ -62,7 +58,6 @@ namespace Enemies.AbstractEntity
         public Animator Animator => _animator;
         public EnemyAnimController EnemyAnimController => _enemyAnimController;
         public EnemyFXController FXController => _fxController;
-        public SaveLoadService SaveLoadService => _saveLoadService;
 
         private void Awake()
         {
@@ -75,9 +70,8 @@ namespace Enemies.AbstractEntity
             _agent = GetComponent<NavMeshAgent>();
         }
 
-        public void Initialize(AudioManager audioManager, EnemyData data, SaveLoadService saveLoadService)
+        public void Initialize(AudioManager audioManager, EnemyData data )
         {
-            _saveLoadService = saveLoadService;
             _audioManager = audioManager;
             _enemyDieState.OnRevival += OnRevival;
             _data = data;

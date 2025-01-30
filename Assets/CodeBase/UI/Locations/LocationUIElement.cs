@@ -1,9 +1,10 @@
-    using System;
-    using Infrastructure.BaseMonoCache.Code.MonoCache;
-    using UI.Locations;
-    using UnityEngine;
-    using UnityEngine.UI;
+using System;
+using Infrastructure.BaseMonoCache.Code.MonoCache;
+using UnityEngine;
+using UnityEngine.UI;
 
+namespace UI.Locations
+{
     public class LocationUIElement : MonoCache
     {
         [SerializeField] private int _id;
@@ -34,3 +35,4 @@
             _button.interactable = _isCompleted;
         }
     }
+}

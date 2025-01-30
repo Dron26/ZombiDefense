@@ -1,36 +1,28 @@
-using Enemies;
-using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
+using Enemies.AbstractEntity;
 
 namespace Data
 {
-    [CreateAssetMenu(fileName = "EnemyData", menuName = "EnemyData")]
-    public class EnemyData : ScriptableObject
+    public class EnemyData
     {
-        [Header("Basic Settings")] 
-        public GameObject prefab;
-        public EnemyType Type;
-        public float MaxHealth;
-        public float RangeAttack;
-        public int Damage;
-        public int Price;
-        public int Level;
+        private readonly List<Enemy> _activeEnemies = new();
+        private readonly List<Enemy> _inactiveEnemies = new();
 
+        public IReadOnlyList<Enemy> ActiveEnemies => _activeEnemies.AsReadOnly();
+        public IReadOnlyList<Enemy> InactiveEnemies => _inactiveEnemies.AsReadOnly();
 
-        [Space(10)] [Header("Abilities")] 
-        public bool IsThrower;
-        public bool IsPolice;
-        public bool IsSpecial;
-        public bool HasShield;
-        public int ShieldHealth;
+        public void AddActiveEnemy(Enemy enemy) => _activeEnemies.Add(enemy);
+        public void RemoveActiveEnemy(Enemy enemy)
+        {
+            _activeEnemies.Remove(enemy);
+            _inactiveEnemies.Add(enemy);
+        }
+
+        public int GetActiveEnemyCount() => _activeEnemies.Count;
+        public void ClearEnemies() => _activeEnemies.Clear();
         
-        
-        public int ThrowRangeAttack;
-        public ThrowAbilityData ThrowAbility;
-        public ExplosiveAbilityData ExplosiveAbility;
-
-        [Space(10)]
-        [Header("Animation & Navigation")]
-        public RuntimeAnimatorController CharacterController;
-        public float NavMeshSpeed;
+        public List<Entity> GetActiveEnemy() => 
+            _activeEnemies.Select(enemy => (Entity)enemy).ToList();
     }
 }

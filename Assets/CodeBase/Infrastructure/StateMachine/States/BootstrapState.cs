@@ -1,3 +1,4 @@
+using Data;
 using Data.Settings.Language;
 using Infrastructure.AssetManagement;
 using Infrastructure.Factories.FactoryGame;
@@ -13,6 +14,7 @@ namespace Infrastructure.StateMachine.States
 {
     public class BootstrapState:IState
     {
+        private LoadingCurtain _loadingCurtain;
         private const string Initial = "Initial";
         private readonly GameStateMachine _stateMachine;
         private readonly SceneLoader _sceneLoader;
@@ -22,8 +24,10 @@ namespace Infrastructure.StateMachine.States
         private  Language _language;
 
         public BootstrapState(GameStateMachine stateMachine, SceneLoader sceneLoader, AllServices allServices,
-            Language language, PauseService pauseService, SaveLoadService saveLoadService)
+            Language language, PauseService pauseService, SaveLoadService saveLoadService,
+            LoadingCurtain loadingCurtain)
         {
+            _loadingCurtain = loadingCurtain;
             _stateMachine = stateMachine;   
             _sceneLoader = sceneLoader;
             _services = allServices;
@@ -43,6 +47,9 @@ namespace Infrastructure.StateMachine.States
 
         private void RegisterServices()
         {
+            var UIhandler = new UIHandler();
+            UIhandler.SetCurtain(_loadingCurtain);
+            
             _services.RegisterSingle<IAssets>(new AssetProvider());
             _services.RegisterSingle<IGameFactory>(new GameFactory(_services.Single<IAssets>()));
             _services.RegisterSingle<ILocalizationService>((new LocalizationService(_language)));
@@ -56,10 +63,13 @@ namespace Infrastructure.StateMachine.States
             
             _services.RegisterSingle<IDataPersistence>(new DataPersistence());
             _services.RegisterSingle<ICharacterHandler>(new CharacterHandler(_saveLoadService.Characters));
-            _services.RegisterSingle<IEnemyHandler>(new EnemyHandler(_saveLoadService.Enemies));
             _services.RegisterSingle<ICurrencyHandler>(new CurrencyHandler(_saveLoadService.Money));
             _services.RegisterSingle<IUIHandler>(new UIHandler());
-            
+            _services.RegisterSingle<IAudioSettingsHandler>(new AudioSettingsHandler(_saveLoadService.AudioData));
+            _services.RegisterSingle<IAchievementsHandler>(new AchievementsHandler(_saveLoadService.AchievementsData));
+            _services.RegisterSingle<IEnemyHandler>(new EnemyHandler(_saveLoadService.Enemies));
+            _services.RegisterSingle<ILocationHandler>(new LocationHandler());
+            _services.RegisterSingle<IGameEventBroadcaster>(new GameEventBroadcaster());
         }
     }
 }

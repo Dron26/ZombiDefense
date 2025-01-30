@@ -1,4 +1,3 @@
-using Data.Settings;
 using Data.Settings.Language;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.StateMachine;
@@ -6,9 +5,7 @@ using Infrastructure.StateMachine.States;
 using Services.PauseService;
 using Services.SaveLoad;
 using Services.Yandex;
-using UI.Locations;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Infrastructure
 {
@@ -27,7 +24,6 @@ namespace Infrastructure
             DontDestroyOnLoad(this);
             _saveLoadService = GetComponent<SaveLoadService>();
             _saveLoadService.SetGameBootstrapper(this);
-            _saveLoadService.SetCurtain(_loadingCurtain);
         }
 
         public void Start()

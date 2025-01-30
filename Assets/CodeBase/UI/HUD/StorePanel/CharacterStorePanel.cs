@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using Characters.Humanoids.AbstractLevel;
 using DG.Tweening;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.Location;
 using Infrastructure.Logic.Inits;
 using UnityEngine;
 using UnityEngine.Events;
@@ -10,9 +9,9 @@ using UnityEngine.UI;
 
 namespace UI.HUD.StorePanel
 {
-   public class CharacterStorePanel : MonoCache
+    public class CharacterStorePanel : MonoCache
     {
-       [SerializeField] private Image _characterImagePrefab;
+        [SerializeField] private Image _characterImagePrefab;
         private float _circleRadius = 200f;
         [SerializeField] private List<Sprite> _characterSprites;
         [SerializeField] private List<Character> _availableCharacters;
@@ -109,11 +108,11 @@ namespace UI.HUD.StorePanel
             _confirmationDialog.SetActive(false);
         }
 
-         public void BuyCharacters(Humanoid humanoid)
-         {
-             BuyCharacter?.Invoke(humanoid);
-             CloseConfirmationDialog();
-         }
+        public void BuyCharacters(Humanoid humanoid)
+        {
+            BuyCharacter?.Invoke(humanoid);
+            CloseConfirmationDialog();
+        }
 
         public void ShowCharacters()
         {

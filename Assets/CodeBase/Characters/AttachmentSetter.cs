@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Characters.Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;

@@ -36,7 +36,7 @@ namespace Services.Audio
             _mixerMusic = (AudioMixer)Resources.Load("MixerMusic");
             _audioManager = audioManager;
             _saveLoadService = saveLoadService;
-            _audioData = _saveLoadService.GetAudioData();
+            _audioData = AllServices.Container.Single<AudioSettingsHandler>().GetAudioData();
             _isMusicEnabled = _audioData.MusicEnabled;
             _currentVolumeMusic = _audioData.CurrentVolumeMusic;
             _musicClips  = audioClipAddressesType.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
@@ -64,8 +64,8 @@ namespace Services.Audio
             }
             else
             {
-                 SoundInstance.StopMusic();
-                 SoundInstance.StartRandomMusic();
+                SoundInstance.StopMusic();
+                SoundInstance.StartRandomMusic();
             }
         }
 
@@ -97,15 +97,15 @@ namespace Services.Audio
         private void AddListener()
         {
             _audioManager.OnMenuEnabled+=SetBackgroundMusics;
-            _saveLoadService.GetCurtain().OnStartLoading+=SetLoadingMusic;
-            _saveLoadService.GetCurtain().OnClicked+=SetBackgroundMusics;
+            AllServices.Container.Single<UIHandler>().GetCurtain().OnStartLoading+=SetLoadingMusic;
+            AllServices.Container.Single<UIHandler>().GetCurtain().OnClicked+=SetBackgroundMusics;
         }
 
         private void RemoveListener()
         {
             _audioManager.OnMenuEnabled-=SetBackgroundMusics;
-            _saveLoadService.GetCurtain().OnStartLoading-=SetLoadingMusic;
-            _saveLoadService.GetCurtain().OnClicked-=SetBackgroundMusics;
+            AllServices.Container.Single<UIHandler>().GetCurtain().OnStartLoading-=SetLoadingMusic;
+            AllServices.Container.Single<UIHandler>().GetCurtain().OnClicked-=SetBackgroundMusics;
         }
 
         private void OnDestroy()

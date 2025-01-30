@@ -3,7 +3,6 @@ using Data.Upgrades;
 using Enemies.AbstractEntity;
 using Infrastructure.AIBattle;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.Location;
 using Infrastructure.Logic.WeaponManagment;
 using UnityEngine;
 
@@ -108,7 +107,7 @@ namespace Characters.Robots
 
         private void LookEnemyPosition(Vector3 hitPosition)
         {
-          float   _turnTime = 0;
+            float   _turnTime = 0;
 
             if (currentTurnCoroutine != null)
             {

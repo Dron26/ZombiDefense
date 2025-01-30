@@ -14,9 +14,9 @@ namespace Infrastructure.BaseMonoCache.Code.MonoCache
         public void CheckForExceptions()
         {
             var subclassTypes = Assembly
-                .GetAssembly(typeof(Infrastructure.BaseMonoCache.Code.MonoCache.MonoCache))
+                .GetAssembly(typeof(MonoCache))
                 .GetTypes()
-                .Where(type => type.IsSubclassOf(typeof(Infrastructure.BaseMonoCache.Code.MonoCache.MonoCache)));
+                .Where(type => type.IsSubclassOf(typeof(MonoCache)));
             
             foreach (var type in subclassTypes)
             {
@@ -67,7 +67,7 @@ namespace Infrastructure.BaseMonoCache.Code.MonoCache
         private string GetExceptionBaseText(string methodName, string className)
         {
             var classNameColored = ColoredText.GetColoredText(ColoredText.RedColor, className);
-            var monoCacheNameColored = ColoredText.GetColoredText(ColoredText.OrangeColor, nameof(Infrastructure.BaseMonoCache.Code.MonoCache.MonoCache));
+            var monoCacheNameColored = ColoredText.GetColoredText(ColoredText.OrangeColor, nameof(MonoCache));
             var methodNameColored = ColoredText.GetColoredText(ColoredText.RedColor, methodName);
             var baseTextColored = ColoredText.GetColoredText(ColoredText.WhiteColor,
                 $"can't be implemented in subclass {classNameColored} of {monoCacheNameColored}. Use ");
@@ -78,7 +78,7 @@ namespace Infrastructure.BaseMonoCache.Code.MonoCache
         private string GetWarningBaseText(string methodName, string recommendedMethod, string className)
         {
             var coloredClass = ColoredText.GetColoredText(ColoredText.OrangeColor, className);
-            var monoCacheNameColored = ColoredText.GetColoredText(ColoredText.OrangeColor, nameof(Infrastructure.BaseMonoCache.Code.MonoCache.MonoCache));
+            var monoCacheNameColored = ColoredText.GetColoredText(ColoredText.OrangeColor, nameof(MonoCache));
             var coloredMethod = ColoredText.GetColoredText(ColoredText.OrangeColor, methodName);
             
             var coloredRecommendedMethod =

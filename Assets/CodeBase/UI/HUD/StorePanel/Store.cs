@@ -6,14 +6,14 @@ using Data;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Location;
 using Infrastructure.Logic.Inits;
-using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.UI;
 using Infrastructure.Points;
+using Interface;
 using Services;
 using Services.PauseService;
 using Services.SaveLoad;
 using UI.Buttons;
+using UnityEngine;
+using UnityEngine.UI;
 using CharacterData = Characters.Humanoids.AbstractLevel.CharacterData;
 
 namespace UI.HUD.StorePanel
@@ -50,7 +50,6 @@ namespace UI.HUD.StorePanel
         private SceneInitializer _sceneInitializer;
         private PlayerCharacterInitializer _characterInitializer;
         private MovePointController _movePointController;
-        private SaveLoadService _saveLoadService;
         private int maxLevel = 3;
         private bool _isPanelActive = false;
         public Action<bool> IsStoreActive;
@@ -61,22 +60,24 @@ namespace UI.HUD.StorePanel
         private BoxStore _boxStore;
         public event Action <BoxData> OnBoughtBox;
         public event Action <CharacterData> OnBoughtCharacter;
-        public void Initialize(SceneInitializer initializer, SaveLoadService saveLoadService )
+        private GameEventBroadcaster _eventBroadcaster;
+
+        public void Initialize(SceneInitializer initializer)
         {
             _wallet = GetComponent<Wallet>();
             _boxStore = GetComponent<BoxStore>();
             _pauseService = AllServices.Container.Single<IPauseService>();
-            
+            _eventBroadcaster=AllServices.Container.Single<GameEventBroadcaster>(); 
+
             _storePanel.gameObject.SetActive(!_storePanel.activeSelf);
-            _saveLoadService = saveLoadService;
             _sceneInitializer = initializer;
-            _moneyAmount = _saveLoadService.Money.AllAmountMoney;
+            _moneyAmount = AllServices.Container.Single<CurrencyHandler>().GetCurrentMoney();
             _workPointGroup = _sceneInitializer.GetPlayerCharacterInitializer().GetWorkPointGroup();
-            _boxStore.Initialize(_saveLoadService,_wallet);
+            _boxStore.Initialize(_wallet);
             SetCharacterInitializer();
             _storePanel.gameObject.SetActive(!_storePanel.activeSelf);
-                // _adsStore.Initialize(_wallet);
-            _wallet.Initialize(_saveLoadService);
+            // _adsStore.Initialize(_wallet);
+            _wallet.Initialize();
             
             AddListener();
         }
@@ -85,7 +86,7 @@ namespace UI.HUD.StorePanel
         {
             _characterInitializer = _sceneInitializer.GetPlayerCharacterInitializer();
             //_characterInitializer.OnClickWorkpoint += CheckPointInfo;
-            _characters = _saveLoadService.Characters.AvailableCharacters.ToList();
+            _characters = AllServices.Container.Single<CharacterHandler>().GetAvailableCharacter();
             
             _characterStore.Initialize( this);
             
@@ -121,7 +122,7 @@ namespace UI.HUD.StorePanel
         {
             ShowPanelAdsForMoney();
             _storePanel.gameObject.SetActive(false);
-                //  _adsStore.gameObject.SetActive(true);
+            //  _adsStore.gameObject.SetActive(true);
         }
 
         private void CheckPointInfo(WorkPoint workPoint)
@@ -204,7 +205,7 @@ namespace UI.HUD.StorePanel
         
         private void AddListener()
         {
-            _saveLoadService.OnSelectedNewPoint += CheckPointInfo;
+            _eventBroadcaster.OnSelectedNewPoint += CheckPointInfo;
             _characterStore.OnMoneyEmpty += ShowPanelAdsForMoney;
             
             _pointUpgradePanel.OnSelectedButton += (BuyPointUp);
@@ -224,7 +225,7 @@ namespace UI.HUD.StorePanel
         }
         private void RemoveListener()
         {
-            _saveLoadService.OnSelectedNewPoint -= CheckPointInfo;
+            _eventBroadcaster.OnSelectedNewPoint -= CheckPointInfo;
             _characterStore.BuyCharacter -= BuyCharacter;
             _characterStore.OnMoneyEmpty -= ShowPanelAdsForMoney;
             _pointUpgradePanel.OnSelectedButton -= (BuyPointUp);

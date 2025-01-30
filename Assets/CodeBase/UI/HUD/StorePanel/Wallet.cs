@@ -1,7 +1,10 @@
 using System;
 using Enemies.AbstractEntity;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Interface;
+using Services;
 using Services.SaveLoad;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace UI.HUD.StorePanel
@@ -14,10 +17,10 @@ namespace UI.HUD.StorePanel
         public int TempMoney { get; set; }
         public event Action MoneyChanged;
 
-        public void Initialize(SaveLoadService saveLoadService)
+        public void Initialize()
         {
-            TempMoney = saveLoadService.FixMoneyState();
-            saveLoadService.OnEnemyDeath += AddMoneyForKilledEnemy;
+            TempMoney = AllServices.Container.Single<CurrencyHandler>().FixTemporaryMoneyState();
+            AddListener();
         }
 
         public void AddMoneyForKilledEnemy(Enemy enemy)
@@ -50,6 +53,21 @@ namespace UI.HUD.StorePanel
         public bool IsMoneyEnough(int price)
         {
             return TempMoney >= price;
+        }
+        
+        private void AddListener()
+        {
+            AllServices.Container.Single<GameEventBroadcaster>().OnEnemyDeath += AddMoneyForKilledEnemy;
+        }
+
+        protected override void OnDisable()
+        {
+            RemoveListener();
+        }
+
+        private void RemoveListener()
+        {
+            AllServices.Container.Single<GameEventBroadcaster>().OnEnemyDeath -= AddMoneyForKilledEnemy;
         }
     }
 }

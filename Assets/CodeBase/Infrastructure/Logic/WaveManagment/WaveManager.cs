@@ -6,7 +6,8 @@ using Infrastructure.AssetManagement;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Factories.FactoryWarriors.Enemies;
 using Infrastructure.Logic.Inits;
-using Services.SaveLoad;
+using Interface;
+using Services;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -34,15 +35,17 @@ namespace Infrastructure.Logic.WaveManagment
         public int TotalWaves => _wavesContainerData.GroupWaveData.Count;
         private int _currentStartedWave;
         public UnityAction OnReadySpawning;
-        private SaveLoadService _saveLoadService;
         private SceneInitializer _sceneInitializer;
         private WavesContainerData _wavesContainerData;
+        private LocationHandler _locationHandler;
         public List<WaveData> _groupWaveData;
         public List<List<int>> _groupEnemyCount;
-        public int LocationId => _saveLoadService.Locations.SelectedLocationId;
+        private GameEventBroadcaster _eventBroadcaster;
+
         private void InitializeContainer()
         {
-            string path =AssetPaths.WavesContainerData + LocationId;
+            _locationHandler = AllServices.Container.Single<LocationHandler>();
+            string path =AssetPaths.WavesContainerData + _locationHandler.SelectedLocationId;
             _wavesContainerData = Resources.Load<WavesContainerData>(path);
             _groupWaveData=_wavesContainerData.GroupWaveData;;
         }
@@ -53,12 +56,12 @@ namespace Infrastructure.Logic.WaveManagment
             _enemyFactory = GetComponent<EnemyFactory>();
         }
 
-        public void Initialize(SaveLoadService saveLoadService, SceneInitializer sceneInitializer)
+        public void Initialize(SceneInitializer sceneInitializer)
         {
             _sceneInitializer = sceneInitializer;
-            _saveLoadService = saveLoadService;
-            
-            _enemyFactory.Initialize( _sceneInitializer.GetAudioController(),_saveLoadService);
+            _eventBroadcaster=AllServices.Container.Single<GameEventBroadcaster>(); 
+
+            _enemyFactory.Initialize( _sceneInitializer.GetAudioController());
             _waveSpawner.Initialize(_sceneInitializer.GetAudioController(), _enemyFactory, this);
             _canFillWave = true;
             
@@ -85,11 +88,6 @@ namespace Infrastructure.Logic.WaveManagment
                 StartSpawn?.Invoke();
             }
         }
-        
-        public SaveLoadService GetSaveLoad()
-        {
-            return _saveLoadService;
-        }
 
         private void SetMaxCountEnemy()
         {
@@ -102,7 +100,7 @@ namespace Infrastructure.Logic.WaveManagment
                 }
             }
             
-            _saveLoadService.Locations.SetMaxEnemyOnScene(count);
+            _locationHandler.SetMaxEnemyOnScene(count);
         }
         
         public void StopSpawn()
@@ -135,7 +133,7 @@ namespace Infrastructure.Logic.WaveManagment
             _waveSpawner.OnCompletedWave += CompletedWave;
             _waveSpawner.OnStartedWave += OnStartedWave;
             _sceneInitializer.OnClickContinue += SetContinue;
-            _saveLoadService.LastEnemyRemained += SetWaveData;
+            _eventBroadcaster.LastEnemyRemained += SetWaveData;
         }
 
         public void OnStartedWave()
@@ -172,7 +170,7 @@ namespace Infrastructure.Logic.WaveManagment
             _waveSpawner.OnSpawnPointsReady -= OnWaveFilled;
             _waveSpawner.OnCompletedWave -= CompletedWave;
             _sceneInitializer.OnClickContinue -= SetContinue;
-            _saveLoadService.LastEnemyRemained -= SetWaveData;
+            _eventBroadcaster.LastEnemyRemained -= SetWaveData;
         }
     }
 }

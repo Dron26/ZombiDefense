@@ -10,7 +10,6 @@ using Infrastructure.Points;
 using Lean.Localization;
 using TMPro;
 using UnityEngine;
-using UnityEngine.AI;
 using UnityEngine.UI;
 
 namespace Infrastructure.Tutorial
@@ -146,7 +145,6 @@ namespace Infrastructure.Tutorial
 
         private void OpenDoor()
         {
-            _initializer.GetSaveLoad().GetActiveEnemy()[0].GetComponent<NavMeshAgent>().speed = 1;
             _rotationDoorFirst.eulerAngles=new Vector3(0,_eulerDoor,0);
             _rotationDoorSecond.eulerAngles=new Vector3(0,-_eulerDoor,0);
         }

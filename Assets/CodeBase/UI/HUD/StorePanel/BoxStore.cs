@@ -1,20 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using Characters.Humanoids.AbstractLevel;
 using Data;
 using Infrastructure.AIBattle;
-using Infrastructure.AIBattle.AdditionalEquipment;
 using Infrastructure.AssetManagement;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Factories;
 using Infrastructure.Location;
 using Infrastructure.Logic.WeaponManagment;
 using Services.SaveLoad;
-using UI.Locations;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Assertions.Must;
+using Object = UnityEngine.Object;
 
 namespace UI.HUD.StorePanel
 {
@@ -36,11 +33,10 @@ namespace UI.HUD.StorePanel
         private AdditionalBox _medicineBox;
         public event Action <BoxData> BuyBox;
         
-        public void Initialize(SaveLoadService saveLoadService, Wallet wallet)
+        public void Initialize(Wallet wallet)
         {
-            _saveLoadService = saveLoadService;
             _wallet = wallet;
-            _additionalEquipmentButton.Initialize(_saveLoadService);
+            _additionalEquipmentButton.Initialize();
             _boxFactory = GetComponent<BoxFactory>();
             _itemFactory= GetComponent<ItemFactory>();
             AddListener();
@@ -70,11 +66,11 @@ namespace UI.HUD.StorePanel
         private List<BoxData> CreateBoxesGroup()
         {   
             List<BoxData> boxes=new List<BoxData>();
-            UnityEngine.Object[] boxObjects = Resources.LoadAll(AssetPaths.Boxes);
+            Object[] boxObjects = Resources.LoadAll(AssetPaths.Boxes);
 
             foreach (GameObject boxObject in boxObjects)
             {
-                string fileName = System.IO.Path.GetFileNameWithoutExtension(boxObject.name);
+                string fileName = Path.GetFileNameWithoutExtension(boxObject.name);
 
 
                 if (Enum.TryParse(fileName, out BoxType boxType))
@@ -120,16 +116,16 @@ namespace UI.HUD.StorePanel
 
         private void SelectBox(BoxType type)
         {
-                BoxData data = _boxesData.Keys.FirstOrDefault(box => box.Type == type);
+            BoxData data = _boxesData.Keys.FirstOrDefault(box => box.Type == type);
                 
-                int price = _boxesData[data];
+            int price = _boxesData[data];
 
-                if (_wallet.IsMoneyEnough(price))
-                {
-                    _wallet.SpendMoney(price);
-                    BuyBox?.Invoke(data);
-                    _additionalEquipmentButton.HideButton();
-                }
+            if (_wallet.IsMoneyEnough(price))
+            {
+                _wallet.SpendMoney(price);
+                BuyBox?.Invoke(data);
+                _additionalEquipmentButton.HideButton();
+            }
         }
 
 

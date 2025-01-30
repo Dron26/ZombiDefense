@@ -10,7 +10,6 @@ using Services.PauseService;
 using Services.SaveLoad;
 using TMPro;
 using UI.HUD.StorePanel;
-using UI.Locations;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -52,13 +51,15 @@ namespace UI.Report
         private GameStateMachine _stateMachine;
         private Wallet _wallet;
         private IPauseService _pauseService;
+        private AchievementsHandler _achievementsHandler;
         public void Init(SaveLoadService saveLoadService , Store store)
         {
             _saveLoadService = saveLoadService;
-            _stateMachine = saveLoadService.GetGameBootstrapper().GetStateMachine();
+            _stateMachine = saveLoadService.GameBootstrapper.GetStateMachine();
             _panel.SetActive(false);
             _wallet=store.GetWallet();
             _pauseService = AllServices.Container.Single<IPauseService>();
+            _achievementsHandler = AllServices.Container.Single<AchievementsHandler>();
             AddListener();
         }
 
@@ -88,12 +89,12 @@ namespace UI.Report
 
             
             _panel.SetActive(true);
-            _numberKilledEnemies = _saveLoadService.GetNumberKilledEnemies();
-            _allNumberKilledEnemies = _saveLoadService.GetAllNumberKilledEnemies();
-            _survival = _saveLoadService.GetSurvivalsCount();
-            _deadMercenary = _saveLoadService.GetDeadMercenaryCount();
+            _numberKilledEnemies = _achievementsHandler.KilledEnemies;
+            _allNumberKilledEnemies = _achievementsHandler.DailyKilledEnemies;
+            _survival = _achievementsHandler.SurvivalCount;
+            _deadMercenary = _achievementsHandler.DeadMercenaryCount;
             _profit = _wallet.MoneyForEnemy;
-            _numberSurvivalEnemies=_saveLoadService.GetActiveEnemy().Count;
+            _numberSurvivalEnemies=AllServices.Container.Single<EnemyHandler>().GetActiveEnemy().Count;
             
             _infoSurvivalEnemies.TranslationName = ReportKey.SurvivorsEnemies.ToString();
             _infoSurvivalEnemiesValue.text = _numberSurvivalEnemies.ToString();

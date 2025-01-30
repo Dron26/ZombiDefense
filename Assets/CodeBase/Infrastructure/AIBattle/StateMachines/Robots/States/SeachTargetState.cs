@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Linq;
 using Enemies.AbstractEntity;
 using Infrastructure.AIBattle.StateMachines.Humanoid.States;
 using Infrastructure.Logic.WeaponManagment;
@@ -40,7 +39,7 @@ namespace Infrastructure.AIBattle.StateMachines.Robots.States
 
         protected override void OnEnabled()
         {
-           _coroutine=StartCoroutine(Search());
+            _coroutine=StartCoroutine(Search());
         }
 
         private IEnumerator Search()

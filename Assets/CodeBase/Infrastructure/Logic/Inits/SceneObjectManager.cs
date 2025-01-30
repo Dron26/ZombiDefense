@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Characters.Humanoids.AbstractLevel;
 using Characters.Robots;
@@ -17,6 +18,7 @@ using UI.HUD.StorePanel;
 using UnityEngine;
 using UnityEngine.Events;
 using CharacterData = Characters.Humanoids.AbstractLevel.CharacterData;
+using Random = UnityEngine.Random;
 
 namespace Infrastructure.Logic.Inits
 {
@@ -153,7 +155,7 @@ namespace Infrastructure.Logic.Inits
 
         private void OnBoughtUpgrade(WorkPoint point)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         private void RemoveListener()

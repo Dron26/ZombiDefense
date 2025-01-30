@@ -10,7 +10,6 @@ using Infrastructure.Logic.WaveManagment;
 using Infrastructure.Points;
 using Infrastructure.StateMachine;
 using Infrastructure.StateMachine.States;
-using Infrastructure.Tutorial;
 using Interface;
 using Services;
 using Services.Ads;
@@ -18,11 +17,9 @@ using Services.Audio;
 using Services.PauseService;
 using Services.SaveLoad;
 using UI;
-using UI.Locations;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using Image = UnityEngine.UI.Image;
+using UnityEngine.UI;
 
 namespace Infrastructure.Logic.Inits
 {
@@ -58,20 +55,22 @@ namespace Infrastructure.Logic.Inits
         private IPauseService _pauseService;
         public bool IsStartedTutorial => _isTutorialLevel;
         private bool _isTutorialLevel;
-
+        private GameEventBroadcaster _eventBroadcaster;
 
         public Action OnLoaded;
 
         public void Initialize(GameStateMachine stateMachine)
         {
             Debug.Log("SceneInitializer().Initialize");
+            _eventBroadcaster=AllServices.Container.Single<GameEventBroadcaster>(); 
+
             _stateMachine = stateMachine;
             _gameBootstrapper = FindObjectOfType<GameBootstrapper>();
             _saveLoadService = _gameBootstrapper.GetSaveLoad();
-            _saveLoadService.SetEvenSystem(_eventSystem);
+            AllServices.Container.Single<UIHandler>().SetEvenSystem(_eventSystem);
 
             LocationFactory _locationFactory = new LocationFactory();
-            LocationPrefab location = _locationFactory.Create(_saveLoadService.Locations.SelectedLocationId).GetComponent<LocationPrefab>();
+            LocationPrefab location = _locationFactory.Create(AllServices.Container.Single<LocationHandler>().SelectedLocationId).GetComponent<LocationPrefab>();
             SetInitializers(location);
             LoadCharacters();
             Debug.Log("Finish LoadCharacters();");
@@ -102,7 +101,7 @@ namespace Infrastructure.Logic.Inits
             _sceneObjectManager.Initialize(_hudPanel.GetStore(), _movePointController, _audioManager, _saveLoadService);
             Debug.Log("Finish _sceneObjectManager();");
 
-            _movePointController.Initialize(this, _saveLoadService);
+            _movePointController.Initialize(this);
             Debug.Log("Finish _movePointController();");
             _pauseService = AllServices.Container.Single<IPauseService>();
             
@@ -120,14 +119,13 @@ namespace Infrastructure.Logic.Inits
 
         private void OnLastHumanoidDie()
         {
-            _saveLoadService.OnLastHumanoidDie();
             _waveManager.StopSpawn();
         }
 
         private void InitializeEnemies()
         {
             Debug.Log("+++InitializeEnemies++++");
-            _waveManager.Initialize(_saveLoadService, this);
+            _waveManager.Initialize(this);
             Debug.Log("Finish _playerCharacterInitializer();");
             Debug.Log("Finish _playerCharacterInitializer();");
 
@@ -233,7 +231,7 @@ namespace Infrastructure.Logic.Inits
             _hudPanel.OnResetLevel += ResetLevel;
             _loadingCurtain.OnClicked += OnClikedCurtain;
             _playerCharacterInitializer.CreatedCharacter += SetInfo;
-            _playerCharacterInitializer.LastHumanoidDie += OnLastHumanoidDie;
+            _eventBroadcaster.LastHumanoidDie += OnLastHumanoidDie;
         }
 
         private void RemoveListener()
@@ -243,7 +241,7 @@ namespace Infrastructure.Logic.Inits
             _hudPanel.OnResetLevel -= ResetLevel;
             _loadingCurtain.OnClicked -= OnClikedCurtain;
             _playerCharacterInitializer.CreatedCharacter -= SetInfo;
-            _playerCharacterInitializer.LastHumanoidDie -= OnLastHumanoidDie;
+            _eventBroadcaster.LastHumanoidDie -= OnLastHumanoidDie;
             _waveManager.OnReadySpawning -= ReadyToSpawning;
             _timerDisplay.OnClickReady -= _waveManager.Spawn;
         }

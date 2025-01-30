@@ -1,4 +1,3 @@
-using Characters.Humanoids;
 using Characters.Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using UnityEngine;

@@ -1,12 +1,11 @@
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
 
 namespace UI.Buttons
 {
     public class RewardedAdsButton:MonoCache
     {
-       // private AdsSetter _adsSetter;
+        // private AdsSetter _adsSetter;
         private Button _button;
         private void Initialize()
         {
@@ -21,7 +20,7 @@ namespace UI.Buttons
         
         public void OnClick()
         {
-         //   _adsSetter.ShowRewardedAd();
+            //   _adsSetter.ShowRewardedAd();
             SetState(false);
         }
 

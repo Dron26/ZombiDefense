@@ -3,6 +3,7 @@ using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Interface;
 using Services.PauseService;
 using UnityEngine;
+
 //using Agava.WebUtility;
 
 namespace Services
@@ -77,7 +78,7 @@ namespace Services
         
         private void OnApplicationFocus(bool hasFocus)
         {
-           OnInBackgroundChange(!hasFocus);
+            OnInBackgroundChange(!hasFocus);
         }
     }
 }

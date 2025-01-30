@@ -1,6 +1,4 @@
-﻿using System;
-using Characters.Humanoids.AbstractLevel;
-using Infrastructure.AIBattle.AdditionalEquipment;
+﻿using Characters.Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
 using Services.Audio;
@@ -19,7 +17,7 @@ namespace Infrastructure.AIBattle
         
        
         private AudioClip _shoot;
-         private AudioClip _reload;
+        private AudioClip _reload;
         private AudioSource _audioSource;
         private Weapon _weapon;
         private AudioManager _audioManager;
@@ -34,8 +32,8 @@ namespace Infrastructure.AIBattle
                 _character.OnInitialize+=SetAudio;
             }
              
-             _humanoidWeaponController= GetComponent<HumanoidWeaponController>();
-             _humanoidWeaponController.OnInitialized += SetWeapon;
+            _humanoidWeaponController= GetComponent<HumanoidWeaponController>();
+            _humanoidWeaponController.OnInitialized += SetWeapon;
         }
 
         private void SetAudio(Character character)
@@ -50,8 +48,8 @@ namespace Infrastructure.AIBattle
 
         public void OnAttackFX()
         {
-                _audioSource.PlayOneShot(_shoot);
-                _particleGunshotSingle.Play();
+            _audioSource.PlayOneShot(_shoot);
+            _particleGunshotSingle.Play();
         }
         
         public void OnTankDeathFX()
@@ -76,7 +74,7 @@ namespace Infrastructure.AIBattle
         public void OnDieFX()
         {
             //_particleDie.Play();
-           // _audioDie.Play();
+            // _audioDie.Play();
         }
 
         public void OnReloadFX()
@@ -94,8 +92,8 @@ namespace Infrastructure.AIBattle
         
         protected override void  OnDisable()
         {
-           // _humanoid.RemoveObserver(this);
-          //  _weaponController.RemoveObserver(this);
+            // _humanoid.RemoveObserver(this);
+            //  _weaponController.RemoveObserver(this);
         }
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Services;
 using Services.SaveLoad;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -13,10 +14,10 @@ namespace Characters.Robots
         private EventSystem _eventSystem;
         public Vector3 Point { get; set; }
     
-        public void Initialize(SaveLoadService saveLoadService)
+        public void Initialize()
         {
-            _raycaster = saveLoadService.GetRaycasterPanel();
-            _eventSystem = saveLoadService.GetEventSystem();
+            _raycaster = AllServices.Container.Single<UIHandler>().GetRaycaster();
+            _eventSystem = AllServices.Container.Single<UIHandler>().GetEventSystem();
         }
 
         public bool  CanGetRaycastHit()
@@ -30,16 +31,16 @@ namespace Characters.Robots
 
             _raycaster.Raycast(_pointerEventData, results);
         
-                if (results.Count == 0)
+            if (results.Count == 0)
+            {
+                if (Physics.Raycast(ray, out RaycastHit hit)&&!hit.collider.CompareTag("Point")&&!hit.collider.CompareTag("PlayerUnit"))
                 {
-                    if (Physics.Raycast(ray, out RaycastHit hit)&&!hit.collider.CompareTag("Point")&&!hit.collider.CompareTag("PlayerUnit"))
-                    {
-                        canGetPoint = true;
-                        Point=hit.point;
-                    }
+                    canGetPoint = true;
+                    Point=hit.point;
                 }
+            }
 
-                return canGetPoint;
+            return canGetPoint;
         }
     }
 }

@@ -27,7 +27,7 @@ namespace Services.Audio
             _mixerSound = (AudioMixer)Resources.Load("MixerSound");
             _audioManager=audioManager;
             _saveLoadService = saveLoadService;
-            _audioData = _saveLoadService.GetAudioData();
+            _audioData =AllServices.Container.Single<AudioSettingsHandler>().GetAudioData();
             _isSoundEnabled = _audioData.SoundEnabled;
             _currentVolumeSound = _audioData.CurrentVolumeSound;
             

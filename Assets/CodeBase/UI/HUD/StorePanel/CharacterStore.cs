@@ -2,13 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Characters.Humanoids.AbstractLevel;
-using Characters.Humanoids.People;
-using Characters.Robots;
-using Data.Upgrades;
-using Infrastructure.AIBattle.AdditionalEquipment;
 using Infrastructure.AssetManagement;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.Logic.WeaponManagment;
 using UnityEngine;
 using UnityEngine.UI;
 using Upgrades;
@@ -174,7 +169,7 @@ namespace UI.HUD.StorePanel
                 string path = AssetPaths.CharactersData + types[i];
                 CharacterData data = Resources.Load<CharacterData>(path);
                 _charactersData.Add(data);
-               //_charactersObject[i].SetActive(false);
+                //_charactersObject[i].SetActive(false);
 
                 // if (_charactersObject[i].TryGetComponent(out Character character))
                 // {

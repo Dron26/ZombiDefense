@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Data;
 using Enemies;
@@ -6,7 +5,7 @@ using Enemies.AbstractEntity;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
 using UnityEngine;
-using Random = UnityEngine.Random;
+using EnemyData = Enemies.EnemyData;
 
 namespace Animation
 {

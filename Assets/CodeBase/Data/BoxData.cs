@@ -1,8 +1,6 @@
 using System.Collections.Generic;
-using Infrastructure.AIBattle.AdditionalEquipment;
 using Infrastructure.Logic.WeaponManagment;
 using UnityEngine;
-using ItemType = Infrastructure.Logic.WeaponManagment.ItemType;
 
 namespace Data
 {

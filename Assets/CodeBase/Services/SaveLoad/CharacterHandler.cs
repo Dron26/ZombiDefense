@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Characters.Humanoids.AbstractLevel;
-using Data;
 using Interface;
+using CharacterData = Data.CharacterData;
 
 namespace Services.SaveLoad
 {
@@ -19,21 +19,19 @@ namespace Services.SaveLoad
         {
             _characterData.SetSelectedCharacter(character);
         }
-
-        public Character GetSelectedCharacter() => _characterData.SelectedCharacter;
         
         public void SetActiveCharacters(List<Character> characters)
         {
-            _characterData.ClearCharacters();
-            foreach (var character in characters)
-            {
-                _characterData.AddActiveCharacter(character);
-            }
+            _characterData.ClearActiveCharacters();
+            
+            foreach (var character in characters) _characterData.AddActiveCharacter(character);
         }
+        public Character GetSelectedCharacter() => _characterData.SelectedCharacter;
         
-        public List<Character> GetActiveCharacters() => 
-            _characterData.ActiveCharacters.ToList();
+        public List<Character> GetAvailableCharacter() => _characterData.AvailableCharacters.ToList();
+        public List<Character> GetActiveCharacters() => _characterData.ActiveCharacters.ToList();
 
+        public List<Character> GetInactiveHumanoids() => _characterData.InactiveCharacters.ToList();
         public void SetInactiveHumanoids(List<Character> characters)
         {
             foreach (var character in characters)
@@ -42,7 +40,10 @@ namespace Services.SaveLoad
             }
         }
 
-        public List<Character> GetInactiveHumanoids() =>
-            _characterData.InactiveCharacters.ToList();
+
+        public void Reset()
+        {
+            _characterData.Reset();
+        }
     }
 }

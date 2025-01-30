@@ -162,39 +162,39 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
 
         private void ApplyDamageToEnemiesInRange()
         {
-                float angle = _activeWeapon.SpreadAngle;
-                Vector3 attackDirection = _enemy.transform.position - transform.position;
-                _enemiesInRange = AllServices.Container.Single<ISearchService>()
-                    .GetEntitiesInRange<Enemies.AbstractEntity.Enemy>(transform.position, _maxRange);
+            float angle = _activeWeapon.SpreadAngle;
+            Vector3 attackDirection = _enemy.transform.position - transform.position;
+            _enemiesInRange = AllServices.Container.Single<ISearchService>()
+                .GetEntitiesInRange<Enemy>(transform.position, _maxRange);
 
-                foreach (var enemy in _enemiesInRange)
+            foreach (var enemy in _enemiesInRange)
+            {
+                if (enemy.IsLife())
                 {
-                    if (enemy.IsLife())
+                    Vector3 directionToEnemy = enemy.transform.position - transform.position;
+                    float angleToEnemy = Vector3.Angle(attackDirection, directionToEnemy);
+
+                    if (angleToEnemy <= angle)
                     {
-                        Vector3 directionToEnemy = enemy.transform.position - transform.position;
-                        float angleToEnemy = Vector3.Angle(attackDirection, directionToEnemy);
+                        float distance = Vector3.Distance(transform.position, enemy.transform.position);
+                        float damagePercent = CalculateDamagePercent(distance);
 
-                        if (angleToEnemy <= angle)
+                        if (_activeWeapon.ItemType != ItemType.Medium)
                         {
-                            float distance = Vector3.Distance(transform.position, enemy.transform.position);
-                            float damagePercent = CalculateDamagePercent(distance);
-
-                            if (_activeWeapon.ItemType != ItemType.Medium)
-                            {
-                                enemy.ApplyDamage(_damage * damagePercent, _activeWeapon.ItemType);
-                            }
-                            else
-                            {
-                                _accumulationDamage += _damage;
-                                enemy.ApplyDamage(_accumulationDamage, _activeWeapon.ItemType);
-                                Debug.Log(_accumulationDamage);
-                            }
-
+                            enemy.ApplyDamage(_damage * damagePercent, _activeWeapon.ItemType);
                         }
+                        else
+                        {
+                            _accumulationDamage += _damage;
+                            enemy.ApplyDamage(_accumulationDamage, _activeWeapon.ItemType);
+                            Debug.Log(_accumulationDamage);
+                        }
+
                     }
                 }
+            }
 
-                Attack();
+            Attack();
         }
 
         private float CalculateDamagePercent(float distance)

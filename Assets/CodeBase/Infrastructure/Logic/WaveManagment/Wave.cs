@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using Data;
-using Enemies.AbstractEntity;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using UnityEngine;
+using EnemyData = Enemies.EnemyData;
 
 namespace Infrastructure.Logic.WaveManagment
 {
@@ -11,7 +11,7 @@ namespace Infrastructure.Logic.WaveManagment
         [SerializeField] private List<EnemyData> _enemies= new List<EnemyData>();
         [SerializeField] private List<int> _enemyCount;
         [SerializeField] private int _timeBetweenWaves;
-         private WaveData _waveData;
+        private WaveData _waveData;
         public int TimeBetweenWaves => _timeBetweenWaves;
         public void SetData(WaveData waveData)
         {

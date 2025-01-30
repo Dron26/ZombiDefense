@@ -1,5 +1,4 @@
 using System;
-using Enemies.AbstractEntity;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using UnityEngine;
 

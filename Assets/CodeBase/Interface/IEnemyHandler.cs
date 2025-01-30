@@ -11,5 +11,6 @@ namespace Interface
         void SetInactiveEnemy(Enemy enemy);
         void EnemyDeath(Enemy enemy);
         int GetEnemyCount();
+        void Reset();
     }
 }

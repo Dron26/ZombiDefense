@@ -87,8 +87,8 @@ namespace UI
             yield return new WaitForSecondsRealtime(3);
             
             _buttonTime.interactable = true;
-                _buttonPanel.SetActive(false);
-                _isPanelActive = !_isPanelActive;
+            _buttonPanel.SetActive(false);
+            _isPanelActive = !_isPanelActive;
         }
 
         public void SetPause(bool isActive)

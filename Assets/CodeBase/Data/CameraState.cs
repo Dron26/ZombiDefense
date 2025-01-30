@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Services.SaveLoad
+namespace Data
 {
     public class CameraState
     {

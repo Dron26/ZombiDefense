@@ -1,9 +1,10 @@
-using Data;
 using Interface;
 using Newtonsoft.Json;
+using Services;
+using Services.SaveLoad;
 using UnityEngine;
 
-namespace Services.SaveLoad
+namespace Data
 {
     public class DataPersistence:IDataPersistence
     {
@@ -28,24 +29,23 @@ namespace Services.SaveLoad
 
         public GameData LoadData() => _gameData;
 
-        public void ClearData()
+        public void Reset()
         {
-            _gameData.ClearSpawnLocationData();
-            Save();
-        }
-
-        public void ResetProgress()
-        {
-            _gameData = new GameData();
-            SetFirstStart();
-        }
-
-        public void SetFirstStart()
-        {
+            
+            _gameData.EnemyData.ClearEnemies();
             _gameData.ChangeIsFirstStart();
+
+            AllServices.Container.Single<CharacterHandler>().Reset();
+            AllServices.Container.Single<CurrencyHandler>().Reset();
+            AllServices.Container.Single<AchievementsHandler>().Reset();
+            AllServices.Container.Single<UIHandler>();
+            AllServices.Container.Single<AudioSettingsHandler>();
+            AllServices.Container.Single<EnemyHandler>().Reset();
+            AllServices.Container.Single<LocationHandler>().Reset();
+            
             Save();
         }
-
+        
         public void OnGameStart() => _gameData.OnGameStart();
 
         public void OnGameEnd() => _gameData.OnGameEnd();

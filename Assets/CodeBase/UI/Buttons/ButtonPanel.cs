@@ -1,7 +1,6 @@
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Services.SaveLoad;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace UI.Buttons
 {
@@ -20,7 +19,7 @@ namespace UI.Buttons
         public void Initialize(SaveLoadService saveLoadService)
         {
             _countEnemyPanel = _enemyCountPanel.GetComponentInChildren<CountEnemyPanel>();
-            _countEnemyPanel.Initialize(saveLoadService);
+            _countEnemyPanel.Initialize();
             _additionalWeapon.Initialize(saveLoadService);
         }
 

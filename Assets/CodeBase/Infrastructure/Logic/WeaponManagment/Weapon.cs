@@ -1,5 +1,4 @@
 using Infrastructure.AIBattle.AdditionalEquipment;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Infrastructure.Logic.WeaponManagment
@@ -22,10 +21,10 @@ namespace Infrastructure.Logic.WeaponManagment
         public float SpreadAngle=>_itemData.SpreadAngle;
 
         public ParticleSystem GetParticleGunshot=>_particleGunshot;
-         public ParticleSystem GetParticleEject=>_particleEject;
-         public Light Light=>_light;
+        public ParticleSystem GetParticleEject=>_particleEject;
+        public Light Light=>_light;
 
-         public override ItemType ItemType => _itemData.Type;
-         public override void Initialize(ItemData itemData) => _itemData = itemData;
+        public override ItemType ItemType => _itemData.Type;
+        public override void Initialize(ItemData itemData) => _itemData = itemData;
     }
 }
