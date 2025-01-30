@@ -8,14 +8,14 @@ namespace Services.SaveLoad
 {
     public class EnemyHandler:IEnemyHandler
     {
-        private readonly EnemyData _enemyData;
-        private AchievementsHandler _achievementsHandler;
-        private GameEventBroadcaster _eventBroadcaster;
-        public EnemyHandler(EnemyData enemyData)
+        private readonly IEnemyData _enemyData;
+        private IAchievementsHandler _achievementsHandler;
+        private IGameEventBroadcaster _eventBroadcaster;
+        public EnemyHandler(IEnemyData enemyData,IAchievementsHandler achievementsHandler, IGameEventBroadcaster eventBroadcaster)
         {
             _enemyData = enemyData;
-            _achievementsHandler = AllServices.Container.Single<AchievementsHandler>();
-            _eventBroadcaster= AllServices.Container.Single<GameEventBroadcaster>();
+            _achievementsHandler = achievementsHandler;
+            _eventBroadcaster = eventBroadcaster;
         }
 
         public void SetActiveEnemy(Enemy enemy) => 
@@ -31,7 +31,7 @@ namespace Services.SaveLoad
         {
             if (_enemyData.GetActiveEnemyCount() == 1)
             {
-                _eventBroadcaster.InvokeLastEnemyRemained();
+                _eventBroadcaster.InvokeLastHumanoidDie();
             }
 
             _achievementsHandler.AddKilledEnemy();
@@ -47,4 +47,15 @@ namespace Services.SaveLoad
             _enemyData.ClearEnemies();
         }
     }
+}
+
+public interface IEnemyData
+{
+    public IReadOnlyList<Enemy> ActiveEnemies { get; }
+    public IReadOnlyList<Enemy> InactiveEnemies { get; }
+    public void AddActiveEnemy(Enemy enemy);
+    public void RemoveActiveEnemy(Enemy enemy);
+    public int GetActiveEnemyCount();
+    public void ClearEnemies();
+    public List<Entity> GetActiveEnemy();
 }

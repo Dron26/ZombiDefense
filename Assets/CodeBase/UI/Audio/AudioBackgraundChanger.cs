@@ -3,6 +3,7 @@
 using Common;
 using Data;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Interface;
 using Plugins.SoundInstance.Core.Static;
 using Services;
 using Services.SaveLoad;
@@ -14,9 +15,9 @@ namespace UI.Audio
     {
         private AudioData _audioData;
         private float _time; 
-        public void Initialize(SaveLoadService saveLoadService)
+        public void Initialize( )
         {
-            _audioData =AllServices.Container.Single<AudioSettingsHandler>().GetAudioData();
+            _audioData =AllServices.Container.Single<IAudioSettingsHandler>().GetAudioData();
         }
 
         // protected override void OnEnabled() =>

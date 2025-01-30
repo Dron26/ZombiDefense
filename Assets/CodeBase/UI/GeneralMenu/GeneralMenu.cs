@@ -3,6 +3,7 @@ using Infrastructure;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.StateMachine;
 using Infrastructure.StateMachine.States;
+using Interface;
 using Services;
 using Services.Audio;
 using Services.SaveLoad;
@@ -12,7 +13,7 @@ using UnityEngine;
 
 namespace UI.GeneralMenu
 {
-    public class GeneralMenu:MonoCache
+      public class GeneralMenu:MonoCache
     {
         [SerializeField] private GameObject _leaderboardPanel;
         
@@ -23,26 +24,20 @@ namespace UI.GeneralMenu
         [SerializeField] private GameObject _locationPanel;
         [SerializeField]private AudioManager _audioManager;
         [SerializeField] private LocationManager _locationManager;
-        
-        private SaveLoadService _saveLoadService;
+        private ISaveLoadService _saveLoadService;
         private GameStateMachine _stateMachine;
         private LoadingCurtain _loadingCurtain  ;
         private GameBootstrapper _gameBootstrapper; 
-        
+        private IUIHandler _handler;
         
         public  void Initialize( GameStateMachine stateMachine)
         {
+            _saveLoadService = AllServices.Container.Single<ISaveLoadService>();
             _stateMachine = stateMachine;
-            _gameBootstrapper=FindObjectOfType<GameBootstrapper>();
-            _loadingCurtain = _gameBootstrapper.GetLoadingCurtain();
-            
-            _saveLoadService = AllServices.Container.Single<SaveLoadService>();
+            _loadingCurtain =AllServices.Container.Single<IUIHandler>().GetCurtain();
             
             LoadAudioController();
-            _settingPanel.Initialize(_audioManager,_saveLoadService);
-            
-            _saveLoadService.SetFirstStart();
-
+            _settingPanel.Initialize(_audioManager);
             AddListener();
 
             InitializeLocationSystem();
@@ -52,7 +47,7 @@ namespace UI.GeneralMenu
         private void InitializeLocationSystem()
         {
             // Создаем и инициализируем LocationManager
-            _locationManager.Initialize(_stateMachine);
+            _locationManager.Initialize();
 
             // Создаем и инициализируем LocationUIManager
             _locationUIManager.Initialize(_saveLoadService,_locationManager);
@@ -68,7 +63,7 @@ namespace UI.GeneralMenu
         
         private void OnClikedCurtain()
         {
-            bool isActive = _saveLoadService.IsExitFromLocation;
+            bool isActive = AllServices.Container.Single<ILocationHandler>().IsExitFromLocation;
 
             _menuPanel.SetActive(!isActive);
         }

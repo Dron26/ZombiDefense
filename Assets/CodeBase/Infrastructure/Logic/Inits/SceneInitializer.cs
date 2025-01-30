@@ -35,6 +35,7 @@ namespace Infrastructure.Logic.Inits
         [SerializeField] private Camera _cameraUI;
         [SerializeField] private EventSystem _eventSystem;
         [SerializeField] private GlobalTimer _globalTimer;
+        [SerializeField] private EntitySearchService _entitySearchService;
 
         private SceneObjectManager _sceneObjectManager;
         private LoadingCurtain _loadingCurtain;
@@ -67,7 +68,8 @@ namespace Infrastructure.Logic.Inits
             _stateMachine = stateMachine;
             _gameBootstrapper = FindObjectOfType<GameBootstrapper>();
             _saveLoadService = _gameBootstrapper.GetSaveLoad();
-            AllServices.Container.Single<UIHandler>().SetEvenSystem(_eventSystem);
+            AllServices.Container.Single<IUIHandler>().SetEvenSystem(_eventSystem);
+            
 
             LocationFactory _locationFactory = new LocationFactory();
             LocationPrefab location = _locationFactory.Create(AllServices.Container.Single<LocationHandler>().SelectedLocationId).GetComponent<LocationPrefab>();
@@ -76,7 +78,7 @@ namespace Infrastructure.Logic.Inits
             Debug.Log("Finish LoadCharacters();");
 
             Debug.Log("Finish SetAvailableCharacters();");
-            _saveLoadService.SetCameras(_cameraPhysical, _cameraUI);
+            //_saveLoadService.SetCameras(_cameraPhysical, _cameraUI);
             Debug.Log("Finish SetCameras();");
 
             _loadingCurtain = _gameBootstrapper.GetLoadingCurtain();
@@ -94,7 +96,7 @@ namespace Infrastructure.Logic.Inits
 
             InitializeEnemies();
             AddListener();
-            _hudPanel.Init(_saveLoadService, this, _waveManager, _globalTimer);
+            _hudPanel.Init(_saveLoadService, this, _waveManager, _globalTimer,_stateMachine);
 
             Debug.Log("Finish _playerCharacterInitializer();");
 
@@ -204,8 +206,7 @@ namespace Infrastructure.Logic.Inits
         {
             _saveLoadService.Save();
             _stateMachine.Enter<LoadLevelState, string>(Constants.Menu);
-
-            _saveLoadService.Enemies.ClearEnemies();
+            ClearEnemies();
             _playerCharacterInitializer.ClearData();
             _pauseService.SetPause(true);
             AllServices.Container.Single<ISearchService>().ClearAllEntities();
@@ -214,10 +215,15 @@ namespace Infrastructure.Logic.Inits
             // Destroy(transform.parent.gameObject);
         }
 
+        private void ClearEnemies()
+        {
+            var enemyHandler = AllServices.Container.Single<IEnemyHandler>();
+            enemyHandler.Reset();
+        }
 
         private void ResetLevel()
         {
-            _saveLoadService.Enemies.ClearEnemies();
+            ClearEnemies();
             _playerCharacterInitializer.ClearData();
             // Destroy(_location.gameObject);
             // Destroy(transform.parent.gameObject);
@@ -249,6 +255,7 @@ namespace Infrastructure.Logic.Inits
         private void OnDestroy()
         {
             RemoveListener();
+            AllServices.Container.UnregisterService<ISearchService>();
         }
     }
 }

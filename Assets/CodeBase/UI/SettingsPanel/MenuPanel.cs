@@ -12,7 +12,7 @@ using UnityEngine.UI;
 
 namespace UI.SettingsPanel
 {
-    public class MenuPanel: MonoCache
+     public class MenuPanel: MonoCache
     {
         [SerializeField] private Button _menu;
         [SerializeField] private Button _continue;
@@ -34,21 +34,15 @@ namespace UI.SettingsPanel
         [SerializeField]private  GameObject _menuPanel;
         [SerializeField]private AudioManager _audioManager;
         
-        private GameStateMachine _stateMachine;
-        private SaveLoadService ;
-        private GameBootstrapper _gameBootstrapper;
         private IPauseService _pauseService;
 
         public Action OnClickExitToMenu;
         
         public void Initialize(SaveLoadService saveLoadService)
         {
-            _stateMachine = saveLoadService.GameBootstrapper.GetStateMachine();
             _panel.SetActive(true);
-            _gameBootstrapper=FindObjectOfType<GameBootstrapper>();
-            _saveLoadService = saveLoadService;
-            _settingPanel.Initialize(_audioManager,_saveLoadService);
-            _buttonPanel.Initialize(_saveLoadService);
+            _settingPanel.Initialize(_audioManager);
+            _buttonPanel.Initialize();
             InitializeButton();
             _panel.SetActive(false);
             _exitPanel.SetActive(false);

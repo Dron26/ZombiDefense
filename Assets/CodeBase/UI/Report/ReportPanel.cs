@@ -4,6 +4,7 @@ using Common;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.StateMachine;
 using Infrastructure.StateMachine.States;
+using Interface;
 using Lean.Localization;
 using Services;
 using Services.PauseService;
@@ -17,7 +18,7 @@ namespace UI.Report
 {
     public class ReportPanel:MonoCache
     {
-        private SaveLoadService _saveLoadService;
+         private SaveLoadService _saveLoadService;
         [SerializeField] private LeanLocalizedTextMeshProUGUI _infoSurvivalEnemies;
         [SerializeField] private TMP_Text _infoSurvivalEnemiesValue;
         [SerializeField] private LeanLocalizedTextMeshProUGUI _infoKilledEnemies;
@@ -52,10 +53,10 @@ namespace UI.Report
         private Wallet _wallet;
         private IPauseService _pauseService;
         private AchievementsHandler _achievementsHandler;
-        public void Init(SaveLoadService saveLoadService , Store store)
+        
+        public void Init(Store store,GameStateMachine stateMachine)
         {
-            _saveLoadService = saveLoadService;
-            _stateMachine = saveLoadService.GameBootstrapper.GetStateMachine();
+            _stateMachine = stateMachine;
             _panel.SetActive(false);
             _wallet=store.GetWallet();
             _pauseService = AllServices.Container.Single<IPauseService>();
@@ -136,7 +137,7 @@ namespace UI.Report
         private void SelectOk()
         {
             _panel.SetActive(false);
-            _saveLoadService.ExitFromLocation(true);
+            //_saveLoadService.ExitFromLocation(true);
             SetPaused(false);
             OnClickExitToMenu?.Invoke();
         }
@@ -147,8 +148,8 @@ namespace UI.Report
             _reset.onClick.AddListener(ResetLevel);
             _continue.onClick.AddListener(SelectOk);
             
-            _saveLoadService.LastHumanoidDie+=OnLastHumanoidDie;
-            _saveLoadService.OnLocationCompleted+=ShowReport;
+            AllServices.Container.Single<GameEventBroadcaster>().LastHumanoidDie+=OnLastHumanoidDie;
+            AllServices.Container.Single<GameEventBroadcaster>().OnLocationCompleted+=ShowReport;
         }
 
         private void RemoveListener()
@@ -157,8 +158,8 @@ namespace UI.Report
             _reset.onClick.RemoveListener(ResetLevel);
             _continue.onClick.RemoveListener(SelectOk);
             
-            _saveLoadService.LastHumanoidDie-=OnLastHumanoidDie;
-            _saveLoadService.OnLocationCompleted-=ShowReport;
+            AllServices.Container.Single<GameEventBroadcaster>().LastHumanoidDie-=OnLastHumanoidDie;
+            AllServices.Container.Single<GameEventBroadcaster>().OnLocationCompleted-=ShowReport;
         }
 
         private void OnDestroy()

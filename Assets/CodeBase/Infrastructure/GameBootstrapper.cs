@@ -1,7 +1,11 @@
 using Data.Settings.Language;
+using Infrastructure.AssetManagement;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Infrastructure.Factories.FactoryGame;
 using Infrastructure.StateMachine;
 using Infrastructure.StateMachine.States;
+using Interface;
+using Services;
 using Services.PauseService;
 using Services.SaveLoad;
 using Services.Yandex;
@@ -14,54 +18,48 @@ namespace Infrastructure
         [SerializeField] private YandexInitializer _yandexInitializer;
         [SerializeField] private LoadingCurtain _loadingCurtain;
         [SerializeField] private PauseService _pauseService;
-
+        [SerializeField] private SaveLoadService _saveLoadService;
+        [SerializeField] private UIHandler _uiHandler;
         private Game _game;
-        private SaveLoadService _saveLoadService;
-
+        private IServiceRegister _serviceRegister;
+        private IGameFactory _gameFactory;
 
         private void Awake()
         {
             DontDestroyOnLoad(this);
-            _saveLoadService = GetComponent<SaveLoadService>();
-            _saveLoadService.SetGameBootstrapper(this);
+            _saveLoadService.Initialize(new JsonSerializationService());
+            _serviceRegister = new ServiceRegister( _pauseService, new Language(),AllServices.Container,_saveLoadService);
+
+            _gameFactory = new GameFactory(new AssetProvider());
+
+            AllServices.Container.Single<IUIHandler>().SetCurtain(_loadingCurtain);
+            Language language = GetLanguage();
+            _game = new Game(this, _loadingCurtain, language, _pauseService, _saveLoadService, _serviceRegister, _gameFactory);
         }
 
         public void Start()
         {
-            // _yandexInitializer.Completed += Init;
             Init();
         }
 
         private void Init()
         {
-            Language language = GetLanguage();
-            _game = new Game(this, _loadingCurtain, language, _pauseService,_saveLoadService);
-            _game.StateMashine.Enter<BootstrapState>();
+            _game.StateMachine.Enter<BootstrapState>();
         }
 
-        public YandexInitializer GetYandexInitializer() =>
-            _yandexInitializer;
-
-        public SaveLoadService GetSaveLoad() =>
-            _saveLoadService;
-
-        public LoadingCurtain GetLoadingCurtain() =>
-            _loadingCurtain;
-
-        public GameStateMachine GetStateMachine() =>
-            _game.StateMashine;
+        public YandexInitializer GetYandexInitializer() => _yandexInitializer;
+        public SaveLoadService GetSaveLoad() => _saveLoadService;
+        public LoadingCurtain GetLoadingCurtain() => _loadingCurtain;
+        public GameStateMachine GetStateMachine() => _game.StateMachine;
 
         private Language GetLanguage()
         {
-            switch (Application.systemLanguage)
+            return Application.systemLanguage switch
             {
-                case SystemLanguage.Russian:
-                    return Language.RU;
-                case SystemLanguage.Turkish:
-                    return Language.TR;
-                default:
-                    return Language.EN;
-            }
+                SystemLanguage.Russian => Language.RU,
+                SystemLanguage.Turkish => Language.TR,
+                _ => Language.EN
+            };
         }
     }
 }

@@ -16,11 +16,11 @@ namespace UI.Buttons
         private CountEnemyPanel _countEnemyPanel;
         private bool isActive = true;
 
-        public void Initialize(SaveLoadService saveLoadService)
+        public void Initialize()
         {
             _countEnemyPanel = _enemyCountPanel.GetComponentInChildren<CountEnemyPanel>();
             _countEnemyPanel.Initialize();
-            _additionalWeapon.Initialize(saveLoadService);
+            _additionalWeapon.Initialize();
         }
 
         public void SwitchPanelState()

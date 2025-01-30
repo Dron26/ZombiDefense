@@ -1,5 +1,6 @@
 using Data;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Interface;
 using Services;
 using Services.Audio;
 using Services.SaveLoad;
@@ -8,7 +9,7 @@ using UnityEngine.UI;
 
 namespace UI.SettingsPanel
 {
-    public class SettingPanel : MonoCache
+   public class SettingPanel : MonoCache
     {
         [SerializeField] private Toggle _toggleSound;
         [SerializeField] private Toggle _toggleMusic;
@@ -16,7 +17,6 @@ namespace UI.SettingsPanel
         [SerializeField]private Slider soundSlider;
         [SerializeField]private Slider musicSlider;
     
-        private SaveLoadService _saveLoadService;
         private AudioManager _audioPlayer;
         private AudioData _audioDataSettings;
         private  bool _soundEnabled ;
@@ -25,10 +25,9 @@ namespace UI.SettingsPanel
         private float _currentVolumeMusic ;
         private bool vibrationEnabled = false;
         
-        public void Initialize(AudioManager audioManager,SaveLoadService saveLoadService)
+        public void Initialize(AudioManager audioManager )
         {
             _audioPlayer = audioManager;
-            _saveLoadService = saveLoadService;
 
             LoadSound();
        
@@ -86,7 +85,7 @@ namespace UI.SettingsPanel
             
             SetPause(!isActive);
 
-            _audioDataSettings =AllServices.Container.Single<AudioSettingsHandler>().GetAudioData();
+            _audioDataSettings =AllServices.Container.Single<IAudioSettingsHandler>().GetAudioData();
             _currentVolumeMusic = _audioDataSettings.CurrentVolumeMusic;
             _currentVolumeSound = _audioDataSettings.CurrentVolumeSound;
             _musicEnabled = _audioDataSettings.MusicEnabled;

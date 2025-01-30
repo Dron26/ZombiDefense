@@ -13,5 +13,6 @@ namespace Interface
         void SetSelectedLocationId(int id);
         int GetSelectedLocationId();
         void Reset();
+        bool IsExitFromLocation { get; set; }
     }
 }

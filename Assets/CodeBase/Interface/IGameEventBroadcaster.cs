@@ -18,5 +18,14 @@ namespace Interface
         event Action LastEnemyRemained;
         event Action OnLocationCompleted;
         event Action OnClearSpawnData;
+        
+        public void InvokeOnSetActiveHumanoid();
+        public void InvokeLastHumanoidDie();
+        public void InvokeOnSelectedNewPoint(WorkPoint point);
+        public void InvokeOnSelectedNewCharacter(Character character);
+        public void InvokeOnChangeEnemiesCountOnWave(int count);
+        public void InvokeOnEnemyDeath(Enemy enemy);
+        public void InvokeLastEnemyRemained();
+        public void InvokeOnLocationCompleted();
     }
 }

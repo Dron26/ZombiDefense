@@ -10,13 +10,11 @@ namespace UI.Locations
     public class LocationDataLoader
     {
         private readonly IResourceLoadService _resourceLoadService;
-        private readonly SaveLoadService _saveLoadService;
-        private readonly LocationHandler _locationHandler;
-        public LocationDataLoader(SaveLoadService saveLoadService)
+        private readonly ILocationHandler _locationHandler;
+        public LocationDataLoader()
         {
             _resourceLoadService =  AllServices.Container.Single<IResourceLoadService>();
-            _saveLoadService = saveLoadService;
-            _locationHandler=AllServices.Container.Single<LocationHandler>();
+            _locationHandler=AllServices.Container.Single<ILocationHandler>();
         }
 
         public List<LocationData> LoadLocations()

@@ -9,10 +9,9 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI
         protected EnemyStateMachine StateMachine;
         protected SaveLoadService SaveLoadService;
 
-        public void Init(EnemyStateMachine enemyStateMachine, SaveLoadService saveLoadService)
+        public void Init(EnemyStateMachine enemyStateMachine )
         {
             StateMachine = enemyStateMachine ?? throw new ArgumentNullException(nameof(enemyStateMachine));
-            SaveLoadService = saveLoadService ?? throw new ArgumentNullException(nameof(saveLoadService));
             OnInitialized();
         }
 

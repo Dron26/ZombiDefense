@@ -3,13 +3,15 @@ using Characters.Humanoids.AbstractLevel;
 using Infrastructure.AIBattle;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
+using Interface;
+using Services;
 using Services.SaveLoad;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace UI.Buttons
 {
-    public class AdditionalWeaponButton : MonoCache
+   public class AdditionalWeaponButton : MonoCache
     {
         [SerializeField] private Image _granade;
         [SerializeField] private Button _weapon;
@@ -19,11 +21,9 @@ namespace UI.Buttons
         private HumanoidWeaponController _humanoidWeaponController;
         public Action OnClickButton;
         private bool _haveAdditionalWeapon;
-        private SaveLoadService _saveLoadService;
-        public void Initialize(SaveLoadService saveLoadService)
+        public void Initialize()
         {
-            _saveLoadService = saveLoadService;
-            saveLoadService.OnSelectedNewCharacter+=OnSelectedNewCharacter;
+            AllServices.Container.Single<GameEventBroadcaster>().OnSelectedNewCharacter+=OnSelectedNewCharacter;
             _weapon.onClick.AddListener(() =>TryThrowGranade());
         }
         private void Start()
@@ -82,7 +82,7 @@ namespace UI.Buttons
 
         protected void OnDestroy()
         {
-            _saveLoadService.OnSelectedNewCharacter-=OnSelectedNewCharacter;
+            AllServices.Container.Single<GameEventBroadcaster>().OnSelectedNewCharacter-=OnSelectedNewCharacter;
             _weapon.onClick.RemoveListener(() =>TryThrowGranade());
         }
     }

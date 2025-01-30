@@ -4,7 +4,7 @@ using Enemies.AbstractEntity;
 
 namespace Data
 {
-    public class EnemyData
+    public class EnemyData: IEnemyData
     {
         private readonly List<Enemy> _activeEnemies = new();
         private readonly List<Enemy> _inactiveEnemies = new();

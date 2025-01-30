@@ -1,5 +1,6 @@
 using Data;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Interface;
 using Services.SaveLoad;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -13,7 +14,6 @@ namespace Services.Audio
         public float _minVolume = -80.0f;
         
         private AudioSource _soundSource;
-        private SaveLoadService _saveLoadService;
         private AudioData _audioData;
         private AudioMixer _mixerSound;
         private AudioManager _audioManager;
@@ -21,13 +21,12 @@ namespace Services.Audio
         private float _currentVolumeSound;
         private bool isMenuEnabled => _audioManager.IsMenuEnabled;
         
-        public void Initialize(SaveLoadService saveLoadService, AudioManager audioManager)
+        public void Initialize( AudioManager audioManager)
         {
             _soundSource=GetComponent<AudioSource>();
             _mixerSound = (AudioMixer)Resources.Load("MixerSound");
             _audioManager=audioManager;
-            _saveLoadService = saveLoadService;
-            _audioData =AllServices.Container.Single<AudioSettingsHandler>().GetAudioData();
+            _audioData =AllServices.Container.Single<IAudioSettingsHandler>().GetAudioData();
             _isSoundEnabled = _audioData.SoundEnabled;
             _currentVolumeSound = _audioData.CurrentVolumeSound;
             

@@ -1,8 +1,8 @@
-using Infrastructure.AssetManagement;
-using UnityEngine;
 
-namespace Infrastructure.Factories.FactoryGame
-{
+    using Infrastructure;
+    using Infrastructure.AssetManagement;
+    using UnityEngine;
+
     public class GameFactory : IGameFactory
     {
         private readonly IAssets _assets;
@@ -16,4 +16,3 @@ namespace Infrastructure.Factories.FactoryGame
         public GameObject CreateLevel() => 
             _assets.Instantiate(AssetPaths.Level);
     }
-}

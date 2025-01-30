@@ -3,6 +3,7 @@ using Characters.Robots;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.Inits;
 using Infrastructure.Logic.WaveManagment;
+using Infrastructure.StateMachine;
 using Interface;
 using Services.SaveLoad;
 using UI;
@@ -16,7 +17,7 @@ using UnityEngine.UI;
 
 namespace Services.Ads
 {
-    [RequireComponent(typeof(RaycastHitChecker))]
+   [RequireComponent(typeof(RaycastHitChecker))]
     public class HudPanel:MonoCache
     {
         [SerializeField] private GameObject _panel;
@@ -33,15 +34,16 @@ namespace Services.Ads
         public Action OnResetLevel;
         private GameEventBroadcaster _eventBroadcaster;
 
-        public void Init(SaveLoadService saveLoadService, SceneInitializer sceneInitializer, WaveManager waveManager,GlobalTimer globalTimer)
+        public void Init(SaveLoadService saveLoadService, SceneInitializer sceneInitializer, WaveManager waveManager,
+            GlobalTimer globalTimer, GameStateMachine gameStateMachine)
         {
             _waveManager = waveManager;
             _sceneInitializer = sceneInitializer;
             _store.Initialize(_sceneInitializer );
             _menuPanel.Initialize(saveLoadService);
             _resursesCanvas.Initialize(_store.GetWallet());
-            _reportPanel.Init(_store);
-            AllServices.Container.Single<UIHandler>().SetRaycaster(GetButtonPanel().GetComponent<GraphicRaycaster>());
+            _reportPanel.Init(_store,gameStateMachine);
+            AllServices.Container.Single<IUIHandler>().SetRaycaster(GetButtonPanel().GetComponent<GraphicRaycaster>());
             _eventBroadcaster=AllServices.Container.Single<GameEventBroadcaster>();
             GetComponent<RaycastHitChecker>().Initialize();
             _timerDisplay.Initialize(_store.GetWallet(),_waveManager);

@@ -2,6 +2,7 @@ using System;
 using System.Reflection;
 using Data;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Interface;
 using Plugins.SoundInstance.Core.Static;
 using Services.SaveLoad;
 using UI.Audio;
@@ -17,7 +18,6 @@ namespace Services.Audio
         public float _minVolume = -80.0f;
         
         private AudioSource _musicSource;
-        private SaveLoadService _saveLoadService;
         private AudioData _audioData;
         private AudioMixer _mixerMusic;
         private float _currentVolumeMusic;
@@ -30,19 +30,18 @@ namespace Services.Audio
         private bool isMenuEnabled => _audioManager.IsMenuEnabled;
         private AudioManager _audioManager;
         
-        public void Initialize(SaveLoadService saveLoadService,AudioManager audioManager)
+        public void Initialize( AudioManager audioManager)
         {
             _musicSource=GetComponent<AudioSource>();
             _mixerMusic = (AudioMixer)Resources.Load("MixerMusic");
             _audioManager = audioManager;
-            _saveLoadService = saveLoadService;
-            _audioData = AllServices.Container.Single<AudioSettingsHandler>().GetAudioData();
+            _audioData = AllServices.Container.Single<IAudioSettingsHandler>().GetAudioData();
             _isMusicEnabled = _audioData.MusicEnabled;
             _currentVolumeMusic = _audioData.CurrentVolumeMusic;
             _musicClips  = audioClipAddressesType.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
             
             _audioBackgraundChanger=GetComponent<AudioBackgraundChanger>();
-            _audioBackgraundChanger.Initialize(saveLoadService);
+            _audioBackgraundChanger.Initialize();
             
             
             
@@ -97,15 +96,15 @@ namespace Services.Audio
         private void AddListener()
         {
             _audioManager.OnMenuEnabled+=SetBackgroundMusics;
-            AllServices.Container.Single<UIHandler>().GetCurtain().OnStartLoading+=SetLoadingMusic;
-            AllServices.Container.Single<UIHandler>().GetCurtain().OnClicked+=SetBackgroundMusics;
+            AllServices.Container.Single<IUIHandler>().GetCurtain().OnStartLoading+=SetLoadingMusic;
+            AllServices.Container.Single<IUIHandler>().GetCurtain().OnClicked+=SetBackgroundMusics;
         }
 
         private void RemoveListener()
         {
             _audioManager.OnMenuEnabled-=SetBackgroundMusics;
-            AllServices.Container.Single<UIHandler>().GetCurtain().OnStartLoading-=SetLoadingMusic;
-            AllServices.Container.Single<UIHandler>().GetCurtain().OnClicked-=SetBackgroundMusics;
+            AllServices.Container.Single<IUIHandler>().GetCurtain().OnStartLoading-=SetLoadingMusic;
+            AllServices.Container.Single<IUIHandler>().GetCurtain().OnClicked-=SetBackgroundMusics;
         }
 
         private void OnDestroy()

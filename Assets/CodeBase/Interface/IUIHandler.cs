@@ -1,4 +1,5 @@
 using Services;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Interface
@@ -9,5 +10,7 @@ namespace Interface
         LoadingCurtain GetCurtain();
         void SetRaycaster(GraphicRaycaster raycaster);
         GraphicRaycaster GetRaycaster();
+        EventSystem GetEventSystem();
+        void SetEvenSystem(EventSystem eventSystem);
     }
 }

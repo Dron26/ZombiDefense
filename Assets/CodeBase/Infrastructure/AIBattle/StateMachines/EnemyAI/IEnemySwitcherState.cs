@@ -6,7 +6,7 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI
     {
         public void Enter();
         public void Exit();
-        public void Init(EnemyStateMachine enemyStateMachine, SaveLoadService saveLoadService);
+        public void Init(EnemyStateMachine enemyStateMachine );
         
         public void Disable();
     }

@@ -109,7 +109,7 @@ namespace Infrastructure.Logic.Inits
                 TurretWeaponController weaponController  = prefab.GetComponent<TurretWeaponController>();
                 weaponController.Initialize(characterData);
                 Turret turret=prefab.GetComponent<Turret>();
-                turret.SetSaveLoadService(_saveLoadService);
+                turret.SetSaveLoadService();
                 turret.Initialize(characterData);
             }
         }

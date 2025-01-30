@@ -14,10 +14,17 @@ namespace Interface
         private int _selectedPointId;
         private WorkPoint _selectedPoint;
         public int TimeTimeBeforeNextWave=> _timeBeforeNextWave;
+        public bool IsExitFromLocation
+        {
+            get => _isExitFromLocation;
+            set => _isExitFromLocation = value;
+        }
+
         private int _timeBeforeNextWave=5;
         public int MaxEnemiesOnScene => _maxEnemiesOnScene;
         public int SelectedLocationId => _selectedLocationId;
         private int _maxEnemiesOnScene;
+        private bool _isExitFromLocation;
         
         public IReadOnlyList<int> CompletedLocations => _completedLocations.AsReadOnly();
         public void SetSelectedPointId(int id) => _selectedPointId = id;
@@ -27,7 +34,6 @@ namespace Interface
         public void SetMaxEnemyOnScene(int count) => _maxEnemiesOnScene = count;
         public void LocationCompleted()
         {
-            // Находим текущую выбранную локацию и отмечаем её как завершённую
             var selectedLocation = _locations.Find(location => location.Id == _selectedLocationId);
             if (selectedLocation != null)
             {
@@ -37,7 +43,6 @@ namespace Interface
 
         public List<int> GetCompletedLocationId()
         {
-            // Возвращаем список ID завершённых локаций
             var completedLocations = new List<int>();
             foreach (var location in _locations)
             {
@@ -51,8 +56,12 @@ namespace Interface
 
         public void SetLocationsDatas(List<LocationData> locationDatas)
         {
-            // Устанавливаем данные локаций
             _locations = locationDatas;
+            
+        }
+        public void SetLocationsExite(bool isLocation)
+        {
+            _isExitFromLocation = isLocation;
             
         }
 
@@ -63,7 +72,6 @@ namespace Interface
 
         public int GetSelectedLocationId()
         {
-            // Возвращаем ID выбранной локации
             return _selectedLocationId;
         }
         

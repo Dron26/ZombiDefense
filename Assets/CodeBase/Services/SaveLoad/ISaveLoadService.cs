@@ -4,7 +4,11 @@ namespace Services.SaveLoad
 {
     public interface ISaveLoadService: IService
     {
-        void SaveData();
-        GameData LoadData();
+        public void Save();
+
+        public void Load();
+
+        public void Reset();
+        public void Initialize(ISerializationService jsonSerializationService);
     }
 }

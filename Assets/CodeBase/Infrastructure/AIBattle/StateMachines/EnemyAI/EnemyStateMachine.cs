@@ -10,7 +10,7 @@ using UnityEngine.AI;
 
 namespace Infrastructure.AIBattle.StateMachines.EnemyAI
 {
-    [RequireComponent(typeof(Enemy))]
+   [RequireComponent(typeof(Enemy))]
     [RequireComponent(typeof(EnemySearchTargetState))]
     [RequireComponent(typeof(EnemyMovementState))]
     [RequireComponent(typeof(EnemyAttackState))]
@@ -20,7 +20,6 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI
     {
         private Dictionary<Type, IEnemySwitcherState> _states;
         private IEnemySwitcherState _currentState;
-        private SaveLoadService _saveLoadService;
         private Enemy _enemy;
         private NavMeshAgent _agent;
         private Animator _animator;
@@ -35,7 +34,6 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI
         public void Initialize(Enemy enemy)
         {
             _enemy = enemy;
-            _saveLoadService = _enemy.SaveLoadService;
             InitializeStates();
         }
 
@@ -56,7 +54,7 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI
 
             foreach (var state in _states.Values)
             {
-                state.Init(this, _saveLoadService);
+                state.Init(this);
                 state.Exit(); // Изначально все состояния выключены
             }
         }

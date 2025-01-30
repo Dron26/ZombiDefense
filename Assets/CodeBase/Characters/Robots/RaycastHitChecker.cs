@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Interface;
 using Services;
 using Services.SaveLoad;
 using UnityEngine;
@@ -16,8 +17,8 @@ namespace Characters.Robots
     
         public void Initialize()
         {
-            _raycaster = AllServices.Container.Single<UIHandler>().GetRaycaster();
-            _eventSystem = AllServices.Container.Single<UIHandler>().GetEventSystem();
+            _raycaster = AllServices.Container.Single<IUIHandler>().GetRaycaster();
+            _eventSystem = AllServices.Container.Single<IUIHandler>().GetEventSystem();
         }
 
         public bool  CanGetRaycastHit()

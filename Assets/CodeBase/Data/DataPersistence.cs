@@ -6,9 +6,8 @@ using UnityEngine;
 
 namespace Data
 {
-    public class DataPersistence:IDataPersistence
+    public class DataPersistence : IDataPersistence
     {
-        
         private const string Key = "Key";
         private GameData _gameData;
 
@@ -31,21 +30,18 @@ namespace Data
 
         public void Reset()
         {
-            
             _gameData.EnemyData.ClearEnemies();
             _gameData.ChangeIsFirstStart();
 
-            AllServices.Container.Single<CharacterHandler>().Reset();
-            AllServices.Container.Single<CurrencyHandler>().Reset();
-            AllServices.Container.Single<AchievementsHandler>().Reset();
-            AllServices.Container.Single<UIHandler>();
-            AllServices.Container.Single<AudioSettingsHandler>();
-            AllServices.Container.Single<EnemyHandler>().Reset();
-            AllServices.Container.Single<LocationHandler>().Reset();
-            
+            AllServices.Container.Single<ICharacterHandler>().Reset();
+            AllServices.Container.Single<ICurrencyHandler>().Reset();
+            AllServices.Container.Single<IAchievementsHandler>().Reset();
+            AllServices.Container.Single<IEnemyHandler>().Reset();
+            AllServices.Container.Single<ILocationHandler>().Reset();
+
             Save();
         }
-        
+
         public void OnGameStart() => _gameData.OnGameStart();
 
         public void OnGameEnd() => _gameData.OnGameEnd();

@@ -16,8 +16,8 @@ namespace UI.Locations
         private List<LocationUIElement> _locationUIElements;
         private LocationManager _locationManager;
         public Action OnSelectLocation;
-        private SaveLoadService _saveLoadService;
-        public void Initialize(SaveLoadService saveLoadService, LocationManager locationManager)
+        private ISaveLoadService _saveLoadService;
+        public void Initialize(ISaveLoadService saveLoadService, LocationManager locationManager)
         {
             _locationManager = locationManager;
             _saveLoadService=saveLoadService;
@@ -44,9 +44,8 @@ namespace UI.Locations
 
         private void HandleLocationClick(int id)
         {
-            AllServices.Container.Single<LocationHandler>().SetSelectedLocationId(id);
+            AllServices.Container.Single<ILocationHandler>().SetSelectedLocationId(id);
             OnSelectLocation?.Invoke();
-           
         }
 
         protected override void OnDisabled()

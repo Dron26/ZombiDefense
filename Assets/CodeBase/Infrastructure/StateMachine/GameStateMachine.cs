@@ -11,57 +11,37 @@ using UnityEngine;
 
 namespace Infrastructure.StateMachine
 {
-    public class GameStateMachine: IGameStateMachine
+    public class GameStateMachine : IGameStateMachine
     {
-        private readonly Dictionary<Type,IExitebleState> _states;
+        private Dictionary<Type, IExitebleState> _states;
         private IExitebleState _activeState;
-        
-        
-        public GameStateMachine(SceneLoader sceneLoader, AllServices services, LoadingCurtain loadingCurtain,
-            Language language, PauseService pauseService, SaveLoadService saveLoadService)
+
+        public void SetStates(Dictionary<Type, IExitebleState> states)
         {
-            List<string> sceneNames = GetSceneNames();
-
-            _states = new Dictionary<Type, IExitebleState>
-            {
-                [typeof(BootstrapState)] = new BootstrapState(this,sceneLoader, services,language,pauseService,saveLoadService,loadingCurtain),
-                [typeof(LoadLevelState)] = new LoadLevelState(this,sceneLoader, services.Single<IGameFactory>(),sceneNames),
-                [typeof(GameLoopState)] = new GameLoopState(this,loadingCurtain),
-            };
-
+            _states = states ?? throw new ArgumentNullException(nameof(states));
         }
 
         public void Enter<TState>() where TState : class, IState
         {
-            Debug.Log("Enter<TState>"+typeof(TState));
             IState state = ChangeState<TState>();
             state.Enter();
         }
 
-        public void Enter<TState,TPayload>(TPayload payload) where TState : class, IPayloadState<TPayload>
+        public void Enter<TState, TPayload>(TPayload payload) where TState : class, IPayloadState<TPayload>
         {
-            Debug.Log("Enter<TState,TPayload>"+typeof(TState)+payload);
             TState state = ChangeState<TState>();
             state.Enter(payload);
         }
 
         private TState ChangeState<TState>() where TState : class, IExitebleState
         {
-            Debug.Log("ChangeState"+typeof(TState));
             _activeState?.Exit();
             TState state = GetState<TState>();
             _activeState = state;
             return state;
         }
 
-        private TState GetState<TState>() where TState : class, IExitebleState => 
-            _states[typeof(TState)]as TState;
-        
-        private List<string> GetSceneNames()
-        {
-            List<string> names = new() { Constants.Initial, Constants.Menu, Constants.Location };
-            return  names;
-
-        }
+        private TState GetState<TState>() where TState : class, IExitebleState =>
+            _states[typeof(TState)] as TState;
     }
 }

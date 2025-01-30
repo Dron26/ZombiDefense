@@ -22,6 +22,7 @@ namespace UI.Locations
         {
             _button = GetComponent<Button>();
             _button.onClick.AddListener(() => OnClick?.Invoke(_id));
+            _button.onClick.AddListener(() => UpdateUI());
             _isLocked=isLocked;
             _isCompleted=isCompleted;
             UpdateUI();
@@ -32,7 +33,7 @@ namespace UI.Locations
             _lockedImage.enabled = _isLocked;
             _unlockedImage.enabled = !_isLocked;
             _selectImage.enabled = _isCompleted;
-            _button.interactable = _isCompleted;
+            _button.interactable = _isLocked;
         }
     }
 }
