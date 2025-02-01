@@ -1,7 +1,6 @@
 using Data.Settings.Language;
 using Infrastructure.AssetManagement;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.Factories.FactoryGame;
 using Infrastructure.StateMachine;
 using Infrastructure.StateMachine.States;
 using Interface;
@@ -20,6 +19,7 @@ namespace Infrastructure
         [SerializeField] private PauseService _pauseService;
         [SerializeField] private SaveLoadService _saveLoadService;
         [SerializeField] private UIHandler _uiHandler;
+
         private Game _game;
         private IServiceRegister _serviceRegister;
         private IGameFactory _gameFactory;
@@ -27,12 +27,14 @@ namespace Infrastructure
         private void Awake()
         {
             DontDestroyOnLoad(this);
-            _saveLoadService.Initialize(new JsonSerializationService());
-            _serviceRegister = new ServiceRegister( _pauseService, new Language(),AllServices.Container,_saveLoadService);
+
+            // Регистрация сервисов, без необходимости в вызове Initialize
+            RegisterServices();
 
             _gameFactory = new GameFactory(new AssetProvider());
 
             AllServices.Container.Single<IUIHandler>().SetCurtain(_loadingCurtain);
+
             Language language = GetLanguage();
             _game = new Game(this, _loadingCurtain, language, _pauseService, _saveLoadService, _serviceRegister, _gameFactory);
         }
@@ -48,7 +50,6 @@ namespace Infrastructure
         }
 
         public YandexInitializer GetYandexInitializer() => _yandexInitializer;
-        public SaveLoadService GetSaveLoad() => _saveLoadService;
         public LoadingCurtain GetLoadingCurtain() => _loadingCurtain;
         public GameStateMachine GetStateMachine() => _game.StateMachine;
 
@@ -60,6 +61,11 @@ namespace Infrastructure
                 SystemLanguage.Turkish => Language.TR,
                 _ => Language.EN
             };
+        }
+
+        private void RegisterServices()
+        {
+            _serviceRegister = new ServiceRegister(_pauseService, new Language(), AllServices.Container, _saveLoadService);
         }
     }
 }

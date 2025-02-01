@@ -20,14 +20,14 @@ namespace UI.HUD.StorePanel
         private Button _buttonAdditionalPanel;
         public event Action OnSelectedMedicineBox;
         public event Action OnSelectedWeaponBox;
-        private GameEventBroadcaster _eventBroadcaster;
+        private IGameEventBroadcaster _eventBroadcaster;
 
         private bool _isWeaponActive;
         private bool _isMedicineActive;
         private bool _isSelected;
         public void Initialize()
         {
-            _eventBroadcaster=AllServices.Container.Single<GameEventBroadcaster>(); 
+            _eventBroadcaster=AllServices.Container.Single<IGameEventBroadcaster>(); 
 
             AddListener();
             

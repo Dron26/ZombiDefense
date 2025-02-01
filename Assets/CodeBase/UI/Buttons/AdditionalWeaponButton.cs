@@ -23,7 +23,7 @@ namespace UI.Buttons
         private bool _haveAdditionalWeapon;
         public void Initialize()
         {
-            AllServices.Container.Single<GameEventBroadcaster>().OnSelectedNewCharacter+=OnSelectedNewCharacter;
+            AllServices.Container.Single<IGameEventBroadcaster>().OnSelectedNewCharacter+=OnSelectedNewCharacter;
             _weapon.onClick.AddListener(() =>TryThrowGranade());
         }
         private void Start()
@@ -82,7 +82,7 @@ namespace UI.Buttons
 
         protected void OnDestroy()
         {
-            AllServices.Container.Single<GameEventBroadcaster>().OnSelectedNewCharacter-=OnSelectedNewCharacter;
+            AllServices.Container.Single<IGameEventBroadcaster>().OnSelectedNewCharacter-=OnSelectedNewCharacter;
             _weapon.onClick.RemoveListener(() =>TryThrowGranade());
         }
     }

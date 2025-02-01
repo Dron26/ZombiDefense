@@ -32,19 +32,19 @@ namespace Services.Ads
         private WaveManager _waveManager;
         public Action OnStartSpawn;
         public Action OnResetLevel;
-        private GameEventBroadcaster _eventBroadcaster;
+        private IGameEventBroadcaster _eventBroadcaster;
 
-        public void Init(SaveLoadService saveLoadService, SceneInitializer sceneInitializer, WaveManager waveManager,
+        public void Init( SceneInitializer sceneInitializer, WaveManager waveManager,
             GlobalTimer globalTimer, GameStateMachine gameStateMachine)
         {
             _waveManager = waveManager;
             _sceneInitializer = sceneInitializer;
             _store.Initialize(_sceneInitializer );
-            _menuPanel.Initialize(saveLoadService);
+            _menuPanel.Initialize();
             _resursesCanvas.Initialize(_store.GetWallet());
             _reportPanel.Init(_store,gameStateMachine);
             AllServices.Container.Single<IUIHandler>().SetRaycaster(GetButtonPanel().GetComponent<GraphicRaycaster>());
-            _eventBroadcaster=AllServices.Container.Single<GameEventBroadcaster>();
+            _eventBroadcaster=AllServices.Container.Single<IGameEventBroadcaster>();
             GetComponent<RaycastHitChecker>().Initialize();
             _timerDisplay.Initialize(_store.GetWallet(),_waveManager);
             AddListener();

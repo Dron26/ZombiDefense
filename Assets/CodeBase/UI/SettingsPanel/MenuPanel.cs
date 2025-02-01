@@ -2,6 +2,7 @@ using System;
 using Infrastructure;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.StateMachine;
+using Interface;
 using Services;
 using Services.Audio;
 using Services.PauseService;
@@ -38,7 +39,7 @@ namespace UI.SettingsPanel
 
         public Action OnClickExitToMenu;
         
-        public void Initialize(SaveLoadService saveLoadService)
+        public void Initialize( )
         {
             _panel.SetActive(true);
             _settingPanel.Initialize(_audioManager);

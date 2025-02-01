@@ -31,9 +31,9 @@ namespace Infrastructure.Logic.WaveManagment
         private bool _isStartClick = false;
         private float timerDuration ;
         private WaveManager _waveManager;
-        private EnemyHandler _enemyHandler;
-        private LocationHandler _locationHandler;
-        private GameEventBroadcaster _eventBroadcaster;
+        private IEnemyHandler _enemyHandler;
+        private ILocationHandler _locationHandler;
+        private IGameEventBroadcaster _eventBroadcaster;
         
         public void Disabled()
         {
@@ -44,9 +44,9 @@ namespace Infrastructure.Logic.WaveManagment
         {
             _waveManager=waveManager;
             _wallet=wallet;
-            _eventBroadcaster = AllServices.Container.Single<GameEventBroadcaster>();
-            _enemyHandler = AllServices.Container.Single<EnemyHandler>();
-            _locationHandler=AllServices.Container.Single<LocationHandler>();
+            _eventBroadcaster = AllServices.Container.Single<IGameEventBroadcaster>();
+            _enemyHandler = AllServices.Container.Single<IEnemyHandler>();
+            _locationHandler=AllServices.Container.Single<ILocationHandler>();
             AddListener();
         }
 

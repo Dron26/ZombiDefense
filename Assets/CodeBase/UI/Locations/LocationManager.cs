@@ -30,12 +30,12 @@ namespace UI.Locations
             _gameEventBroadcaster.OnLocationCompleted += LocationCompleted;
             _locationHandler=AllServices.Container.Single<ILocationHandler>();
             _locationDataLoader = new LocationDataLoader();
-            SetLocations();
+            SetLocationsData();
         }
 
         public LocationData GetLocationById(int id) => _locations.FirstOrDefault(x => x.Id == id);
 
-        public void SetLocationCompleted(int id)
+        public void SetCompletedLocation(int id)
         {
             LocationData locationData = _locations.FirstOrDefault(x => x.Id == id);
             if (locationData != null)
@@ -49,7 +49,7 @@ namespace UI.Locations
             _locations[_locationHandler.GetSelectedLocationId()].SetCompleted(true);
         }
 
-        private void SetLocations()
+        private void SetLocationsData()
         {
             _locations = _locationDataLoader.LoadLocations();
         }

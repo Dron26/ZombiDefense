@@ -16,7 +16,7 @@ namespace Services.Audio
         private bool _isMenuEnabled = false;
         public Action OnMenuEnabled;
 
-        public void Initialize(ISaveLoadService saveLoadService)
+        public void Initialize()
         {
             _musicChanger =GetComponent<MusicChanger>();
             _soundChanger=GetComponentInChildren<SoundChanger>();            

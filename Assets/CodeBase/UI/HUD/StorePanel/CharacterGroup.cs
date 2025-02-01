@@ -11,7 +11,7 @@ namespace UI.HUD.StorePanel
         public List<GameObject> _characters;
         public List<RuntimeAnimatorController> _characterControllers;
         private bool _isShowed = false;
-        private int _selectedIndex=-1;
+        private int _selectedIndex;
         private CharacterStore _characterStore;
         private Animator _animator;
         private PlayerCharacterAnimController animController;
@@ -22,6 +22,7 @@ namespace UI.HUD.StorePanel
             characterStore.OnUpdateSelectedCharacter += OnStoreActive;
             _animator=GetComponent<Animator>();
             animController=GetComponent<PlayerCharacterAnimController>();
+            _selectedIndex = -1;
         }
 
         private void OnStoreActive()
@@ -34,7 +35,7 @@ namespace UI.HUD.StorePanel
         {
             int index = (int)type;
 
-            if (index != -1&&_selectedIndex!=index)
+            if (index != -1)
             {
                 _characters[index].SetActive(true);
 
@@ -48,7 +49,7 @@ namespace UI.HUD.StorePanel
             
             
             
-            if (_selectedIndex!=-1)
+            if (_selectedIndex!=-1&&_selectedIndex!=index)
             {
                 _characters[_selectedIndex].SetActive(false);
             }

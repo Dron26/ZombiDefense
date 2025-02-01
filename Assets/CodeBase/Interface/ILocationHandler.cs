@@ -14,5 +14,8 @@ namespace Interface
         int GetSelectedLocationId();
         void Reset();
         bool IsExitFromLocation { get; set; }
+        int SelectedLocationId { get; set; }
+        void SetMaxEnemyOnScene(int count);
+        void SetSelectedPointId(int i);
     }
 }

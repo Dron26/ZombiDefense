@@ -13,5 +13,6 @@ namespace Interface
         void SetInactiveHumanoids(List<Character> characters);
         List<Character> GetInactiveHumanoids();
         void Reset();
+        List<Character> GetAvailableCharacter();
     }
 }

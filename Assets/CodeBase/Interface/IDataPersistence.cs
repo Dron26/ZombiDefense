@@ -3,12 +3,10 @@ using Services;
 
 namespace Interface
 {
-    public interface IDataPersistence: IService
+    public interface IDataPersistence:IService
     {
-        void Save();
-        GameData LoadData();
-        void OnGameStart();
-        void OnGameEnd();
+        void Save(GameData data);
+        GameData Load();
         void Reset();
     }
 }

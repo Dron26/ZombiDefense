@@ -8,6 +8,7 @@ using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Factories.FactoryWarriors.Robots;
 using Infrastructure.Location;
 using Infrastructure.Points;
+using Interface;
 using Services;
 using Services.Audio;
 using Services.SaveLoad;
@@ -38,7 +39,7 @@ namespace Infrastructure.Logic.Inits
 
         public Action LastHumanoidDie;
 
-        public void Initialize(AudioManager audioManager, SceneInitializer sceneInitializer, SaveLoadService saveLoadService,SceneObjectManager sceneObjectManager)
+        public void Initialize(AudioManager audioManager, SceneInitializer sceneInitializer ,SceneObjectManager sceneObjectManager)
         {
             _sceneObjectManager=sceneObjectManager;
             _sceneObjectManager.CreatedHumanoid +=  OnCreatedCharacted;
@@ -147,8 +148,8 @@ namespace Infrastructure.Logic.Inits
 
         private void SetLocalParametrs()
         {
-            AllServices.Container.Single<CharacterHandler>().SetActiveCharacters(_activeCharacters);
-            AllServices.Container.Single<CharacterHandler>().SetInactiveHumanoids(_inactiveCharacetrs);
+            AllServices.Container.Single<ICharacterHandler>().SetActiveCharacters(_activeCharacters);
+            AllServices.Container.Single<ICharacterHandler>().SetInactiveHumanoids(_inactiveCharacetrs);
         }
 
         public void ClearData()

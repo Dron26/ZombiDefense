@@ -40,7 +40,7 @@ namespace Infrastructure.Logic.Inits
         private SceneObjectManager _sceneObjectManager;
         private LoadingCurtain _loadingCurtain;
         public HudPanel Window => _hudPanel;
-        private SaveLoadService _saveLoadService;
+        private ISaveLoadService _saveLoadService;
         private PlayerCharacterInitializer _playerCharacterInitializer;
         private GameObject _location;
 
@@ -56,23 +56,23 @@ namespace Infrastructure.Logic.Inits
         private IPauseService _pauseService;
         public bool IsStartedTutorial => _isTutorialLevel;
         private bool _isTutorialLevel;
-        private GameEventBroadcaster _eventBroadcaster;
+        private IGameEventBroadcaster _eventBroadcaster;
 
         public Action OnLoaded;
 
         public void Initialize(GameStateMachine stateMachine)
         {
             Debug.Log("SceneInitializer().Initialize");
-            _eventBroadcaster=AllServices.Container.Single<GameEventBroadcaster>(); 
+            _eventBroadcaster=AllServices.Container.Single<IGameEventBroadcaster>(); 
 
             _stateMachine = stateMachine;
             _gameBootstrapper = FindObjectOfType<GameBootstrapper>();
-            _saveLoadService = _gameBootstrapper.GetSaveLoad();
+            _saveLoadService = AllServices.Container.Single<ISaveLoadService>();
             AllServices.Container.Single<IUIHandler>().SetEvenSystem(_eventSystem);
             
 
             LocationFactory _locationFactory = new LocationFactory();
-            LocationPrefab location = _locationFactory.Create(AllServices.Container.Single<LocationHandler>().SelectedLocationId).GetComponent<LocationPrefab>();
+            LocationPrefab location = _locationFactory.Create(AllServices.Container.Single<ILocationHandler>().SelectedLocationId).GetComponent<LocationPrefab>();
             SetInitializers(location);
             LoadCharacters();
             Debug.Log("Finish LoadCharacters();");
@@ -85,22 +85,22 @@ namespace Infrastructure.Logic.Inits
 
 
             Debug.Log("Finish _playerCharacterInitializer();");
-            _audioManager.Initialize(_saveLoadService);
+            _audioManager.Initialize();
 
             _timerDisplay = _hudPanel.GetTimerDisplay();
             
             _sceneObjectManager = GetComponent<SceneObjectManager>();
             
-            _playerCharacterInitializer.Initialize(_audioManager, this, _saveLoadService, _sceneObjectManager);
+            _playerCharacterInitializer.Initialize(_audioManager, this, _sceneObjectManager);
             Debug.Log("Finish _playerCharacterInitializer();");
 
             InitializeEnemies();
             AddListener();
-            _hudPanel.Init(_saveLoadService, this, _waveManager, _globalTimer,_stateMachine);
+            _hudPanel.Init(this, _waveManager, _globalTimer,_stateMachine);
 
             Debug.Log("Finish _playerCharacterInitializer();");
 
-            _sceneObjectManager.Initialize(_hudPanel.GetStore(), _movePointController, _audioManager, _saveLoadService);
+            _sceneObjectManager.Initialize(_hudPanel.GetStore(), _movePointController, _audioManager);
             Debug.Log("Finish _sceneObjectManager();");
 
             _movePointController.Initialize(this);
@@ -160,7 +160,6 @@ namespace Infrastructure.Logic.Inits
         }
 
         public MovePointController GetMovePointController() => _movePointController;
-        public SaveLoadService GetSaveLoad() => _saveLoadService;
         public AudioManager GetAudioController() => _audioManager;
 
 

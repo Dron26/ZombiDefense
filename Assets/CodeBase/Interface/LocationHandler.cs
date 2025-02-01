@@ -13,31 +13,39 @@ namespace Interface
         private readonly List<int> _completedLocations = new();
         private int _selectedPointId;
         private WorkPoint _selectedPoint;
-        public int TimeTimeBeforeNextWave=> _timeBeforeNextWave;
+        public int TimeBeforeNextWave => _timeBeforeNextWave;
         public bool IsExitFromLocation
         {
             get => _isExitFromLocation;
             set => _isExitFromLocation = value;
         }
 
-        private int _timeBeforeNextWave=5;
+        private int _timeBeforeNextWave = 5;
         public int MaxEnemiesOnScene => _maxEnemiesOnScene;
-        public int SelectedLocationId => _selectedLocationId;
+        public int SelectedLocationId
+        {
+            get => _selectedLocationId;
+            set => _selectedLocationId = value;
+        }
+
         private int _maxEnemiesOnScene;
         private bool _isExitFromLocation;
-        
+
         public IReadOnlyList<int> CompletedLocations => _completedLocations.AsReadOnly();
+
         public void SetSelectedPointId(int id) => _selectedPointId = id;
         public void CompleteCurrentLocation() => _completedLocations.Add(_selectedLocationId);
         public void ClearCompletedLocations() => _completedLocations.Clear();
         public void ChangeSelectedPoint(WorkPoint point) => _selectedPoint = point;
         public void SetMaxEnemyOnScene(int count) => _maxEnemiesOnScene = count;
+
         public void LocationCompleted()
         {
             var selectedLocation = _locations.Find(location => location.Id == _selectedLocationId);
             if (selectedLocation != null)
             {
                 selectedLocation.SetCompleted(true);
+                selectedLocation.IncreaseWaveLevel(); // Увеличиваем уровень сложности
             }
         }
 
@@ -57,12 +65,11 @@ namespace Interface
         public void SetLocationsDatas(List<LocationData> locationDatas)
         {
             _locations = locationDatas;
-            
         }
+
         public void SetLocationsExite(bool isLocation)
         {
             _isExitFromLocation = isLocation;
-            
         }
 
         public void SetSelectedLocationId(int id)
@@ -74,24 +81,30 @@ namespace Interface
         {
             return _selectedLocationId;
         }
-        
+
         public void Reset()
         {
-            _selectedLocationId = 0; 
+            _selectedLocationId = 0;
 
             foreach (var location in _locations)
             {
-                if (location.IsTutorial||location.Id==1) 
+                if (location.IsTutorial || location.Id == 1)
                 {
-                    location.SetLock(false); 
+                    location.SetLock(false);
                 }
                 else
                 {
-                    location.SetLock(true); 
+                    location.SetLock(true);
                 }
 
                 location.SetCompleted(false);
             }
+        }
+
+        // Новый метод для получения текущих данных о локации
+        public LocationData GetCurrentLocationData()
+        {
+            return _locations.Find(location => location.Id == _selectedLocationId);
         }
     }
 }

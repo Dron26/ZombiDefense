@@ -19,7 +19,7 @@ namespace UI.HUD.StorePanel
 
         public void Initialize()
         {
-            TempMoney = AllServices.Container.Single<CurrencyHandler>().FixTemporaryMoneyState();
+            TempMoney = AllServices.Container.Single<ICurrencyHandler>().FixTemporaryMoneyState();
             AddListener();
         }
 
@@ -57,7 +57,7 @@ namespace UI.HUD.StorePanel
         
         private void AddListener()
         {
-            AllServices.Container.Single<GameEventBroadcaster>().OnEnemyDeath += AddMoneyForKilledEnemy;
+            AllServices.Container.Single<IGameEventBroadcaster>().OnEnemyDeath += AddMoneyForKilledEnemy;
         }
 
         protected override void OnDisable()
@@ -67,7 +67,7 @@ namespace UI.HUD.StorePanel
 
         private void RemoveListener()
         {
-            AllServices.Container.Single<GameEventBroadcaster>().OnEnemyDeath -= AddMoneyForKilledEnemy;
+            AllServices.Container.Single<IGameEventBroadcaster>().OnEnemyDeath -= AddMoneyForKilledEnemy;
         }
     }
 }

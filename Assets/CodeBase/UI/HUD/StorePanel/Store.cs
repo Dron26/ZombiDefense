@@ -60,18 +60,18 @@ namespace UI.HUD.StorePanel
         private BoxStore _boxStore;
         public event Action <BoxData> OnBoughtBox;
         public event Action <CharacterData> OnBoughtCharacter;
-        private GameEventBroadcaster _eventBroadcaster;
+        private IGameEventBroadcaster _eventBroadcaster;
 
         public void Initialize(SceneInitializer initializer)
         {
             _wallet = GetComponent<Wallet>();
             _boxStore = GetComponent<BoxStore>();
             _pauseService = AllServices.Container.Single<IPauseService>();
-            _eventBroadcaster=AllServices.Container.Single<GameEventBroadcaster>(); 
+            _eventBroadcaster=AllServices.Container.Single<IGameEventBroadcaster>(); 
 
             _storePanel.gameObject.SetActive(!_storePanel.activeSelf);
             _sceneInitializer = initializer;
-            _moneyAmount = AllServices.Container.Single<CurrencyHandler>().GetCurrentMoney();
+            _moneyAmount = AllServices.Container.Single<ICurrencyHandler>().GetCurrentMoney();
             _workPointGroup = _sceneInitializer.GetPlayerCharacterInitializer().GetWorkPointGroup();
             _boxStore.Initialize(_wallet);
             SetCharacterInitializer();
@@ -86,7 +86,7 @@ namespace UI.HUD.StorePanel
         {
             _characterInitializer = _sceneInitializer.GetPlayerCharacterInitializer();
             //_characterInitializer.OnClickWorkpoint += CheckPointInfo;
-            _characters = AllServices.Container.Single<CharacterHandler>().GetAvailableCharacter();
+            _characters = AllServices.Container.Single<ICharacterHandler>().GetAvailableCharacter();
             
             _characterStore.Initialize( this);
             

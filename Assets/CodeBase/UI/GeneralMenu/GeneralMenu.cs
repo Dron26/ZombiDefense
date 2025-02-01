@@ -58,7 +58,7 @@ namespace UI.GeneralMenu
         private  void  LoadAudioController()
         {
             _audioManager.SetMenuEnabled(true);
-            _audioManager.Initialize(_saveLoadService);
+            _audioManager.Initialize();
         }
         
         private void OnClikedCurtain()

@@ -16,6 +16,12 @@ namespace UI.HUD.StorePanel
         private CharacterStore _characterStore;
         private CharacterData _character;
 
+        public void Initialize(CharacterStore characterStore)
+        {
+            _characterStore = characterStore;
+            _characterStore.OnUpdateSelectedCharacter += SetParametrs;
+        }
+        
         public void SetParametrs()
         {
             gameObject.SetActive(true);
@@ -27,11 +33,6 @@ namespace UI.HUD.StorePanel
             _infoWindow.text = LeanLocalization.GetTranslationText(_character.Type.ToString() + "Info");
         }
 
-        public void Initialize(CharacterStore characterStore)
-        {
-            _characterStore = characterStore;
-            _characterStore.OnUpdateSelectedCharacter += SetParametrs;
-            SetParametrs();
-        }
+     
     }
 }

@@ -1,66 +1,40 @@
-﻿using System;
-using System.IO;
-using Data;
-using Infrastructure.BaseMonoCache.Code.MonoCache;
+﻿using Data;
+using Interface;
+using Services.SaveLoad;
 using UnityEngine;
 
-namespace Services.SaveLoad
+public class SaveLoadService : ISaveLoadService
 {
-    public class SaveLoadService : MonoCache, ISaveLoadService
+    private readonly IDataPersistence _dataPersistence;
+    private GameData _gameData;
+
+    public GameData GameData => _gameData;
+
+    public SaveLoadService()
     {
-        private const string SaveFileName = "saveData.json";
-        private  string _filePath;
-        private GameData _gameData;
-        private  ISerializationService _serializationService;
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
+            _dataPersistence = new CloudDataPersistence(); // WebGL → в облако
+        else
+            _dataPersistence = new LocalDataPersistence(); // Остальные → локально
 
-        public GameData GameData => _gameData;
-        public void Initialize(ISerializationService serializationService)
-        {
-            _serializationService = serializationService ?? throw new ArgumentNullException(nameof(serializationService));
-            _filePath = Path.Combine(Application.persistentDataPath, SaveFileName);
-            Load();
-        }
+        _gameData = _dataPersistence.Load();
 
-        public void Save()
-        {
-            try
-            {
-                var json = _serializationService.Serialize(_gameData);
-                File.WriteAllText(_filePath, json);
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError($"Ошибка сохранения: {ex.Message}");
-            }
-        }
+        // Проверяем первый запуск
+        _gameData.AddInitialMoney();  // Даем 100 монет на первый запуск
+        Save();  // Сохраняем данные после первого запуска
+    }
 
-        public void Load()
-        {
-            try
-            {
-                if (File.Exists(_filePath))
-                {
-                    var json = File.ReadAllText(_filePath);
-                    _gameData = _serializationService.Deserialize<GameData>(json);
-                }
-                else
-                {
-                    _gameData = new GameData();
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError($"Ошибка загрузки: {ex.Message}");
-                _gameData = new GameData();
-            }
-        }
+    public void Save()
+    {
+        _dataPersistence.Save(_gameData); 
+    }
 
-        public void Reset()
-        {
-            _gameData = new GameData();
-            Save();
-        }
+    public GameData Load() => _dataPersistence.Load();
 
-        
+    public void Reset() => _dataPersistence.Reset();
+
+    public void Initialize(ISerializationService jsonSerializationService)
+    {
+        throw new System.NotImplementedException();
     }
 }

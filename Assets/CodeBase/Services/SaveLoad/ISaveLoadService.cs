@@ -6,7 +6,7 @@ namespace Services.SaveLoad
     {
         public void Save();
 
-        public void Load();
+        public GameData Load();
 
         public void Reset();
         public void Initialize(ISerializationService jsonSerializationService);

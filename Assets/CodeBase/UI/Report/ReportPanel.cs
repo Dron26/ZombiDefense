@@ -52,7 +52,7 @@ namespace UI.Report
         private GameStateMachine _stateMachine;
         private Wallet _wallet;
         private IPauseService _pauseService;
-        private AchievementsHandler _achievementsHandler;
+        private IAchievementsHandler _achievementsHandler;
         
         public void Init(Store store,GameStateMachine stateMachine)
         {
@@ -60,7 +60,7 @@ namespace UI.Report
             _panel.SetActive(false);
             _wallet=store.GetWallet();
             _pauseService = AllServices.Container.Single<IPauseService>();
-            _achievementsHandler = AllServices.Container.Single<AchievementsHandler>();
+            _achievementsHandler = AllServices.Container.Single<IAchievementsHandler>();
             AddListener();
         }
 
@@ -148,8 +148,8 @@ namespace UI.Report
             _reset.onClick.AddListener(ResetLevel);
             _continue.onClick.AddListener(SelectOk);
             
-            AllServices.Container.Single<GameEventBroadcaster>().LastHumanoidDie+=OnLastHumanoidDie;
-            AllServices.Container.Single<GameEventBroadcaster>().OnLocationCompleted+=ShowReport;
+            AllServices.Container.Single<IGameEventBroadcaster>().LastHumanoidDie+=OnLastHumanoidDie;
+            AllServices.Container.Single<IGameEventBroadcaster>().OnLocationCompleted+=ShowReport;
         }
 
         private void RemoveListener()
@@ -158,8 +158,8 @@ namespace UI.Report
             _reset.onClick.RemoveListener(ResetLevel);
             _continue.onClick.RemoveListener(SelectOk);
             
-            AllServices.Container.Single<GameEventBroadcaster>().LastHumanoidDie-=OnLastHumanoidDie;
-            AllServices.Container.Single<GameEventBroadcaster>().OnLocationCompleted-=ShowReport;
+            AllServices.Container.Single<IGameEventBroadcaster>().LastHumanoidDie-=OnLastHumanoidDie;
+            AllServices.Container.Single<IGameEventBroadcaster>().OnLocationCompleted-=ShowReport;
         }
 
         private void OnDestroy()
@@ -179,3 +179,6 @@ namespace UI.Report
         TasksCompleted
     }
 }
+
+//когда я заканчиваю последнюю волну мне предоставляют вариант играть дальше или завершить 
+//и перейти на след миссию, если я выбираю завершить и перейти на другую миссию я вывожу эту панель 

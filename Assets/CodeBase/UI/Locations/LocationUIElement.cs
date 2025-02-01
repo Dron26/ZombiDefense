@@ -11,6 +11,8 @@ namespace UI.Locations
         [SerializeField] private Image _lockedImage;
         [SerializeField] private Image _unlockedImage;
         [SerializeField] private Image _selectImage;
+        [SerializeField] private Sprite _highlightedSprite;
+        [SerializeField] private Image _targetImage;
 
         private Button _button;
         public int Id => _id;
@@ -20,20 +22,44 @@ namespace UI.Locations
 
         public void Initialize(bool isLocked, bool isCompleted)
         {
+            _isLocked=isLocked;
             _button = GetComponent<Button>();
             _button.onClick.AddListener(() => OnClick?.Invoke(_id));
-            _button.onClick.AddListener(() => UpdateUI());
-            _isLocked=isLocked;
-            _isCompleted=isCompleted;
-            UpdateUI();
+            _button.transition = Selectable.Transition.SpriteSwap;
+
+            _isCompleted = isCompleted;
+            UpdateState();
         }
 
-        public void UpdateUI()
+        public void UpdateState()
         {
-            _lockedImage.enabled = _isLocked;
-            _unlockedImage.enabled = !_isLocked;
-            _selectImage.enabled = _isCompleted;
-            _button.interactable = _isLocked;
+          
+            
+             _lockedImage.enabled = _isLocked;
+             _unlockedImage.enabled = !_isLocked;
+             _button.interactable = !_isLocked;
+            
+            if (_isLocked)
+            {
+                _button.targetGraphic = _lockedImage;
+            }
+            else
+            {
+                _button.targetGraphic = _unlockedImage;
+            }
+
+        }
+
+        private void UpdateTransition()
+        {
+            
+
+           
+        }
+
+        public void SetSelected(bool isSelected)
+        {
+            _isLocked = isSelected;
         }
     }
 }

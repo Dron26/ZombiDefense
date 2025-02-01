@@ -34,13 +34,13 @@ namespace Infrastructure.Points
         [SerializeField] private WorkPoint _startPoint;
         private Store store;
         private bool isMovementOver = false;
-        private CharacterHandler _characterHandler;
-        private LocationHandler _locationHandler;
+        private ICharacterHandler _characterHandler;
+        private ILocationHandler _locationHandler;
         
         public void Initialize(SceneInitializer sceneInitializer )
         {
-            _characterHandler=AllServices.Container.Single<CharacterHandler>();
-            _locationHandler=AllServices.Container.Single<LocationHandler>();
+            _characterHandler=AllServices.Container.Single<ICharacterHandler>();
+            _locationHandler=AllServices.Container.Single<ILocationHandler>();
             _sceneInitializer = sceneInitializer;
             _characterInitializer = sceneInitializer.GetPlayerCharacterInitializer();
             _activeCharacters = _characterHandler.GetActiveCharacters();

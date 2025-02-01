@@ -37,14 +37,14 @@ namespace Infrastructure.Logic.WaveManagment
         public UnityAction OnReadySpawning;
         private SceneInitializer _sceneInitializer;
         private WavesContainerData _wavesContainerData;
-        private LocationHandler _locationHandler;
+        private ILocationHandler _locationHandler;
         public List<WaveData> _groupWaveData;
         public List<List<int>> _groupEnemyCount;
-        private GameEventBroadcaster _eventBroadcaster;
+        private IGameEventBroadcaster _eventBroadcaster;
 
         private void InitializeContainer()
         {
-            _locationHandler = AllServices.Container.Single<LocationHandler>();
+            _locationHandler = AllServices.Container.Single<ILocationHandler>();
             string path =AssetPaths.WavesContainerData + _locationHandler.SelectedLocationId;
             _wavesContainerData = Resources.Load<WavesContainerData>(path);
             _groupWaveData=_wavesContainerData.GroupWaveData;;
@@ -59,7 +59,7 @@ namespace Infrastructure.Logic.WaveManagment
         public void Initialize(SceneInitializer sceneInitializer)
         {
             _sceneInitializer = sceneInitializer;
-            _eventBroadcaster=AllServices.Container.Single<GameEventBroadcaster>(); 
+            _eventBroadcaster=AllServices.Container.Single<IGameEventBroadcaster>(); 
 
             _enemyFactory.Initialize( _sceneInitializer.GetAudioController());
             _waveSpawner.Initialize(_sceneInitializer.GetAudioController(), _enemyFactory, this);

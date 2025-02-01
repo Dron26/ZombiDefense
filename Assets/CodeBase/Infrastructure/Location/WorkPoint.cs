@@ -6,6 +6,7 @@ using Infrastructure.AIBattle;
 using Infrastructure.AIBattle.AdditionalEquipment;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
+using Interface;
 using Services;
 using Services.SaveLoad;
 using UnityEngine;
@@ -46,7 +47,7 @@ namespace Infrastructure.Location
         private MedicalKit _medicalKit;
         private AdditionalBox _weaponBox;
         private bool _isHaveWeaponBox;
-        private CharacterHandler _characterHandler;
+        private ICharacterHandler _characterHandler;
         
         private Vector3 _startScale;
         private Vector3 _maxScale;
@@ -217,7 +218,7 @@ namespace Infrastructure.Location
 
         public void Initialize(int id)
         {
-            _characterHandler=AllServices.Container.Single<CharacterHandler>();
+            _characterHandler=AllServices.Container.Single<ICharacterHandler>();
             _id = id;
         }
 

@@ -22,7 +22,6 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid
         private Dictionary<Type, ISwitcherState> _allBehaviors;
         private ISwitcherState _currentBehavior;
         private SceneInitializer _sceneInitializer;
-        private SaveLoadService _saveLoadService;
         private Character _character;
         public Action OnStartMove;
 
@@ -35,7 +34,6 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid
             }
 
             _sceneInitializer = FindObjectOfType<SceneInitializer>();
-            _saveLoadService = _sceneInitializer.GetSaveLoad();
 
             _allBehaviors = new Dictionary<Type, ISwitcherState>
             {
@@ -47,7 +45,7 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid
 
             foreach (var behavior in _allBehaviors)
             {
-                behavior.Value.Init(this, _saveLoadService);
+                behavior.Value.Init(this);
                 behavior.Value.ExitBehavior();
             }
         }

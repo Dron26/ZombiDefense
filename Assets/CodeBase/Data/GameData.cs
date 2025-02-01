@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using Services;
 using Services.SaveLoad;
 
@@ -18,15 +17,24 @@ namespace Data
         public AudioData AudioData { get; private set; } = new AudioData();
         public TimeStatistics TimeStatistics { get; private set; } = new TimeStatistics();
 
-        public void UpdateAudioSettings(AudioData audioData) => AudioData = audioData;
-        public void OnGameStart() => TimeStatistics.OnGameStart();
-        public void OnGameEnd() => TimeStatistics.OnGameEnd();
-        
         public bool IsFirstStart { get; private set; } = true;
 
         public void ChangeIsFirstStart()
         {
             IsFirstStart = false;
         }
+
+        public void AddInitialMoney()
+        {
+            if (IsFirstStart)
+            {
+                Money.Money = 100; 
+                ChangeIsFirstStart();
+            }
+        }
+
+        public void UpdateAudioSettings(AudioData audioData) => AudioData = audioData;
+        public void OnGameStart() => TimeStatistics.OnGameStart();
+        public void OnGameEnd() => TimeStatistics.OnGameEnd();
     }
 }

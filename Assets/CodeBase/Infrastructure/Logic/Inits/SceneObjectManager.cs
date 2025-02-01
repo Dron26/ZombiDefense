@@ -41,8 +41,7 @@ namespace Infrastructure.Logic.Inits
         private Store _store;
         private MovePointController _movePointController;
         private SaveLoadService _saveLoadService;
-        public void Initialize(Store store, MovePointController movePointController, AudioManager audioManager,
-            SaveLoadService saveLoadService)
+        public void Initialize(Store store, MovePointController movePointController, AudioManager audioManager)
         {
             _store=store;
             _movePointController = movePointController;
@@ -50,7 +49,6 @@ namespace Infrastructure.Logic.Inits
             _characterFactory=GetComponent<CharacterFactory>();
             _boxFactory=GetComponent<BoxFactory>();
             _itemFactory=GetComponent<ItemFactory>();
-            _saveLoadService = saveLoadService;
             AddListener();
         }
 

@@ -6,6 +6,6 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid
     {
         public void EnterBehavior();
         public void ExitBehavior();
-        public void Init(PlayerCharactersStateMachine playerCharactersStateMachine,SaveLoadService saveLoadService);
+        public void Init(PlayerCharactersStateMachine playerCharactersStateMachine );
     }
 }

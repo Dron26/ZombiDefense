@@ -61,30 +61,9 @@ namespace UI.HUD.StorePanel
             InitializeCharacterSlots();
             InitializeButton();
             _isInitialized = true;
-            _store.IsStoreActive += SetCharacterData;
+            _store.IsStoreActive += OpenCharacterStore;
             _wallet = store.GetWallet();
             _characterInfoPanel.Initialize(this);
-        }
-
-        private void FillCharacters()
-        {
-            _characterSkinnedMeshes.Add(_ordinarySoldier);
-            _characterSkinnedMeshes.Add(_sergeant);
-            _characterSkinnedMeshes.Add(_grenader);
-            _characterSkinnedMeshes.Add(_scout);
-            _characterSkinnedMeshes.Add(_sniper);
-            _characterSkinnedMeshes.Add(_turret);
-            
-            _characterSkinnedMeshes.Add(_humanoid);
-
-
-            foreach (List<GameObject> obj in _characterSkinnedMeshes)
-            {
-                foreach (GameObject obj2 in obj)
-                {
-                    obj2.SetActive(false);
-                }
-            }
         }
 
         private void InitializeButton()
@@ -106,12 +85,16 @@ namespace UI.HUD.StorePanel
                     _characterSlots.Add(characterSlot);
                     characterSlot.Selected += SetSelectedSlot;
                 }
-                
             }
 
+            SetStartParametrs();
+        }
+
+        private void SetStartParametrs()
+        {
             _selectedCharacterSlot = _characterSlots[0];
             _selectedCharacter = _charactersData[0];
-            _selectedCharacterSlot.Selected.Invoke(_selectedCharacterSlot);
+          // _selectedCharacterSlot.Selected.Invoke(_selectedCharacterSlot);
         }
 
         // private void OnTryBuyUpgrade(UpgradeData upgradeData, int price, int level)
@@ -255,21 +238,19 @@ namespace UI.HUD.StorePanel
 
         private void SetSelectedSlot(CharacterSlot characterSlot)
         {
-            if (characterSlot != _selectedCharacterSlot)
-            {
-                _selectedCharacterSlot = characterSlot;
+            _selectedCharacterSlot = characterSlot;
                 _selectedCharacter =
                     _charactersData.FirstOrDefault(character => character.Type == _selectedCharacterSlot.Type);
                 OnUpdateSelectedCharacter?.Invoke();
-            }
         }
 
-        private void SetCharacterData(bool isActive)
+        private void OpenCharacterStore(bool isActive)
         {
             if (isActive)
             {
                 _container.gameObject.SetActive(true);
-                OnUpdateSelectedCharacter?.Invoke();
+                SetStartParametrs();
+                SetSelectedSlot( _characterSlots[0]);
             }
             else
             {
