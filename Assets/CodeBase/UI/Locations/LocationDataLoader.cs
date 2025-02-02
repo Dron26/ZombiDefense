@@ -18,9 +18,9 @@ namespace UI.Locations
             _locationHandler = AllServices.Container.Single<ILocationHandler>();
         }
 
-        public List<LocationData> LoadLocations()
+        public List<LocationProgressData> LoadLocations()
         {
-            List<LocationData> locations = new List<LocationData>();
+            List<LocationProgressData> locations = new List<LocationProgressData>();
             string pathLocations = AssetPaths.LocationsData;
             int count = GetterFolderCount.GetFolderItemsCount(pathLocations);
 
@@ -37,19 +37,16 @@ namespace UI.Locations
 
                 if (data != null)
                 {
-                    // Создаем новый экземпляр ScriptableObject через CreateInstance
-                    LocationData location = ScriptableObject.CreateInstance<LocationData>();
-
-                    // Копируем данные
-                    location.Id = data.Id;
-                    location.IsTutorial = data.IsTutorial;
-                    location.IsLocked = data.IsLocked;
-                    location.IsCompleted = data.IsCompleted;
-                    location.BaseZombieHealth = data.BaseZombieHealth;
-                    location.BaseReward = data.BaseReward;
-                    location.WaveCount = data.WaveCount;
-                    location.ZombieHealthMultiplier = data.ZombieHealthMultiplier;
-                    location.RewardMultiplier = data.RewardMultiplier;
+                    LocationProgressData location = new LocationProgressData(
+                        data.Id,
+                        data.IsTutorial,
+                        data.IsLocked,
+                        data.IsCompleted,
+                        data.BaseZombieHealth,
+                        data.BaseReward,
+                        data.WaveCount,
+                        0 // CurrentWaveLevel изначально 0
+                    );
 
                     locations.Add(location);
                 }
@@ -65,7 +62,7 @@ namespace UI.Locations
             return locations;
         }
 
-        private void InitializeLocations(List<LocationData> locations)
+        private void InitializeLocations(List<LocationProgressData> locations)
         {
             if (locations.Count > 0)
             {
@@ -73,7 +70,7 @@ namespace UI.Locations
             }
         }
 
-        private void SyncWithSaveData(List<LocationData> locations)
+        private void SyncWithSaveData(List<LocationProgressData> locations)
         {
             List<int> completedLocationsId = _locationHandler.GetCompletedLocationId();
 

@@ -1,21 +1,23 @@
 using System.Collections.Generic;
 using Services;
-using Services.SaveLoad;
-using UI.Locations;
 
 namespace Interface
 {
-    public interface ILocationHandler:IService
+    public interface ILocationHandler : IService
     {
-        void LocationCompleted();
-        List<int> GetCompletedLocationId();
-        void SetLocationsDatas(List<LocationData> locationDatas);
-        void SetSelectedLocationId(int id);
-        int GetSelectedLocationId();
-        void Reset();
-        bool IsExitFromLocation { get; set; }
-        int SelectedLocationId { get; set; }
-        void SetMaxEnemyOnScene(int count);
-        void SetSelectedPointId(int i);
+        void LocationCompleted(); 
+        List<int> GetCompletedLocationId();  
+        void SetLocationsDatas(List<LocationProgressData> locationProgressData);  
+        void SetSelectedLocationId(int id);  
+        int GetSelectedLocationId();  
+        void Reset();  
+        bool IsExitFromLocation { get; set; }  
+        int SelectedLocationId { get; set; }  
+        void SetMaxEnemyOnScene(int count);  
+        void SetSelectedPointId(int id);  
+        LocationProgressData GetCurrentLocationData();  
+        int GetCurrentZombieHealth();  
+        int GetCurrentReward();  
+        void IncreaseWaveLevel();  
     }
 }

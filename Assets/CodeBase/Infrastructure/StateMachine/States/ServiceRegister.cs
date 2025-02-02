@@ -28,7 +28,6 @@ namespace Infrastructure.StateMachine.States
             services.RegisterSingle<IResourceLoadService>(new ResourceLoaderService());
             services.RegisterSingle<IPauseService>(pauseService);
             services.RegisterSingle<IUIHandler>(new UIHandler());
-            services.RegisterSingle<ILocationHandler>(new LocationHandler());
             services.RegisterSingle<IGameEventBroadcaster>(new GameEventBroadcaster());
 
             services.RegisterSingle<ISaveLoadService>(saveLoadService);
@@ -38,6 +37,7 @@ namespace Infrastructure.StateMachine.States
             var achievementsHandler = new AchievementsHandler(gameData.AchievementsData);
             var gameEventBroadcaster = services.Single<IGameEventBroadcaster>();
 
+            services.RegisterSingle<ILocationHandler>(new LocationHandler(gameData));
             services.RegisterSingle<ICharacterHandler>(new CharacterHandler(gameData.Characters));
             services.RegisterSingle<ICurrencyHandler>(new CurrencyHandler(gameData.Money));
             services.RegisterSingle<IAudioSettingsHandler>(new AudioSettingsHandler(gameData.AudioData));

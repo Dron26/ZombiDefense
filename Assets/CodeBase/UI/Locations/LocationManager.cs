@@ -1,49 +1,46 @@
 using System.Collections.Generic;
 using System.Linq;
+using Infrastructure.AssetManagement;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.Factories.FactoryLocation;
-using Infrastructure.Location;
-using Infrastructure.StateMachine;
 using Interface;
 using Services;
-using Services.SaveLoad;
 using UnityEngine;
 
 namespace UI.Locations
 {
-     public class LocationManager : MonoCache
+    public class LocationManager : MonoCache
     {
-        public LocationData LocationData => _locationData;
-        
-        private  LocationDataLoader _locationDataLoader;
-        private  ILocationHandler _locationHandler;
-        private  IGameEventBroadcaster _gameEventBroadcaster ;
-        
-        private List<LocationData> _locations = new List<LocationData>();
-        private LocationData _locationData;
+        public LocationProgressData LocationData => _locationData;
 
-        public List<LocationData> GetLocations() => _locations;
+        private LocationDataLoader _locationDataLoader;
+        private ILocationHandler _locationHandler;
+        private IGameEventBroadcaster _gameEventBroadcaster;
+
+        private List<LocationProgressData> _locations = new List<LocationProgressData>();
+        private LocationProgressData _locationData;
+
+        public List<LocationProgressData> GetLocations() => _locations;
 
         public void Initialize()
         {
             _gameEventBroadcaster = AllServices.Container.Single<IGameEventBroadcaster>();
             _gameEventBroadcaster.OnLocationCompleted += LocationCompleted;
-            _locationHandler=AllServices.Container.Single<ILocationHandler>();
+            _locationHandler = AllServices.Container.Single<ILocationHandler>();
             _locationDataLoader = new LocationDataLoader();
             SetLocationsData();
         }
 
-        public LocationData GetLocationById(int id) => _locations.FirstOrDefault(x => x.Id == id);
+        public LocationProgressData GetLocationById(int id) => _locations.FirstOrDefault(x => x.Id == id);
 
         public void SetCompletedLocation(int id)
         {
-            LocationData locationData = _locations.FirstOrDefault(x => x.Id == id);
+            LocationProgressData locationData = _locations.FirstOrDefault(x => x.Id == id);
             if (locationData != null)
             {
                 locationData.SetCompleted(true);
             }
         }
-        
+
         public void LocationCompleted()
         {
             _locations[_locationHandler.GetSelectedLocationId()].SetCompleted(true);

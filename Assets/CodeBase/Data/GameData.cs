@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using Interface;
 using Services;
 using Services.SaveLoad;
+using UnityEngine;
 
 namespace Data
 {
@@ -18,6 +21,8 @@ namespace Data
         public TimeStatistics TimeStatistics { get; private set; } = new TimeStatistics();
 
         public bool IsFirstStart { get; private set; } = true;
+        
+        public  List<LocationProgressData> LocationProgressData { get; private set; } = new();
 
         public void ChangeIsFirstStart()
         {
@@ -36,5 +41,9 @@ namespace Data
         public void UpdateAudioSettings(AudioData audioData) => AudioData = audioData;
         public void OnGameStart() => TimeStatistics.OnGameStart();
         public void OnGameEnd() => TimeStatistics.OnGameEnd();
+        
+        [Header("Scaling")]
+        public float ZombieHealthMultiplier = 1.2f; 
+        public float RewardMultiplier = 1.1f; 
     }
 }

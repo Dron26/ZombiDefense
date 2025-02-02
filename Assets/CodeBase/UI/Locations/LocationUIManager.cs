@@ -21,7 +21,7 @@ namespace UI.Locations
         private ISaveLoadService _saveLoadService;
         private ICurrencyHandler _currencyHandler;
         private int _completedLocationCount;
-
+        private int _selectedLocationId;
         public void Initialize(ISaveLoadService saveLoadService, LocationManager locationManager)
         {
             _locationManager = locationManager;
@@ -39,12 +39,16 @@ namespace UI.Locations
 
         private void FillLocationInfo()
         {
-            var currentLocation = _locationManager.GetLocationById(_locationManager.LocationData.Id);
+            var currentLocation = _locationManager.GetLocationById(_selectedLocationId);
             if (currentLocation != null)
             {
                 _locationInfo.text = $"Волн: {currentLocation.WaveCount}\n" +
-                                    $"Прочность зомби: {currentLocation.GetCurrentZombieHealth()}\n" +
-                                    $"Награда: {currentLocation.GetCurrentReward()}";
+                                     $"Прочность зомби: {currentLocation.BaseZombieHealth}\n" +
+                                     $"Награда: {currentLocation.BaseReward}";
+            }
+            else
+            {
+                _locationInfo.text = "Информация о локации недоступна.";
             }
         }
 
@@ -59,11 +63,11 @@ namespace UI.Locations
                 {
                     _locationUIElements.Add(uiElement);
 
-                    LocationData locationData = _locationManager.GetLocationById(uiElement.Id);
-                    uiElement.Initialize(locationData.IsLocked, locationData.IsCompleted);
+                    LocationProgressData locationProgressData = _locationManager.GetLocationById(uiElement.Id); // Используем LocationProgressData
+                    uiElement.Initialize(locationProgressData.IsLocked, locationProgressData.IsCompleted);
                     uiElement.OnClick += HandleLocationClick;
 
-                    if (locationData.IsCompleted)
+                    if (locationProgressData.IsCompleted)
                     {
                         _completedLocationCount++;
                     }
@@ -73,9 +77,11 @@ namespace UI.Locations
 
         private void HandleLocationClick(int id)
         {
-            AllServices.Container.Single<ILocationHandler>().SetSelectedLocationId(id);
+            var locationHandler = AllServices.Container.Single<ILocationHandler>();
+            locationHandler.SetSelectedLocationId(id);
+            _selectedLocationId=id;
             OnSelectLocation?.Invoke();
-            FillLocationInfo(); // Обновляем информацию при выборе локации
+            FillLocationInfo(); 
         }
 
         protected override void OnDisabled()
