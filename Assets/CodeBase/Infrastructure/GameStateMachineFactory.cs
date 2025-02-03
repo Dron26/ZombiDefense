@@ -4,6 +4,7 @@ using Common;
 using Data.Settings.Language;
 using Infrastructure.StateMachine;
 using Infrastructure.StateMachine.States;
+using Services;
 using Services.PauseService;
 using Services.SaveLoad;
 
@@ -15,19 +16,17 @@ namespace Infrastructure
         private readonly IServiceRegister _serviceRegister;
         private readonly IGameFactory _gameFactory;
         private readonly LoadingCurtain _loadingCurtain;
-        private readonly SaveLoadService _saveLoadService;
         private readonly PauseService _pauseService;
         private readonly Language _language;
 
         public GameStateMachineFactory(SceneLoader sceneLoader, IServiceRegister serviceRegister, 
-            IGameFactory gameFactory, LoadingCurtain loadingCurtain, SaveLoadService saveLoadService, 
+            IGameFactory gameFactory, LoadingCurtain loadingCurtain , 
             PauseService pauseService, Language language)
         {
             _sceneLoader = sceneLoader;
             _serviceRegister = serviceRegister;
             _gameFactory = gameFactory;
             _loadingCurtain = loadingCurtain;
-            _saveLoadService = saveLoadService;
             _pauseService = pauseService;
             _language = language;
         }
@@ -41,7 +40,7 @@ namespace Infrastructure
             var states = new Dictionary<Type, IExitebleState>
             {
                 [typeof(BootstrapState)] = new BootstrapState(gameStateMachine, _sceneLoader, 
-                    _serviceRegister, _saveLoadService, _pauseService, _language, _loadingCurtain),
+                    _serviceRegister, _pauseService, _language, _loadingCurtain),
                 [typeof(LoadLevelState)] = new LoadLevelState(gameStateMachine, _sceneLoader, _gameFactory, sceneNames),
                 [typeof(GameLoopState)] = new GameLoopState(gameStateMachine, _loadingCurtain)
             };

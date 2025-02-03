@@ -12,12 +12,12 @@ namespace Infrastructure.StateMachine.States
 {
     public class ServiceRegister : IServiceRegister
     {
-        public ServiceRegister(PauseService pauseService, Language language, AllServices services, SaveLoadService saveLoadService)
+        public ServiceRegister(PauseService pauseService, Language language, AllServices services)
         {
-            RegisterServices(pauseService, language, services, saveLoadService);
+            RegisterServices(pauseService, language, services);
         }
 
-        public void RegisterServices(PauseService pauseService, Language language, AllServices services, SaveLoadService saveLoadService)
+        public void RegisterServices(PauseService pauseService, Language language, AllServices services)
         {
             services.RegisterSingle<IAssets>(new AssetProvider());
             services.RegisterSingle<IGameFactory>(new GameFactory(services.Single<IAssets>()));
@@ -30,9 +30,9 @@ namespace Infrastructure.StateMachine.States
             services.RegisterSingle<IUIHandler>(new UIHandler());
             services.RegisterSingle<IGameEventBroadcaster>(new GameEventBroadcaster());
 
-            services.RegisterSingle<ISaveLoadService>(saveLoadService);
+            services.RegisterSingle<ISaveLoadService>(new ServiceSaveLoad());
 
-            var gameData = saveLoadService.GameData;
+            var gameData = services.Single<ISaveLoadService>().Load();
 
             var achievementsHandler = new AchievementsHandler(gameData.AchievementsData);
             var gameEventBroadcaster = services.Single<IGameEventBroadcaster>();

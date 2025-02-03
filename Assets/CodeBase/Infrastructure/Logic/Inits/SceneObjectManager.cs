@@ -40,7 +40,6 @@ namespace Infrastructure.Logic.Inits
         private WorkPoint _selectedWorkPoint;
         private Store _store;
         private MovePointController _movePointController;
-        private SaveLoadService _saveLoadService;
         public void Initialize(Store store, MovePointController movePointController, AudioManager audioManager)
         {
             _store=store;

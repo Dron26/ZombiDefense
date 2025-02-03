@@ -5,16 +5,24 @@ using Interface;
 using Services;
 using Services.SaveLoad;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UI.Locations
 {
     public class LocationUIManager : MonoCache
     {
         [SerializeField] private GameObject _locationContainer;
+        [SerializeField] private GameObject _selecterPanel;
+        [SerializeField] private GameObject _enterLocationPanel;
         [SerializeField] private TextMeshProUGUI _locationInfo;
-        [SerializeField] private TextMeshProUGUI _cash;
-
+        [SerializeField] private TextMeshProUGUI _selectedLocationInfo;
+        [SerializeField] private TextMeshProUGUI _selectedLocationHistory;
+        [SerializeField] private Button _back;
+        [SerializeField] private Button _backEnterLocationr;
+        [SerializeField] private Button _enter;
+        
         private List<LocationUIElement> _locationUIElements;
         private LocationManager _locationManager;
         public Action OnSelectLocation;
@@ -28,13 +36,18 @@ namespace UI.Locations
             _saveLoadService = saveLoadService;
             _currencyHandler = AllServices.Container.Single<ICurrencyHandler>();
             FillLocationElement();
-            FillLocationInfo();
-            FillCashInfo();
+            FillGlobalInfo();
+            AddListener();
+            
+            _selecterPanel.SetActive(false);
+            _enterLocationPanel.SetActive(false);
         }
 
-        private void FillCashInfo()
+        private void FillGlobalInfo()
         {
-            _cash.text = _currencyHandler.GetCurrentMoney().ToString();
+                _locationInfo.text = $"Миссий: {_locationUIElements.Count}\n" +
+                                     $" $ : {_currencyHandler.GetCurrentMoney().ToString()}";
+                
         }
 
         private void FillLocationInfo()
@@ -42,13 +55,13 @@ namespace UI.Locations
             var currentLocation = _locationManager.GetLocationById(_selectedLocationId);
             if (currentLocation != null)
             {
-                _locationInfo.text = $"Волн: {currentLocation.WaveCount}\n" +
-                                     $"Прочность зомби: {currentLocation.BaseZombieHealth}\n" +
-                                     $"Награда: {currentLocation.BaseReward}";
+                _selectedLocationInfo.text = $"Волн: {currentLocation.WaveCount}\n" +
+                                             $"Прочность зомби: {currentLocation.BaseZombieHealth}\n" +
+                                             $"Награда: {currentLocation.BaseReward}";
             }
             else
             {
-                _locationInfo.text = "Информация о локации недоступна.";
+                _selectedLocationHistory.text = "Информация о локации недоступна.";
             }
         }
 
@@ -74,22 +87,54 @@ namespace UI.Locations
                 }
             }
         }
-
+        
         private void HandleLocationClick(int id)
         {
             var locationHandler = AllServices.Container.Single<ILocationHandler>();
             locationHandler.SetSelectedLocationId(id);
             _selectedLocationId=id;
-            OnSelectLocation?.Invoke();
+            SwitchEnterPanelState(true);
             FillLocationInfo(); 
         }
+        
+        private void AddListener()
+        {
+            _back.onClick.AddListener(()=>SwitchPanelState(false));
+            _backEnterLocationr.onClick.AddListener(()=>SwitchEnterPanelState(false));
+            _enter.onClick.AddListener(Enter);
+        }
 
-        protected override void OnDisabled()
+        public void SwitchPanelState(bool isActive)
+        {
+            _selecterPanel.SetActive(isActive);
+            
+        } 
+
+        public void SwitchEnterPanelState(bool isActive)
+        {
+            _enterLocationPanel.SetActive(isActive);
+        }
+
+        private void Enter()
+        {
+            OnSelectLocation?.Invoke();
+        }
+        
+        private void RemoveListener()
         {
             foreach (var uiElement in _locationUIElements)
             {
                 uiElement.OnClick -= HandleLocationClick;
             }
+            
+            _back.onClick.RemoveListener(()=>SwitchPanelState(false));
+            _backEnterLocationr.onClick.RemoveListener(()=>SwitchEnterPanelState(false));
+            _enter.onClick.RemoveListener(Enter);
+        }
+
+        protected override void OnDisabled()
+        {
+            RemoveListener();
         }
     }
 }

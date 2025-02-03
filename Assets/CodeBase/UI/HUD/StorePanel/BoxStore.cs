@@ -23,7 +23,6 @@ namespace UI.HUD.StorePanel
     {
         [SerializeField] private AdditionalEquipment _additionalEquipmentButton;
 
-        private SaveLoadService _saveLoadService;
         private BoxFactory _boxFactory;
         private ItemFactory _itemFactory;
         private WorkPoint _selectedWorkPoint;

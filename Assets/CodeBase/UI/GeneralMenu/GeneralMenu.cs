@@ -10,20 +10,21 @@ using Services.SaveLoad;
 using UI.Locations;
 using UI.SettingsPanel;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UI.GeneralMenu
 {
       public class GeneralMenu:MonoCache
     {
         [SerializeField] private GameObject _leaderboardPanel;
-        
-       
         [SerializeField] private LocationUIManager _locationUIManager;
         [SerializeField]private  SettingPanel _settingPanel;
         [SerializeField] private GameObject _menuPanel;
-        [SerializeField] private GameObject _locationPanel;
         [SerializeField]private AudioManager _audioManager;
         [SerializeField] private LocationManager _locationManager;
+        [SerializeField] private Button _play;
+        [SerializeField] private Button _backUILocotion;
+
         private ISaveLoadService _saveLoadService;
         private GameStateMachine _stateMachine;
         private LoadingCurtain _loadingCurtain  ;
@@ -47,7 +48,7 @@ namespace UI.GeneralMenu
         private void InitializeLocationSystem()
         {
             // Создаем и инициализируем LocationManager
-            _locationManager.Initialize();
+            _locationManager.Initialize(this);
 
             // Создаем и инициализируем LocationUIManager
             _locationUIManager.Initialize(_saveLoadService,_locationManager);
@@ -71,7 +72,6 @@ namespace UI.GeneralMenu
         private void Start()
         {
             //    _yandexLeaderboard.Initialize(CreateLeaderboard());
-            
             _loadingCurtain.OnLoaded();
         }
         
@@ -85,11 +85,21 @@ namespace UI.GeneralMenu
         private void AddListener()
         {
             _loadingCurtain.OnClicked += OnClikedCurtain;
+            _play.onClick.AddListener(()=>SwitchMenuPanelState(false));
+            _backUILocotion.onClick.AddListener(()=>SwitchMenuPanelState(true));
+        }
+        
+        private void SwitchMenuPanelState(bool isActive)
+        {
+            _menuPanel.SetActive(isActive);
+            
         }
 
         private void RemoveListener()
         {
             _loadingCurtain.OnClicked -= OnClikedCurtain;
+            _play.onClick.RemoveListener(()=>SwitchMenuPanelState(false));
+            _backUILocotion.onClick.RemoveListener(()=>SwitchMenuPanelState(true));
         }
 
         private void OnDestroy()

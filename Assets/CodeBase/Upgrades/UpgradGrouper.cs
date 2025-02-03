@@ -23,7 +23,7 @@ namespace Upgrades
         
         private SelectedData _selectedData;
         
-        public void Initialize(SaveLoadService saveLoadService, CharacterStore _characterStore )
+        public void Initialize( CharacterStore _characterStore )
         {
             _characterStore.OnUpdateBought+=OnUpdateBought;
             FillUpgrades();

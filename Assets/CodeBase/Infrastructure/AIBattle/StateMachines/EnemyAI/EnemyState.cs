@@ -7,7 +7,6 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI
     public abstract class EnemyState : MonoCache, IEnemySwitcherState
     {
         protected EnemyStateMachine StateMachine;
-        protected SaveLoadService SaveLoadService;
 
         public void Init(EnemyStateMachine enemyStateMachine )
         {

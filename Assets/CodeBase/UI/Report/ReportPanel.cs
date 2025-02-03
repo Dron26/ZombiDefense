@@ -18,7 +18,6 @@ namespace UI.Report
 {
     public class ReportPanel:MonoCache
     {
-         private SaveLoadService _saveLoadService;
         [SerializeField] private LeanLocalizedTextMeshProUGUI _infoSurvivalEnemies;
         [SerializeField] private TMP_Text _infoSurvivalEnemiesValue;
         [SerializeField] private LeanLocalizedTextMeshProUGUI _infoKilledEnemies;

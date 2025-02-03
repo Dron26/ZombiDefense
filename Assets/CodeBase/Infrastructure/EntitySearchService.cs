@@ -15,7 +15,6 @@ namespace Infrastructure
         private SceneObjectManager _sceneObjectManager;
         private WaveSpawner _waveSpawner;
         private SceneObjectManager sceneObjectManager;
-        private SaveLoadService _saveLoadService;
     
         public void AddEntity(Entity entity)
         {

@@ -17,8 +17,6 @@ namespace Infrastructure
         [SerializeField] private YandexInitializer _yandexInitializer;
         [SerializeField] private LoadingCurtain _loadingCurtain;
         [SerializeField] private PauseService _pauseService;
-        [SerializeField] private SaveLoadService _saveLoadService;
-        [SerializeField] private UIHandler _uiHandler;
 
         private Game _game;
         private IServiceRegister _serviceRegister;
@@ -36,7 +34,7 @@ namespace Infrastructure
             AllServices.Container.Single<IUIHandler>().SetCurtain(_loadingCurtain);
 
             Language language = GetLanguage();
-            _game = new Game(this, _loadingCurtain, language, _pauseService, _saveLoadService, _serviceRegister, _gameFactory);
+            _game = new Game(this, _loadingCurtain, language, _pauseService, _serviceRegister, _gameFactory);
         }
 
         public void Start()
@@ -65,7 +63,7 @@ namespace Infrastructure
 
         private void RegisterServices()
         {
-            _serviceRegister = new ServiceRegister(_pauseService, new Language(), AllServices.Container, _saveLoadService);
+            _serviceRegister = new ServiceRegister(_pauseService, new Language(), AllServices.Container);
         }
     }
 }

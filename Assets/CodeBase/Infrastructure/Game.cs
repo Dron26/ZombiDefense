@@ -10,12 +10,12 @@ namespace Infrastructure
         public readonly GameStateMachine StateMachine;
 
         public Game(GameBootstrapper coroutineRunner, LoadingCurtain curtain, Language language,
-            PauseService pauseService, SaveLoadService saveLoadService,
+            PauseService pauseService ,
             IServiceRegister serviceRegister, IGameFactory gameFactory)
         {
             var sceneLoader = new SceneLoader(coroutineRunner);
             var gameStateMachineFactory = new GameStateMachineFactory(sceneLoader, serviceRegister,
-                gameFactory, curtain, saveLoadService, pauseService, language);
+                gameFactory, curtain, pauseService, language);
 
             StateMachine = gameStateMachineFactory.Create();
         }

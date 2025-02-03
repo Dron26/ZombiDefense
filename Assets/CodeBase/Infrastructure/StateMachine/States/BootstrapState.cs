@@ -11,19 +11,18 @@ namespace Infrastructure.StateMachine.States
         private readonly GameStateMachine _stateMachine;
         private readonly SceneLoader _sceneLoader;
         private readonly IServiceRegister _serviceRegister;
-        private readonly SaveLoadService _saveLoadService;
+        private readonly ISaveLoadService _saveLoadService;
         private readonly PauseService _pauseService;
         private readonly Language _language;
         private readonly LoadingCurtain _loadingCurtain;
 
         public BootstrapState(GameStateMachine stateMachine, SceneLoader sceneLoader, 
-            IServiceRegister serviceRegister, SaveLoadService saveLoadService, 
+            IServiceRegister serviceRegister,
             PauseService pauseService, Language language, LoadingCurtain loadingCurtain)
         {
             _stateMachine = stateMachine;   
             _sceneLoader = sceneLoader;
             _serviceRegister = serviceRegister;
-            _saveLoadService = saveLoadService;
             _pauseService = pauseService;
             _language = language;
             _loadingCurtain = loadingCurtain;
