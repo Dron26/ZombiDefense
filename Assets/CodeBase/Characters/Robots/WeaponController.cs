@@ -16,8 +16,6 @@ namespace Characters.Robots
         public ItemData ItemData;
         public int Damage { get; set; }
         
-        public void SetUpgrade(UpgradeData upgradeData, int level) => SetDamage(upgradeData.Damage);
-
         public virtual void Initialize(CharacterData data){}
 
         public virtual void SetPoint(WorkPoint workPoint){}

@@ -4,14 +4,14 @@ using UnityEngine;
 
 namespace Services.SaveLoad
 {
-    public class ServiceSaveLoad:ISaveLoadService
+    public class LoadSaveService:ISaveLoadService
     {
         private  IDataPersistence _dataPersistence;
         private GameData _gameData;
 
         public GameData GameData => _gameData;
 
-        public  ServiceSaveLoad()
+        public  LoadSaveService()
         {
             if (Application.platform == RuntimePlatform.WebGLPlayer)
                 _dataPersistence = new CloudDataPersistence(); // WebGL → в облако

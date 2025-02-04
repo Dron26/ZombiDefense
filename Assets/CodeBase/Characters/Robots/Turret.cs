@@ -90,12 +90,6 @@ namespace Characters.Robots
             _isBuyed = isBuyed; 
         }
 
-        public override void SetUpgrade(UpgradeData upgrade, int level)
-        {
-            _maxHealth += upgrade.Health;
-            _currentHealth = _maxHealth;
-        }
-
         public override void Initialize()
         {
             _turretWeaponController = GetComponent<TurretWeaponController>();

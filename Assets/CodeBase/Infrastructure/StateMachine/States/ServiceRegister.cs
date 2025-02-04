@@ -30,19 +30,26 @@ namespace Infrastructure.StateMachine.States
             services.RegisterSingle<IUIHandler>(new UIHandler());
             services.RegisterSingle<IGameEventBroadcaster>(new GameEventBroadcaster());
 
-            services.RegisterSingle<ISaveLoadService>(new ServiceSaveLoad());
-
+            var saveLoadService = new LoadSaveService();
+            services.RegisterSingle<ISaveLoadService>(saveLoadService);
+            
             var gameData = services.Single<ISaveLoadService>().Load();
-
+            
+            var upgradeHandler=new UpgradeHandler(gameData.UpgradeData);
+            services.RegisterSingle<IUpgradeHandler>(upgradeHandler);
+           
+            
             var achievementsHandler = new AchievementsHandler(gameData.AchievementsData);
+            services.RegisterSingle<IAchievementsHandler>(achievementsHandler);
+            
             var gameEventBroadcaster = services.Single<IGameEventBroadcaster>();
-
             services.RegisterSingle<ILocationHandler>(new LocationHandler(gameData));
             services.RegisterSingle<ICharacterHandler>(new CharacterHandler(gameData.Characters));
             services.RegisterSingle<ICurrencyHandler>(new CurrencyHandler(gameData.Money));
             services.RegisterSingle<IAudioSettingsHandler>(new AudioSettingsHandler(gameData.AudioData));
-            services.RegisterSingle<IAchievementsHandler>(achievementsHandler);
+            
             services.RegisterSingle<IEnemyHandler>(new EnemyHandler(gameData.EnemyData, achievementsHandler, gameEventBroadcaster));
+            services.RegisterSingle<IUpgradeTree>(new UpgradeTree(saveLoadService, upgradeHandler));
         }
     }
 }

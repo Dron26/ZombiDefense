@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Characters.Humanoids.AbstractLevel;
 using Enemies.AbstractEntity;
 using Infrastructure.Location;
@@ -17,7 +18,10 @@ namespace Interface
         public event Action LastEnemyRemained;
         public event Action OnLocationCompleted;
         public event Action OnClearSpawnData;
-
+        public event Action<string> OnUpgradePurchased;
+        public event Action<string> OnUpgradeRefunded;
+        
+        private readonly Dictionary<Type, List<Delegate>> _eventHandlers = new();
         public void InvokeOnSetActiveHumanoid() => OnSetActiveHumanoid?.Invoke();
         public void InvokeLastHumanoidDie() => LastHumanoidDie?.Invoke();
         public void InvokeOnSelectedNewPoint(WorkPoint point) => OnSelectedNewPoint?.Invoke(point);
@@ -26,5 +30,8 @@ namespace Interface
         public void InvokeOnEnemyDeath(Enemy enemy) => OnEnemyDeath?.Invoke(enemy);
         public void InvokeLastEnemyRemained() => LastEnemyRemained?.Invoke();
         public void InvokeOnLocationCompleted() => OnLocationCompleted?.Invoke();
+        public void InvokeOnUpgradePurchased(string upgradeId) => OnUpgradePurchased?.Invoke(upgradeId);
+
+        public void InvokeOnUpgradeRefundedEvent(string upgradeId) => OnUpgradeRefunded?.Invoke(upgradeId);
     }
 }

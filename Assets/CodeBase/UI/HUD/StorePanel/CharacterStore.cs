@@ -12,7 +12,6 @@ namespace UI.HUD.StorePanel
 {
     public class CharacterStore : MonoCache
     {
-        [SerializeField] UpgradGrouper _upgradGrouper;
         [SerializeField] private Button _buyButton;
         [SerializeField] private PricePanel _pricePanel;
         [SerializeField] private CharacterInfoPanel _characterInfoPanel;

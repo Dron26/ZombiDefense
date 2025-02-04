@@ -72,7 +72,6 @@ namespace Infrastructure.Logic.WeaponManagment
 
             OnInitialized?.Invoke(_weapon);
         }
-        public void SetUpgrade(UpgradeData upgradeData, int level) => SetDamage(upgradeData.Damage);
         
         public void SetPoint(WorkPoint workPoint)
         {

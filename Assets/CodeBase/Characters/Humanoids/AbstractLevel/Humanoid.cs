@@ -100,7 +100,6 @@ namespace Characters.Humanoids.AbstractLevel
             }
         }
 
-        public override void SetUpgrade(UpgradeData upgrade, int level) => _currentHealth += upgrade.Health;
 
         protected override  void Die()
         {

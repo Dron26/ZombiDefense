@@ -37,21 +37,21 @@ namespace Upgrades
 
         private void FillUpgrades()
         {
-            for (int i = 0; i < humanoidTypeValues.Length; ++i)
-            {
-                CharacterType characterType = (CharacterType)humanoidTypeValues.GetValue(i);
-                int value = (int)characterType;
-
-                _upgradesDataTypes.Add(new List<UpgradeData>());
-
-                foreach (UpgradeData upgradeData in allUpgradeDatas)
-                {
-                    if ((int)upgradeData.CharacterType == value)
-                    {
-                        _upgradesDataTypes[i].Add(upgradeData);
-                    }
-                }
-            }
+            // for (int i = 0; i < humanoidTypeValues.Length; ++i)
+            // {
+            //     CharacterType characterType = (CharacterType)humanoidTypeValues.GetValue(i);
+            //     int value = (int)characterType;
+            //
+            //     _upgradesDataTypes.Add(new List<UpgradeData>());
+            //
+            //     foreach (UpgradeData upgradeData in allUpgradeDatas)
+            //     {
+            //         if ((int)upgradeData.CharacterType == value)
+            //         {
+            //             _upgradesDataTypes[i].Add(upgradeData);
+            //         }
+            //     }
+            // }
 
         }
 
@@ -69,7 +69,7 @@ namespace Upgrades
 
         private void TryBuyUpgrade(UpgradeData upgradeData,  int index)
         {
-            OnBuyUpgrade?.Invoke(upgradeData,upgradeData.Price,_currentLevel[index]); 
+           // OnBuyUpgrade?.Invoke(upgradeData,upgradeData.Price,_currentLevel[index]); 
             _selectedData = new SelectedData(index,upgradeData,_currentLevel[index]);
         }
     }

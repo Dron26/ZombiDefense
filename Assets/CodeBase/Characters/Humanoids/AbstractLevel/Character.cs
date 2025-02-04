@@ -27,9 +27,7 @@ namespace Characters.Humanoids.AbstractLevel
         public CharacterType Type => _characterData.Type;
         public event Action<Character> OnInitialize;
         public abstract void ApplyDamage(int damage);
-
-        public abstract void SetUpgrade(UpgradeData upgrade, int level);
-
+        
         public void SetPoint(WorkPoint workPoint) {}
         public void Initialize(CharacterData characterData)
         {

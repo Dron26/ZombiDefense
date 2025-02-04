@@ -10,40 +10,55 @@ namespace Data
     [Serializable]
     public class GameData
     {
-        public MoneyData Money { get; private set; } = new();
-        public AchievementsData AchievementsData { get; private set; } = new();
-        public EnemyData EnemyData { get; private set; } = new();
-        public CharacterData Characters { get; private set; } = new();
-        public Location Location { get; private set; } = new();
-        public CameraState CameraState { get; private set; } = new();
-
-        public AudioData AudioData { get; private set; } = new AudioData();
-        public TimeStatistics TimeStatistics { get; private set; } = new TimeStatistics();
-
-        public bool IsFirstStart { get; private set; } = true;
+        [SerializeField] private MoneyData _money = new();
+        [SerializeField] private AchievementsData _achievementsData = new();
+        [SerializeField] private EnemyData _enemyData = new();
+        [SerializeField] private CharacterData _characters = new();
+        [SerializeField] private Location _location = new();
+        [SerializeField] private CameraState _cameraState = new();
+        [SerializeField] private AudioData _audioData = new();
+        [SerializeField] private TimeStatistics _timeStatistics = new();
+        [SerializeField] private ScalingData _scalingData = new();
+        [SerializeField] private List<LocationProgressData> _locationProgressData = new();
+        [SerializeField] private UpgradeData _upgradeData;
+        public MoneyData Money => _money;
+        public AchievementsData AchievementsData => _achievementsData;
+        public EnemyData EnemyData => _enemyData;
+        public CharacterData Characters => _characters;
+        public Location Location => _location;
+        public CameraState CameraState => _cameraState;
+        public AudioData AudioData => _audioData;
+        public TimeStatistics TimeStatistics => _timeStatistics;
+        public ScalingData Scaling => _scalingData;
+        public List<LocationProgressData> LocationProgressData => _locationProgressData;
+        public UpgradeData UpgradeData=>_upgradeData;
         
-        public  List<LocationProgressData> LocationProgressData { get; private set; } = new();
+        private const int InitialMoneyAmount = 100;
+        [SerializeField] private bool _isFirstStart = true;
+        public bool IsFirstStart => _isFirstStart;
 
-        public void ChangeIsFirstStart()
-        {
-            IsFirstStart = false;
-        }
+        public void ChangeIsFirstStart() => _isFirstStart = false;
 
         public void AddInitialMoney()
         {
-            if (IsFirstStart)
+            if (_isFirstStart)
             {
-                Money.Money = 100; 
+                _money.Money = InitialMoneyAmount;
                 ChangeIsFirstStart();
             }
         }
-
-        public void UpdateAudioSettings(AudioData audioData) => AudioData = audioData;
-        public void OnGameStart() => TimeStatistics.OnGameStart();
-        public void OnGameEnd() => TimeStatistics.OnGameEnd();
         
-        [Header("Scaling")]
-        public float ZombieHealthMultiplier = 1.2f; 
-        public float RewardMultiplier = 1.1f; 
+        public void UpdateAudioSettings(AudioData audioData) => _audioData = audioData;
+        public void OnGameStart() => _timeStatistics.OnGameStart();
+        public void OnGameEnd() => _timeStatistics.OnGameEnd();
+
+
+    }
+
+    [Serializable]
+    public class ScalingData
+    {
+        public float ZombieHealthMultiplier = 1.2f;
+        public float RewardMultiplier = 1.1f;
     }
 }

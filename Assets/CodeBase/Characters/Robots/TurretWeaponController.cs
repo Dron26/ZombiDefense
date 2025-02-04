@@ -67,12 +67,7 @@ namespace Characters.Robots
         }
 
         private void SetDamage(int damage) => _damage += damage;
-
-        public void SetUpgrade(UpgradeData upgradeData, int level)
-        {
-            SetDamage(upgradeData.Damage);
-        }
-
+        
         public void SetPoint(WorkPoint workPoint)
         {
             _damage = (_damage * workPoint.UpPrecent) / 100;
