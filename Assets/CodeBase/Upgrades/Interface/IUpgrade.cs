@@ -6,4 +6,5 @@ public interface IUpgrade
     int Cost { get; }
     void Apply();
     bool CanPurchase(int playerMoney, List<IUpgrade> unlockedUpgrades);
+    public abstract UpgradeEffect GetUpgradeEffect();
 }

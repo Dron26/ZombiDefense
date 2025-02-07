@@ -13,19 +13,19 @@ namespace Upgrades
         [SerializeField] private Button _button;
         [SerializeField] private Button _lockButton;
         
-        private UpgradeData _upgradeData;
+        private UpgradeInfo _upgradeInfo;
         
         public int SlotIndex=> _slotIndex;
         private int _slotIndex;
 
         public Button GetUpgrateButton() => _button;
         public Button GetLockeButton() => _lockButton;
-        public UpgradeData GetUpgradeData() => _upgradeData;
+        public UpgradeInfo GetUpgradeData() => _upgradeInfo;
         
-        public void Initialize(int slotIndex, UpgradeData upgradeData, bool isLocked)
+        public void Initialize(int slotIndex, UpgradeInfo upgradeInfo, bool isLocked)
         {
             _slotIndex=slotIndex;
-            _upgradeData=upgradeData;
+            _upgradeInfo=upgradeInfo;
             IsLocked( isLocked);
         }
         

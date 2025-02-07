@@ -11,15 +11,15 @@ namespace Upgrades
 {
     public class UpgradGrouper : MonoCache
     {
-        [SerializeField] private  List<UpgradeData> allUpgradeDatas = new();
+        [SerializeField] private  List<UpgradeInfo> allUpgradeDatas = new();
         [SerializeField]private UpgradeSlot _upgradeSlotPrefab;
         
         Array humanoidTypeValues = Enum.GetValues(typeof(CharacterType));
         private List<UpgradeGroup> _upgradeGroups = new();
         private List<int> _currentLevel = new();
-        private List<List<UpgradeData>> _upgradesDataTypes = new();
+        private List<List<UpgradeInfo>> _upgradesDataTypes = new();
 
-        public Action<UpgradeData,int,int> OnBuyUpgrade;
+        public Action<UpgradeInfo,int,int> OnBuyUpgrade;
         
         private SelectedData _selectedData;
         
@@ -67,26 +67,26 @@ namespace Upgrades
             }
         }
 
-        private void TryBuyUpgrade(UpgradeData upgradeData,  int index)
+        private void TryBuyUpgrade(UpgradeInfo upgradeInfo,  int index)
         {
            // OnBuyUpgrade?.Invoke(upgradeData,upgradeData.Price,_currentLevel[index]); 
-            _selectedData = new SelectedData(index,upgradeData,_currentLevel[index]);
+            _selectedData = new SelectedData(index,upgradeInfo,_currentLevel[index]);
         }
     }
 
     class SelectedData
     {
         private int _upgradeGroupIndex;
-        private UpgradeData _upgradeData;
+        private UpgradeInfo _upgradeInfo;
         private int _currentLevel;
     
         public int UpgradesGroupIndex => _upgradeGroupIndex;
         public int CurrentLevel => _currentLevel;
 
-        public SelectedData(int upgradeGroupIndex, UpgradeData upgradeData, int currentLevel)
+        public SelectedData(int upgradeGroupIndex, UpgradeInfo upgradeInfo, int currentLevel)
         {
             _upgradeGroupIndex = upgradeGroupIndex;
-            _upgradeData = upgradeData;
+            _upgradeInfo = upgradeInfo;
             _currentLevel = currentLevel;
         }
     }

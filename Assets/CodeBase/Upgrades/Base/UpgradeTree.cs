@@ -38,11 +38,11 @@ public class UpgradeTree : IUpgradeTree
     public bool PurchaseUpgrade(string upgradeId)
     {
 
-        if (_upgradeHandler.HasPurchasedUpgrade(upgradeId)) return false; // Уже куплено
+        if (_upgradeHandler.HasPurchasedUpgrade(upgradeId)) return false; 
 
         _upgradeHandler.AddPurchasedUpgrade(upgradeId);
         AllServices.Container.Single<LoadSaveService>().Save(); 
-        AllServices.Container.Single<GameEventBroadcaster>().InvokeOnUpgradePurchased(upgradeId);// Сохраняем после покупки
+        AllServices.Container.Single<GameEventBroadcaster>().InvokeOnUpgradePurchased(upgradeId);
         return true;
     }
     
@@ -58,7 +58,7 @@ public class UpgradeTree : IUpgradeTree
         if (_upgradeHandler.RefundUpgrade(upgradeId, refundAmount))
         {
             _saveLoadService.Save(); 
-            AllServices.Container.Single<GameEventBroadcaster>().InvokeOnUpgradeRefundedEvent(upgradeId);// Сохраняем после возврата
+            AllServices.Container.Single<GameEventBroadcaster>().InvokeOnUpgradeRefundedEvent(upgradeId);
             return true;
         }
         return false;

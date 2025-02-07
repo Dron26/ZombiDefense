@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 public abstract class Upgrade
@@ -16,4 +15,7 @@ public abstract class Upgrade
 
     public abstract bool CanPurchase(int playerMoney, List<Upgrade> unlockedUpgrades);
     public abstract void Apply();
+    
+    // Новый метод, который будет возвращать эффект улучшения
+    public abstract UpgradeEffect GetUpgradeEffect();
 }
