@@ -21,6 +21,7 @@ namespace Infrastructure.AssetManagement
         public static readonly string EnemyPrefab = "Enemy/Prefab/";
         public static readonly string EnemyData = "Enemy/Prefab/Data/";
         public static readonly string WavesContainerData ="Enemy/Waves/Data/Containers/";
+        public static readonly string UpgradeData ="Enemy/Waves/Data/Upgrade/";
         
         public static readonly string AnimControllers ="Assets/Resources/Prefab/Store/Characters/Player/Animation";
         

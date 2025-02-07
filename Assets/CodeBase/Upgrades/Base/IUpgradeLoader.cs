@@ -4,6 +4,6 @@ namespace Services
 {
     public interface IUpgradeLoader
     {
-        public List<UpgradeData> Load();
+        public List<UpgradeData> GetData();
     }
 }

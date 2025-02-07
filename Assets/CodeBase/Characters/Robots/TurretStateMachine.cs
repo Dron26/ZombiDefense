@@ -218,7 +218,7 @@ namespace Characters.Robots
             StopCoroutine(AttackState());
         }
 
-        public  void SetUpgrade(UpgradeData upgrade, int level)
+        public  void SetUpgrade(UpgradeInfo upgrade, int level)
         {
             _damage =10;
             _shotsInterval = new WaitForSeconds(0.3f);

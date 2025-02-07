@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 
-public class StatUpgrade : Upgrade
+public class UnitUpgrade : Upgrade
 {
     public float StatIncrease { get; }
 
-    public StatUpgrade(string id, string name, int cost, float statIncrease)
+    public UnitUpgrade(string id, string name, int cost, float statIncrease)
         : base(id, name, cost)
     {
         StatIncrease = statIncrease;
@@ -19,5 +19,10 @@ public class StatUpgrade : Upgrade
     public override void Apply()
     {
         Console.WriteLine($"{Name} применено! Улучшение на {StatIncrease * 100}%.");
+    }
+
+    public override UpgradeEffect GetUpgradeEffect()
+    {
+        throw new NotImplementedException();
     }
 }

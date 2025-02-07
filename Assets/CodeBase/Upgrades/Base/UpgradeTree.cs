@@ -37,7 +37,6 @@ public class UpgradeTree : IUpgradeTree
 
     public bool PurchaseUpgrade(string upgradeId)
     {
-
         if (_upgradeHandler.HasPurchasedUpgrade(upgradeId)) return false; 
 
         _upgradeHandler.AddPurchasedUpgrade(upgradeId);
@@ -50,7 +49,12 @@ public class UpgradeTree : IUpgradeTree
     {
         return _upgradeNodes.ContainsKey(upgradeId) ? _upgradeNodes[upgradeId].Upgrade : null;
     }
-    
+
+    public void SetData(List<UpgradeData> getData)
+    {
+        throw new System.NotImplementedException();
+    }
+
     public bool RefundUpgrade(string upgradeId, int refundAmount)
     {
         IUpgradeHandler _upgradeHandler=AllServices.Container.Single<IUpgradeHandler>();

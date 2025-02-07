@@ -16,11 +16,11 @@ namespace Upgrades
        
         public CharacterType CharacterType => _characterType;
         private int _currentLevel;
-        private List<UpgradeData> _upgradeDatas = new();
+        private List<UpgradeInfo> _upgradeDatas = new();
 
-        public Action<UpgradeData> OnBuyUpgrade;
+        public Action<UpgradeInfo> OnBuyUpgrade;
         
-        public void Initialize(List<UpgradeData> upgradeDatas,UpgradeSlot upgradeSlot, int currentLevel)
+        public void Initialize(List<UpgradeInfo> upgradeDatas,UpgradeSlot upgradeSlot, int currentLevel)
         {
             _upgradeSlot = upgradeSlot;
             _currentLevel = currentLevel;
@@ -43,7 +43,7 @@ namespace Upgrades
                 _upgradeSlots.Add(newUpgradeSlot);
             }
             
-            foreach (UpgradeData upgradeData in upgradeDatas)
+            foreach (UpgradeInfo upgradeData in upgradeDatas)
             {
                 _upgradeDatas.Add(upgradeData);
             }

@@ -20,7 +20,7 @@ namespace Data
         [SerializeField] private TimeStatistics _timeStatistics = new();
         [SerializeField] private ScalingData _scalingData = new();
         [SerializeField] private List<LocationProgressData> _locationProgressData = new();
-        [SerializeField] private UpgradeData _upgradeData;
+        [SerializeField] private UpgradeInfo _upgradeInfo;
         public MoneyData Money => _money;
         public AchievementsData AchievementsData => _achievementsData;
         public EnemyData EnemyData => _enemyData;
@@ -31,7 +31,7 @@ namespace Data
         public TimeStatistics TimeStatistics => _timeStatistics;
         public ScalingData Scaling => _scalingData;
         public List<LocationProgressData> LocationProgressData => _locationProgressData;
-        public UpgradeData UpgradeData=>_upgradeData;
+        public UpgradeInfo UpgradeInfo=>_upgradeInfo;
         
         private const int InitialMoneyAmount = 100;
         [SerializeField] private bool _isFirstStart = true;

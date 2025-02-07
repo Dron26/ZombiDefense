@@ -35,7 +35,7 @@ namespace Infrastructure.StateMachine.States
             
             var gameData = services.Single<ISaveLoadService>().Load();
             
-            var upgradeHandler=new UpgradeHandler(gameData.UpgradeData);
+            var upgradeHandler=new UpgradeHandler(gameData.UpgradeInfo);
             services.RegisterSingle<IUpgradeHandler>(upgradeHandler);
            
             

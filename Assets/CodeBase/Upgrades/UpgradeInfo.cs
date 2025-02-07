@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Lean.Localization;
-using Services.SaveLoad;
+using UnityEngine.Rendering;
 
 [Serializable]
-public class UpgradeData
+public class UpgradeInfo
 {
     private List<string> _purchasedUpgrades = new();
     public List<string> PurchasedUpgrades => _purchasedUpgrades;

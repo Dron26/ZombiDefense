@@ -1,4 +1,3 @@
-using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Interface;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;

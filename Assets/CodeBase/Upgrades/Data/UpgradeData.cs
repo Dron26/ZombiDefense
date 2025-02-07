@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "NewUpgrade", menuName = "Upgrades/UpgradeData")]
@@ -11,5 +12,6 @@ public class UpgradeData : ScriptableObject
     public UpgradeType Type;
 
     public float Value;  
-    public int UnlockId; 
+    public int UnlockId;
+    public List<UpgradeEffect> UpgradeEffect;
 }
