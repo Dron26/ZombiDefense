@@ -5,7 +5,7 @@ public class UpgradeManager : IUpgradeManager
 {
     private IUpgradeLoader _upgradeLoader=new UpgradeLoader();
     private IUpgradeTree _upgradeTree;
-    private List<IUpgrade> _unlockedUpgrades = new();
+    private List<Upgrade> _unlockedUpgrades = new();
     private int _playerMoney;
 
     
@@ -16,13 +16,18 @@ public class UpgradeManager : IUpgradeManager
         _playerMoney = startingMoney;
     }
 
-    public bool PurchaseUpgrade(string upgradeId)
+    public bool PurchaseUpgrade(int upgradeId)
     {
         if (_upgradeTree.CanPurchase(upgradeId, _unlockedUpgrades, _playerMoney))
         {
             var upgrade = _upgradeTree.GetUpgradeById(upgradeId);
-            var upgradeEffect = upgrade.GetUpgradeEffect();
-            upgradeEffect.Apply();
+
+
+            foreach (var effect in upgrade.UpgradeEffect)
+            {
+                effect.Apply();
+            }
+           
             _unlockedUpgrades.Add(upgrade);
             _playerMoney -= upgrade.Cost;
             return true;
@@ -30,7 +35,7 @@ public class UpgradeManager : IUpgradeManager
         return false;
     }
 
-    public bool IsUnlocked(string upgradeId)
+    public bool IsUnlocked(int upgradeId)
     {
         return _unlockedUpgrades.Exists(u => u.Id == upgradeId);
     }

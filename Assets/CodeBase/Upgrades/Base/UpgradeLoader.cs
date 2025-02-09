@@ -1,27 +1,27 @@
 using System;
 using System.Collections.Generic;
-using Characters.Humanoids.AbstractLevel;
-using Infrastructure.AssetManagement;
 using UnityEngine;
 
 namespace Services
 {
-    public class UpgradeLoader:IUpgradeLoader
+    public class UpgradeLoader : IUpgradeLoader
     {
         public List<UpgradeData> GetData()
         {
             List<UpgradeData> result = new List<UpgradeData>();
             UpgradeType[] types = (UpgradeType[])Enum.GetValues(typeof(UpgradeType));
 
-            for (int i = 0; i < types.Length; i++)
+            foreach (var type in types)
             {
-                string path = AssetPaths.UpgradeData + types[i];
+                string path = $"UpgradeData/{type}"; // Путь к ресурсам
                 UpgradeData data = Resources.Load<UpgradeData>(path);
-                result.Add(data);
+                if (data != null)
+                {
+                    result.Add(data);
+                }
             }
             
             return result;
         }
-        
     }
 }

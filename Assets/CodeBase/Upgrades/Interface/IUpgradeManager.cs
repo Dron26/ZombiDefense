@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 public interface IUpgradeManager
 {
-    bool PurchaseUpgrade(string upgradeId);
-    bool IsUnlocked(string upgradeId);
+    bool PurchaseUpgrade(int upgradeId);
+    bool IsUnlocked(int upgradeId);
     int GetPlayerMoney();
 }

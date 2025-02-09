@@ -3,8 +3,16 @@ using Services;
 
 public interface IUpgradeTree:IService
 {
-    void AddUpgrade(IUpgrade upgrade, params string[] dependencies);
-    bool CanPurchase(string upgradeId, List<IUpgrade> unlockedUpgrades, int playerMoney);
-    IUpgrade GetUpgradeById(string upgradeId);
-    void SetData(List<UpgradeData> getData);
+    public void AddUpgrade(Upgrade upgrade, params int[] dependencies);
+    public bool CanPurchase(int upgradeId, List<Upgrade> unlockedUpgrades, int playerMoney);
+
+    public bool PurchaseUpgrade(string upgradeId);
+
+    public Upgrade GetUpgradeById(int upgradeId);
+
+    public void SetData(List<UpgradeData> upgradeData);
+
+    public Upgrade CreateUpgradeFromData(UpgradeData data);
+
+    public bool RefundUpgrade(string upgradeId, int refundAmount);
 }

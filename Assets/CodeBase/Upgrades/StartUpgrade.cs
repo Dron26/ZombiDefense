@@ -9,6 +9,6 @@ public class StatUpgradeEffect : UpgradeEffect
 
     public override void Apply()
     {
-        // Примените эффект, например, увеличьте здоровье или урон
+        
     }
 }

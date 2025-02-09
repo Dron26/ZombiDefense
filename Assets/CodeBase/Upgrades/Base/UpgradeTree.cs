@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Interface;
 using Services;
@@ -5,16 +6,16 @@ using Services.SaveLoad;
 
 public class UpgradeTree : IUpgradeTree
 {
-    private Dictionary<string, UpgradeNode> _upgradeNodes = new();
+    private Dictionary<int, UpgradeNode> _upgradeNodes = new();
     private ISaveLoadService _saveLoadService;
-    private IUpgradeHandler _upgradeHandler;
-    public UpgradeTree(ISaveLoadService saveLoadService, IUpgradeHandler upgradeHandler)
+    private UpgradeHandler _upgradeHandler;
+    public UpgradeTree(ISaveLoadService saveLoadService, UpgradeHandler upgradeHandler)
     {
         _saveLoadService=saveLoadService;
         _upgradeHandler=upgradeHandler;
     }
 
-    public void AddUpgrade(IUpgrade upgrade, params string[] dependencies)
+    public void AddUpgrade(Upgrade upgrade, params int[] dependencies)
     {
         var node = new UpgradeNode(upgrade);
         _upgradeNodes[upgrade.Id] = node;
@@ -28,11 +29,11 @@ public class UpgradeTree : IUpgradeTree
         }
     }
 
-    public bool CanPurchase(string upgradeId, List<IUpgrade> unlockedUpgrades, int playerMoney)
+    public bool CanPurchase(int upgradeId, List<Upgrade> unlockedUpgrades, int playerMoney)
     {
         return _upgradeNodes.ContainsKey(upgradeId) &&
                _upgradeNodes[upgradeId].IsAvailable(unlockedUpgrades) &&
-               _upgradeNodes[upgradeId].Upgrade.CanPurchase(playerMoney, unlockedUpgrades);
+               _upgradeNodes[upgradeId].Upgrade.Lock==false;
     }
 
     public bool PurchaseUpgrade(string upgradeId)
@@ -45,14 +46,38 @@ public class UpgradeTree : IUpgradeTree
         return true;
     }
     
-    public IUpgrade GetUpgradeById(string upgradeId)
+    public Upgrade GetUpgradeById(int upgradeId)
     {
         return _upgradeNodes.ContainsKey(upgradeId) ? _upgradeNodes[upgradeId].Upgrade : null;
     }
 
-    public void SetData(List<UpgradeData> getData)
+    public void SetData(List<UpgradeData> upgradeData)
     {
-        throw new System.NotImplementedException();
+        foreach (var data in upgradeData)
+        {
+            // Создаем общее улучшение
+            Upgrade upgrade = CreateUpgradeFromData(data);
+        
+            // Если есть зависимости, добавляем их
+            if (!string.IsNullOrEmpty(data.UnlockId.ToString()))
+            {
+                AddUpgrade(upgrade, data.UnlockId);
+            }
+            else
+            {
+                AddUpgrade(upgrade);
+            }
+        }
+    }
+    
+    public Upgrade CreateUpgradeFromData(UpgradeData data)
+    {
+       
+                return new Upgrade( data); // или другой тип
+            // Можно добавить другие типы улучшений
+            // case UpgradeType.Weapon:
+            //     return new WeaponUpgrade(data.Id, data.Name, data.Cost, data.Value);
+        
     }
 
     public bool RefundUpgrade(string upgradeId, int refundAmount)

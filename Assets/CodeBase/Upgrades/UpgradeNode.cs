@@ -3,16 +3,16 @@ using System.Linq;
 
 public class UpgradeNode
 {
-    public IUpgrade Upgrade { get; }
+    public Upgrade Upgrade { get; }
     public List<UpgradeNode> Dependencies { get; }
 
-    public UpgradeNode(IUpgrade upgrade)
+    public UpgradeNode(Upgrade upgrade)
     {
         Upgrade = upgrade;
         Dependencies = new List<UpgradeNode>();
     }
 
-    public bool IsAvailable(List<IUpgrade> unlockedUpgrades)
+    public bool IsAvailable(List<Upgrade> unlockedUpgrades)
     {
         return Dependencies.All(node => unlockedUpgrades.Contains(node.Upgrade));
     }
