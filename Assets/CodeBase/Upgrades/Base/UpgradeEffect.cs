@@ -1,6 +1,7 @@
 using UnityEngine;
 
-public abstract class UpgradeEffect : ScriptableObject
+[CreateAssetMenu(fileName = "UpgradeEffect", menuName = "Upgrades/UpgradeEffect")]
+public class UpgradeEffect : ScriptableObject
 {
-    public abstract void Apply();
+    public float Value; 
 }

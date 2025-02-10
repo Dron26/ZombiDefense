@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6519435899366834492}
   - component: {fileID: 3551739287058508451}
+  - component: {fileID: 7587227873803728100}
   m_Layer: 0
   m_Name: SlotUpgrade 1
   m_TagString: Untagged
@@ -48,6 +49,25 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 989179865020703241}
   m_CullTransparentMesh: 1
+--- !u!114 &7587227873803728100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 989179865020703241}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f624a458509f411999b391b7e71a9f05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _upgradeType: 0
+  _id: 0
+  _lock: 0
+  _iconRenderer: {fileID: 680980582400800215}
+  _iconLock: {fileID: 565226248195953288}
+  _name: {fileID: 3438928284434799409}
+  _price: {fileID: 3566495876242328971}
 --- !u!1 &1134310749910909921
 GameObject:
   m_ObjectHideFlags: 0
@@ -60,7 +80,7 @@ GameObject:
   - component: {fileID: 288143307864559676}
   - component: {fileID: 3438928284434799409}
   m_Layer: 0
-  m_Name: Info
+  m_Name: Name
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -83,7 +103,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.00012207031, y: 0.5413494}
+  m_AnchoredPosition: {x: -0.00012207031, y: 0.5413513}
   m_SizeDelta: {x: -0.0016, y: 0.964798}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &288143307864559676
@@ -433,7 +453,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.34}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.012672424, y: -0.4491005}
+  m_AnchoredPosition: {x: 0.012672424, y: -0.44909668}
   m_SizeDelta: {x: -0.21099854, y: 0.01499939}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &190370255465490797
@@ -567,7 +587,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 33.35
+  m_fontSize: 33.55
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1

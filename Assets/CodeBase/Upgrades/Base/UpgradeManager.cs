@@ -28,9 +28,9 @@ namespace Upgrades.Base
                 var upgrade = _upgradeTree.GetUpgradeById(upgradeId);
 
 
-                foreach (var effect in upgrade.UpgradeEffect)
+                foreach (var effect in upgrade.UpgradesValue)
                 {
-                    effect.Apply();
+                    
                 }
            
                 _unlockedUpgrades.Add(upgrade);

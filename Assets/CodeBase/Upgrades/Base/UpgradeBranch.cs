@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
-using TMPro;
 using UnityEngine;
 
 namespace Services
@@ -8,20 +7,20 @@ namespace Services
     public class UpgradeBranch : MonoCache
     {
         [SerializeField] private UpgradeGroupType _branchGroupType;
-        private List<Upgrade> _upgrades = new List<Upgrade>();
-        private List<BranchPoint> _points = new List<BranchPoint>();
+        [SerializeField] private List<BranchPoint> _points = new List<BranchPoint>();
         
+        private List<Upgrade> _upgrades = new List<Upgrade>();
+
         public UpgradeGroupType GetUpgradeBranch => _branchGroupType;
 
-        public void AddUpgrade(Upgrade upgrade)
+        public void Initialize(List<Upgrade> upgrades)
         {
-            if (upgrade != null && upgrade.GroupType == _branchGroupType)
-            {
-                _upgrades.Add(upgrade);
-            }
+            _upgrades = upgrades.FindAll(upg => upg.GroupType == _branchGroupType);
+            DistributeUpgrades();
+            UpdateUI();
         }
-        
-        public void DistributeUpgrades()
+
+        private void DistributeUpgrades()
         {
             foreach (var point in _points)
             {
@@ -35,43 +34,10 @@ namespace Services
 
         public void UpdateUI()
         {
-            DistributeUpgrades();
             foreach (var point in _points)
             {
-                point.RefreshUI(); // Допустим, этот метод обновляет отображение UI
+                point.RefreshUI();
             }
         }
-    }
-}
-
-public class BranchPoint : MonoCache
-{
-    [SerializeField] private UpgradeType _upgradetype;
-    [SerializeField] private int _id;
-    private bool _lock;
-    private Sprite _iconUpgrade;
-    private Sprite _iconLock;
-    private TextMeshProUGUI _info;
-    private TextMeshProUGUI _price;
-    private string _name;
-
-    public UpgradeType GetUpgradeType => _upgradetype;
-    public int GetId => _id;
-
-    public void Initialize(Upgrade data)
-    {
-        _upgradetype = data.Type;
-        _id = data.Id;
-        _lock = data.Lock;
-        _iconUpgrade = data.IconUpgrade;
-        _iconLock = data.IconLock;
-        _info.text = data.Info;
-        _price.text = data.Price.ToString();
-        _name = data.Name;
-    }
-    
-    public void RefreshUI()
-    {
-       
     }
 }

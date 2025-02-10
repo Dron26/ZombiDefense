@@ -11,14 +11,12 @@ public class Upgrade
     public Sprite Icon { get; private set; }
     public UpgradeType Type { get; private set; }
     public UpgradeGroupType GroupType { get; private set; }
-    public float Value { get; private set; }
     public int UnlockId { get; private set; }
     public bool Lock { get; private set; }
     public Sprite IconUpgrade { get; private set; }
     public Sprite IconLock { get; private set; }
-    public string Info { get; private set; }
     public string Price { get; private set; }
-    public List<UpgradeEffect> UpgradeEffect;
+    public List<float> UpgradesValue;
     public Upgrade(UpgradeData data)
     {
         Id = data.Id;
@@ -28,13 +26,11 @@ public class Upgrade
         Icon = data.Icon;
         Type = data.Type;
         GroupType = data._groupType;
-        Value = data.Value;
         UnlockId = data.UnlockId;
         Lock = data.Lock;
         IconUpgrade = data.IconUpgrade;
         IconLock = data.IconLock;
-        Info = data.Info;
         Price = data.Price;
-        UpgradeEffect = data.UpgradeEffect;
+        UpgradesValue = data.UpgradesValue;
     }
 }

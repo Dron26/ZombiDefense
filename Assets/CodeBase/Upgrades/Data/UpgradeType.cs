@@ -1,9 +1,28 @@
 public enum UpgradeType
 {
-    IncreaseDamage,      // Увеличение урона
-    IncreaseDefense,     // Увеличение защиты точки
-    IncreaseReward,      // Увеличение награды за убийство
-    UnlockCharacter,     // Разблокировка персонажа
-    IncreaseSquadSize,   // Увеличение отряда
-    Other               // Другое 
+    DecreaseCostAirstrike,
+    IncreaseDamageAirstrike,
+    AddGrenadeInBox,
+    IncreaseDamage,      
+    IncreaseDefensePoint,
+    IncreaseMaxLevelDefensePoint,
+    DecreaseCostDefensePoint,
+    IncreaseGrenadeDamage, 
+    DecreasePriceUpdate,
+    IncreaseProfit,
+    IncreaseRange,      
+    RestoreHealth,
+    RestoreHealthCost,
+    DecreaseCostTherapy,
+    IncreaseSquadSize, 
+    AddSpecialTechnique,
+    IncreaseDamageSpecialTechnique,
+    DecreaseCostSpecialTechnique,
+    IncreaseStartCashLimit,
+    Turret,
+    AddTwoTurretGun,
+    AddTurretAutoAim,
+    IncreaseDamageTurret,
+    UnlockCharacter,    
+    IncreaseUnitLevel,
 }

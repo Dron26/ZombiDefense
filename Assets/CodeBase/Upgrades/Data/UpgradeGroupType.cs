@@ -5,5 +5,11 @@ public enum UpgradeGroupType
     turrets, 
     health, 
     defence, 
-    airStrikes,
+    AirStrikes,
+    squad,
+    SpecialTechnique,
+    Box,
+    Profit,
+    CashLimit,
+    PriceUpdate
 }

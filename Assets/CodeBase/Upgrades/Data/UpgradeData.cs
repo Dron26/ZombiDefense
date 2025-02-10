@@ -13,12 +13,10 @@ public class UpgradeData : ScriptableObject
     public UpgradeType Type;
     public UpgradeGroupType _groupType;
 
-    public float Value;  
     public int UnlockId;
-    public List<UpgradeEffect> UpgradeEffect;
+    public List<float> UpgradesValue;
     public bool Lock { get; set; }
     public Sprite IconUpgrade { get; set; }
     public Sprite IconLock { get; set; }
-    public string Info { get; set; }
     public string Price { get; set; }
 }
