@@ -1,52 +1,66 @@
 using System.Collections.Generic;
+using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Services;
+using UnityEngine;
 
-public class UpgradeManager : IUpgradeManager
+namespace Upgrades.Base
 {
-    private IUpgradeLoader _upgradeLoader=new UpgradeLoader();
-    private IUpgradeTree _upgradeTree;
-    private List<Upgrade> _unlockedUpgrades = new();
-    private int _playerMoney;
+    public class UpgradeManager : MonoCache,IUpgradeManager
+    {
+        [SerializeField] private List<UpgradeBranch> _upgradeBranches = new();
+        private IUpgradeLoader _upgradeLoader=new UpgradeLoader();
+        private IUpgradeTree _upgradeTree;
+        private List<Upgrade> _unlockedUpgrades = new();
+        private int _playerMoney;
 
     
     
-    public UpgradeManager(IUpgradeTree upgradeTree,int startingMoney)
-    {
-        _upgradeTree = upgradeTree;
-        _playerMoney = startingMoney;
-    }
-
-    public bool PurchaseUpgrade(int upgradeId)
-    {
-        if (_upgradeTree.CanPurchase(upgradeId, _unlockedUpgrades, _playerMoney))
+        public UpgradeManager(IUpgradeTree upgradeTree,int startingMoney)
         {
-            var upgrade = _upgradeTree.GetUpgradeById(upgradeId);
-
-
-            foreach (var effect in upgrade.UpgradeEffect)
-            {
-                effect.Apply();
-            }
-           
-            _unlockedUpgrades.Add(upgrade);
-            _playerMoney -= upgrade.Cost;
-            return true;
+            _upgradeTree = upgradeTree;
+            _playerMoney = startingMoney;
         }
-        return false;
-    }
 
-    public bool IsUnlocked(int upgradeId)
-    {
-        return _unlockedUpgrades.Exists(u => u.Id == upgradeId);
-    }
+        public bool PurchaseUpgrade(int upgradeId)
+        {
+            if (_upgradeTree.CanPurchase(upgradeId, _unlockedUpgrades, _playerMoney))
+            {
+                var upgrade = _upgradeTree.GetUpgradeById(upgradeId);
 
-    public int GetPlayerMoney()
-    {
-        return _playerMoney;
-    }
 
-    public void InitializeData()
-    {
-        _upgradeTree.SetData(_upgradeLoader.GetData());
+                foreach (var effect in upgrade.UpgradeEffect)
+                {
+                    effect.Apply();
+                }
+           
+                _unlockedUpgrades.Add(upgrade);
+                _playerMoney -= upgrade.Cost;
+                return true;
+            }
+            return false;
+        }
+
+        public bool IsUnlocked(int upgradeId)
+        {
+            return _unlockedUpgrades.Exists(u => u.Id == upgradeId);
+        }
+
+        public int GetPlayerMoney()
+        {
+            return _playerMoney;
+        }
+
+        public void UpdateUI()
+        {
+            foreach (var branch in _upgradeBranches)
+            {
+                branch.UpdateUI();
+            }
+        }
+
+        public void InitializeData()
+        {
+            _upgradeTree.SetData(_upgradeLoader.GetData());
+        }
     }
 }

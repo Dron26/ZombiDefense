@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Upgrades
 {
-    public class UpgradGrouper : MonoCache
+    public class UpgradeGrouper : MonoCache
     {
         [SerializeField] private  List<UpgradeInfo> allUpgradeDatas = new();
         [SerializeField]private UpgradeSlot _upgradeSlotPrefab;

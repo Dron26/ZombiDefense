@@ -55,31 +55,18 @@ public class UpgradeTree : IUpgradeTree
     {
         foreach (var data in upgradeData)
         {
-            // Создаем общее улучшение
-            Upgrade upgrade = CreateUpgradeFromData(data);
-        
-            // Если есть зависимости, добавляем их
-            if (!string.IsNullOrEmpty(data.UnlockId.ToString()))
+            _upgradeNodes[data.Id] = new UpgradeNode(new Upgrade(data));
+        }
+
+        foreach (var data in upgradeData)
+        {
+            if (data.UnlockId != 0 && _upgradeNodes.ContainsKey(data.UnlockId))
             {
-                AddUpgrade(upgrade, data.UnlockId);
-            }
-            else
-            {
-                AddUpgrade(upgrade);
+                _upgradeNodes[data.Id].Dependencies.Add(_upgradeNodes[data.UnlockId]);
             }
         }
     }
     
-    public Upgrade CreateUpgradeFromData(UpgradeData data)
-    {
-       
-                return new Upgrade( data); // или другой тип
-            // Можно добавить другие типы улучшений
-            // case UpgradeType.Weapon:
-            //     return new WeaponUpgrade(data.Id, data.Name, data.Cost, data.Value);
-        
-    }
-
     public bool RefundUpgrade(string upgradeId, int refundAmount)
     {
         IUpgradeHandler _upgradeHandler=AllServices.Container.Single<IUpgradeHandler>();

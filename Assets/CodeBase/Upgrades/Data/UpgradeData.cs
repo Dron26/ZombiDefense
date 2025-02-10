@@ -11,7 +11,7 @@ public class UpgradeData : ScriptableObject
     public int Cost;
     public Sprite Icon;
     public UpgradeType Type;
-    public UpgradeGroup Group;
+    public UpgradeGroupType _groupType;
 
     public float Value;  
     public int UnlockId;
@@ -19,6 +19,6 @@ public class UpgradeData : ScriptableObject
     public bool Lock { get; set; }
     public Sprite IconUpgrade { get; set; }
     public Sprite IconLock { get; set; }
-    public TextMeshProUGUI Info { get; set; }
-    public TextMeshProUGUI Price { get; set; }
+    public string Info { get; set; }
+    public string Price { get; set; }
 }

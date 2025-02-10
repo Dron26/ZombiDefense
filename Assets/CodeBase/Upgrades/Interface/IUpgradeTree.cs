@@ -11,8 +11,6 @@ public interface IUpgradeTree:IService
     public Upgrade GetUpgradeById(int upgradeId);
 
     public void SetData(List<UpgradeData> upgradeData);
-
-    public Upgrade CreateUpgradeFromData(UpgradeData data);
-
+    
     public bool RefundUpgrade(string upgradeId, int refundAmount);
 }

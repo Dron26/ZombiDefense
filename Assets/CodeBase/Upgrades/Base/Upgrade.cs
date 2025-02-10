@@ -10,14 +10,14 @@ public class Upgrade
     public int Cost { get; private set; }
     public Sprite Icon { get; private set; }
     public UpgradeType Type { get; private set; }
-    public UpgradeGroup Group { get; private set; }
+    public UpgradeGroupType GroupType { get; private set; }
     public float Value { get; private set; }
     public int UnlockId { get; private set; }
     public bool Lock { get; private set; }
     public Sprite IconUpgrade { get; private set; }
     public Sprite IconLock { get; private set; }
-    public TextMeshProUGUI Info { get; private set; }
-    public TextMeshProUGUI Price { get; private set; }
+    public string Info { get; private set; }
+    public string Price { get; private set; }
     public List<UpgradeEffect> UpgradeEffect;
     public Upgrade(UpgradeData data)
     {
@@ -27,7 +27,7 @@ public class Upgrade
         Cost = data.Cost;
         Icon = data.Icon;
         Type = data.Type;
-        Group = data.Group;
+        GroupType = data._groupType;
         Value = data.Value;
         UnlockId = data.UnlockId;
         Lock = data.Lock;

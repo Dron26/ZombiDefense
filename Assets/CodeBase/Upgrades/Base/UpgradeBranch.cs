@@ -5,66 +5,73 @@ using UnityEngine;
 
 namespace Services
 {
-    public class UpgradeBranch:MonoCache
+    public class UpgradeBranch : MonoCache
     {
-        [SerializeField] private  UpgradeGroup _branchGroup; 
-        private  List<Upgrade> _upgrades  = new List<Upgrade>(); 
-        public UpgradeGroup GetUpgradeBranch => _branchGroup;
-        private  List<BranchPoint> _points  = new List<BranchPoint>(); 
+        [SerializeField] private UpgradeGroupType _branchGroupType;
+        private List<Upgrade> _upgrades = new List<Upgrade>();
+        private List<BranchPoint> _points = new List<BranchPoint>();
         
+        public UpgradeGroupType GetUpgradeBranch => _branchGroupType;
+
         public void AddUpgrade(Upgrade upgrade)
         {
-            if (upgrade != null)
+            if (upgrade != null && upgrade.GroupType == _branchGroupType)
             {
                 _upgrades.Add(upgrade);
+            }
+        }
+        
+        public void DistributeUpgrades()
+        {
+            foreach (var point in _points)
+            {
+                Upgrade matchingUpgrade = _upgrades.Find(upg => upg.Id == point.GetId && upg.Type == point.GetUpgradeType);
+                if (matchingUpgrade != null)
+                {
+                    point.Initialize(matchingUpgrade);
+                }
             }
         }
 
         public void UpdateUI()
         {
-            for (int i = 0; i < _points.Count; i++)
+            DistributeUpgrades();
+            foreach (var point in _points)
             {
-                _points[i].Initialize(_upgrades[i]);
+                point.RefreshUI(); // Допустим, этот метод обновляет отображение UI
             }
-        }
-
-        private void CreateUIElementForUpgrade(Upgrade upgrade)
-        {
-          
         }
     }
 }
 
-public class BranchPoint:MonoCache
+public class BranchPoint : MonoCache
 {
-    [SerializeField] private  UpgradeType _upgradetype; 
-    [SerializeField] private  int _id; 
-     private  bool _lock; 
-     private  Sprite _iconUpgrade; 
-     private  Sprite _iconLock; 
-     private TextMeshProUGUI _info; 
-     private TextMeshProUGUI _price;
-     private string _name;
+    [SerializeField] private UpgradeType _upgradetype;
+    [SerializeField] private int _id;
+    private bool _lock;
+    private Sprite _iconUpgrade;
+    private Sprite _iconLock;
+    private TextMeshProUGUI _info;
+    private TextMeshProUGUI _price;
+    private string _name;
 
-     public UpgradeType GetUpgradeType => _upgradetype;
-     public int GetId => _id;
-     public bool IsLock => _lock;
-     public Sprite GetIconUpgrade => _iconUpgrade;
-     public Sprite GetIconLock => _iconLock;
-     public TextMeshProUGUI GetInfo => _info;
-     public TextMeshProUGUI GetPrice => _price;
-     public string GetName => _name;
-     
-     
-     public void Initialize(Upgrade data)
-     {
-         _upgradetype= data.Type;
-         _id= data.Id;
-         _lock= data.Lock;
-         _iconUpgrade= data.IconUpgrade;
-         _iconLock= data.IconLock;
-         _info= data.Info;
-         _price= data.Price;
-         _name= data.Name;
-     }
+    public UpgradeType GetUpgradeType => _upgradetype;
+    public int GetId => _id;
+
+    public void Initialize(Upgrade data)
+    {
+        _upgradetype = data.Type;
+        _id = data.Id;
+        _lock = data.Lock;
+        _iconUpgrade = data.IconUpgrade;
+        _iconLock = data.IconLock;
+        _info.text = data.Info;
+        _price.text = data.Price.ToString();
+        _name = data.Name;
+    }
+    
+    public void RefreshUI()
+    {
+       
+    }
 }
