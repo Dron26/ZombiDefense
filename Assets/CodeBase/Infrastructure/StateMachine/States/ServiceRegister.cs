@@ -7,6 +7,7 @@ using Services.Localization;
 using Services.PauseService;
 using Services.PlayerAuthorization;
 using Services.SaveLoad;
+using Upgrades.Base;
 
 namespace Infrastructure.StateMachine.States
 {
@@ -37,7 +38,8 @@ namespace Infrastructure.StateMachine.States
             
             var upgradeHandler=new UpgradeHandler(gameData.UpgradeInfo);
             services.RegisterSingle<IUpgradeHandler>(upgradeHandler);
-           
+            
+            services.RegisterSingle<IUpgradeManager>(new UpgradeManager(saveLoadService,upgradeHandler, gameData.Money.AllAmountMoney)); //UpgradeManager
             
             var achievementsHandler = new AchievementsHandler(gameData.AchievementsData);
             services.RegisterSingle<IAchievementsHandler>(achievementsHandler);
@@ -49,7 +51,6 @@ namespace Infrastructure.StateMachine.States
             services.RegisterSingle<IAudioSettingsHandler>(new AudioSettingsHandler(gameData.AudioData));
             
             services.RegisterSingle<IEnemyHandler>(new EnemyHandler(gameData.EnemyData, achievementsHandler, gameEventBroadcaster));
-            services.RegisterSingle<IUpgradeTree>(new UpgradeTree(saveLoadService, upgradeHandler));
         }
     }
 }

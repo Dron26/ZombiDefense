@@ -12,8 +12,8 @@ public class UpgradeNode
         Dependencies = new List<UpgradeNode>();
     }
 
-    public bool IsAvailable(List<Upgrade> unlockedUpgrades)
+    public bool IsAvailable(HashSet<int> unlockedUpgrades)
     {
-        return Dependencies.All(node => unlockedUpgrades.Contains(node.Upgrade));
+        return Dependencies.All(node => unlockedUpgrades.Contains(node.Upgrade.Id));
     }
 }

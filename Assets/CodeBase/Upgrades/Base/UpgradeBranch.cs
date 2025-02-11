@@ -6,21 +6,21 @@ namespace Services
 {
     public class UpgradeBranch : MonoCache
     {
-        [SerializeField] private UpgradeGroupType _branchGroupType;
+        [SerializeField] private UpgradeGroupType _branchTypeGroupType;
         [SerializeField] private List<BranchPoint> _points = new List<BranchPoint>();
         
         private List<Upgrade> _upgrades = new List<Upgrade>();
 
-        public UpgradeGroupType GetUpgradeBranch => _branchGroupType;
+        public UpgradeGroupType GetUpgradeBranchType => _branchTypeGroupType;
 
         public void Initialize(List<Upgrade> upgrades)
         {
-            _upgrades = upgrades.FindAll(upg => upg.GroupType == _branchGroupType);
+            _upgrades = upgrades.FindAll(upg => upg.GroupType == _branchTypeGroupType);
             DistributeUpgrades();
             UpdateUI();
         }
 
-        private void DistributeUpgrades()
+        public void DistributeUpgrades()
         {
             foreach (var point in _points)
             {
@@ -28,6 +28,10 @@ namespace Services
                 if (matchingUpgrade != null)
                 {
                     point.Initialize(matchingUpgrade);
+                }
+                else
+                {
+                    Debug.LogWarning($"Upgrade not found for BranchPoint with ID: {point.GetId} and Type: {point.GetUpgradeType}");
                 }
             }
         }

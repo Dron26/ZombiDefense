@@ -34,7 +34,7 @@ public class UpgradeDataLogger : MonoBehaviour
                               $"Description: {upgrade.Description}\n" +
                               $"Cost: {upgrade.Cost}\n" +
                               $"Type: {upgrade.Type}\n" +
-                              $"GroupType: {upgrade._groupType}\n" +
+                              $"GroupType: {upgrade.GroupType}\n" +
                               $"UnlockId: {upgrade.UnlockId}\n" +
                               $"UpgradesValue: {string.Join(", ", upgrade.UpgradesValue)}\n\n\n");
                 }

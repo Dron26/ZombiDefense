@@ -11,7 +11,7 @@ public class UpgradeData : ScriptableObject
     public int Cost;
     public Sprite Icon;
     public UpgradeType Type;
-    public UpgradeGroupType _groupType;
+    public UpgradeGroupType GroupType;
 
     public int UnlockId;
     public List<float> UpgradesValue;

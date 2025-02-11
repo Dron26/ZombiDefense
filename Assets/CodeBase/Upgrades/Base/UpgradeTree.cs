@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Interface;
 using Services;
 using Services.SaveLoad;
@@ -9,10 +10,13 @@ public class UpgradeTree : IUpgradeTree
     private Dictionary<int, UpgradeNode> _upgradeNodes = new();
     private ISaveLoadService _saveLoadService;
     private UpgradeHandler _upgradeHandler;
+    private List<UpgradeBranch> _upgradeBranches=new List<UpgradeBranch>();
+    private IUpgradeLoader _upgradeLoader=new UpgradeLoader();
     public UpgradeTree(ISaveLoadService saveLoadService, UpgradeHandler upgradeHandler)
     {
         _saveLoadService=saveLoadService;
         _upgradeHandler=upgradeHandler;
+        SetData(_upgradeLoader.GetData());
     }
 
     public void AddUpgrade(Upgrade upgrade, params int[] dependencies)
@@ -29,20 +33,21 @@ public class UpgradeTree : IUpgradeTree
         }
     }
 
-    public bool CanPurchase(int upgradeId, List<Upgrade> unlockedUpgrades, int playerMoney)
+    public bool CanPurchase(int upgradeId, HashSet<int> unlockedUpgrades, int playerMoney)
     {
         return _upgradeNodes.ContainsKey(upgradeId) &&
                _upgradeNodes[upgradeId].IsAvailable(unlockedUpgrades) &&
-               _upgradeNodes[upgradeId].Upgrade.Lock==false;
+               _upgradeNodes[upgradeId].Upgrade.Lock == false;
     }
 
-    public bool PurchaseUpgrade(string upgradeId)
+    public bool PurchaseUpgrade(int upgradeId)
     {
         if (_upgradeHandler.HasPurchasedUpgrade(upgradeId)) return false; 
 
         _upgradeHandler.AddPurchasedUpgrade(upgradeId);
         AllServices.Container.Single<LoadSaveService>().Save(); 
         AllServices.Container.Single<GameEventBroadcaster>().InvokeOnUpgradePurchased(upgradeId);
+        UpdateBranches();
         return true;
     }
     
@@ -67,10 +72,8 @@ public class UpgradeTree : IUpgradeTree
         }
     }
     
-    public bool RefundUpgrade(string upgradeId, int refundAmount)
+    public bool RefundUpgrade(int upgradeId, int refundAmount)
     {
-        IUpgradeHandler _upgradeHandler=AllServices.Container.Single<IUpgradeHandler>();
-        
         if (_upgradeHandler.RefundUpgrade(upgradeId, refundAmount))
         {
             _saveLoadService.Save(); 
@@ -78,5 +81,25 @@ public class UpgradeTree : IUpgradeTree
             return true;
         }
         return false;
+    }
+
+    public void SetBranch(List<UpgradeBranch> branches)
+    {
+        _upgradeBranches=branches;
+    }
+    
+    public void UpdateBranches()
+    {
+        foreach (var branch in _upgradeBranches)
+        {
+            // Фильтруем улучшения по типу группы ветки
+            var branchUpgrades = _upgradeNodes.Values
+                .Where(node => node.Upgrade.GroupType == branch.GetUpgradeBranchType) // Фильтруем улучшения по ветке
+                .Select(node => node.Upgrade)  // Преобразуем в список Upgrade
+                .ToList();
+
+            // Инициализируем ветку с отфильтрованными улучшениями
+            branch.Initialize(branchUpgrades);
+        }
     }
 }

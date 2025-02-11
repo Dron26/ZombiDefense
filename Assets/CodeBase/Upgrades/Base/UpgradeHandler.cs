@@ -10,9 +10,9 @@ namespace Services
         private UpgradeInfo _upgradeInfo;
         public UpgradeHandler(UpgradeInfo upgradeInfo) => _upgradeInfo = upgradeInfo;
 
-        public bool HasPurchasedUpgrade(string upgradeId) => _upgradeInfo.PurchasedUpgrades.Contains(upgradeId);
+        public bool HasPurchasedUpgrade(int upgradeId) => _upgradeInfo.PurchasedUpgrades.Contains(upgradeId);
 
-        public bool RefundUpgrade(string upgradeId, int refundAmount)
+        public bool RefundUpgrade(int upgradeId, int refundAmount)
         {
             if (!HasPurchasedUpgrade(upgradeId))
                 return false;
@@ -22,7 +22,7 @@ namespace Services
             return true;
         }
 
-        public void AddPurchasedUpgrade(string upgradeId)
+        public void AddPurchasedUpgrade(int upgradeId)
         {
             if (!_upgradeInfo.PurchasedUpgrades.Contains(upgradeId))
             {
@@ -30,7 +30,7 @@ namespace Services
             }
         }
 
-        public void RemovePurchasedUpgrade(string upgradeId)
+        public void RemovePurchasedUpgrade(int upgradeId)
         {
             if (!_upgradeInfo.PurchasedUpgrades.Contains(upgradeId))
             {

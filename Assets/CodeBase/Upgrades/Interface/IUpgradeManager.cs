@@ -6,6 +6,7 @@ public interface IUpgradeManager:IService
     bool PurchaseUpgrade(int upgradeId);
     bool IsUnlocked(int upgradeId);
     int GetPlayerMoney();
-    public void UpdateUI();
+    void SetBranch(List<UpgradeBranch> branches);
+    void UpdateBranches();
 
 }

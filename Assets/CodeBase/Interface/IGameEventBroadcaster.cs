@@ -27,7 +27,7 @@ namespace Interface
         public void InvokeOnEnemyDeath(Enemy enemy);
         public void InvokeLastEnemyRemained();
         public void InvokeOnLocationCompleted();
-        public void InvokeOnUpgradePurchased(string upgradeId);
-        public void InvokeOnUpgradeRefundedEvent (string upgradeId);
+        public void InvokeOnUpgradePurchased(int upgradeId);
+        public void InvokeOnUpgradeRefundedEvent (int upgradeId);
     }
 }

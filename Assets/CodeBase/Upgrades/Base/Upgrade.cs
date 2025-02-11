@@ -25,7 +25,7 @@ public class Upgrade
         Cost = data.Cost;
         Icon = data.Icon;
         Type = data.Type;
-        GroupType = data._groupType;
+        GroupType = data.GroupType;
         UnlockId = data.UnlockId;
         Lock = data.Lock;
         IconUpgrade = data.IconUpgrade;

@@ -13,7 +13,6 @@ public class BranchPoint : MonoCache
     [SerializeField] private TextMeshProUGUI _name;
     [SerializeField] private TextMeshProUGUI _price;
 
-    private Sprite _iconUpgrade;
 
     public UpgradeType GetUpgradeType => _upgradeType;
     public int GetId => _id;
@@ -24,7 +23,7 @@ public class BranchPoint : MonoCache
         _upgradeType = data.Type;
         _id = data.Id;
         _lock = data.Lock;
-        _iconUpgrade = data.IconUpgrade;
+        _iconRenderer.sprite = data.IconUpgrade;
         _iconLock.sprite = data.IconLock;
         _name.text  = data.Name;
 
@@ -35,8 +34,6 @@ public class BranchPoint : MonoCache
     
     public void RefreshUI()
     {
-        _iconRenderer.sprite =  _iconUpgrade;
-        _iconLock.sprite = _iconLock.sprite;
         _iconLock.gameObject.SetActive(_lock);
         _name.gameObject.SetActive(!_lock);
         _price.gameObject.SetActive(!_lock);

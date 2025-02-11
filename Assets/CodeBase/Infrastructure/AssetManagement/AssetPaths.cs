@@ -24,6 +24,6 @@ namespace Infrastructure.AssetManagement
         public static readonly string UpgradeData ="Enemy/Waves/Data/Upgrade/";
         
         public static readonly string AnimControllers ="Assets/Resources/Prefab/Store/Characters/Player/Animation";
-        
+        public static readonly string UpgradesData ="Prefab/UI/UpgradesMap/Data";
     }
 }

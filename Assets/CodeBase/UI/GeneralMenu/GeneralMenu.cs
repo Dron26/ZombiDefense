@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Common;
 using Infrastructure;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
@@ -11,6 +12,7 @@ using UI.Locations;
 using UI.SettingsPanel;
 using UnityEngine;
 using UnityEngine.UI;
+using Upgrades;
 
 namespace UI.GeneralMenu
 {
@@ -23,7 +25,11 @@ namespace UI.GeneralMenu
         [SerializeField]private AudioManager _audioManager;
         [SerializeField] private LocationManager _locationManager;
         [SerializeField] private Button _play;
+        [SerializeField] private Button _upgradeBack;
+        [SerializeField] private Button _upgrade;
         [SerializeField] private Button _backUILocotion;
+        [SerializeField] private List<UpgradeBranch> _branchContainer;
+        [SerializeField] private UpgradeWindow _upgradeWindow;
 
         private ISaveLoadService _saveLoadService;
         private GameStateMachine _stateMachine;
@@ -43,6 +49,8 @@ namespace UI.GeneralMenu
 
             InitializeLocationSystem();
             // _locationPanel.SetActive(!isActive);
+            AllServices.Container.Single<IUpgradeManager>().SetBranch(_branchContainer);
+            AllServices.Container.Single<IUpgradeManager>().UpdateBranches();
         }
         
         private void InitializeLocationSystem()
@@ -87,6 +95,8 @@ namespace UI.GeneralMenu
             _loadingCurtain.OnClicked += OnClikedCurtain;
             _play.onClick.AddListener(()=>SwitchMenuPanelState(false));
             _backUILocotion.onClick.AddListener(()=>SwitchMenuPanelState(true));
+            _upgrade.onClick.AddListener(()=>SwitchMenuPanelState(false));
+            _upgradeBack.onClick.AddListener(()=>SwitchMenuPanelState(true));
         }
         
         private void SwitchMenuPanelState(bool isActive)
@@ -100,6 +110,8 @@ namespace UI.GeneralMenu
             _loadingCurtain.OnClicked -= OnClikedCurtain;
             _play.onClick.RemoveListener(()=>SwitchMenuPanelState(false));
             _backUILocotion.onClick.RemoveListener(()=>SwitchMenuPanelState(true));
+            _upgrade.onClick.AddListener(()=>SwitchMenuPanelState(false));
+            _upgradeBack.onClick.AddListener(()=>SwitchMenuPanelState(true));
         }
 
         private void OnDestroy()

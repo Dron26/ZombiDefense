@@ -1,40 +1,39 @@
 using System.Collections.Generic;
+using System.Linq;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Services;
+using Services.SaveLoad;
 using UnityEngine;
 
 namespace Upgrades.Base
 {
-    public class UpgradeManager : MonoCache,IUpgradeManager
+    public class UpgradeManager : IUpgradeManager
     {
-        [SerializeField] private List<UpgradeBranch> _upgradeBranches = new();
-        private IUpgradeLoader _upgradeLoader=new UpgradeLoader();
         private IUpgradeTree _upgradeTree;
         private List<Upgrade> _unlockedUpgrades = new();
         private int _playerMoney;
-
-    
-    
-        public UpgradeManager(IUpgradeTree upgradeTree,int startingMoney)
+        public UpgradeManager(ISaveLoadService saveLoadService, UpgradeHandler upgradeHandler,int money)
         {
-            _upgradeTree = upgradeTree;
-            _playerMoney = startingMoney;
+            _upgradeTree = new UpgradeTree(saveLoadService, upgradeHandler);
+            _playerMoney = money;
         }
 
         public bool PurchaseUpgrade(int upgradeId)
         {
-            if (_upgradeTree.CanPurchase(upgradeId, _unlockedUpgrades, _playerMoney))
+            var unlockedUpgradesSet = new HashSet<int>(_unlockedUpgrades.Select(u => u.Id));
+            
+            if (_upgradeTree.CanPurchase(upgradeId, unlockedUpgradesSet, _playerMoney))
             {
                 var upgrade = _upgradeTree.GetUpgradeById(upgradeId);
 
 
-                foreach (var effect in upgrade.UpgradesValue)
-                {
-                    
-                }
+                    //применение улучшения
            
                 _unlockedUpgrades.Add(upgrade);
                 _playerMoney -= upgrade.Cost;
+                _upgradeTree.PurchaseUpgrade(upgradeId);
+                _upgradeTree.UpdateBranches();
+                
                 return true;
             }
             return false;
@@ -50,17 +49,14 @@ namespace Upgrades.Base
             return _playerMoney;
         }
 
-        public void UpdateUI()
+        public void UpdateBranches()
         {
-            foreach (var branch in _upgradeBranches)
-            {
-                branch.UpdateUI();
-            }
+            _upgradeTree.UpdateBranches();
         }
 
-        public void InitializeData()
+        public void SetBranch(List<UpgradeBranch> branches)
         {
-            _upgradeTree.SetData(_upgradeLoader.GetData());
+            _upgradeTree.SetBranch(branches);
         }
     }
 }

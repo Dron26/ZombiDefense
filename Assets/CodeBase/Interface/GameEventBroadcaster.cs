@@ -18,8 +18,8 @@ namespace Interface
         public event Action LastEnemyRemained;
         public event Action OnLocationCompleted;
         public event Action OnClearSpawnData;
-        public event Action<string> OnUpgradePurchased;
-        public event Action<string> OnUpgradeRefunded;
+        public event Action<int> OnUpgradePurchased;
+        public event Action<int> OnUpgradeRefunded;
         
         private readonly Dictionary<Type, List<Delegate>> _eventHandlers = new();
         public void InvokeOnSetActiveHumanoid() => OnSetActiveHumanoid?.Invoke();
@@ -30,8 +30,8 @@ namespace Interface
         public void InvokeOnEnemyDeath(Enemy enemy) => OnEnemyDeath?.Invoke(enemy);
         public void InvokeLastEnemyRemained() => LastEnemyRemained?.Invoke();
         public void InvokeOnLocationCompleted() => OnLocationCompleted?.Invoke();
-        public void InvokeOnUpgradePurchased(string upgradeId) => OnUpgradePurchased?.Invoke(upgradeId);
+        public void InvokeOnUpgradePurchased(int upgradeId) => OnUpgradePurchased?.Invoke(upgradeId);
 
-        public void InvokeOnUpgradeRefundedEvent(string upgradeId) => OnUpgradeRefunded?.Invoke(upgradeId);
+        public void InvokeOnUpgradeRefundedEvent(int upgradeId) => OnUpgradeRefunded?.Invoke(upgradeId);
     }
 }
