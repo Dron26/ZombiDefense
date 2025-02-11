@@ -5,6 +5,6 @@ using UnityEngine.Rendering;
 [Serializable]
 public class UpgradeInfo
 {
-    private List<int> _purchasedUpgrades = new();
-    public List<int> PurchasedUpgrades => _purchasedUpgrades;
+    private List<string> _purchasedUpgrades = new();
+    public List<string> PurchasedUpgrades => _purchasedUpgrades;
 }

@@ -3,7 +3,7 @@ using Services;
 
 public interface IUpgradeManager:IService
 {
-    bool PurchaseUpgrade(int upgradeId);
+    bool PurchaseUpgrade(int upgradeId, UpgradeGroupType type);
     bool IsUnlocked(int upgradeId);
     int GetPlayerMoney();
     void SetBranch(List<UpgradeBranch> branches);

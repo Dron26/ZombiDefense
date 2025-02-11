@@ -18,26 +18,27 @@ namespace Upgrades.Base
             _playerMoney = money;
         }
 
-        public bool PurchaseUpgrade(int upgradeId)
+        public bool PurchaseUpgrade(int upgradeId,UpgradeGroupType type)
         {
             var unlockedUpgradesSet = new HashSet<int>(_unlockedUpgrades.Select(u => u.Id));
             
-            if (_upgradeTree.CanPurchase(upgradeId, unlockedUpgradesSet, _playerMoney))
+            if (_upgradeTree.CanPurchase(type,upgradeId ,unlockedUpgradesSet, _playerMoney))
             {
-                var upgrade = _upgradeTree.GetUpgradeById(upgradeId);
+                var upgrade = _upgradeTree.GetUpgradeById(type,upgradeId);
 
 
                     //применение улучшения
            
                 _unlockedUpgrades.Add(upgrade);
                 _playerMoney -= upgrade.Cost;
-                _upgradeTree.PurchaseUpgrade(upgradeId);
+                _upgradeTree.PurchaseUpgrade(type,upgradeId);
                 _upgradeTree.UpdateBranches();
                 
                 return true;
             }
             return false;
         }
+
 
         public bool IsUnlocked(int upgradeId)
         {

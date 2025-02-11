@@ -8,19 +8,20 @@ namespace Upgrades
     public class UpgradeWindow:MonoCache
     {
         [SerializeField] private Button _backButton;
+        [SerializeField] private GameObject _panel;
         
-        private void OnEnable()
+        protected override  void OnEnabled()
         {
             _backButton.onClick.AddListener(SwitchState);
         }
 
-        private void OnDisable()
+        protected override void OnDisabled()
         {
             _backButton.onClick.RemoveListener(SwitchState);
         }
         public void SwitchState()
         {
-            gameObject.SetActive(!isActiveAndEnabled);
+            _panel.SetActive(!_panel.activeInHierarchy);
         }
     }
 }

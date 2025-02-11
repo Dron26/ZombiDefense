@@ -7,76 +7,94 @@ using Services.SaveLoad;
 
 public class UpgradeTree : IUpgradeTree
 {
-    private Dictionary<int, UpgradeNode> _upgradeNodes = new();
+    private Dictionary<string, UpgradeNode> _upgradeNodes = new();
     private ISaveLoadService _saveLoadService;
     private UpgradeHandler _upgradeHandler;
-    private List<UpgradeBranch> _upgradeBranches=new List<UpgradeBranch>();
-    private IUpgradeLoader _upgradeLoader=new UpgradeLoader();
+    private List<UpgradeBranch> _upgradeBranches = new();
+    private IUpgradeLoader _upgradeLoader = new UpgradeLoader();
+
     public UpgradeTree(ISaveLoadService saveLoadService, UpgradeHandler upgradeHandler)
     {
-        _saveLoadService=saveLoadService;
-        _upgradeHandler=upgradeHandler;
+        _saveLoadService = saveLoadService;
+        _upgradeHandler = upgradeHandler;
         SetData(_upgradeLoader.GetData());
     }
 
-    public void AddUpgrade(Upgrade upgrade, params int[] dependencies)
+    public void AddUpgrade(Upgrade upgrade, params (string group, int id)[] dependencies)
     {
+        string nodeKey = $"{upgrade.GroupType}_{upgrade.Id}";
         var node = new UpgradeNode(upgrade);
-        _upgradeNodes[upgrade.Id] = node;
+        _upgradeNodes[nodeKey] = node;
 
-        foreach (var dep in dependencies)
+        foreach (var (group, id) in dependencies)
         {
-            if (_upgradeNodes.ContainsKey(dep))
+            string depKey = $"{group}_{id}";
+            if (_upgradeNodes.ContainsKey(depKey))
             {
-                node.Dependencies.Add(_upgradeNodes[dep]);
+                node.Dependencies.Add(_upgradeNodes[depKey]);
             }
         }
     }
 
-    public bool CanPurchase(int upgradeId, HashSet<int> unlockedUpgrades, int playerMoney)
+    public bool CanPurchase(UpgradeGroupType type, int upgradeId, HashSet<int> unlockedUpgrades, int playerMoney)
     {
-        return _upgradeNodes.ContainsKey(upgradeId) &&
-               _upgradeNodes[upgradeId].IsAvailable(unlockedUpgrades) &&
-               _upgradeNodes[upgradeId].Upgrade.Lock == false;
+        string nodeKey = $"{type}_{upgradeId}";
+        return _upgradeNodes.ContainsKey(nodeKey) &&
+               _upgradeNodes[nodeKey].IsAvailable(unlockedUpgrades) &&
+               !_upgradeNodes[nodeKey].Upgrade.Lock;
     }
 
-    public bool PurchaseUpgrade(int upgradeId)
+    public bool PurchaseUpgrade(UpgradeGroupType type, int upgradeId)
     {
-        if (_upgradeHandler.HasPurchasedUpgrade(upgradeId)) return false; 
+        string nodeKey = $"{type}_{upgradeId}";
 
-        _upgradeHandler.AddPurchasedUpgrade(upgradeId);
-        AllServices.Container.Single<LoadSaveService>().Save(); 
+        if (_upgradeHandler.HasPurchasedUpgrade(nodeKey)) return false;
+
+        _upgradeHandler.AddPurchasedUpgrade(nodeKey);
+        _saveLoadService.Save();
         AllServices.Container.Single<GameEventBroadcaster>().InvokeOnUpgradePurchased(upgradeId);
         UpdateBranches();
         return true;
     }
-    
-    public Upgrade GetUpgradeById(int upgradeId)
+
+    public Upgrade GetUpgradeById(UpgradeGroupType type, int upgradeId)
     {
-        return _upgradeNodes.ContainsKey(upgradeId) ? _upgradeNodes[upgradeId].Upgrade : null;
+        string nodeKey = $"{type}_{upgradeId}";
+        return _upgradeNodes.ContainsKey(nodeKey) ? _upgradeNodes[nodeKey].Upgrade : null;
     }
 
     public void SetData(List<UpgradeData> upgradeData)
     {
+        _upgradeNodes.Clear();
+
         foreach (var data in upgradeData)
         {
-            _upgradeNodes[data.Id] = new UpgradeNode(new Upgrade(data));
+            string nodeKey = $"{data.GroupType}_{data.Id}";
+            _upgradeNodes[nodeKey] = new UpgradeNode(new Upgrade(data));
         }
 
         foreach (var data in upgradeData)
         {
-            if (data.UnlockId != 0 && _upgradeNodes.ContainsKey(data.UnlockId))
+            if (data.UnlockId != 0)
             {
-                _upgradeNodes[data.Id].Dependencies.Add(_upgradeNodes[data.UnlockId]);
+                string nodeKey = $"{data.GroupType}_{data.Id}";
+                string dependencyKey = $"{data.GroupType}_{data.UnlockId}";
+
+                if (_upgradeNodes.ContainsKey(dependencyKey))
+                {
+                    _upgradeNodes[nodeKey].Dependencies.Add(_upgradeNodes[dependencyKey]);
+                }
             }
         }
     }
-    
-    public bool RefundUpgrade(int upgradeId, int refundAmount)
+
+    public bool RefundUpgrade(string groupType, int upgradeId, int refundAmount)
     {
-        if (_upgradeHandler.RefundUpgrade(upgradeId, refundAmount))
+        string nodeKey = $"{groupType}_{upgradeId.ToString()}";
+
+        if (_upgradeHandler.RefundUpgrade(nodeKey, refundAmount))
         {
-            _saveLoadService.Save(); 
+            _saveLoadService.Save();
             AllServices.Container.Single<GameEventBroadcaster>().InvokeOnUpgradeRefundedEvent(upgradeId);
             return true;
         }
@@ -85,20 +103,18 @@ public class UpgradeTree : IUpgradeTree
 
     public void SetBranch(List<UpgradeBranch> branches)
     {
-        _upgradeBranches=branches;
+        _upgradeBranches = branches;
     }
-    
+
     public void UpdateBranches()
     {
         foreach (var branch in _upgradeBranches)
         {
-            // Фильтруем улучшения по типу группы ветки
             var branchUpgrades = _upgradeNodes.Values
-                .Where(node => node.Upgrade.GroupType == branch.GetUpgradeBranchType) // Фильтруем улучшения по ветке
-                .Select(node => node.Upgrade)  // Преобразуем в список Upgrade
+                .Where(node => node.Upgrade.GroupType == branch.GetUpgradeBranchType)
+                .Select(node => node.Upgrade)
                 .ToList();
 
-            // Инициализируем ветку с отфильтрованными улучшениями
             branch.Initialize(branchUpgrades);
         }
     }

@@ -95,8 +95,14 @@ namespace UI.GeneralMenu
             _loadingCurtain.OnClicked += OnClikedCurtain;
             _play.onClick.AddListener(()=>SwitchMenuPanelState(false));
             _backUILocotion.onClick.AddListener(()=>SwitchMenuPanelState(true));
-            _upgrade.onClick.AddListener(()=>SwitchMenuPanelState(false));
+            _upgrade.onClick.AddListener(SwitchPanelsState);
             _upgradeBack.onClick.AddListener(()=>SwitchMenuPanelState(true));
+        }
+
+        private void SwitchPanelsState()
+        {
+            _upgradeWindow.SwitchState();
+            SwitchMenuPanelState(false);
         }
         
         private void SwitchMenuPanelState(bool isActive)
