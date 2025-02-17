@@ -1,12 +1,14 @@
 using System.Collections.Generic;
+using Interface;
 using Services;
+using Services.SaveLoad;
+using Upgrades;
 
 public interface IUpgradeManager:IService
 {
-    bool PurchaseUpgrade(int upgradeId, UpgradeGroupType type);
+    bool PurchaseUpgrade(Upgrade upgrade);
     bool IsUnlocked(int upgradeId);
-    int GetPlayerMoney();
-    void SetBranch(List<UpgradeBranch> branches);
+    public void SetData(List<UpgradeBranch> branches, UpgradeInpoPanel infoPanel);
     void UpdateBranches();
 
 }

@@ -1,3 +1,4 @@
+using System;
 using Data;
 using Interface;
 using Newtonsoft.Json;
@@ -18,9 +19,30 @@ public class LocalDataPersistence : IDataPersistence
     // Загружаем данные из локального хранилища
     public GameData Load()
     {
-        if (PlayerPrefs.HasKey(Key))  // Проверяем, есть ли сохраненные данные
-            return JsonConvert.DeserializeObject<GameData>(PlayerPrefs.GetString(Key));  // Загружаем данные
-        return new GameData();  // Возвращаем новые данные, если сохранений нет
+        try
+        {
+            string json = PlayerPrefs.GetString(Key);
+            if (string.IsNullOrEmpty(json))
+            {
+                Debug.LogWarning("No saved data found.");
+                return new GameData();  // Если данных нет
+            }
+
+            var gameData = JsonConvert.DeserializeObject<GameData>(json);
+            if (gameData == null)
+            {
+                Debug.LogWarning("Failed to deserialize game data.");
+                return new GameData();  // Если данные повреждены
+            }
+
+            Debug.LogWarning("return gameData");
+            return gameData;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Failed to load game data: {e.Message}");
+            return new GameData();  // Возвращаем пустые данные в случае ошибки
+        }
     }
 
     // Сбрасываем данные в локальном хранилище

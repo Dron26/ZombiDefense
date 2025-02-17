@@ -40,11 +40,14 @@ SpriteAtlas:
       allowAlphaSplitting: 0
       enableRotation: 1
       enableTightPacking: 0
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 000909184e5304f119c90c7838a387d2, type: 3}
-    totalSpriteSurfaceArea: 1143990
     bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: 6cc7c4110305e45418586f0466ddd2b2, type: 3}
@@ -56,8 +59,11 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 455d14777d4904404b4f056333d64766, type: 3}
   - {fileID: 21300000, guid: f143e6b7f1ee14c9c8385475d718d2e6, type: 3}
   - {fileID: 21300000, guid: 5be23c1877e9a40e28a1f3e28352d894, type: 3}
+  - {fileID: 21300000, guid: 87079889fb55f0542ac271c4e621b1da, type: 3}
   - {fileID: 21300000, guid: 9486317a5007c4a7a8fad68173188178, type: 3}
   - {fileID: 21300000, guid: 52bb615b446bc43a2974460d87ecef3d, type: 3}
+  - {fileID: 21300000, guid: 59ff50bcd04b9a04b89bf02f3bcb8c2d, type: 3}
+  - {fileID: 21300000, guid: 3af57b4d923fed94eb106578fd6a49e5, type: 3}
   - {fileID: 21300000, guid: a9e8057e4267c4f57875a26c240facbf, type: 3}
   - {fileID: 21300000, guid: 53a1ea3f1d6424c05b8510d75554f3f5, type: 3}
   m_PackedSpriteNamesToIndex:
@@ -70,9 +76,13 @@ SpriteAtlas:
   - info_bg_focus
   - title_bg_green
   - title_bg_blue
+  - title_bg_purple2
   - slider_pointer
   - info_bg
+  - title_bg_blue2
+  - title_bg_green2
   - offline_prg_bg
   - title_bg_purple
+  m_RenderDataMap: {}
   m_Tag: OfflineReward
   m_IsVariant: 0

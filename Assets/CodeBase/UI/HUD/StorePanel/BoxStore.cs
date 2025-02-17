@@ -9,6 +9,8 @@ using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Factories;
 using Infrastructure.Location;
 using Infrastructure.Logic.WeaponManagment;
+using Interface;
+using Services;
 using Services.SaveLoad;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -30,11 +32,14 @@ namespace UI.HUD.StorePanel
         private Dictionary<BoxData, int> _boxesData=new Dictionary<BoxData, int>();
         private AdditionalBox _weaponBox;
         private AdditionalBox _medicineBox;
+
+        private BoxType _currentWeaponBoxType;
         public event Action <BoxData> BuyBox;
         
         public void Initialize(Wallet wallet)
         {
             _wallet = wallet;
+            LoadSettings(AllServices.Container.Single<IUpgradeHandler>().GetUpgradeData());
             _additionalEquipmentButton.Initialize();
             _boxFactory = GetComponent<BoxFactory>();
             _itemFactory= GetComponent<ItemFactory>();
@@ -85,29 +90,7 @@ namespace UI.HUD.StorePanel
            
             return boxes; 
         }
-        //
-        // private  List<ItemData> InitializeItems(BoxData boxData)
-        // {
-        //      List<ItemData> items=new List<ItemData>();
-        //     foreach (var itemType in boxData.ItemTypes)
-        //     {
-        //         string path = AssetPaths.ItemsData + itemType;
-        //         ItemData itemData = Resources.Load<ItemData>(path);
-        //
-        //         if (itemData != null)
-        //         {
-        //             items.Add(itemData);
-        //         }
-        //         else
-        //         {
-        //             Debug.LogWarning($"ItemData not found at {path}");
-        //         }
-        //         
-        //     }
-        //     
-        //     return items;
-        // }
-        //
+        
         private void OnSelectMedicineBox()
         {
             SelectBox(BoxType.Equipment);
@@ -126,8 +109,7 @@ namespace UI.HUD.StorePanel
                 _additionalEquipmentButton.HideButton();
             }
         }
-
-
+        
         private void OnSelectSmallWeaponBox()
         {
             SelectBox(BoxType.SmallWeapon);
@@ -147,6 +129,11 @@ namespace UI.HUD.StorePanel
         {
             _additionalEquipmentButton.OnSelectedMedicineBox -= OnSelectMedicineBox;
             _additionalEquipmentButton.OnSelectedWeaponBox -= OnSelectSmallWeaponBox;
+        }
+
+        private void LoadSettings(GameParameters global)
+        {
+            _currentWeaponBoxType=global.WeaponBoxType;
         }
     }
 }

@@ -15,8 +15,5 @@ public class UpgradeData : ScriptableObject
 
     public int UnlockId;
     public List<float> UpgradesValue;
-    public bool Lock { get; set; }
-    public Sprite IconUpgrade { get; set; }
-    public Sprite IconLock { get; set; }
-    public string Price { get; set; }
+    public bool Lock;
 }

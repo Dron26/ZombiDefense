@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Interface;
 using Services;
 using Services.SaveLoad;
 using UnityEngine;
@@ -11,43 +12,35 @@ namespace Upgrades.Base
     {
         private IUpgradeTree _upgradeTree;
         private List<Upgrade> _unlockedUpgrades = new();
-        private int _playerMoney;
-        public UpgradeManager(ISaveLoadService saveLoadService, UpgradeHandler upgradeHandler,int money)
+        private UpgradeInpoPanel _infoPanel;
+        private Upgrade _selectedUpgrade;
+        private ICurrencyHandler _сurrencyHandler;
+        
+        
+        public UpgradeManager(ISaveLoadService saveLoadService, UpgradeHandler upgradeHandler,
+            ICurrencyHandler сurrencyHandler)
         {
             _upgradeTree = new UpgradeTree(saveLoadService, upgradeHandler);
-            _playerMoney = money;
+            _сurrencyHandler = сurrencyHandler;
         }
 
-        public bool PurchaseUpgrade(int upgradeId,UpgradeGroupType type)
+        public bool PurchaseUpgrade(Upgrade upgrade)
         {
-            var unlockedUpgradesSet = new HashSet<int>(_unlockedUpgrades.Select(u => u.Id));
-            
-            if (_upgradeTree.CanPurchase(type,upgradeId ,unlockedUpgradesSet, _playerMoney))
+            if (_upgradeTree.CanPurchase(upgrade,_сurrencyHandler.GetCurrentMoney() ))
             {
-                var upgrade = _upgradeTree.GetUpgradeById(type,upgradeId);
-
-
-                    //применение улучшения
-           
                 _unlockedUpgrades.Add(upgrade);
-                _playerMoney -= upgrade.Cost;
-                _upgradeTree.PurchaseUpgrade(type,upgradeId);
+                _сurrencyHandler.SpendMoney(upgrade.Cost);
+                _upgradeTree.PurchaseUpgrade(upgrade);
                 _upgradeTree.UpdateBranches();
-                
+
                 return true;
             }
             return false;
         }
 
-
         public bool IsUnlocked(int upgradeId)
         {
             return _unlockedUpgrades.Exists(u => u.Id == upgradeId);
-        }
-
-        public int GetPlayerMoney()
-        {
-            return _playerMoney;
         }
 
         public void UpdateBranches()
@@ -55,9 +48,37 @@ namespace Upgrades.Base
             _upgradeTree.UpdateBranches();
         }
 
-        public void SetBranch(List<UpgradeBranch> branches)
+        public void SetData(List<UpgradeBranch> branches, UpgradeInpoPanel infoPanel)
         {
+            _infoPanel = infoPanel;
+            AddListener();
+            foreach (var branch in branches)
+            {
+                branch.OnUpgradeClick += OnSelectBranchPoint;
+            }
             _upgradeTree.SetBranch(branches);
+        }
+
+        private void OnSelectBranchPoint(Upgrade upgrade)
+        {
+            _selectedUpgrade = upgrade;
+            ShowWindow(upgrade);
+        }
+
+        private void ShowWindow(Upgrade upgrade)
+        {
+            _infoPanel.Initialize(upgrade);
+            _infoPanel.SwitchState(true);
+        }
+
+        private void AddListener()
+        {
+            _infoPanel.OnApplyClicked += OnApplyClicked;
+        }
+
+        private void OnApplyClicked()
+        {
+            PurchaseUpgrade(_selectedUpgrade);
         }
     }
 }

@@ -5,5 +5,5 @@ using Services.SaveLoad;
 
 public interface IServiceRegister
 {
-    void  RegisterServices( PauseService pauseService, Language language, AllServices services );
+    void  RegisterServices(LoadingCurtain loadingCurtain, PauseService pauseService, Language language, AllServices services );
 }

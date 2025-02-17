@@ -1,12 +1,12 @@
 public enum UpgradeGroupType
 {
-    supplies, 
-    weapons,
-    turrets, 
-    health, 
-    defence, 
+    Supplies, 
+    Weapons,
+    Turrets, 
+    Health, 
+    Defence, 
     AirStrikes,
-    squad,
+    Squad,
     SpecialTechnique,
     Box,
     Profit,

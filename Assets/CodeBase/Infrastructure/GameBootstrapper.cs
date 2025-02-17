@@ -3,7 +3,6 @@ using Infrastructure.AssetManagement;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.StateMachine;
 using Infrastructure.StateMachine.States;
-using Interface;
 using Services;
 using Services.PauseService;
 using Services.Yandex;
@@ -26,11 +25,10 @@ namespace Infrastructure
             DontDestroyOnLoad(this);
 
             // Регистрация сервисов, без необходимости в вызове Initialize
-            RegisterServices();
+            RegisterServices(_loadingCurtain);
 
             _gameFactory = new GameFactory(new AssetProvider());
 
-            AllServices.Container.Single<IUIHandler>().SetCurtain(_loadingCurtain);
 
             Language language = GetLanguage();
             _game = new Game(this, _loadingCurtain, language, _pauseService, _serviceRegister, _gameFactory);
@@ -60,9 +58,9 @@ namespace Infrastructure
             };
         }
 
-        private void RegisterServices()
+        private void RegisterServices(LoadingCurtain loadingCurtain)
         {
-            _serviceRegister = new ServiceRegister(_pauseService, new Language(), AllServices.Container);
+            _serviceRegister = new ServiceRegister(loadingCurtain,_pauseService, new Language(), AllServices.Container);
         }
     }
 }

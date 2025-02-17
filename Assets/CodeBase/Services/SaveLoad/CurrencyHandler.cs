@@ -10,11 +10,23 @@ namespace Services.SaveLoad
         private readonly MoneyData _moneyData;
 
         public event Action MoneyChanged;
-
+        private const int InitialMoneyAmount = 100000;
         public CurrencyHandler(MoneyData moneyData)
         {
             _moneyData = moneyData ?? throw new ArgumentNullException(nameof(moneyData));
+            
+            if (!AllServices.Container.Single<ISaveLoadService>().Load().IsFirstStart);
+            {
+                
+                AddMoney(InitialMoneyAmount);
+                AllServices.Container.Single<ISaveLoadService>().ChangeFirstStart();
+            }
+
+            AllServices.Container.Single<ISaveLoadService>().Save();
+            
         }
+        
+        
 
         public int GetCurrentMoney() => _moneyData.AllAmountMoney;
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Characters.Humanoids.AbstractLevel;
 using Enemies.AbstractEntity;
 using Infrastructure.Location;
@@ -18,7 +19,7 @@ namespace Interface
         event Action LastEnemyRemained;
         event Action OnLocationCompleted;
         event Action OnClearSpawnData;
-        
+
         public void InvokeOnSetActiveHumanoid();
         public void InvokeLastHumanoidDie();
         public void InvokeOnSelectedNewPoint(WorkPoint point);

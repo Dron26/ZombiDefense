@@ -13,9 +13,6 @@ public class Upgrade
     public UpgradeGroupType GroupType { get; private set; }
     public int UnlockId { get; private set; }
     public bool Lock { get; private set; }
-    public Sprite IconUpgrade { get; private set; }
-    public Sprite IconLock { get; private set; }
-    public string Price { get; private set; }
     public List<float> UpgradesValue;
     public Upgrade(UpgradeData data)
     {
@@ -28,9 +25,6 @@ public class Upgrade
         GroupType = data.GroupType;
         UnlockId = data.UnlockId;
         Lock = data.Lock;
-        IconUpgrade = data.IconUpgrade;
-        IconLock = data.IconLock;
-        Price = data.Price;
         UpgradesValue = data.UpgradesValue;
     }
 }

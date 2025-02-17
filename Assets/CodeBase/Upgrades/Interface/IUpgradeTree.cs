@@ -4,8 +4,9 @@ using Services;
 public interface IUpgradeTree:IService
 {
     public void AddUpgrade(Upgrade upgrade, params (string group, int id)[] dependencies);
-    public bool CanPurchase(UpgradeGroupType type, int upgradeId, HashSet<int> unlockedUpgrades, int playerMoney);
-    public bool PurchaseUpgrade(UpgradeGroupType type, int upgradeId);
+
+    public bool CanPurchase(Upgrade upgrade, int playerMoney);
+    public bool PurchaseUpgrade(Upgrade upgrade);
     public Upgrade GetUpgradeById(UpgradeGroupType type, int upgradeId);
     public void SetData(List<UpgradeData> upgradeData);
     

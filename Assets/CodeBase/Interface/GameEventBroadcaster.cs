@@ -20,8 +20,51 @@ namespace Interface
         public event Action OnClearSpawnData;
         public event Action<int> OnUpgradePurchased;
         public event Action<int> OnUpgradeRefunded;
-        
         private readonly Dictionary<Type, List<Delegate>> _eventHandlers = new();
+        private readonly Dictionary<UpgradeGroupType, Action<Upgrade>> _upgradeEvents;
+        
+        public GameEventBroadcaster()
+        {
+            _upgradeEvents = new Dictionary<UpgradeGroupType, Action<Upgrade>>()
+            {
+                { UpgradeGroupType.Supplies, null },
+                { UpgradeGroupType.Weapons, null },
+                { UpgradeGroupType.Turrets, null },
+                { UpgradeGroupType.Health, null },
+                { UpgradeGroupType.Defence, null },
+                { UpgradeGroupType.AirStrikes, null },
+                { UpgradeGroupType.Squad, null },
+                { UpgradeGroupType.SpecialTechnique, null },
+                { UpgradeGroupType.Box, null },
+                { UpgradeGroupType.Profit, null },
+                { UpgradeGroupType.CashLimit, null },
+                { UpgradeGroupType.PriceUpdate, null }
+            };
+        }
+        public void Subscribe(UpgradeGroupType groupType, Action<Upgrade> callback)
+        {
+            if (_upgradeEvents.ContainsKey(groupType))
+            {
+                _upgradeEvents[groupType] += callback;
+            }
+        }
+        
+        public void Unsubscribe(UpgradeGroupType groupType, Action<Upgrade> callback)
+        {
+            if (_upgradeEvents.ContainsKey(groupType))
+            {
+                _upgradeEvents[groupType] -= callback;
+            }
+        }
+        
+        public void InvokeUpgradeEvent(UpgradeGroupType groupType, Upgrade upgradeId)
+        {
+            if (_upgradeEvents.ContainsKey(groupType))
+            {
+                _upgradeEvents[groupType]?.Invoke(upgradeId);
+            }
+        }
+    
         public void InvokeOnSetActiveHumanoid() => OnSetActiveHumanoid?.Invoke();
         public void InvokeLastHumanoidDie() => LastHumanoidDie?.Invoke();
         public void InvokeOnSelectedNewPoint(WorkPoint point) => OnSelectedNewPoint?.Invoke(point);

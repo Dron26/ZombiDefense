@@ -13,12 +13,12 @@ namespace Infrastructure.StateMachine.States
 {
     public class ServiceRegister : IServiceRegister
     {
-        public ServiceRegister(PauseService pauseService, Language language, AllServices services)
+        public ServiceRegister(LoadingCurtain loadingCurtain,PauseService pauseService, Language language, AllServices services)
         {
-            RegisterServices(pauseService, language, services);
+            RegisterServices(loadingCurtain,pauseService,language, services);
         }
 
-        public void RegisterServices(PauseService pauseService, Language language, AllServices services)
+        public void RegisterServices(LoadingCurtain loadingCurtain,PauseService pauseService, Language language, AllServices services)
         {
             services.RegisterSingle<IAssets>(new AssetProvider());
             services.RegisterSingle<IGameFactory>(new GameFactory(services.Single<IAssets>()));
@@ -28,18 +28,26 @@ namespace Infrastructure.StateMachine.States
             services.RegisterSingle<IAuthorization>(new YandexAuthorization());
             services.RegisterSingle<IResourceLoadService>(new ResourceLoaderService());
             services.RegisterSingle<IPauseService>(pauseService);
-            services.RegisterSingle<IUIHandler>(new UIHandler());
             services.RegisterSingle<IGameEventBroadcaster>(new GameEventBroadcaster());
-
+            
+            var uiHandler = new UIHandler();
+            uiHandler.SetCurtain(loadingCurtain);
+            services.RegisterSingle<IUIHandler>(uiHandler);
+            
             var saveLoadService = new LoadSaveService();
             services.RegisterSingle<ISaveLoadService>(saveLoadService);
             
             var gameData = services.Single<ISaveLoadService>().Load();
-            
-            var upgradeHandler=new UpgradeHandler(gameData.UpgradeInfo);
+            services.Single<ISaveLoadService>().Save();
+            var upgradeHandler=new UpgradeHandler(gameData.GameParameters);
             services.RegisterSingle<IUpgradeHandler>(upgradeHandler);
             
-            services.RegisterSingle<IUpgradeManager>(new UpgradeManager(saveLoadService,upgradeHandler, gameData.Money.AllAmountMoney)); //UpgradeManager
+            var сurrencyHandler=new CurrencyHandler(gameData.Money);
+            services.RegisterSingle<ICurrencyHandler>(сurrencyHandler);
+            
+            
+            
+            services.RegisterSingle<IUpgradeManager>(new UpgradeManager(saveLoadService,upgradeHandler, сurrencyHandler)); //UpgradeManager
             
             var achievementsHandler = new AchievementsHandler(gameData.AchievementsData);
             services.RegisterSingle<IAchievementsHandler>(achievementsHandler);
@@ -47,7 +55,6 @@ namespace Infrastructure.StateMachine.States
             var gameEventBroadcaster = services.Single<IGameEventBroadcaster>();
             services.RegisterSingle<ILocationHandler>(new LocationHandler(gameData));
             services.RegisterSingle<ICharacterHandler>(new CharacterHandler(gameData.Characters));
-            services.RegisterSingle<ICurrencyHandler>(new CurrencyHandler(gameData.Money));
             services.RegisterSingle<IAudioSettingsHandler>(new AudioSettingsHandler(gameData.AudioData));
             
             services.RegisterSingle<IEnemyHandler>(new EnemyHandler(gameData.EnemyData, achievementsHandler, gameEventBroadcaster));

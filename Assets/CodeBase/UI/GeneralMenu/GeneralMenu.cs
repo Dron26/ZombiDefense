@@ -30,18 +30,16 @@ namespace UI.GeneralMenu
         [SerializeField] private Button _backUILocotion;
         [SerializeField] private List<UpgradeBranch> _branchContainer;
         [SerializeField] private UpgradeWindow _upgradeWindow;
+        [SerializeField] private UpgradeInpoPanel _upgradeInpoPanel;
 
         private ISaveLoadService _saveLoadService;
         private GameStateMachine _stateMachine;
-        private LoadingCurtain _loadingCurtain  ;
-        private GameBootstrapper _gameBootstrapper; 
         private IUIHandler _handler;
         
         public  void Initialize( GameStateMachine stateMachine)
         {
             _saveLoadService = AllServices.Container.Single<ISaveLoadService>();
             _stateMachine = stateMachine;
-            _loadingCurtain =AllServices.Container.Single<IUIHandler>().GetCurtain();
             
             LoadAudioController();
             _settingPanel.Initialize(_audioManager);
@@ -49,7 +47,7 @@ namespace UI.GeneralMenu
 
             InitializeLocationSystem();
             // _locationPanel.SetActive(!isActive);
-            AllServices.Container.Single<IUpgradeManager>().SetBranch(_branchContainer);
+            AllServices.Container.Single<IUpgradeManager>().SetData(_branchContainer,_upgradeInpoPanel);
             AllServices.Container.Single<IUpgradeManager>().UpdateBranches();
         }
         
@@ -80,7 +78,7 @@ namespace UI.GeneralMenu
         private void Start()
         {
             //    _yandexLeaderboard.Initialize(CreateLeaderboard());
-            _loadingCurtain.OnLoaded();
+            AllServices.Container.Single<IUIHandler>().GetCurtain().OnLoaded();
         }
         
         private void SwicthScene()
@@ -92,7 +90,7 @@ namespace UI.GeneralMenu
 
         private void AddListener()
         {
-            _loadingCurtain.OnClicked += OnClikedCurtain;
+            AllServices.Container.Single<IUIHandler>().GetCurtain().OnClicked += OnClikedCurtain;
             _play.onClick.AddListener(()=>SwitchMenuPanelState(false));
             _backUILocotion.onClick.AddListener(()=>SwitchMenuPanelState(true));
             _upgrade.onClick.AddListener(SwitchPanelsState);
@@ -113,7 +111,7 @@ namespace UI.GeneralMenu
 
         private void RemoveListener()
         {
-            _loadingCurtain.OnClicked -= OnClikedCurtain;
+            AllServices.Container.Single<IUIHandler>().GetCurtain().OnClicked -= OnClikedCurtain;
             _play.onClick.RemoveListener(()=>SwitchMenuPanelState(false));
             _backUILocotion.onClick.RemoveListener(()=>SwitchMenuPanelState(true));
             _upgrade.onClick.AddListener(()=>SwitchMenuPanelState(false));

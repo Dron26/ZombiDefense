@@ -20,7 +20,7 @@ namespace Data
         [SerializeField] private TimeStatistics _timeStatistics = new();
         [SerializeField] private ScalingData _scalingData = new();
         [SerializeField] private List<LocationProgressData> _locationProgressData = new();
-        [SerializeField] private UpgradeInfo _upgradeInfo;
+        [SerializeField] private GameParameters _gameParameters = new();
         public MoneyData Money => _money;
         public AchievementsData AchievementsData => _achievementsData;
         public EnemyData EnemyData => _enemyData;
@@ -31,23 +31,13 @@ namespace Data
         public TimeStatistics TimeStatistics => _timeStatistics;
         public ScalingData Scaling => _scalingData;
         public List<LocationProgressData> LocationProgressData => _locationProgressData;
-        public UpgradeInfo UpgradeInfo=>_upgradeInfo;
+        public GameParameters GameParameters=>_gameParameters;
         
-        private const int InitialMoneyAmount = 100;
-        [SerializeField] private bool _isFirstStart = true;
-        public bool IsFirstStart => _isFirstStart;
-
-        public void ChangeIsFirstStart() => _isFirstStart = false;
-
-        public void AddInitialMoney()
-        {
-            if (_isFirstStart)
-            {
-                _money.Money = InitialMoneyAmount;
-                ChangeIsFirstStart();
-            }
-        }
         
+        public bool IsFirstStart;
+
+        public void ChangeIsFirstStart() => IsFirstStart = false;
+
         public void UpdateAudioSettings(AudioData audioData) => _audioData = audioData;
         public void OnGameStart() => _timeStatistics.OnGameStart();
         public void OnGameEnd() => _timeStatistics.OnGameEnd();
