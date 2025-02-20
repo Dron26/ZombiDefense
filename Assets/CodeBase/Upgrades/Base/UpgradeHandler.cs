@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Data;
 using Infrastructure.AssetManagement;
@@ -12,6 +13,7 @@ namespace Services
     {
         private GameData _gameData;
         private GameParameters _gameParameters=new();
+        private Dictionary<UpgradeGroupType, Action<Upgrade>> _upgradeEvents;
 
         public HashSet<string> GetUnlockedUpgrades() => _gameParameters.GetUnlockedUpgrades();
 
@@ -19,6 +21,7 @@ namespace Services
         {
             _gameParameters = gameParameters;
             LoadParametrs();
+            _upgradeEvents = new Dictionary<UpgradeGroupType, Action<Upgrade>>();
         }
 
         public bool HasPurchasedUpgrade(string upgradeId) => _gameParameters.HasPurchasedUpgrade(upgradeId);
@@ -77,6 +80,37 @@ namespace Services
                 
             }
             //_startParameters = Resources.Load<StartParameters>(AssetPaths.StartParametrs);
+        }
+        
+        
+        
+        
+        public void Subscribe(UpgradeGroupType groupType, Action<Upgrade> listener)
+        {
+            if (!_upgradeEvents.ContainsKey(groupType))
+            {
+                _upgradeEvents[groupType] = null;
+            }
+            _upgradeEvents[groupType] += listener;
+        }
+        
+        
+        
+        public void Unsubscribe(UpgradeGroupType groupType, Action<Upgrade> listener)
+        {
+            if (_upgradeEvents.ContainsKey(groupType))
+            {
+                _upgradeEvents[groupType] -= listener;
+            }
+        }
+        
+        
+        public void TriggerEvent(Upgrade upgrade)
+        {
+            if (_upgradeEvents.ContainsKey(upgrade.GroupType))
+            {
+                _upgradeEvents[upgrade.GroupType]?.Invoke(upgrade);
+            }
         }
     }
 }

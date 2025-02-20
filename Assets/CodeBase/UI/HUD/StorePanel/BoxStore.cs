@@ -32,8 +32,8 @@ namespace UI.HUD.StorePanel
         private Dictionary<BoxData, int> _boxesData=new Dictionary<BoxData, int>();
         private AdditionalBox _weaponBox;
         private AdditionalBox _medicineBox;
-
         private BoxType _currentWeaponBoxType;
+        private Upgrade _upgrade;
         public event Action <BoxData> BuyBox;
         
         public void Initialize(Wallet wallet)
@@ -119,6 +119,7 @@ namespace UI.HUD.StorePanel
         {
             _additionalEquipmentButton.OnSelectedMedicineBox += OnSelectMedicineBox;
             _additionalEquipmentButton.OnSelectedWeaponBox += OnSelectSmallWeaponBox;
+            AllServices.Container.Single<IUpgradeHandler>().Subscribe(UpgradeGroupType.Box,SetUpgrade);
         }
 
         private void OnDestroy()
@@ -129,11 +130,17 @@ namespace UI.HUD.StorePanel
         {
             _additionalEquipmentButton.OnSelectedMedicineBox -= OnSelectMedicineBox;
             _additionalEquipmentButton.OnSelectedWeaponBox -= OnSelectSmallWeaponBox;
+            AllServices.Container.Single<IUpgradeHandler>().Unsubscribe(UpgradeGroupType.Box,SetUpgrade);
         }
 
         private void LoadSettings(GameParameters global)
         {
-            _currentWeaponBoxType=global.WeaponBoxType;
+            _currentWeaponBoxType=global.CurrentWeaponBoxType;
         }
+
+            private void SetUpgrade(Upgrade upgrade)
+            {
+                _upgrade=new Upgrade(upgrade);
+            }
     }
 }

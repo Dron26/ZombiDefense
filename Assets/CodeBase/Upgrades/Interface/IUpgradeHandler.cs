@@ -1,3 +1,4 @@
+using System;
 using Services;
 
 namespace Interface
@@ -8,5 +9,8 @@ namespace Interface
         bool HasPurchasedUpgrade(string upgradeId);
         bool RefundUpgrade(string upgradeId, int refundAmount);
         GameParameters GetUpgradeData();
+        public void Subscribe(UpgradeGroupType groupType, Action<Upgrade> listener);
+        public void Unsubscribe(UpgradeGroupType groupType, Action<Upgrade> listener);
+        public void TriggerEvent(Upgrade upgrade);
     }
 }

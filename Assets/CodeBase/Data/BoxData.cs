@@ -10,5 +10,17 @@ namespace Data
         public BoxType Type;
         public List<ItemType> ItemTypes;
         public List<int> Count;
+        
+        public void ApplyUpgrade( ItemType type, int count)
+        {
+            for (int i = 0; i < ItemTypes.Count; i++)
+                {
+                    if (ItemTypes[i] == type)
+                    {
+                        
+                        Count[i] += count;
+                    }
+                }
+        }
     }
 }
