@@ -11113,6 +11113,8 @@ MonoBehaviour:
   _minParticleScale: 0.8
   _maxParticleScale: 1.2
   _container: {fileID: 2139450145044652826}
+  _impactDirt: {fileID: 0}
+  _shield: {fileID: 0}
 --- !u!114 &1833812383164256578
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17492,15 +17494,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4885001493786356, guid: 2966910701d40974c87f0338bb5694e3, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.02999999
+      value: 0.081
       objectReference: {fileID: 0}
     - target: {fileID: 4885001493786356, guid: 2966910701d40974c87f0338bb5694e3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.0029998012
+      value: 0.003
       objectReference: {fileID: 0}
     - target: {fileID: 4885001493786356, guid: 2966910701d40974c87f0338bb5694e3, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.23620072
+      value: -0.118
       objectReference: {fileID: 0}
     - target: {fileID: 4885001493786356, guid: 2966910701d40974c87f0338bb5694e3, type: 3}
       propertyPath: m_LocalRotation.w
@@ -17529,6 +17531,10 @@ PrefabInstance:
     - target: {fileID: 4885001493786356, guid: 2966910701d40974c87f0338bb5694e3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 198096858069344474, guid: 2966910701d40974c87f0338bb5694e3, type: 3}
+      propertyPath: stopAction
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 198096858069344474, guid: 2966910701d40974c87f0338bb5694e3, type: 3}
       propertyPath: playOnAwake
@@ -17665,7 +17671,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4885001493786356, guid: 2966910701d40974c87f0338bb5694e3, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.002
+      value: 0.11
       objectReference: {fileID: 0}
     - target: {fileID: 4885001493786356, guid: 2966910701d40974c87f0338bb5694e3, type: 3}
       propertyPath: m_LocalRotation.w
@@ -17694,6 +17700,10 @@ PrefabInstance:
     - target: {fileID: 4885001493786356, guid: 2966910701d40974c87f0338bb5694e3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 198096858069344474, guid: 2966910701d40974c87f0338bb5694e3, type: 3}
+      propertyPath: stopAction
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 198096858069344474, guid: 2966910701d40974c87f0338bb5694e3, type: 3}
       propertyPath: playOnAwake

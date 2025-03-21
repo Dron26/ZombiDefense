@@ -9,7 +9,8 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
 {
     public class EnemyMovementState : EnemyState
     {
-        private Character _character;
+        private Character _target;
+        private Transform _targetTransform;
         private NavMeshAgent _agent;
         private Animator _animator;
         private EnemyAnimController _enemyAnimController;
@@ -51,7 +52,7 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
             _isWalking = false;
             _isTargetSet = false;
 
-            if (_character != null)
+            if (_target != null)
             {
                 Move();
             }
@@ -71,28 +72,25 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
 
         public void InitCharacter(Character targetCharacter)
         {
-            if (_character != targetCharacter)
+            if (_target != targetCharacter)
             {
-                _character = targetCharacter;
+                _target = targetCharacter;
+                _targetTransform= _target.transform;
             }
         }
 
         private void OnDeath(Entity enemy)
         {
-            if (_character != null)
-            {
-                _character.GetComponent<Characters.Humanoids.AbstractLevel.Humanoid>().OnMove -= OnTargetChangePoint;
-            }
             StateMachine.EnterBehavior<EnemySearchTargetState>();
         }
 
         private void Move()
         {
-            if (_character != null && _character.IsLife())
+            if (_target != null && _target.IsLife())
             {
                 if (_agent.isOnNavMesh)
                 {
-                    _agent.SetDestination(_character.transform.position);
+                   // _agent.SetDestination(_character.transform.position);
                     _isTargetSet = true;
                     _agent.isStopped = false;
                     _animator.SetBool(_enemyAnimController.Walk, true);
@@ -108,10 +106,10 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
         {
             yield return null;
             
-            while (_character.IsLife() && _enemy.IsLife())
+            while (_target.IsLife() && _enemy.IsLife())
             {
-                float distance = Vector3.Distance(transform.position, _character.transform.position);
-                _agent.SetDestination(_character.transform.position);
+                float distance = Vector3.Distance(transform.position, _targetTransform.position);
+                _agent.SetDestination(_targetTransform.position);
 
                 if (!_isThrower && distance <= _stoppingDistance)
                 {
@@ -176,9 +174,9 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
 
         private IEnumerator CheckSoldierPosition()
         {
-            while (_character.IsMove)
+            while (_target.IsMove)
             {
-                Vector3 soldierPosition = _character.transform.position;
+                Vector3 soldierPosition = _targetTransform.position;
                 if (_agent.isOnNavMesh)
                 {
                     _agent.SetDestination(soldierPosition);

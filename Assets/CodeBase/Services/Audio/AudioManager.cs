@@ -1,36 +1,40 @@
 using System;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Services.Audio;
 using Services.SaveLoad;
 using UnityEngine;
 
 namespace Services.Audio
 {
-    public class AudioManager : MonoCache
+    public class AudioManager : IAudioManager
     {
         private MusicChanger _musicChanger;
         private SoundChanger _soundChanger;
-        public bool SoundEnabled => _soundChanger.IsSoundEnabled;
-        public bool MusicEnabled => _musicChanger.IsMusicEnabled;
 
         public bool IsMenuEnabled => _isMenuEnabled;
         private bool _isMenuEnabled = false;
         public Action OnMenuEnabled;
 
-        public void Initialize()
+        public AudioManager(MusicChanger musicChanger,SoundChanger soundChanger)
         {
-            _musicChanger =GetComponent<MusicChanger>();
-            _soundChanger=GetComponentInChildren<SoundChanger>();            
-            
-            _musicChanger.Initialize(this);
-            _soundChanger.Initialize(this);
+            _musicChanger =musicChanger;
+            _soundChanger=soundChanger;
         }
 
+        public bool GetSoundEnabled()=> _soundChanger.IsSoundEnabled;
+
+        public bool GetMusicEnabled()=> _musicChanger.IsMusicEnabled;
         public void SetMenuEnabled(bool value)
         {
             _isMenuEnabled = value;
             OnMenuEnabled?.Invoke();
         }
-        
+
+        public void Initialize()
+        {
+            _musicChanger.Initialize(this);
+            _soundChanger.Initialize(this);
+        }
 
         public void ToggleSound(bool value)
         {

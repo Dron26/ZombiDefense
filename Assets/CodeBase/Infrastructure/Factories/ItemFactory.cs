@@ -12,7 +12,7 @@ namespace Infrastructure.Factories
         {
             string itemDataPath = AssetPaths.ItemsData + type;
             ItemData itemData = Resources.Load<ItemData>(itemDataPath);
-            string prefabPath = GetPrefabPath(itemData.Type.ToString(), itemData.IsMedicine ? BoxType.Equipment : BoxType.SmallWeapon);
+            string prefabPath = GetPrefabPath(itemData.Type.ToString(), itemData.IsMedicine ? BoxType.Equipment : BoxType.Granade);
             GameObject newItemObject = Instantiate(Resources.Load<GameObject>(prefabPath));
             T newItem = newItemObject.GetComponent<T>();
 
@@ -33,7 +33,7 @@ namespace Infrastructure.Factories
         {
             switch (boxType)
             {
-                case BoxType.SmallWeapon:
+                case BoxType.Granade:
                     return $"{AssetPaths.WeaponPrefabs}{itemName}";
                 case BoxType.Equipment:
                     return $"{AssetPaths.EquipmentPrefabs}{itemName}";

@@ -31,12 +31,12 @@ public class BranchPoint : MonoCache
         _icon.sprite = _upgrade.Icon;
         _description = _upgrade.Description;
         _price.text ="$ "+ _upgrade.Cost;
-        RefreshUI();
     }
     
-    public void RefreshUI()
+    public void IsLock(bool isLock)
     {
-        _iconLock.gameObject.SetActive(_lock);
+        _iconLock.gameObject.SetActive(isLock);
+        Button.interactable=!isLock;
     }
     
     

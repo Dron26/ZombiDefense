@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using Characters.Humanoids.AbstractLevel;
+using Services;
+using Services.Audio;
 using UnityEngine;
 
 namespace Infrastructure.AIBattle
@@ -57,14 +59,8 @@ namespace Infrastructure.AIBattle
                         rb.AddForce(transform.forward * _throwForce, ForceMode.VelocityChange);
                         _isThrowed = true;
 
-                        float volume = 0.4f;
-                    
-                        if (TryGetComponent(out Humanoid humanoid))
-                        {
-                            volume =humanoid.GetAudioManager().GetSoundSource().volume;
-                        }
-                    
-                    
+                        float volume = AllServices.Container.Single<IAudioManager>().GetSoundSource().volume;
+
                         grenadeComponent.Throw(volume);
                         grenadeTransform.parent = null;
                         OnThrowed.Invoke();

@@ -11,7 +11,6 @@ namespace Infrastructure.Factories.FactoryWarriors.Humanoids
     public class HumanoidFactory : MonoCache, IServiceFactory
     {
         private AudioManager _audioManager;
-        public UnityAction<Humanoid> CreatedHumanoid;
 
         public void Create(GameObject prefab, Transform transform )
         {
@@ -24,18 +23,6 @@ namespace Infrastructure.Factories.FactoryWarriors.Humanoids
             //humanoidComponent.OnInitialize += OnInitialized;
             float randomAngle = Random.Range(0f, 360f);
             newHumanoidTransform.rotation = Quaternion.Euler(0f, randomAngle, 0f);
-            humanoidComponent.SetAudioManager(_audioManager);
-
-        }
-
-        private void OnInitialized( Humanoid humanoidComponent)
-        {
-            CreatedHumanoid?.Invoke(humanoidComponent);
-        }
-        
-        public void Initialize( AudioManager audioManager)
-        {
-            _audioManager=audioManager;
         }
     }
 }

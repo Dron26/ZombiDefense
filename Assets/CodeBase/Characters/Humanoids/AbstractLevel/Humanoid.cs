@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using Data.Upgrades;
 using Infrastructure.AIBattle;
 using Infrastructure.AIBattle.AdditionalEquipment;
@@ -6,6 +7,7 @@ using Infrastructure.AIBattle.StateMachines.Humanoid;
 using Infrastructure.AIBattle.StateMachines.Humanoid.States;
 using Infrastructure.Location;
 using Infrastructure.Logic.WeaponManagment;
+using Services;
 using Services.Audio;
 using UnityEngine;
 
@@ -17,20 +19,26 @@ namespace Characters.Humanoids.AbstractLevel
     {
         private PlayerCharacterAnimController _playerCharacterAnimController;
         private FXController _fxController;
-        private AudioManager AudioManager;
         public Vector3 StartPosition;
+        public int CurrentHealth=> _currentHealth;
         private Animator _animator;
         public Action OnMove;
-
+        public SkinContainer _skinContainer;
+        public bool IsBuyed => _isBuyed;
+        private int _level=1;
         private int _currentHealth;
+        private int _maxHealth;
         private bool _isTakeDamagePlay;
         private int _minHealth = 0;
         private bool _isBuyed = false;
         private bool _isWeaponInitialized = false;
-        public bool IsBuyed => _isBuyed;
-        public SkinContainer _skinContainer;
-        public AudioManager GetAudioManager() => AudioManager;
-        
+        private bool _isRegenerating = false;
+        private float _defencePercent = 0;
+        private float _regeneratePrecent = 0;
+        private WaitForSeconds timer;
+        private IUpgradeTree _upgradeTree;
+        private IAudioManager _audioManager;
+
         public override void Initialize()
         {
             _isWeaponInitialized = false;
@@ -40,6 +48,10 @@ namespace Characters.Humanoids.AbstractLevel
             _animator = GetComponent<Animator>();
             _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
             _fxController = GetComponent<FXController>();
+            _maxHealth= CharacterData.Health;
+            timer= new WaitForSeconds(1f);
+            _upgradeTree = AllServices.Container.Single<IUpgradeTree>();
+            _audioManager=AllServices.Container.Single<IAudioManager>();
             SetController();
         }
 
@@ -64,23 +76,14 @@ namespace Characters.Humanoids.AbstractLevel
             _isWeaponInitialized = true;
         }
 
-        public override void SetAudioManager(AudioManager audioManager)
-        {
-            if (audioManager == null)
-                throw new ArgumentNullException(nameof(audioManager));
-
-            AudioManager = audioManager;
-        }
-        
-        
-        public override void ApplyDamage(int getDamage)
+        public override void ApplyDamage(int damage)
         {
             
             Debug.Log("_currentHealth");
             Debug.Log(_currentHealth);
-            
             Debug.Log("getDamage");
-            Debug.Log(getDamage);
+            Debug.Log(damage);
+            
             if (_currentHealth < 1)
             {
                 _animator.SetTrigger(_playerCharacterAnimController.Die);
@@ -96,10 +99,26 @@ namespace Characters.Humanoids.AbstractLevel
                 }
 
                 //  _fxController.OnHitFX();
-                _currentHealth -= Mathf.Clamp(getDamage, _minHealth, _currentHealth);
+                
+                int currentdamage=(int) Mathf.Round(damage*(100-_defencePercent)/100);
+                _currentHealth -= Mathf.Clamp(currentdamage, _minHealth, _currentHealth);
+
+                if (!_isRegenerating&&_currentHealth < _maxHealth)
+                {
+                    _isRegenerating = true;
+                    StartCoroutine(StartRegeneration());
+                }
             }
         }
 
+        private IEnumerator StartRegeneration()
+        {
+            while(_currentHealth < _maxHealth)
+            {
+                _currentHealth += (int)Mathf.Round(_currentHealth *(_regeneratePrecent/ 100));
+                yield return timer;
+            }
+        }
 
         protected override  void Die()
         {
@@ -109,7 +128,6 @@ namespace Characters.Humanoids.AbstractLevel
             RaiseEntityEvent();
         }
 
-        
         private void SetUpgradeFromPoint(int upPrecent) => _currentHealth += ( Health*upPrecent) / 100;
 
         public void SetPontInfo() { }
@@ -137,6 +155,8 @@ namespace Characters.Humanoids.AbstractLevel
             {
                 OpenMedicineBox(workPoint.GetMedicineBox());
             }
+
+            _defencePercent = workPoint.DefencePercent;
         }
 
         private void OpenMedicineBox(MedicalKit medicalKit)
@@ -150,6 +170,30 @@ namespace Characters.Humanoids.AbstractLevel
         private void AddHealth(int health)
         {
             _currentHealth = Mathf.Min(Health, _currentHealth + health);
+        }
+
+        public void HealthLevelUp(int percent)
+        {
+            _maxHealth= Mathf.RoundToInt(_maxHealth * (1 + percent / 100));
+        }
+        private void SetUpgrades()
+        {
+            _regeneratePrecent=_upgradeTree.GetUpgradeValue(UpgradeGroupType.Health,UpgradeType.RestoreHealth)[0];
+            _level = (int)_upgradeTree.GetUpgradeValue(UpgradeGroupType.Supplies, UpgradeType.IncreaseUnitLevel)[0];
+        }
+
+        
+        
+        public int GetLevel()
+        {
+            return _level;
+        }
+        
+        
+        
+        public void RestoreHealth()
+        {
+            _currentHealth=_maxHealth;
         }
     }
 }

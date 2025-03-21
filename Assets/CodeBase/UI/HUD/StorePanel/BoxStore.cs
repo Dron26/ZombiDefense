@@ -19,32 +19,32 @@ namespace UI.HUD.StorePanel
 {
     
     [RequireComponent(typeof(BoxFactory))]
-    [RequireComponent(typeof(ItemFactory))]
     
     public class BoxStore : MonoCache
     {
         [SerializeField] private AdditionalEquipment _additionalEquipmentButton;
 
         private BoxFactory _boxFactory;
-        private ItemFactory _itemFactory;
         private WorkPoint _selectedWorkPoint;
         private Wallet _wallet;
         private Dictionary<BoxData, int> _boxesData=new Dictionary<BoxData, int>();
         private AdditionalBox _weaponBox;
         private AdditionalBox _medicineBox;
-        private BoxType _currentWeaponBoxType;
+        private int DefaultGranadeCountInBox;
         private Upgrade _upgrade;
         public event Action <BoxData> BuyBox;
-        
+        private IUpgradeHandler _upgradeHandler;
+        private IUpgradeTree _upgradeTree;
+        private BoxType _currentType=0;
         public void Initialize(Wallet wallet)
         {
             _wallet = wallet;
-            LoadSettings(AllServices.Container.Single<IUpgradeHandler>().GetUpgradeData());
             _additionalEquipmentButton.Initialize();
             _boxFactory = GetComponent<BoxFactory>();
-            _itemFactory= GetComponent<ItemFactory>();
+            _upgradeTree=AllServices.Container.Single<IUpgradeTree>();
             AddListener();
             SetBoxes();
+            SetUpgrades();
         }
 
         private void SetBoxes()
@@ -70,22 +70,12 @@ namespace UI.HUD.StorePanel
         private List<BoxData> CreateBoxesGroup()
         {   
             List<BoxData> boxes=new List<BoxData>();
-            Object[] boxObjects = Resources.LoadAll(AssetPaths.Boxes);
+            Object[] boxDatas = Resources.LoadAll<BoxData>(AssetPaths.BoxesData);
 
-            foreach (GameObject boxObject in boxObjects)
+            foreach (BoxData box in boxDatas)
             {
-                string fileName = Path.GetFileNameWithoutExtension(boxObject.name);
-
-
-                if (Enum.TryParse(fileName, out BoxType boxType))
-                { 
-                    BoxData boxData = Resources.Load<BoxData>(AssetPaths.BoxesData + boxType);
-                    boxes.Add(boxData);
-                }
-                else
-                {
-                    Debug.LogWarning($"Failed to parse BoxType from file name: {fileName}");
-                }
+                
+                    boxes.Add(box);
             }
            
             return boxes; 
@@ -112,14 +102,13 @@ namespace UI.HUD.StorePanel
         
         private void OnSelectSmallWeaponBox()
         {
-            SelectBox(BoxType.SmallWeapon);
+            SelectBox(BoxType.Granade);
         }
 
         private void AddListener()
         {
             _additionalEquipmentButton.OnSelectedMedicineBox += OnSelectMedicineBox;
             _additionalEquipmentButton.OnSelectedWeaponBox += OnSelectSmallWeaponBox;
-            AllServices.Container.Single<IUpgradeHandler>().Subscribe(UpgradeGroupType.Box,SetUpgrade);
         }
 
         private void OnDestroy()
@@ -130,17 +119,14 @@ namespace UI.HUD.StorePanel
         {
             _additionalEquipmentButton.OnSelectedMedicineBox -= OnSelectMedicineBox;
             _additionalEquipmentButton.OnSelectedWeaponBox -= OnSelectSmallWeaponBox;
-            AllServices.Container.Single<IUpgradeHandler>().Unsubscribe(UpgradeGroupType.Box,SetUpgrade);
         }
 
-        private void LoadSettings(GameParameters global)
+        private void SetUpgrades()
         {
-            _currentWeaponBoxType=global.CurrentWeaponBoxType;
-        }
+            List<float> values=_upgradeTree.GetUpgradeValue(UpgradeGroupType.Box,UpgradeType.AddGrenadeInBox);
 
-            private void SetUpgrade(Upgrade upgrade)
-            {
-                _upgrade=new Upgrade(upgrade);
-            }
+            _currentType = (BoxType)(int)values[0];
+
+        }
     }
 }

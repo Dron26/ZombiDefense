@@ -9,12 +9,9 @@ using UnityEngine;
 
 namespace Infrastructure
 {
-    public class EntitySearchService : MonoCache,ISearchService
+    public class EntitySearchService :ISearchService
     {
         private List<Entity> _allEntities = new List<Entity>();
-        private SceneObjectManager _sceneObjectManager;
-        private WaveSpawner _waveSpawner;
-        private SceneObjectManager sceneObjectManager;
     
         public void AddEntity(Entity entity)
         {

@@ -19,7 +19,7 @@ namespace Assets.Plugins.ButtonSoundsEditor.Editor
         private GameObject _selectedCandidate;
         private ButtonSoundsEditorFilter _selectedFilter;
 
-        private AudioSource _audioSource;
+        private AudioSource AudioSource;
         private AudioClip _clickSound;
         private AudioClip _hoverSound;
         private Vector2 _scrollPosition;
@@ -27,6 +27,7 @@ namespace Assets.Plugins.ButtonSoundsEditor.Editor
         #region Initialization
 
         [MenuItem("Window/Utils/Button sounds editor")]
+        
         public static void OpenEditor()
         { 
             ButtonSoundsEditor window = GetWindow<ButtonSoundsEditor>();
@@ -39,7 +40,7 @@ namespace Assets.Plugins.ButtonSoundsEditor.Editor
         {
             RefreshCandidates();
             ButtonClickSound[] clickSounds = _candidates.Select(_ => _.GetComponent<ButtonClickSound>()).Where(_ => _ != null).ToArray();
-            _audioSource = GetFirstAudioSource(clickSounds);
+            AudioSource = GetFirstAudioSource(clickSounds);
             _clickSound = GetClickSound(clickSounds);
             _hoverSound = GetClickSound(clickSounds);
         }
@@ -124,16 +125,16 @@ namespace Assets.Plugins.ButtonSoundsEditor.Editor
             GUILayout.Label("Hover sound", GUILayout.Width(120));
             _hoverSound = EditorGUILayout.ObjectField(_hoverSound, typeof(AudioClip), false, GUILayout.Width(200)) as AudioClip;
             
-            bool isEnabled = _audioSource != null && _clickSound != null&& _hoverSound != null;
+            bool isEnabled = AudioSource != null && _clickSound != null&& _hoverSound != null;
             
             EditorGUI.BeginDisabledGroup(!isEnabled);
             GUILayout.Space(25f);
             
             if (GUILayout.Button(new GUIContent("Play", "Test assigned AudioClip."), GUILayout.Width(50)))
-                _audioSource.PlayOneShot(_clickSound);
+                AudioSource.PlayOneShot(_clickSound);
            
             if (GUILayout.Button(new GUIContent("Play", "Test assigned AudioClip."), GUILayout.Width(50)))
-                _audioSource.PlayOneShot(_hoverSound);
+                AudioSource.PlayOneShot(_hoverSound);
             
             EditorGUI.EndDisabledGroup();
 
@@ -146,13 +147,13 @@ namespace Assets.Plugins.ButtonSoundsEditor.Editor
         
         private void DrawAudioSourceSettings()
         {
-            if (_audioSource == null)
+            if (AudioSource == null)
                 DrawTip("Tip: All buttons sounds are played using single AudioSource. \nAssign an existing AudioSource from the current scene or create a new AudioSource using 'Create' button!");
 
             GUILayout.BeginHorizontal();
 
             GUILayout.Label("Audio source", GUILayout.Width(120));
-            _audioSource = EditorGUILayout.ObjectField(_audioSource, typeof(AudioSource), true, GUILayout.Width(200)) as AudioSource;
+            AudioSource = EditorGUILayout.ObjectField(AudioSource, typeof(AudioSource), true, GUILayout.Width(200)) as AudioSource;
 
             GUILayout.Space(25f);
             if (GUILayout.Button(new GUIContent("Create", "Create new AudioSource"), GUILayout.Width(50)))
@@ -160,7 +161,7 @@ namespace Assets.Plugins.ButtonSoundsEditor.Editor
                 GameObject go = new GameObject("ButtonsAudioSource");
                 AudioSource audioSource = go.AddComponent<AudioSource>();
                 audioSource.playOnAwake = false;
-                _audioSource = audioSource;
+                AudioSource = audioSource;
                 Selection.activeGameObject = go;
             }
 
@@ -262,7 +263,7 @@ namespace Assets.Plugins.ButtonSoundsEditor.Editor
                     if (GUILayout.Button("Fix", GUILayout.Width(50)))
                     {
                         if (clickSound.AudioSource == null)
-                            clickSound.AudioSource = _audioSource;
+                            clickSound.AudioSource = AudioSource;
 
                         if (clickSound.ClickSound == null)
                             clickSound.ClickSound = _clickSound;
@@ -333,7 +334,7 @@ namespace Assets.Plugins.ButtonSoundsEditor.Editor
 
         private void AssignClickSound(ButtonClickSound buttonClickSound)
         {
-            buttonClickSound.AudioSource = _audioSource;
+            buttonClickSound.AudioSource = AudioSource;
             buttonClickSound.ClickSound = _clickSound;
             buttonClickSound.HoverSound = _hoverSound;
             EditorUtility.SetDirty(buttonClickSound);

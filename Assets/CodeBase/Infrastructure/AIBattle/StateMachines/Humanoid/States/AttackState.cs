@@ -11,11 +11,9 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
     public class AttackState : State
     {
         private readonly WaitForSeconds _waitForSeconds = new(0.1f);
-
         private Entity _enemy;
         private Transform _transformEnemy;
         private float _currentRange;
-
         private PlayerCharacterAnimController _playerCharacterAnimController;
         private FXController _fxController;
         private Characters.Humanoids.AbstractLevel.Humanoid _humanoid;
@@ -35,6 +33,7 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
         private float[] _damageList;
         private float _accumulationDamage;
         private bool _isTargetSet;
+        private bool _isMove;
 
         private void Awake()
         {
@@ -55,6 +54,7 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
             Debug.Log("OnEnabled()");
             if (!_isAttacking && !_isReloading)
             {
+                _isMove = false;
                 Attack();
             }
         }
@@ -65,11 +65,6 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
             _enemy = targetEnemy;
             _transformEnemy = _enemy.transform;
             _isTargetSet = true;
-
-            if (!_isAttacking && !_isReloading)
-            {
-                Attack();
-            }
         }
 
         private void Attack()
@@ -77,6 +72,8 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
             Debug.Log("Attack()");
             if (_enemy.IsLife())
             {
+               
+                
                 if (_ammoCount == 0 && !_isReloading)
                 {
                     Reload();
@@ -90,9 +87,10 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
                         _isTargetSet = false;
                         
                         _playerCharacterAnimController.OnShoot(true);
-                        
+                        Debug.Log("OnShoot(true)");
                         if (_activeWeapon.ItemType == ItemType.Medium||_activeWeapon.ItemType == ItemType.Flammer)
                         {
+                            transform.DOLookAt(_transformEnemy.position, 0.3f);
                             _fxController.OnAttackFX();
                         }
                     }
@@ -107,15 +105,13 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
 
                 ChangeState<SearchTargetState>();
             }
-            
-            transform.DOLookAt(_transformEnemy.position, 0.1f);
         }
 
         public void FinishAnimationAttackPlay()
         {
             _isAttacking = false;
             _ammoCount--;
-
+            Debug.Log("FinishAnimationAttackPlay()");
             if (_isSpecialWeapon)
             {
                 ApplyDamageToEnemiesInRange();
@@ -125,7 +121,7 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
                 _enemy.ApplyDamage(_damage, _activeWeapon.ItemType);
             }
 
-            if (_ammoCount == 0 && !_isReloading)
+            if (_ammoCount == 0 && !_isReloading&&!_isMove)
             {
                 Reload();
             }
@@ -247,6 +243,7 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
         {
             Debug.Log("ExitBehavior()");
             enabled = false;
+            
         }
 
         protected override void OnDisable()
@@ -254,8 +251,8 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
             Debug.Log("OnDisable()");
             _isAttacking = false;
             _isTargetSet = false;
+            _transformEnemy = null;
             _playerCharacterAnimController.OnShoot(false);
-            enabled = false;
         }
 
         private void StartMove()
@@ -266,7 +263,8 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
                 _playerCharacterAnimController.ReloadWeapon(false);
                 _isReloading = false;
                 _playerCharacterAnimController.OnShoot(false);
-                OnDisable();
+                _isMove = true;
+                enabled = false;
             }
         }
     }

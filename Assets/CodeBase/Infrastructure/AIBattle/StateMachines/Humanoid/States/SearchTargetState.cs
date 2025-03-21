@@ -17,8 +17,9 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
         private PlayerCharacterAnimController _playerCharacterAnimController;
         private Coroutine _coroutine;
         private float time = 1f;
-
+        private ISearchService _searchService;
         private WaitForSeconds timeout;
+        private bool _isMove=false;
         
         private void Awake()
         {
@@ -27,13 +28,24 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
             _movementState = GetComponent<MovementState>();
             _attackState = GetComponent<AttackState>();
             _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
+            _searchService= AllServices.Container.Single<ISearchService>();
             // Получаем сервис поиска
             
+        }
+        private void Start()
+        {
+            PlayerCharactersStateMachine.OnStartMove += StartMove;
+        }
+
+        private void StartMove()
+        {
+            _isMove = true;
         }
 
         protected override void OnEnabled()
         {
             _coroutine = StartCoroutine(Search());
+            _isMove = false;
         }
 
         private IEnumerator Search()
@@ -47,7 +59,7 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
             {
                 // Используем EntitySearchService для поиска ближайшего врага
                 
-                _enemy = AllServices.Container.Single<ISearchService>().GetClosestEntity<Enemy>(transform.position);
+                _enemy = _searchService.GetClosestEntity<Enemy>(transform.position);
 
                 if (_enemy != null && _enemy.IsLife())
                 {
@@ -92,7 +104,7 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
 
         private void ChangeState()
         {
-            if (_enemy.IsLife())
+            if (_enemy.IsLife()&&! _isMove)
             {
                 _attackState.InitEnemy(_enemy);
                 PlayerCharactersStateMachine.EnterBehavior<AttackState>();

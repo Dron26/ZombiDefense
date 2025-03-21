@@ -4,6 +4,7 @@ using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.StateMachine;
 using Infrastructure.StateMachine.States;
 using Services;
+using Services.Audio;
 using Services.PauseService;
 using Services.Yandex;
 using UnityEngine;
@@ -14,9 +15,11 @@ namespace Infrastructure
     {
         [SerializeField] private YandexInitializer _yandexInitializer;
         [SerializeField] private LoadingCurtain _loadingCurtain;
-        [SerializeField] private PauseService _pauseService;
-
+        [SerializeField] private MusicChanger _musicChanger;
+        [SerializeField] private SoundChanger _soundChanger;
+        
         private Game _game;
+        private AudioManager _audioManager;
         private IServiceRegister _serviceRegister;
         private IGameFactory _gameFactory;
 
@@ -24,14 +27,14 @@ namespace Infrastructure
         {
             DontDestroyOnLoad(this);
 
-            // Регистрация сервисов, без необходимости в вызове Initialize
-            RegisterServices(_loadingCurtain);
-
+            _audioManager=new AudioManager(_musicChanger,_soundChanger);
             _gameFactory = new GameFactory(new AssetProvider());
+            
+            RegisterServices(_loadingCurtain);
 
 
             Language language = GetLanguage();
-            _game = new Game(this, _loadingCurtain, language, _pauseService, _serviceRegister, _gameFactory);
+            _game = new Game(this, _loadingCurtain, language, _serviceRegister, _gameFactory);
         }
 
         public void Start()
@@ -60,7 +63,7 @@ namespace Infrastructure
 
         private void RegisterServices(LoadingCurtain loadingCurtain)
         {
-            _serviceRegister = new ServiceRegister(loadingCurtain,_pauseService, new Language(), AllServices.Container);
+            _serviceRegister = new ServiceRegister(loadingCurtain, new Language(), AllServices.Container,_audioManager);
         }
     }
 }

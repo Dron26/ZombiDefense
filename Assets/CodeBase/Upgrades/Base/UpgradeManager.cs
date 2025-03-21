@@ -12,18 +12,21 @@ namespace Upgrades.Base
     {
         private IUpgradeTree _upgradeTree;
         private List<Upgrade> _unlockedUpgrades = new();
-        private UpgradeInpoPanel _infoPanel;
+        private UpgradeInfoPanel _infoPanel;
         private Upgrade _selectedUpgrade;
         private ICurrencyHandler _сurrencyHandler;
         
         
-        public UpgradeManager(ISaveLoadService saveLoadService, UpgradeHandler upgradeHandler,
-            ICurrencyHandler сurrencyHandler)
+        public UpgradeManager(ICurrencyHandler сurrencyHandler)
         {
-            _upgradeTree = new UpgradeTree(saveLoadService, upgradeHandler);
             _сurrencyHandler = сurrencyHandler;
         }
 
+        public void SetTree()
+        {
+            _upgradeTree = AllServices.Container.Single<IUpgradeTree>();
+
+        } 
         public bool PurchaseUpgrade(Upgrade upgrade)
         {
             if (_upgradeTree.CanPurchase(upgrade,_сurrencyHandler.GetCurrentMoney() ))
@@ -31,11 +34,10 @@ namespace Upgrades.Base
                 _unlockedUpgrades.Add(upgrade);
                 _сurrencyHandler.SpendMoney(upgrade.Cost);
                 _upgradeTree.PurchaseUpgrade(upgrade);
-                _upgradeTree.UpdateBranches();
+       //         _upgradeTree.UpdateBranches();
 
                 return true;
-            }
-            return false;
+            } return false;
         }
 
         public bool IsUnlocked(int upgradeId)
@@ -48,10 +50,11 @@ namespace Upgrades.Base
             _upgradeTree.UpdateBranches();
         }
 
-        public void SetData(List<UpgradeBranch> branches, UpgradeInpoPanel infoPanel)
+        public void SetData(List<UpgradeBranch> branches, UpgradeInfoPanel infoPanel)
         {
             _infoPanel = infoPanel;
             AddListener();
+            
             foreach (var branch in branches)
             {
                 branch.OnUpgradeClick += OnSelectBranchPoint;
@@ -79,6 +82,11 @@ namespace Upgrades.Base
         private void OnApplyClicked()
         {
             PurchaseUpgrade(_selectedUpgrade);
+        }
+
+        public IUpgradeTree GetTree()
+        {
+            return _upgradeTree;
         }
     }
 }

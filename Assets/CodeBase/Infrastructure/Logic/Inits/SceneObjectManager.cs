@@ -5,6 +5,7 @@ using Characters.Robots;
 using Data;
 using Infrastructure.AIBattle;
 using Infrastructure.AIBattle.AdditionalEquipment;
+using Infrastructure.AssetManagement;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Factories;
 using Infrastructure.Location;
@@ -90,14 +91,13 @@ namespace Infrastructure.Logic.Inits
             GameObject prefab = _characterFactory.Create(characterData.Type);
             Character character = prefab.GetComponent<Character>();
             character.OnInitialize += OnBuildedCharacter;
-            character.SetAudioManager(_audioManager);
-        
             Transform characterTransform = prefab.transform;
             SetTransformParametrs(characterTransform);
         
             if (characterData.Type!= CharacterType.Turret)
             {
                 WeaponController weaponController  = prefab.GetComponent<WeaponController>();
+                
                 weaponController.Initialize(characterData);
                 character.Initialize(characterData);
             }
@@ -121,8 +121,6 @@ namespace Infrastructure.Logic.Inits
     
         private void OnBuildedCharacter(Character character)
         {
-            AllServices.Container.Single<ISearchService>().AddEntity(character);
-
             CreatedHumanoid?.Invoke(character);
         }
     

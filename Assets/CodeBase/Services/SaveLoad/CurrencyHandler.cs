@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Infrastructure.Logic.WeaponManagment;
 using Interface;
 using Services;
 using UnityEngine;
@@ -13,9 +15,9 @@ namespace Services.SaveLoad
         private const int InitialMoneyAmount = 100000;
         public CurrencyHandler(MoneyData moneyData)
         {
-            _moneyData = moneyData ?? throw new ArgumentNullException(nameof(moneyData));
+            _moneyData = moneyData;
             
-            if (!AllServices.Container.Single<ISaveLoadService>().Load().IsFirstStart);
+            if (!AllServices.Container.Single<ISaveLoadService>().GetGameData().IsFirstStart)
             {
                 
                 AddMoney(InitialMoneyAmount);
@@ -23,7 +25,6 @@ namespace Services.SaveLoad
             }
 
             AllServices.Container.Single<ISaveLoadService>().Save();
-            
         }
         
         
@@ -70,13 +71,7 @@ namespace Services.SaveLoad
         {
             _moneyData.MoneyForEnemy = 0;
         }
-
-        public int FixTemporaryMoneyState()
-        {
-            _moneyData.TempMoney = _moneyData.Money;
-            return _moneyData.TempMoney;
-        }
-
+        
         public void Reset()
         {
             _moneyData.Money = 100;

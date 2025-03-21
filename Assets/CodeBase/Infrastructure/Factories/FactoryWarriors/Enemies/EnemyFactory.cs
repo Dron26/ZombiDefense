@@ -22,13 +22,8 @@ namespace Infrastructure.Factories.FactoryWarriors.Enemies
             GameObject prefab = Instantiate(data.prefab);
             prefab.gameObject.layer = LayerMask.NameToLayer("Character");
             Enemy enemyComponent = prefab.GetComponent<Enemy>();
-            enemyComponent.Initialize(_audioManager,data);
+            enemyComponent.Initialize(data);
             return enemyComponent;
-        }
-
-        public void Initialize(AudioManager audioManager)
-        {
-            _audioManager=audioManager;
         }
     }
 }

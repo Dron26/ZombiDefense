@@ -35,7 +35,7 @@ namespace Infrastructure.Logic.Inits
         [SerializeField] private Camera _cameraUI;
         [SerializeField] private EventSystem _eventSystem;
         [SerializeField] private GlobalTimer _globalTimer;
-        [SerializeField] private EntitySearchService _entitySearchService;
+        [SerializeField] private AudioSource _soundSource;
 
         private SceneObjectManager _sceneObjectManager;
         private LoadingCurtain _loadingCurtain;
@@ -82,11 +82,8 @@ namespace Infrastructure.Logic.Inits
             Debug.Log("Finish SetCameras();");
 
             _loadingCurtain = _gameBootstrapper.GetLoadingCurtain();
-
-
+            
             Debug.Log("Finish _playerCharacterInitializer();");
-            _audioManager.Initialize();
-
             _timerDisplay = _hudPanel.GetTimerDisplay();
             
             _sceneObjectManager = GetComponent<SceneObjectManager>();
@@ -106,7 +103,7 @@ namespace Infrastructure.Logic.Inits
             _movePointController.Initialize(this);
             Debug.Log("Finish _movePointController();");
             _pauseService = AllServices.Container.Single<IPauseService>();
-            
+            _soundSource=AllServices.Container.Single<IAudioManager>().GetSoundSource();
             
         }
 
@@ -207,7 +204,7 @@ namespace Infrastructure.Logic.Inits
             _stateMachine.Enter<LoadLevelState, string>(Constants.Menu);
             ClearEnemies();
             _playerCharacterInitializer.ClearData();
-            _pauseService.SetPause(true);
+            _pauseService.ChangePause(true);
             AllServices.Container.Single<ISearchService>().ClearAllEntities();
             
             //Destroy(_location.gameObject);
@@ -254,7 +251,6 @@ namespace Infrastructure.Logic.Inits
         private void OnDestroy()
         {
             RemoveListener();
-            AllServices.Container.UnregisterService<ISearchService>();
         }
     }
 }

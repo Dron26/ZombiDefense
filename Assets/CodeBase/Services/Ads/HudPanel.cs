@@ -50,12 +50,12 @@ namespace Services.Ads
             AddListener();
         }
 
-        private void StartTimer()
+        private void ShowSkipButton()
         {
-            _eventBroadcaster.OnSetActiveHumanoid -= StartTimer;
+            _eventBroadcaster.OnSetActiveHumanoid -= ShowSkipButton;
             if (_sceneInitializer.IsStartedTutorial) return;
             
-            _timerDisplay.StartTimer();
+            _timerDisplay.ShowSkipButton();
         }
 
         protected override void OnDisable()
@@ -92,22 +92,25 @@ namespace Services.Ads
 
         private void AddListener()
         {
-            _sceneInitializer.OnClickContinue+= StartTimer;
-            _eventBroadcaster.OnSetActiveHumanoid += StartTimer;
+            //_sceneInitializer.OnClickContinue+= StartTimer;
+            //_eventBroadcaster.OnLastEnemyRemained += ShowSkipButton;
+            //_reportPanel.OnStayInLication += StartContinueSpawn;
             _menuPanel.OnClickExitToMenu+= OnClickExit;
             _reportPanel.OnClickExitToMenu+= OnClickExit;
-            //_reportPanel.OnStayInLication += StartContinueSpawn;
             _reportPanel.OnResetLevel += ResetLevel;
+            _eventBroadcaster.OnSetActiveHumanoid += ShowSkipButton;
         }
 
         private void RemoveListener()
         {
-            _sceneInitializer.OnClickContinue-= StartTimer;
+           // _sceneInitializer.OnClickContinue-= StartTimer;
+           // _eventBroadcaster.OnLastEnemyRemained -= ShowSkipButton;
+            // _reportPanel.OnStayInLication -= StartContinueSpawn;
             _menuPanel.OnClickExitToMenu-= OnClickExit;
             _reportPanel.OnClickExitToMenu-= OnClickExit;
-            // _reportPanel.OnStayInLication -= StartContinueSpawn;
             _reportPanel.OnResetLevel -= ResetLevel;
-            _eventBroadcaster.OnSetActiveHumanoid -= StartTimer;
+            _eventBroadcaster.OnSetActiveHumanoid -= ShowSkipButton;
+            
         }
 
         private void ResetLevel()

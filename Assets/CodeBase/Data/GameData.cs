@@ -10,37 +10,26 @@ namespace Data
     [Serializable]
     public class GameData
     {
-        [SerializeField] private MoneyData _money = new();
-        [SerializeField] private AchievementsData _achievementsData = new();
-        [SerializeField] private EnemyData _enemyData = new();
-        [SerializeField] private CharacterData _characters = new();
-        [SerializeField] private Location _location = new();
-        [SerializeField] private CameraState _cameraState = new();
-        [SerializeField] private AudioData _audioData = new();
-        [SerializeField] private TimeStatistics _timeStatistics = new();
-        [SerializeField] private ScalingData _scalingData = new();
-        [SerializeField] private List<LocationProgressData> _locationProgressData = new();
-        [SerializeField] private GameParameters _gameParameters = new();
-        public MoneyData Money => _money;
-        public AchievementsData AchievementsData => _achievementsData;
-        public EnemyData EnemyData => _enemyData;
-        public CharacterData Characters => _characters;
-        public Location Location => _location;
-        public CameraState CameraState => _cameraState;
-        public AudioData AudioData => _audioData;
-        public TimeStatistics TimeStatistics => _timeStatistics;
-        public ScalingData Scaling => _scalingData;
-        public List<LocationProgressData> LocationProgressData => _locationProgressData;
-        public GameParameters GameParameters=>_gameParameters;
+        public MoneyData Money = new();
+        public AchievementsData AchievementsData = new();
+        public EnemyData EnemyData = new();
+        public CharactersData Characters = new();
+        public Location Location = new();
+        public CameraState CameraState = new();
+        public AudioData AudioData = new();
+        public TimeStatistics TimeStatistics = new();
+        public ScalingData Scaling = new();
+        public List<LocationProgressData> LocationProgressData= new();
+        public GameParameters GameParameters= new();
         
         
         public bool IsFirstStart;
 
         public void ChangeIsFirstStart() => IsFirstStart = false;
 
-        public void UpdateAudioSettings(AudioData audioData) => _audioData = audioData;
-        public void OnGameStart() => _timeStatistics.OnGameStart();
-        public void OnGameEnd() => _timeStatistics.OnGameEnd();
+        public void UpdateAudioSettings(AudioData audioData) => AudioData = audioData;
+        public void OnGameStart() => TimeStatistics.OnGameStart();
+        public void OnGameEnd() => TimeStatistics.OnGameEnd();
 
 
     }

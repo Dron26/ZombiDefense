@@ -11,6 +11,7 @@ namespace Services.SaveLoad
         private readonly IEnemyData _enemyData;
         private IAchievementsHandler _achievementsHandler;
         private IGameEventBroadcaster _eventBroadcaster;
+        private int _maxEnemyOnWave;
         public EnemyHandler(IEnemyData enemyData,IAchievementsHandler achievementsHandler, IGameEventBroadcaster eventBroadcaster)
         {
             _enemyData = enemyData;
@@ -31,7 +32,7 @@ namespace Services.SaveLoad
         {
             if (_enemyData.GetActiveEnemyCount() == 1)
             {
-                _eventBroadcaster.InvokeLastHumanoidDie();
+                _eventBroadcaster.InvokeLastEnemyRemained();
             }
 
             _achievementsHandler.AddKilledEnemy();
@@ -46,6 +47,14 @@ namespace Services.SaveLoad
         {
             _enemyData.ClearEnemies();
         }
+
+        public void SetMaxEnemyOnWave(int maxEnemyOnWave)
+        {
+            _eventBroadcaster.InvokeOnSetMaxEnemy(maxEnemyOnWave);
+            _maxEnemyOnWave= maxEnemyOnWave;
+        }
+        
+        public int GetMaxEnemyOnWave() => _maxEnemyOnWave;
     }
 }
 

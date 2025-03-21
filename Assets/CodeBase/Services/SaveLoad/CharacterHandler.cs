@@ -1,49 +1,71 @@
 using System.Collections.Generic;
 using System.Linq;
 using Characters.Humanoids.AbstractLevel;
+using Data;
 using Interface;
-using CharacterData = Data.CharacterData;
 
 namespace Services.SaveLoad
 {
     public class CharacterHandler:ICharacterHandler
     {
-        private readonly CharacterData _characterData;
+        private readonly CharactersData _charactersData;
+        private IGameEventBroadcaster _eventBroadcaster;
 
-        public CharacterHandler(CharacterData characterData)
+        public CharacterHandler(CharactersData charactersData)
         {
-            _characterData = characterData;
+            _charactersData = charactersData;
+            _eventBroadcaster=AllServices.Container.Single<IGameEventBroadcaster>();
+            AddListener();
         }
 
         public void SetSelectedCharacter(Character character)
         {
-            _characterData.SetSelectedCharacter(character);
+            _charactersData.SetSelectedCharacter(character);
+            if (character.TryGetComponent(out Humanoid humanoid))
+            {
+                _eventBroadcaster.InvokeOnSelectedHumanoid(humanoid);
+            }
         }
         
         public void SetActiveCharacters(List<Character> characters)
         {
-            _characterData.ClearActiveCharacters();
+            _charactersData.ClearActiveCharacters();
             
-            foreach (var character in characters) _characterData.AddActiveCharacter(character);
+            foreach (var character in characters) _charactersData.AddActiveCharacter(character);
         }
-        public Character GetSelectedCharacter() => _characterData.SelectedCharacter;
-        
-        public List<Character> GetAvailableCharacter() => _characterData.AvailableCharacters.ToList();
-        public List<Character> GetActiveCharacters() => _characterData.ActiveCharacters.ToList();
-
-        public List<Character> GetInactiveHumanoids() => _characterData.InactiveCharacters.ToList();
-        public void SetInactiveHumanoids(List<Character> characters)
+        public void SetActiveCharacter(Character character)
         {
-            foreach (var character in characters)
-            {
-                _characterData.AddInactiveCharacter(character);
-            }
+            _charactersData.AddActiveCharacter(character);
+        }
+
+        public void RemoveCharacter(Character character)
+        {
+            _charactersData.RemoveCharacter(character);
+        }
+
+        
+        public Character GetSelectedCharacter() => _charactersData.SelectedCharacter;
+        
+        public List<Character> GetAvailableCharacter() => _charactersData.AvailableCharacters.ToList();
+        public List<Character> GetActiveCharacters() => _charactersData.ActiveCharacters.ToList();
+
+        private void AddListener()
+        {
+            _eventBroadcaster.OnSetActiveCharacter += SetActiveCharacter;
+            _eventBroadcaster.OnCharacterDie += RemoveCharacter;
+        }
+
+        private void RemoveListener()
+        {
+            _eventBroadcaster.OnSetActiveCharacter -= SetActiveCharacter;
+            _eventBroadcaster.OnCharacterDie -= RemoveCharacter;
         }
 
 
         public void Reset()
         {
-            _characterData.Reset();
+            _charactersData.Reset();
+            RemoveListener();
         }
     }
 }

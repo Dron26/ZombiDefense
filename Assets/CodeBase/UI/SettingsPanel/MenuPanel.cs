@@ -33,7 +33,7 @@ namespace UI.SettingsPanel
         [SerializeField]private  GameObject _resursePanel;
         
         [SerializeField]private  GameObject _menuPanel;
-        [SerializeField]private AudioManager _audioManager;
+        [SerializeField]private IAudioManager _audioManager;
         
         private IPauseService _pauseService;
 
@@ -41,8 +41,9 @@ namespace UI.SettingsPanel
         
         public void Initialize( )
         {
+            _audioManager = AllServices.Container.Single<IAudioManager>();
             _panel.SetActive(true);
-            _settingPanel.Initialize(_audioManager);
+            _settingPanel.Initialize();
             _buttonPanel.Initialize();
             InitializeButton();
             _panel.SetActive(false);
@@ -65,7 +66,7 @@ namespace UI.SettingsPanel
 
         private void SwitchState()
         {
-            _pauseService.SetPause(!_panel.activeSelf);
+            _pauseService.ChangePause(!_panel.activeSelf);
             _audioManager.SetMenuEnabled(!_panel.activeSelf);
             _panel.SetActive(!_panel.activeSelf);
             _resursePanel.SetActive(!_resursePanel.activeSelf); 

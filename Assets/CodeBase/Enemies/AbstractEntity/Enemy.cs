@@ -37,7 +37,6 @@ namespace Enemies.AbstractEntity
         public EnemyData Data => _data;
 
         private List<SkinGroup> _skinGroups = new();
-        private AudioManager _audioManager;
         private Animator _animator;
         private EnemyAnimController _enemyAnimController;
         private EnemyFXController _fxController;
@@ -70,9 +69,8 @@ namespace Enemies.AbstractEntity
             _agent = GetComponent<NavMeshAgent>();
         }
 
-        public void Initialize(AudioManager audioManager, EnemyData data )
+        public void Initialize( EnemyData data )
         {
-            _audioManager = audioManager;
             _enemyDieState.OnRevival += OnRevival;
             _data = data;
             SetData();
@@ -90,9 +88,12 @@ namespace Enemies.AbstractEntity
             _price = _data.Price;
             _level = _data.Level;
             _isShieldbearer = _data.HasShield;
-
-            _shield.gameObject.SetActive(_isShieldbearer);
-
+            
+            if (_isShieldbearer)
+            {
+                _shield.gameObject.SetActive(_isShieldbearer);
+            }
+            
             _shieldHealth = _data.ShieldHealth;
             _shieldMaxHealth = _shieldHealth;
 
@@ -114,9 +115,7 @@ namespace Enemies.AbstractEntity
         public int GetDamage() => _damage;
 
         public override bool IsLife() => _isLife;
-
-        public AudioManager GetAudioController() => _audioManager;
-
+        
         public void OnRevival(Enemy enemy) => SetData();
 
         public int GetPrice() => _price;

@@ -1,10 +1,9 @@
 using System;
+using System.Linq;
 using Enemies.AbstractEntity;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Interface;
 using Services;
-using Services.SaveLoad;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace UI.HUD.StorePanel
@@ -13,19 +12,24 @@ namespace UI.HUD.StorePanel
     {
         public int MoneyForEnemy { get; set; }
         public int AllAmountMoney { get; set; }
+        private IUpgradeTree _upgradeTree;
 
         public int TempMoney { get; set; }
+        public int DefaultMoney = 100;
         public event Action MoneyChanged;
+        private float _profitProcent=0;
 
         public void Initialize()
         {
-            TempMoney = AllServices.Container.Single<ICurrencyHandler>().FixTemporaryMoneyState();
+            _upgradeTree=AllServices.Container.Single<IUpgradeTree>();
+            SetUpgrades();
             AddListener();
         }
 
         public void AddMoneyForKilledEnemy(Enemy enemy)
         {
             int amountMoney = enemy.GetPrice();
+            int cost= 
             TempMoney += amountMoney;
             AllAmountMoney += amountMoney;
             MoneyForEnemy += amountMoney;
@@ -34,8 +38,9 @@ namespace UI.HUD.StorePanel
 
         public void AddMoney(int amountMoney)
         {
-            TempMoney += amountMoney;
-            AllAmountMoney += amountMoney;
+            int profit = (int) Mathf.Round(amountMoney * _profitProcent);
+            TempMoney += profit;
+            AllAmountMoney += profit;
             MoneyChanged?.Invoke();
         }
 
@@ -68,6 +73,21 @@ namespace UI.HUD.StorePanel
         private void RemoveListener()
         {
             AllServices.Container.Single<IGameEventBroadcaster>().OnEnemyDeath -= AddMoneyForKilledEnemy;
+        }
+        
+        private void SetUpgrades()
+        {
+            _profitProcent=_upgradeTree.GetUpgradeValue
+                (UpgradeGroupType.Profit,UpgradeType.IncreaseProfit)[0];
+
+            TempMoney = (int)_upgradeTree.GetUpgradeValue
+                (UpgradeGroupType.CashLimit, UpgradeType.IncreaseStartCashLimit).Last();
+            
+            if (TempMoney==0)
+            {
+                TempMoney = DefaultMoney;
+            }
+            
         }
     }
 }

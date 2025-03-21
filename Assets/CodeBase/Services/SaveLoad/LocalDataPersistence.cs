@@ -11,9 +11,15 @@ public class LocalDataPersistence : IDataPersistence
     // Сохраняем данные в локальном хранилище (PlayerPrefs)
     public void Save(GameData data)
     {
+        
         var json = JsonConvert.SerializeObject(data);
-        PlayerPrefs.SetString(Key, json);  // Сохраняем данные в PlayerPrefs
-        PlayerPrefs.Save();  // Применяем изменения
+        Debug.Log($"Saving to PlayerPrefs: {Key} = {json}");
+        Debug.Log($"Saving game data:\n{json}");
+
+        PlayerPrefs.SetString(Key, json);
+        PlayerPrefs.Save();
+
+        Debug.Log("Game data saved successfully.");
     }
 
     // Загружаем данные из локального хранилища
@@ -22,6 +28,7 @@ public class LocalDataPersistence : IDataPersistence
         try
         {
             string json = PlayerPrefs.GetString(Key);
+            Debug.Log($"Loaded JSON: {json}");
             if (string.IsNullOrEmpty(json))
             {
                 Debug.LogWarning("No saved data found.");

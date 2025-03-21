@@ -12,5 +12,8 @@ namespace Interface
         void EnemyDeath(Enemy enemy);
         int GetEnemyCount();
         void Reset();
+        void SetMaxEnemyOnWave(int maxEnemyOnWave);
+        int GetMaxEnemyOnWave();
+        
     }
 }

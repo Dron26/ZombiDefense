@@ -4,6 +4,7 @@ namespace Services.SaveLoad
 {
     public interface ISaveLoadService: IService
     {
+        public GameData GetGameData();
         public void Save();
         public GameData Load();
         public void Reset();

@@ -4,56 +4,65 @@ using Enemies.AbstractEntity;
 using Infrastructure.AIBattle;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
+using Interface;
+using Services;
 using UnityEngine;
 
 namespace Characters.Robots
 {
-    
-    public class TurretStateMachine:MonoCache
+    public class TurretStateMachine : MonoCache
     {
-    
         [SerializeField] private int _damage;
         [SerializeField] private float _timeShotsInterval;
         [SerializeField] private GameObject _gun;
+        [SerializeField] private GameObject _gunBase;
+        [SerializeField] private bool _isAutoFind;
+
+        private bool _isCarTurret;
         private bool _isTargetSet;
-        private bool _isAutoFind;
         private bool _isSelected;
         private bool _isSearch;
         private RobotFXController _fxController;
         private WaitForSeconds _shotsInterval;
+        private WaitForSeconds _idleInterval;
         private TurretWeaponController _turretWeaponController;
         private Coroutine currentTurnCoroutine;
         private RaycastHitChecker _raycastHitChecker;
         private TurretGun _turretGun;
         private Enemy _enemy;
         private bool _isTurning;
-        public float maxTurnTime = 1f; // максимальное время поворота
-        public float _maxTurnAngle = 180.0f; // максимальный угол, при котором персонаж поворачивается
-        private float minTurnTime = 0.5f; // минимальное время поворота
-        public float _minTurnAngle = 10f; // минимальный угол, при котором персонаж поворачивается
+        public float maxTurnTime = 4f; 
+        public float _maxTurnAngle = 180.0f; 
+        private float minTurnTime = 1f; 
+        public float _minTurnAngle = 10f;
         private float _turnTime = 0.3f;
         private float minDistanceToHit = 2.0f;
-        
+        private ISearchService _searchService;
+        private IUpgradeTree _upgradeTree;
+        private int _rngeAttack = 20;
+        private bool _isAttacked;
+
         public void Initialize(RaycastHitChecker raycastHitChecker, RobotFXController robotFXController,
-            TurretWeaponController turretWeaponController)
+            TurretWeaponController turretWeaponController, bool isCarTurret)
         {
+            _isCarTurret = isCarTurret;
             _fxController = robotFXController;
             _shotsInterval = new WaitForSeconds(_timeShotsInterval);
-            _isAutoFind=false;
+            _idleInterval = new WaitForSeconds(0.5f);
+            _isAutoFind = false;
             _turretWeaponController = turretWeaponController;
             _turretWeaponController.OnSelected += OnSelectedTurret;
             _raycastHitChecker = raycastHitChecker;
-            // _turretWeaponController.Initialize();
-            // _turretGun=_turretWeaponController.GetActiveTurretGun(); 
-            // _turretGun.OnEnter+= OnTriggerEnter;
-            // _turretGun.OnExit+= OnTriggerExit;
+            _searchService = AllServices.Container.Single<ISearchService>();
+            _upgradeTree=AllServices.Container.Single<IUpgradeTree>();
+            SetUpgrades();
         }
 
         private void OnSelectedTurret()
         {
             _isSelected = _turretWeaponController.IsSelected;
-            
-            if (_isSelected&&!_isTargetSet&&!_isSearch)
+
+            if (_isSelected && !_isTargetSet && !_isSearch)
             {
                 StartCoroutine(IdleState());
             }
@@ -66,48 +75,95 @@ namespace Characters.Robots
         private IEnumerator IdleState()
         {
             _isSearch = true;
-                
-            while (!_isTargetSet && _isSelected)
-            {
-                if ( Input.GetMouseButtonDown(0))
+
+            // while (!_isTargetSet && _isSelected)
+            // {
+            //     if (_isAutoFind)
+            //     {
+            //         _enemy = _searchService.GetClosestEntity<Enemy>(transform.position);
+            //         if (_enemy != null && _enemy.IsLife())
+            //         {
+            //             float currentRange = Vector3.Distance(transform.position, _enemy.transform.position);
+            //
+            //             if (currentRange <= _rngeAttack)
+            //             {
+            //                 LookEnemyPosition(_enemy.transform.position);
+            //                 _enemy.OnEnemyEvent += HandleEnemyEvent;
+            //                 StopCoroutine(IdleState());
+            //             }
+            //         }
+            //     }
+            //     else if (Input.GetMouseButtonDown(0))
+            //     {
+            //         if (_raycastHitChecker.CanGetRaycastHit())
+            //         {
+            //             LookEnemyPosition(_raycastHitChecker.Point);
+            //         }
+            //         else
+            //         {
+            //             _isSelected = false;
+            //         }
+            //     }
+            //
+            //     Debug.Log("_idleInterval");
+            //     yield return _idleInterval;
+            // }
+
+           
+                if (_isAutoFind)
                 {
-                    if (_raycastHitChecker.CanGetRaycastHit())
+                    while (_isSelected)
                     {
-                        LookEnemyPosition(_raycastHitChecker.Point);
+                        if (!_isTargetSet&&!_isTurning)
+                        {
+                            _enemy = _searchService.GetClosestEntity<Enemy>(transform.position);
+                        
+                            if (_enemy != null && _enemy.IsLife())
+                            {
+                                float currentRange = Vector3.Distance(transform.position, _enemy.transform.position);
+
+                                if (currentRange <= _rngeAttack)
+                                {
+                                    LookEnemyPosition(_enemy.transform.position);
+                                }
+                            }
+                        }
+                        
+                        
+                        Debug.Log("_idleInterval");
+                        yield return _idleInterval;
                     }
-                    else
-                    {
-                        _isSelected = false;
-                    }
-                    
-                    
-                    // 
-                    //
-                    // if (Physics.Raycast(ray, out RaycastHit hit))
-                    // {
-                    //
-                    //     
-                    //
-                    //     Debug.Log(gr);
-                    //     if (!hit.transform.TryGetComponent(out WorkPoint _))
-                    //     {
-                    //         LookEnemyPosition(hit.point);
-                    //     }
-                    // }
                 }
 
-                yield return null;
-            }
-            
-            _isSearch = false;
-            yield break;
+                while (!_isTargetSet && _isSelected)
+                {
 
+                    if (Input.GetMouseButtonDown(0))
+                    {
+
+                        if (_raycastHitChecker.CanGetRaycastHit())
+                        {
+                            LookEnemyPosition(_raycastHitChecker.Point);
+                        }
+                        else
+                        {
+                            _isSelected = false;
+                        }
+                    }
+
+                    Debug.Log("_idleInterval");
+                    yield return _idleInterval;
+
+                }
+
+                _isSearch = false;
+            Debug.Log("IdleStateFinish");
+            yield break;
         }
-        
 
         private void LookEnemyPosition(Vector3 hitPosition)
         {
-            float   _turnTime = 0;
+            float _turnTime = 1f;
 
             if (currentTurnCoroutine != null)
             {
@@ -126,13 +182,13 @@ namespace Characters.Robots
 
             _turnTime = Mathf.Lerp(minTurnTime, maxTurnTime, (angle - _minTurnAngle) / (_maxTurnAngle - _minTurnAngle));
             _turnTime = Mathf.Min(_turnTime, maxTurnTime);
-            
+
             if (Vector3.Dot(direction.normalized, _gun.transform.forward) < 0)
             {
                 currentTurnCoroutine = StartCoroutine(TurnTowardsHit(hitPosition, _turnTime, true));
                 return;
             }
-            
+
             if (angle < _minTurnAngle)
             {
                 return;
@@ -140,89 +196,90 @@ namespace Characters.Robots
 
             currentTurnCoroutine = StartCoroutine(TurnTowardsHit(hitPosition, _turnTime, false));
         }
-        
+
         private IEnumerator TurnTowardsHit(Vector3 hitPosition, float turnTime, bool shouldShoot)
         {
             _isTurning = true;
-            Quaternion targetRotation = Quaternion.LookRotation( hitPosition - transform.position);
-            float t = 0.0f;
-            Quaternion startRotation = _gun.transform.rotation;
 
-            while (t < turnTime)
+            // Направление к цели для gunBase (горизонтальное вращение)
+            Vector3 directionBase = hitPosition - transform.position;
+            directionBase.y = 0; // Игнорируем вертикальную составляющую
+            Quaternion targetRotationBase = Quaternion.LookRotation(directionBase);
+     
+            float elapsedTime = 0f;
+            Quaternion startRotationBase = _gunBase.transform.rotation;
+            Quaternion startRotationGun = _gun.transform.rotation;
+
+            while (elapsedTime  < turnTime)
             {
-                t += Time.deltaTime;
-                float normalizedTime = t / turnTime;
-                _gun.transform.rotation = Quaternion.Lerp(startRotation, targetRotation, normalizedTime);
+                elapsedTime += Time.deltaTime;
+                float normalizedTime = Mathf.Clamp01(elapsedTime / turnTime);
+
+                // Плавно поворачиваем gunBase только по оси Y
+                _gunBase.transform.rotation = Quaternion.Lerp(startRotationBase, targetRotationBase, normalizedTime);
+                _gunBase.transform.rotation = Quaternion.Euler(0, _gunBase.transform.rotation.eulerAngles.y, 0);
+
+              
                 yield return null;
             }
 
-            _gun.transform.rotation = targetRotation;
-        }
-        
-        private void OnTriggerEnter(Collider other)
-        {
-            if (other.TryGetComponent<Enemy>(out Enemy enemy)&&_isTargetSet==false)
+            // Устанавливаем финальные повороты
+            _gunBase.transform.rotation = targetRotationBase;
+            _gun.transform.LookAt(hitPosition);
+
+            _isTurning = false;
+
+            if (_isAutoFind && !_isTargetSet)
             {
-                _enemy = enemy;
-                enemy.OnEnemyEvent+= HandleEnemyEvent;
-                StopCoroutine(IdleState());
+                StopCoroutine(currentTurnCoroutine);
                 StartCoroutine(AttackState());
             }
         }
-        
-        private void HandleEnemyEvent(EnemyEventType eventType,ItemType itemType)
-        {
-            switch (eventType)
-            {
-                case EnemyEventType.Death:
-                    StopAttack();
-                    break;
-            }
-        }
-        private void OnTriggerExit(Collider other)
-        {
-            
-            if (other.TryGetComponent<Enemy>(out Enemy enemy))
-            {
-                if (_enemy==enemy)
-                {
-                    _enemy.OnEnemyEvent-=HandleEnemyEvent;
-                    StartCoroutine(IdleState());
-                    StopAttack();
-                }
-            }
-        }
+
         private IEnumerator AttackState()
         {
             _isTargetSet = true;
             _isSearch = false;
             
-            while (_enemy.IsLife()&&_isTargetSet)
+            while (_enemy!=null&&_enemy.IsLife() && _isTargetSet)
             {
-                if (_isAutoFind)
-                {
-                    _gun.transform.LookAt(_enemy.transform);
-                }
                 
+
                 _fxController.OnAttackFX();
                 _enemy.ApplyDamage(_damage, ItemType.Turret);
                 _shotsInterval = new WaitForSeconds(_timeShotsInterval);
+                
+                if (_isTurning ==false)
+                {
+                    LookEnemyPosition(_enemy.transform.position);
+                }
+                
                 yield return _shotsInterval;
             }
+            
+            StopAttack();
         }
 
         private void StopAttack()
         {
+            Debug.Log("StopAttack()");
             _isTargetSet = false;
             _fxController.OnAttackFXStop();
             StopCoroutine(AttackState());
+            //StartCoroutine(IdleState());
         }
 
-        public  void SetUpgrade(GameParameters upgrade, int level)
+        public void SetUpgrades()
         {
-            _damage =10;
-            _shotsInterval = new WaitForSeconds(0.3f);
-            _isAutoFind=false;
+            _isAutoFind=(int)Mathf.Round(_upgradeTree.GetUpgradeValue(UpgradeGroupType.Turrets, UpgradeType.AddTurretAutoAim)[0])>0;
+        }
+
+        public void CarTurretActive()
+        {
+            _isSelected = true;
+            _isTargetSet = false;
+            _isAutoFind = true;
+            StartCoroutine(IdleState());
         }
     }
 }

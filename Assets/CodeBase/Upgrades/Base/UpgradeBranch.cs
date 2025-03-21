@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Interface;
 using UnityEngine;
 
 namespace Services
@@ -13,44 +14,70 @@ namespace Services
         private List<Upgrade> _upgrades = new List<Upgrade>();
         public Action<Upgrade> OnUpgradeClick; 
         public UpgradeGroupType GetUpgradeBranchType => _branchTypeGroupType;
+        private IUpgradeHandler _upgradeHandler;
+        public void Initialize()
+        {
+            _upgradeHandler = AllServices.Container.Single<IUpgradeHandler>();
+            AddListener();
+        }
 
-        public void Initialize(List<Upgrade> upgrades)
+        public void SetUpgrades(List<Upgrade> upgrades)
         {
             _upgrades = upgrades.FindAll(upg => upg.GroupType == _branchTypeGroupType);
             DistributeUpgrades();
-            UpdateUI();
         }
+        
 
-        public void DistributeUpgrades()
+        private void DistributeUpgrades()
         {
-            foreach (var point in _points)
+            for (int i = 0; i < _points.Count; i++)
             {
-                Upgrade matchingUpgrade = _upgrades.Find(upg => upg.Id == point.GetId);
-                //Debug.Log(matchingUpgrade.GroupType+" "+matchingUpgrade.Type+""+matchingUpgrade.Id);
+                Upgrade matchingUpgrade = _upgrades.Find(upg => upg.Id == _points[i].GetId);
                 
                 if (matchingUpgrade != null)
                 {
-                    point.Initialize(matchingUpgrade);
-                    point.Button.onClick.AddListener(()=>OnUpgradeClicked(point.Upgrade));
+                    _points[i].Initialize(matchingUpgrade);
+                    string nodeKey = $"{matchingUpgrade.GroupType}_{matchingUpgrade.Type}_{matchingUpgrade.Id}";
+
+                    if (_upgradeHandler.HasPurchasedUpgrade(nodeKey))
+                    {
+                        _points[i].Upgrade.SetPurchased(true);
+                    }
+                    
+                    if(_points[i].GetId==0)
+                    {
+                        _points[i].IsLock(false); 
+                    }
+                    else if (_points[i].GetId!=0)
+                    {
+                        int unlockUpgradeId = _points[i].Upgrade.UnlockId;
+                        int unlockUpgradeId2 = _points[unlockUpgradeId].GetId;
+                        bool isPurchase = _points[unlockUpgradeId2].Upgrade.IsPurchased;
+                        
+                        if ( unlockUpgradeId == unlockUpgradeId2&&isPurchase)
+                        {
+                            _points[i].IsLock(false);
+                        }
+                    }
                 }
                 else
                 {
-                    Debug.LogWarning($"Upgrade not found for BranchPoint with ID: {point.GetId} and Type: {point.GetUpgradeType}");
+                    Debug.LogWarning($"Upgrade not found for BranchPoint with ID: {_points[i].GetId} and Type: {_points[i].GetUpgradeType}");
                 }
             }
         }
 
-        public void UpdateUI()
+        private void OnUpgradeClicked(Upgrade upgarde )
+        {
+            OnUpgradeClick?.Invoke(upgarde);
+        }
+        
+        private void AddListener()
         {
             foreach (var point in _points)
             {
-                point.RefreshUI();
+                point.Button.onClick.AddListener(() => OnUpgradeClicked(point.Upgrade));
             }
-        }
-
-        public void OnUpgradeClicked(Upgrade upgarde )
-        {
-            OnUpgradeClick?.Invoke(upgarde);
         }
     }
 }

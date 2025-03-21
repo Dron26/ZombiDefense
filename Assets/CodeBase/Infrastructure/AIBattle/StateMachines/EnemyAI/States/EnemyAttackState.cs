@@ -84,13 +84,12 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
 
         private IEnumerator AttackRoutine()
         {
-            
             yield return null;
             
             while (_enemy.IsLife() && _character.IsLife())
             {
                 _currentRange = Vector3.Distance(transform.position, _character.transform.position);
-
+               
                 if (_currentRange <= _rangeHit && !_isAttacked)
                 {
                     PerformMeleeAttack();
@@ -100,9 +99,10 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
                     PerformThrow();
                     yield break;
                 }
-                else if(_isAttacked)
+                else if(!_isThrower&&_currentRange > _rangeHit&&_isAttacked)
                 {
-                    yield return _waitForSeconds;
+                    AttackEnd();
+                    ChangeState();
                 }
 
                 if (_isThrowering)

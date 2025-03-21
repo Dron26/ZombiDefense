@@ -9,25 +9,7 @@ namespace Plugins.ButtonSoundsEditor
         public AudioSource AudioSource;
         public AudioClip ClickSound;
         public AudioClip HoverSound;
-        
-        // public void Awake()
-        // {
-        //     Button button = GetComponent<Button>();
-        //     if (button != null)
-        //     {
-        //         button.onClick.AddListener(PlayClickSound);
-        //     }
-        //
-        //     EventTrigger eventTrigger = GetComponent<EventTrigger>();
-        //     if (eventTrigger != null)
-        //     {
-        //         EventTrigger.Entry clickEntry = eventTrigger.triggers.SingleOrDefault(_ => _.eventID == EventTriggerType.PointerClick);
-        //         if (clickEntry != null)
-        //             clickEntry.callback.AddListener(_ => PlayClickSound());
-        //     }
-        // }
 
-       
         private void PlayClickSound()
         {
             AudioSource.Play();

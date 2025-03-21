@@ -24,15 +24,19 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
             _agent = GetComponent<NavMeshAgent>();
             _agent.stoppingDistance = 0f; // Задайте минимальную дистанцию остановки
         }
+        
+        protected override void OnEnabled()
+        {
+            Move();
+        }
 
         public void SetNewPoint(WorkPoint newPoint)
         {
             _point = newPoint;
             _reachedDestination = true;
             _isSetDestination = false;
-            Move();
+            PlayerCharactersStateMachine.EnterBehavior<MovementState>();
         }
-        
         private void Move()
         {
             Debug.Log("Move()");

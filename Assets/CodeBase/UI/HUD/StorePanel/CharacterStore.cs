@@ -4,6 +4,8 @@ using System.Linq;
 using Characters.Humanoids.AbstractLevel;
 using Infrastructure.AssetManagement;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Interface;
+using Services;
 using UnityEngine;
 using UnityEngine.UI;
 using Upgrades;
@@ -36,6 +38,7 @@ namespace UI.HUD.StorePanel
         public Action OnMoneyEmpty;
         public Action OnUpdateBought;
         public Action OnUpdateSelectedCharacter;
+        public Action <bool> OnReachLimitCharacter;
         private List<Character> _allAvailableHumanoid = new();
         private List<CharacterData> _charactersData = new();
         private List<int> _indexAvailableHumanoid = new();
@@ -45,10 +48,15 @@ namespace UI.HUD.StorePanel
         private Store _store;
         private Wallet _wallet;
         private bool _isInitialized;
+        private bool _isAvailable;
         public CharacterSlot SelectedCharacterSlot => _selectedCharacterSlot;
         public CharacterData SelectedCharacter => _selectedCharacter;
         public List<List<GameObject>> CharacterSkinnedMeshes => _characterSkinnedMeshes;
 
+        private int _maxCount=3;
+        private IGameEventBroadcaster _eventBroadcaster;
+        private ICharacterHandler _characterHandler;
+        private IUpgradeTree _upgradeTree;
         public void Initialize(Store store)
         {
             _store = store;
@@ -63,6 +71,12 @@ namespace UI.HUD.StorePanel
             _store.IsStoreActive += OpenCharacterStore;
             _wallet = store.GetWallet();
             _characterInfoPanel.Initialize(this);
+
+            _eventBroadcaster = AllServices.Container.Single<IGameEventBroadcaster>();
+            _characterHandler=AllServices.Container.Single<ICharacterHandler>();
+            _upgradeTree=AllServices.Container.Single<IUpgradeTree>();
+            SetUpgrades();
+            AddListener();
         }
 
         private void InitializeButton()
@@ -83,6 +97,10 @@ namespace UI.HUD.StorePanel
                     characterSlot.Initialize(data, this);
                     _characterSlots.Add(characterSlot);
                     characterSlot.Selected += SetSelectedSlot;
+                    if (data.Type==CharacterType.Turret&&!_isAvailable)
+                    {
+                        characterSlot.SetLock(true);
+                    }
                 }
             }
 
@@ -93,16 +111,8 @@ namespace UI.HUD.StorePanel
         {
             _selectedCharacterSlot = _characterSlots[0];
             _selectedCharacter = _charactersData[0];
-          // _selectedCharacterSlot.Selected.Invoke(_selectedCharacterSlot);
         }
 
-        // private void OnTryBuyUpgrade(UpgradeData upgradeData, int price, int level)
-        // {
-        //     if (OnTryBuy(price))
-        //     {
-        //         UpdateParametrs(upgradeData, level);
-        //     }
-        // }
 
         private void OnTryBuyCharacter()
         {
@@ -129,19 +139,6 @@ namespace UI.HUD.StorePanel
             }
         }
 
-        // private void UpdateParametrs(UpgradeData upgradeData, int level)
-        // {
-        //     _selectedCharacter.SetUpgrade(upgradeData, level);
-        //
-        //     if (_selectedCharacter.TryGetComponent(out Humanoid humanoid))
-        //     {
-        //         HumanoidWeaponController humanoidWeaponController = humanoid.GetComponent<HumanoidWeaponController>();
-        //         humanoidWeaponController.SetUpgrade(upgradeData, level);
-        //     }
-        //
-        //     OnUpdateBought?.Invoke();
-        // }
-
         private void SetCharacters()
         {
             CharacterType[] types = (CharacterType[])Enum.GetValues(typeof(CharacterType));
@@ -151,88 +148,9 @@ namespace UI.HUD.StorePanel
                 string path = AssetPaths.CharactersData + types[i];
                 CharacterData data = Resources.Load<CharacterData>(path);
                 _charactersData.Add(data);
-                //_charactersObject[i].SetActive(false);
-
-                // if (_charactersObject[i].TryGetComponent(out Character character))
-                // {
-                //    
-                //   
-                //    character.Initialize(data);
-                //    _allAvailableHumanoid.Add(character);
-                //    _indexAvailableHumanoid.Add(_allAvailableHumanoid.IndexOf(character));
-                // }
+               
             }
 
-            // foreach (GameObject obj in _charactersObject)
-            // {
-            //     if (obj.TryGetComponent(out Character character))
-            //     {
-            //         string path = AssetPaths.CharactersData + CharactersData;
-            //         CharacterData data = Resources.Load<CharacterData>(path);
-            //         _charactersData.Add(data);
-            //         character.Initialize(data);
-            //         _characters.Add(character);
-            //         _allAvailableHumanoid.Add(character);
-            //         _indexAvailableHumanoid.Add(_allAvailableHumanoid.IndexOf(character));
-            //     }
-
-            // if (obj.TryGetComponent(out Character character))
-            // {
-            //     string path = AssetPaths.Characters + obj.name;
-            //     CharacterData data = Resources.Load<CharacterData>(path);
-            //     character.Initialize(data);
-            //
-            //     if (obj.TryGetComponent(out Humanoid humanoid))
-            //     {
-            //         HumanoidWeaponController humanoidWeaponController =
-            //             character.GetComponent<HumanoidWeaponController>();
-            //         humanoidWeaponController.UIInitialize();
-            //     }
-            //     else if (obj.TryGetComponent(out Turret turret))
-            //     {
-            //         TurretWeaponController turretWeaponController =
-            //             character.GetComponent<TurretWeaponController>();
-            //         turretWeaponController.UIInitialize();
-            //     }
-            //
-            //     
-            // }
-            // else if (obj.TryGetComponent(out Turret turret))
-            // {
-            //     _characters.Add(turret);
-            //
-            //     if (turret.IsBuyed)
-            //     {
-            //         _allAvailableHumanoid.Add(humanoidj);
-            //         _indexAvailableHumanoid.Add(_allAvailableHumanoid.IndexOf(humanoidj));
-            //     }
-            // }
-            //
-            //
-            // if (obj.TryGetComponent(out Humanoid humanoidj))
-            // {
-            //     HumanoidWeaponController humanoidWeaponController =
-            //         humanoidj.GetComponent<HumanoidWeaponController>();
-            //     humanoidWeaponController.UIInitialize();
-            //     _characters.Add(humanoidj);
-            //
-            //     if (humanoidj.IsBuyed)
-            //     {
-            //         _allAvailableHumanoid.Add(humanoidj);
-            //         _indexAvailableHumanoid.Add(_allAvailableHumanoid.IndexOf(humanoidj));
-            //     }
-            // }
-            // else if (obj.TryGetComponent(out Turret turret))
-            // {
-            //     _characters.Add(turret);
-            //
-            //     if (turret.IsBuyed)
-            //     {
-            //         _allAvailableHumanoid.Add(humanoidj);
-            //         _indexAvailableHumanoid.Add(_allAvailableHumanoid.IndexOf(humanoidj));
-            //     }
-            // }
-            //}
         }
 
         private void SetSelectedSlot(CharacterSlot characterSlot)
@@ -255,6 +173,37 @@ namespace UI.HUD.StorePanel
             {
                 _container.gameObject.SetActive(false);
             }
+        }
+        
+        private void AddListener()
+        {
+            _eventBroadcaster.OnSetActiveHumanoid += CheckState;
+            _eventBroadcaster.OnHumanoidDie+=CheckState;
+        }
+
+        private void CheckState()
+        {
+            if (_characterHandler.GetActiveCharacters().Count == _maxCount)
+            {
+                OnReachLimitCharacter?.Invoke(true);
+            }
+        }
+
+        private void OnDestroy()
+        {
+            RemoveListener();
+        }
+        private void RemoveListener()
+        {
+            _eventBroadcaster.OnSetActiveHumanoid -= CheckState;
+            _eventBroadcaster.OnHumanoidDie-=CheckState;
+        }
+        
+        private void SetUpgrades()
+        {
+            _maxCount=(int)_upgradeTree.GetUpgradeValue(UpgradeGroupType.Squad,UpgradeType.IncreaseSquadSize).Last();
+            
+            _isAvailable=(int)_upgradeTree.GetUpgradeValue(UpgradeGroupType.Turrets,UpgradeType.Turret).Last()>0;
         }
     }
 }

@@ -30,6 +30,7 @@ namespace Infrastructure.Location
         public int Id => _id;
         private int _id;
         public int UpPrecent => _upPrecent;
+        public float DefencePercent => _defencePercent;
 
         public bool IsHaveMedicineBox => _isHaveMedicineBox;
         public bool IsHaveWeaponBox => _isHaveWeaponBox;
@@ -43,12 +44,12 @@ namespace Infrastructure.Location
         private bool _isSelectedForMove = false;
         private Collider _collider;
         private int _level;
-        private int _upPrecent=100;
+        private int _upPrecent;
         private MedicalKit _medicalKit;
         private AdditionalBox _weaponBox;
         private bool _isHaveWeaponBox;
         private ICharacterHandler _characterHandler;
-        
+        private float _defencePercent;
         private Vector3 _startScale;
         private Vector3 _maxScale;
         private Vector3 _minScale = new Vector3(0.3f,0.3f,0.3f);
@@ -203,8 +204,9 @@ namespace Infrastructure.Location
             _selectedCircles[_level].gameObject.SetActive(true);
         }
 
-        public void LoadData()
+        public void SetDefenceValue(float value)
         {
+            _defencePercent = value;
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -243,8 +245,7 @@ namespace Infrastructure.Location
             CheckCharacter();
 
         }
-
-
+        
         private IEnumerator SelectedCircleActivated()
         {
             _selectedCircle.transform.localScale = _startScale;

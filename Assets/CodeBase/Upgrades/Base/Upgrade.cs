@@ -13,6 +13,7 @@ public class Upgrade
     public UpgradeGroupType GroupType { get; private set; }
     public int UnlockId { get; private set; }
     public bool Lock { get; private set; }
+    public bool IsPurchased { get; private set; }
     public List<float> UpgradesValue;
     public Upgrade(UpgradeData data)
     {
@@ -26,5 +27,15 @@ public class Upgrade
         UnlockId = data.UnlockId;
         Lock = data.Lock;
         UpgradesValue = data.UpgradesValue;
+    }
+
+    public void SetLock(bool isLock)
+    {
+        Lock=isLock;
+    }
+    
+    public void SetPurchased(bool isPurchased)
+    {
+        IsPurchased=isPurchased;
     }
 }

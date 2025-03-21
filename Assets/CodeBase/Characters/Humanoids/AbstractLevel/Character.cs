@@ -39,7 +39,6 @@ namespace Characters.Humanoids.AbstractLevel
 
         public abstract void Initialize();
 
-        public abstract void SetAudioManager(AudioManager audioManager);
         public override void ApplyDamage(float damage, ItemType itemType)
         {
             int value = Convert.ToInt32(damage); 

@@ -4,6 +4,8 @@ using Data.Upgrades;
 using Infrastructure.AIBattle;
 using Infrastructure.Location;
 using Infrastructure.Logic.WeaponManagment;
+using Interface;
+using Services;
 using UnityEngine;
 
 namespace Characters.Robots
@@ -20,13 +22,16 @@ namespace Characters.Robots
             get => _damage;
             set => _damage = value;
         }
-
         private int _damage;
         private float _reloadTime;
+        private float _precentAdditionalDamage;
         private float _fireRate;
         private float _range;
         private bool _isGranade;
         private bool _isCanThrowGranade;
+        private bool _isCarTurret=false;
+        private bool _isAimAdd=false;
+        
         public Weapon GetWeapon() => _weapon;
         public bool IsSelected => _isSelected;
         protected bool _isSelected;
@@ -35,14 +40,22 @@ namespace Characters.Robots
         private GameObject _radiusObject;
         public Action OnSelected;
         private ObjectThrower _objectThrower;
-
+        private IUpgradeTree _upgradeTree;
         public override void Initialize(CharacterData data)
         {
             _turretGun = transform.GetComponentInChildren<TurretGun>();
             SetWeaponParametrs(data);
             ChangeWeapon?.Invoke();
             SetShootingRadiusSprite();
+            SetUpgrades();
+            _upgradeTree = AllServices.Container.Single<IUpgradeTree>();
+            AllServices.Container.Single<IGameEventBroadcaster>().OnActivatedSpecialTechnique += ActiveTurret;
             //  OnInitialized?.Invoke(_weapon);
+        }
+
+        private void ActiveTurret()
+        {
+            _isCarTurret = true;
         }
 
         private void SetWeaponParametrs(CharacterData data)
@@ -70,14 +83,28 @@ namespace Characters.Robots
         
         public void SetPoint(WorkPoint workPoint)
         {
-            _damage = (_damage * workPoint.UpPrecent) / 100;
-            _range = (_range * workPoint.UpPrecent) / 100;
+            _damage= Mathf.RoundToInt(_damage * (1 + workPoint.UpPrecent / 100));
+            _range= Mathf.RoundToInt(_range * (1 + workPoint.UpPrecent / 100));
         }
 
         public void SetSelected(bool isSelected)
         {
             _isSelected = isSelected;
             OnSelected?.Invoke();
+        }
+        
+        private void SetUpgrades()
+        {
+            if (_isCarTurret)
+            {
+                _precentAdditionalDamage=(int)Mathf.Round(_upgradeTree.GetUpgradeValue(UpgradeGroupType.SpecialTechnique, UpgradeType.IncreaseDamageSpecialTechnique)[0]);
+            }
+            else
+            {
+                _precentAdditionalDamage=(int)Mathf.Round(_upgradeTree.GetUpgradeValue(UpgradeGroupType.Turrets, UpgradeType.IncreaseDamageSpecialTechnique)[0]);
+            }
+            
+            _damage= Mathf.RoundToInt(_damage * (1 + _precentAdditionalDamage / 100));
         }
     }
 }

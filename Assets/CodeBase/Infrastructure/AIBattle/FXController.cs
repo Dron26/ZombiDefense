@@ -1,6 +1,7 @@
 ﻿using Characters.Humanoids.AbstractLevel;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
+using Services;
 using Services.Audio;
 using UnityEngine;
 
@@ -20,32 +21,18 @@ namespace Infrastructure.AIBattle
         private AudioClip _reload;
         private AudioSource _audioSource;
         private Weapon _weapon;
-        private AudioManager _audioManager;
+        private IAudioManager _audioManager;
         private HumanoidWeaponController _humanoidWeaponController;
         private Character _character;
         
         private void Awake()
         {
-            if (TryGetComponent(out Character character))
-            { 
-                _character=character;
-                _character.OnInitialize+=SetAudio;
-            }
-             
+            _audioManager = AllServices.Container.Single<IAudioManager>();
+            _audioSource= _audioManager.GetSoundSource();
             _humanoidWeaponController= GetComponent<HumanoidWeaponController>();
             _humanoidWeaponController.OnInitialized += SetWeapon;
         }
-
-        private void SetAudio(Character character)
-        {
-            if (TryGetComponent(out Humanoid humanoid))
-            {
-                _audioManager=humanoid.GetAudioManager();
-                _audioSource= _audioManager.GetSoundSource();
-            }
-           
-        }
-
+        
         public void OnAttackFX()
         {
             _audioSource.PlayOneShot(_shoot);

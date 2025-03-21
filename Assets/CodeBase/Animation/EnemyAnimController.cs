@@ -66,25 +66,25 @@ namespace Animation
             // enemy.OnDeath += OnDieFX;
             
             SetSkin();
-            SetAnimInfo();
+            //SetAnimInfo();
             SetAnimation();
         }
 
         
-        private void SetAnimInfo()
-        {
-            List<int> animHashNames = new() { Walk };
-
-            foreach (int name in animHashNames)
-            {
-                string animName = GetAnimatorParameterName(name);
-                AnimationClip clip = GetAnimationClip(animName);
-                if (clip != null)
-                {
-                    _animInfo.Add(name, clip.length);
-                }
-            }
-        }
+        // private void SetAnimInfo()
+        // {
+        //     List<int> animHashNames = new() { Walk };
+        //
+        //     foreach (int name in animHashNames)
+        //     {
+        //         string animName = GetAnimatorParameterName(name);
+        //         AnimationClip clip = GetAnimationClip(animName);
+        //         if (clip != null)
+        //         {
+        //             _animInfo.Add(name, clip.length);
+        //         }
+        //     }
+        // }
 
         private void SetSkin()
         {
@@ -153,6 +153,8 @@ namespace Animation
             {
                 _animatorOverrideController["Attack"] = animationClips["Attack"][0];
             }
+
+            _animator.runtimeAnimatorController = _animatorOverrideController;
         }
 
         private void HandleEnemyEvent(EnemyEventType eventType, ItemType itemType)
@@ -211,17 +213,9 @@ namespace Animation
             return string.Empty;
         }
 
-        private AnimationClip GetAnimationClip(string clipName)
+        public AnimationClip GetAnimationClip(int  id)
         {
-            foreach (var clip in _animator.runtimeAnimatorController.animationClips)
-            {
-                if (clip.name == clipName)
-                {
-                    return clip;
-                }
-            }
-
-            return null;
+            return _animatorOverrideController.animationClips[id];
         }
 
 
@@ -235,11 +229,6 @@ namespace Animation
             }
 
             return newClips;
-        }
-
-        public Dictionary<int, float> GetAnimInfo()
-        {
-            return _animInfo;
         }
 
         public void SmokerDmage()

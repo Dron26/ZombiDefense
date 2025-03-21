@@ -50,7 +50,7 @@ namespace Infrastructure.Logic.WaveManagment
             AddListener();
         }
 
-        public void StartTimer()
+        public void ShowSkipButton()
         {
             _timerPanel.SetActive(true);
             _additionalPanel.SetActive(false);
@@ -88,7 +88,7 @@ namespace Infrastructure.Logic.WaveManagment
        
         private void SkipTimer()
         {
-            if (_enemyHandler.GetActiveEnemy().Count > 0&&_isStartClick==false)
+            if (_isStartClick==false)
             {
                 _isStartClick = true;
                 FinishShowTimer();
@@ -123,13 +123,13 @@ namespace Infrastructure.Logic.WaveManagment
         private void AddListener()
         {
             skipButton.onClick.AddListener(SkipTimer);
-            _eventBroadcaster.LastEnemyRemained+=SetSpawnStarted;
+            _eventBroadcaster.OnLastEnemyRemained+=SetSpawnStarted;
         }
 
         private void RemoveListener()
         {
             skipButton.onClick.RemoveListener(SkipTimer);
-            _eventBroadcaster.LastEnemyRemained-=SetSpawnStarted;
+            _eventBroadcaster.OnLastEnemyRemained-=SetSpawnStarted;
         }
     }
 }

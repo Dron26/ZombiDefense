@@ -8,19 +8,24 @@ namespace Services.SaveLoad
     public class LoadSaveService:ISaveLoadService
     {
         private  IDataPersistence _dataPersistence;
-        private GameData _gameData;
 
-        public GameData GameData => _gameData;
+        public GameData GameData;
 
         public GameData Load()
         {
-            var loadedData = _dataPersistence.Load();
-            _gameData=loadedData;
+            if (_dataPersistence == null)
+            {
+                Debug.LogError("Data persistence is not initialized!");
+                return new GameData();
+            }
 
-            string json = JsonConvert.SerializeObject(loadedData, Formatting.Indented);
+            var loadedData = _dataPersistence.Load();
+            GameData = loadedData ?? new GameData(); // Если null, создаём новый объект
+
+            string json = JsonConvert.SerializeObject(GameData, Formatting.Indented);
             Debug.Log($"Loaded game data:\n{json}");
 
-            return loadedData;
+            return GameData;
         }
         public  LoadSaveService()
         {
@@ -28,22 +33,35 @@ namespace Services.SaveLoad
                 _dataPersistence = new CloudDataPersistence(); // WebGL → в облако
             else
                 _dataPersistence = new LocalDataPersistence(); // Остальные → локально
+            
+            if (_dataPersistence == null)
+                Debug.LogError("Ошибка! _dataPersistence не был инициализирован.");
+        }
+
+        public GameData GetGameData()
+        {
+            return GameData;
         }
 
         public void Save()
         {
-            if (_gameData == null)
+            
+            if (GameData == null)
             {
-                Debug.LogError("Game data is null!");
+                Debug.LogWarning("GameData is null, trying to load existing data...");
+                Load(); // Загружаем данные перед сохранением
+            }
+
+            if (GameData == null)
+            {
+                Debug.LogError("Failed to load GameData, aborting save.");
                 return;
             }
 
-            // Сериализация данных в JSON
-            string json = JsonConvert.SerializeObject(_gameData, Formatting.Indented);  // Добавляем отступы для лучшей читаемости
-            Debug.Log($"Saving game data:\n{json}");  // Логируем, что сохраняется
+            string json = JsonConvert.SerializeObject(GameData, Formatting.Indented);
+            Debug.Log($"Saving game data:\n{json}");
 
-            _dataPersistence.Save(_gameData);  // Сохраняем данные
-
+            _dataPersistence.Save(GameData);
             Debug.Log("Game data saved.");
         }
 
@@ -51,7 +69,14 @@ namespace Services.SaveLoad
 
         public void ChangeFirstStart()
         {
-            _gameData.ChangeIsFirstStart();
+            if (GameData == null)
+            {
+                Debug.LogError("Game data is null! Cannot change first start flag.");
+                return;
+            }
+
+            GameData.ChangeIsFirstStart();
+            Save();  // Сразу сохраняем изменения
         }
         
         public void Reset() => _dataPersistence.Reset();

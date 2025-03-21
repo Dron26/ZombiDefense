@@ -7,6 +7,7 @@ using Infrastructure.AIBattle.StateMachines.Humanoid.States;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Factories.FactoryWarriors.Robots;
 using Infrastructure.Location;
+using Infrastructure.Logic.WeaponManagment;
 using Infrastructure.Points;
 using Interface;
 using Services;
@@ -23,8 +24,6 @@ namespace Infrastructure.Logic.Inits
         [SerializeField] private WorkPointGroup _workPointsGroup;
         [SerializeField] private RobotFactory _robotFactory;
         private List<WorkPoint> _workPoints = new();
-        private static readonly List<Character> _activeCharacters = new();
-        private static readonly List<Character> _inactiveCharacetrs = new();
         private SceneObjectManager _sceneObjectManager;
         public UnityAction CreatedCharacter;
         private Humanoid _selectedHumanoid;
@@ -34,10 +33,12 @@ namespace Infrastructure.Logic.Inits
         private MovePointController _movePointController;
         public int CoutnCreated => _coutnCreated;
         private int _coutnCreated;
-        public int CoutnOrdered => _countOrdered;
         private int _countOrdered;
-
+        private ICharacterHandler _characterHandler;
+        private ISearchService _searchService;
+        private IGameEventBroadcaster _eventBroadcaster;
         public Action LastHumanoidDie;
+        private int _initialPrecentUp=50;
 
         public void Initialize(AudioManager audioManager, SceneInitializer sceneInitializer ,SceneObjectManager sceneObjectManager)
         {
@@ -49,6 +50,10 @@ namespace Infrastructure.Logic.Inits
             FillWorkPoints();
             _store = sceneInitializer.Window.GetStoreOnPlay();
             _movePointController = sceneInitializer.GetMovePointController();
+            _characterHandler= AllServices.Container.Single<ICharacterHandler>();
+            _searchService= AllServices.Container.Single<ISearchService>();
+            _eventBroadcaster=AllServices.Container.Single<IGameEventBroadcaster>();
+            AddListener();
         }
         private void FillWorkPoints()
         {
@@ -61,23 +66,24 @@ namespace Infrastructure.Logic.Inits
         private void OnCreatedCharacted(Character character)
         {
             _coutnCreated++;
-            _activeCharacters.Add(character);
+            _movePointController.SelectedPoint.SetCharacter(character);
+            _movePointController.SetCurrentPoint(_movePointController.SelectedPoint);
+            
+            SetCreatedCharacter(character);
+            _searchService.AddEntity(character);
             
             if (character.TryGetComponent(out Humanoid humanoid))
             {
                 humanoid.OnEntityDeath += OnDeath;
+                _eventBroadcaster.InvokeOnSetActiveHumanoid();
             }
             if (character.TryGetComponent(out Turret turret))
             {
                 turret.SetSaveLoadService();
             }
-           
-            _movePointController.SelectedPoint.SetCharacter(character);
-            _movePointController.SetCurrentPoint(_movePointController.SelectedPoint);
             
+            _eventBroadcaster.InvokeOnSetActiveCharacter(character);
             CreatedCharacter?.Invoke();
-            SetCreatedCharacter(character);
-            SetLocalParametrs();
         }
 
         private  void CreateTurret(Turret turret, Transform transform)
@@ -102,16 +108,13 @@ namespace Infrastructure.Logic.Inits
             else if(character.TryGetComponent( out Turret turret))
             {
                 _countOrdered++;
-                //    CreateTurret(turret, transform);
                 _workPointsGroup.OnSelected(_movePointController.SelectedPoint);
             }
         }
-
-        public List<Character> GetAllCharacter() => _activeCharacters;
-
+        
         private void CheckRemainingHumanoids()
         {
-            if (_activeCharacters.Count == 0)
+            if (_characterHandler.GetActiveCharacters().Count == 0)
             {
                 LastHumanoidDie?.Invoke();
             }
@@ -119,23 +122,8 @@ namespace Infrastructure.Logic.Inits
 
         private void OnDeath(Entity entity)
         {
-            Character character = entity.GetComponent<Character>();
-            _inactiveCharacetrs.Add(character);
-            _activeCharacters.Remove(character);
-            SetLocalParametrs();
+            _eventBroadcaster.InvokeOnCharacterDie(entity.GetComponent<Character>());
             CheckRemainingHumanoids();
-        }
-
-        protected override void OnDisable()
-        {
-            foreach (Character character in _activeCharacters)
-            {
-                if (character.TryGetComponent(out Humanoid humanoid))
-                {
-                    DieState dieState = humanoid.GetComponent<DieState>();
-                    dieState.OnDeath -= OnDeath;
-                }
-            }
         }
 
         public WorkPointGroup GetWorkPointGroup() =>
@@ -146,29 +134,31 @@ namespace Infrastructure.Logic.Inits
             return _selectedHumanoid;
         }
 
-        private void SetLocalParametrs()
-        {
-            AllServices.Container.Single<ICharacterHandler>().SetActiveCharacters(_activeCharacters);
-            AllServices.Container.Single<ICharacterHandler>().SetInactiveHumanoids(_inactiveCharacetrs);
-        }
-
         public void ClearData()
         {
-            ClearGroup(_activeCharacters);
-            ClearGroup(_inactiveCharacetrs);
             _countOrdered = 0;
             _coutnCreated = 0;
         }
-
-        private void ClearGroup(List<Character> characters)
-        {
-            foreach (var character in characters)
-            {
-                Destroy(character);
-            }
-            
-            characters.Clear();
-        }
         
+        private void AddListener()
+        {
+            _eventBroadcaster.OnCharacterLevelUp+=OnCharacterLevelUp;
+        }
+
+        private void OnCharacterLevelUp()
+        {
+            _selectedHumanoid.HealthLevelUp(_initialPrecentUp);
+            _selectedHumanoid.GetComponent<HumanoidWeaponController>().DamageLevelUp(_initialPrecentUp);
+        }
+
+        protected override void OnDisable()
+        {
+            RemoveListener();
+        }
+
+        private void RemoveListener()
+        {
+            _eventBroadcaster.OnCharacterLevelUp-=OnCharacterLevelUp;
+        }
     }
 }

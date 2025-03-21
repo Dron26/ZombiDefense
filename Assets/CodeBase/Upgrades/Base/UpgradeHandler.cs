@@ -11,8 +11,7 @@ namespace Services
 {
     public class UpgradeHandler : IUpgradeHandler
     {
-        private GameData _gameData;
-        private GameParameters _gameParameters=new();
+        private GameParameters _gameParameters;
         private Dictionary<UpgradeGroupType, Action<Upgrade>> _upgradeEvents;
 
         public HashSet<string> GetUnlockedUpgrades() => _gameParameters.GetUnlockedUpgrades();
@@ -20,7 +19,7 @@ namespace Services
         public UpgradeHandler(GameParameters gameParameters)
         {
             _gameParameters = gameParameters;
-            LoadParametrs();
+            _gameParameters.ChangeState();
             _upgradeEvents = new Dictionary<UpgradeGroupType, Action<Upgrade>>();
         }
 
@@ -37,17 +36,13 @@ namespace Services
             return true;
         }
 
-        public GameParameters GetUpgradeData()
-        {
-            return _gameParameters;
-        }
-
         public void AddPurchasedUpgrade(string upgradeId)
         {
             if (!_gameParameters.PurchasedUpgrades.Contains(upgradeId))
             {
                 _gameParameters.PurchasedUpgrades.Add(upgradeId);
             }
+            
         }
 
         public void RemovePurchasedUpgrade(string upgradeId)
@@ -58,31 +53,22 @@ namespace Services
             }
         }
 
-        public void InitializeBaseUpgrades(Upgrade upgrade)
+        public void AddUnlockedUpgrade(String key)
         {
-            _gameParameters.InitializeBaseUpgrades(upgrade);
+            _gameParameters.AddUnlockedUpgrade(key);
         }
 
+        
         public GameParameters GetGameParametrs()
         {
             return _gameParameters;
         }
-        
-        
-        private void LoadParametrs()
+
+        public List<string> GetPurchasedUpgradesByType(UpgradeGroupType groupType, UpgradeType type)
         {
-            if (_gameParameters.IsStartParametrs)
-            {
-                _gameParameters.Initialize(Resources.Load<GameParametersData>(AssetPaths.GameParametersData));
-            }
-            else
-            {
-                
-            }
-            //_startParameters = Resources.Load<StartParameters>(AssetPaths.StartParametrs);
+            return _gameParameters.GetPurchasedUpgradesByType(groupType, type);
         }
-        
-        
+
         
         
         public void Subscribe(UpgradeGroupType groupType, Action<Upgrade> listener)
@@ -112,5 +98,6 @@ namespace Services
                 _upgradeEvents[upgrade.GroupType]?.Invoke(upgrade);
             }
         }
+        
     }
 }

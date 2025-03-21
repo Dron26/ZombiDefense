@@ -4,6 +4,7 @@ using Enemies;
 using Enemies.AbstractEntity;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.Logic.WeaponManagment;
+using Services;
 using Services.Audio;
 using UnityEngine;
 
@@ -30,7 +31,7 @@ namespace Infrastructure.AIBattle
         [SerializeField] private GameObject _shield;
         
         private ItemType _item;
-        private AudioManager _audioManager;
+        private IAudioManager _audioManager;
         private bool _isFireParticlePlay;
         private EnemyType _enemyType;
         private AudioSource _audioSource;
@@ -100,7 +101,7 @@ namespace Infrastructure.AIBattle
 
         private void SetData()
         {
-            _audioManager = _enemy.GetAudioController();
+            _audioManager = AllServices.Container.Single<IAudioManager>();
             _audioSource = _audioManager.GetSoundSource();
             _enemyType = _enemy.Data.Type;
         }

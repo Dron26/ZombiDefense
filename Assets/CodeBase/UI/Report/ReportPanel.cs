@@ -87,7 +87,6 @@ namespace UI.Report
                 _infoOffer.TranslationName = ReportKey.TasksCompleted.ToString();
             }
 
-            
             _panel.SetActive(true);
             _numberKilledEnemies = _achievementsHandler.KilledEnemies;
             _allNumberKilledEnemies = _achievementsHandler.DailyKilledEnemies;
@@ -131,7 +130,7 @@ namespace UI.Report
         }
         private void SetPaused(bool isPaused)
         {
-            _pauseService.SetPause(isPaused);
+            _pauseService.ChangePause(isPaused);
         }
         private void SelectOk()
         {
@@ -178,6 +177,3 @@ namespace UI.Report
         TasksCompleted
     }
 }
-
-//когда я заканчиваю последнюю волну мне предоставляют вариант играть дальше или завершить 
-//и перейти на след миссию, если я выбираю завершить и перейти на другую миссию я вывожу эту панель 

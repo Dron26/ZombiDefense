@@ -12,7 +12,6 @@ namespace Interface
         bool IsMoneyEnough(int price);
         void AddMoneyForKilledEnemy(int amount);
         void ClearMoneyForKilledEnemy();
-        public int FixTemporaryMoneyState();
         void Reset();
     }
 }

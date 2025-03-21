@@ -10,9 +10,11 @@ namespace UI.HUD.StorePanel
     {
         [SerializeField] private Image _icon;
 
+        [SerializeField] private Image _lock;
         //[SerializeField] private  TMP_Text _name;
         public CharacterData Data => _data;
         public bool IsSelected => _isSelected;
+        private  bool _isLock=false;
         public int Price => _data.Price;
         public CharacterType Type => _data.Type;
 
@@ -27,6 +29,8 @@ namespace UI.HUD.StorePanel
         {
             _button = GetComponentInChildren<Button>();
             _button.onClick.AddListener(OnClickButton);
+            _button.interactable = !_isLock;
+            _lock.gameObject.SetActive(_isLock);
         }
 
         private void OnClickButton()
@@ -34,12 +38,16 @@ namespace UI.HUD.StorePanel
             Selected?.Invoke(this);
         }
 
-
         public void Initialize(CharacterData data, CharacterStore store)
         {
             _store = store;
             _data = data;
             _icon.sprite = _data.Sprite;
+        }
+
+        public void SetLock(bool isLock)
+        {
+            _isLock=isLock;
         }
     }
 }

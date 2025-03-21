@@ -22,7 +22,6 @@ namespace UI.GeneralMenu
         [SerializeField] private LocationUIManager _locationUIManager;
         [SerializeField]private  SettingPanel _settingPanel;
         [SerializeField] private GameObject _menuPanel;
-        [SerializeField]private AudioManager _audioManager;
         [SerializeField] private LocationManager _locationManager;
         [SerializeField] private Button _play;
         [SerializeField] private Button _upgradeBack;
@@ -30,8 +29,9 @@ namespace UI.GeneralMenu
         [SerializeField] private Button _backUILocotion;
         [SerializeField] private List<UpgradeBranch> _branchContainer;
         [SerializeField] private UpgradeWindow _upgradeWindow;
-        [SerializeField] private UpgradeInpoPanel _upgradeInpoPanel;
-
+        [SerializeField] private UpgradeInfoPanel _upgradeInfoPanel;
+        [SerializeField] private AudioSource _soundSource;
+        
         private ISaveLoadService _saveLoadService;
         private GameStateMachine _stateMachine;
         private IUIHandler _handler;
@@ -41,14 +41,14 @@ namespace UI.GeneralMenu
             _saveLoadService = AllServices.Container.Single<ISaveLoadService>();
             _stateMachine = stateMachine;
             
-            LoadAudioController();
-            _settingPanel.Initialize(_audioManager);
+            _settingPanel.Initialize();
             AddListener();
 
             InitializeLocationSystem();
             // _locationPanel.SetActive(!isActive);
-            AllServices.Container.Single<IUpgradeManager>().SetData(_branchContainer,_upgradeInpoPanel);
+            AllServices.Container.Single<IUpgradeManager>().SetData(_branchContainer,_upgradeInfoPanel);
             AllServices.Container.Single<IUpgradeManager>().UpdateBranches();
+            _soundSource = AllServices.Container.Single<IAudioManager>().GetSoundSource();
         }
         
         private void InitializeLocationSystem()
@@ -60,14 +60,7 @@ namespace UI.GeneralMenu
             _locationUIManager.Initialize(_saveLoadService,_locationManager);
             _locationUIManager.OnSelectLocation += SwicthScene;
         }
-        
-        
-        private  void  LoadAudioController()
-        {
-            _audioManager.SetMenuEnabled(true);
-            _audioManager.Initialize();
-        }
-        
+
         private void OnClikedCurtain()
         {
             bool isActive = AllServices.Container.Single<ILocationHandler>().IsExitFromLocation;

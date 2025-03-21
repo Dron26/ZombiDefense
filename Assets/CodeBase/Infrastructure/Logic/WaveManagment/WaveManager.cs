@@ -61,7 +61,6 @@ namespace Infrastructure.Logic.WaveManagment
             _sceneInitializer = sceneInitializer;
             _eventBroadcaster=AllServices.Container.Single<IGameEventBroadcaster>(); 
 
-            _enemyFactory.Initialize( _sceneInitializer.GetAudioController());
             _waveSpawner.Initialize(_sceneInitializer.GetAudioController(), _enemyFactory, this);
             _canFillWave = true;
             
@@ -133,7 +132,7 @@ namespace Infrastructure.Logic.WaveManagment
             _waveSpawner.OnCompletedWave += CompletedWave;
             _waveSpawner.OnStartedWave += OnStartedWave;
             _sceneInitializer.OnClickContinue += SetContinue;
-            _eventBroadcaster.LastEnemyRemained += SetWaveData;
+            _eventBroadcaster.OnLastEnemyRemained += SetWaveData;
         }
 
         public void OnStartedWave()
@@ -170,7 +169,7 @@ namespace Infrastructure.Logic.WaveManagment
             _waveSpawner.OnSpawnPointsReady -= OnWaveFilled;
             _waveSpawner.OnCompletedWave -= CompletedWave;
             _sceneInitializer.OnClickContinue -= SetContinue;
-            _eventBroadcaster.LastEnemyRemained -= SetWaveData;
+            _eventBroadcaster.OnLastEnemyRemained -= SetWaveData;
         }
     }
 }

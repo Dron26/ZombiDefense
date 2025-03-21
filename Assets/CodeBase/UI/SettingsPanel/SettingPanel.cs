@@ -17,7 +17,7 @@ namespace UI.SettingsPanel
         [SerializeField]private Slider soundSlider;
         [SerializeField]private Slider musicSlider;
     
-        private AudioManager _audioPlayer;
+        private IAudioManager _audioManager;
         private AudioData _audioDataSettings;
         private  bool _soundEnabled ;
         private bool _musicEnabled ;
@@ -25,10 +25,9 @@ namespace UI.SettingsPanel
         private float _currentVolumeMusic ;
         private bool vibrationEnabled = false;
         
-        public void Initialize(AudioManager audioManager )
+        public void Initialize()
         {
-            _audioPlayer = audioManager;
-
+            _audioManager=AllServices.Container.Single<IAudioManager>();
             LoadSound();
        
             _toggleSound.onValueChanged.AddListener(SetSound);
@@ -52,24 +51,24 @@ namespace UI.SettingsPanel
         
         private void SetSound(bool value)
         {
-            _audioPlayer.ToggleSound(value);
-            _soundEnabled = _audioPlayer.SoundEnabled;
+            _audioManager.ToggleSound(value);
+            _soundEnabled = _audioManager.GetSoundEnabled();
         }
 
         private void SetMusic(bool value)
         {
-            _audioPlayer.ToggleMusic(value);
-            _musicEnabled = _audioPlayer.MusicEnabled;
+            _audioManager.ToggleMusic(value);
+            _musicEnabled = _audioManager.GetMusicEnabled();
         }
 
         private void ChangeSound(float value)
         {
-            _audioPlayer.SetSoundVolume(value);
+            _audioManager.SetSoundVolume(value);
         }
 
         private void ChangeMusic(float value )
         {
-            _audioPlayer.SetMusicVolume(value);
+            _audioManager.SetMusicVolume(value);
         }
 
         private void SetPause(bool isActive)

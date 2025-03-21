@@ -18,9 +18,9 @@ namespace UI.Buttons
         public void Initialize()
         {
             _enemyHandler=AllServices.Container.Single<IEnemyHandler>(); 
-            _eventBroadcaster=AllServices.Container.Single<IGameEventBroadcaster>(); 
-            _eventBroadcaster.OnEnemyDeath += OnEnemyDeath;
-            SetCount(_enemyHandler.GetActiveEnemy().Count);
+            _eventBroadcaster=AllServices.Container.Single<IGameEventBroadcaster>();
+            AddListener();
+            SetCount(_enemyHandler.GetMaxEnemyOnWave());
         }
 
         private void SetCount(int count)
@@ -33,6 +33,23 @@ namespace UI.Buttons
         {
             _countEnemy--;
             SetCount(_countEnemy);
+        }
+        
+        private void AddListener()
+        {
+            _eventBroadcaster.OnEnemyDeath += OnEnemyDeath;
+            _eventBroadcaster.OnOnSetMaxEnemy += SetCount;
+        }
+        
+        protected override void OnDisabled()
+        {
+            RemoveListener();
+        }
+
+        private void RemoveListener()
+        {
+            _eventBroadcaster.OnEnemyDeath-= OnEnemyDeath;
+            _eventBroadcaster.OnOnSetMaxEnemy -= SetCount;
         }
         
     }

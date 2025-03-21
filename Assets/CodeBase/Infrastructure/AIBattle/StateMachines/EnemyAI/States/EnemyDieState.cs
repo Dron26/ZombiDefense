@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Animation;
 using Characters.Humanoids.AbstractLevel;
 using Enemies;
 using Enemies.AbstractEntity;
@@ -41,7 +42,6 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
             _fxController = StateMachine.Enemy.FXController;
             _thisPosition = transform.position;
             
-            _wait = new WaitForSeconds(_waitTime);
             _collider = GetComponent<Collider>();
         }
 
@@ -71,20 +71,22 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
             if (_enemyType == EnemyType.Smoker)
             {
                 SmokerDie();
+                yield return new WaitForSeconds(_waitExplosion);
             }
 
-            yield return new WaitForSeconds(_waitExplosion);
-
+            
+            float time= GetComponent<EnemyAnimController>().GetAnimationClip(4).length;
+            _wait = new WaitForSeconds(time);
+            yield return  _wait;
+            
             gameObject.SetActive(false);
             _isFalled = true;
             _thisPosition = _enemy.StartPosition;
-
-            yield return _wait;
-
-            if (!_isStopRevival && !_canDestroyed)
-            {
-                AfterDie();
-            }
+            
+            // if (!_isStopRevival && !_canDestroyed)
+            // {
+            //     AfterDie();
+            // }
 
             if (_canDestroyed)
             {

@@ -9,9 +9,8 @@ namespace Interface
         void SetSelectedCharacter(Character character);
         Character GetSelectedCharacter();
         void SetActiveCharacters(List<Character> characters);
+        void SetActiveCharacter(Character character);
         List<Character> GetActiveCharacters();
-        void SetInactiveHumanoids(List<Character> characters);
-        List<Character> GetInactiveHumanoids();
         void Reset();
         List<Character> GetAvailableCharacter();
     }

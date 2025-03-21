@@ -12,6 +12,7 @@ using Services;
 using Services.PauseService;
 using Services.SaveLoad;
 using UI.Buttons;
+using UI.Resurse;
 using UnityEngine;
 using UnityEngine.UI;
 using CharacterData = Characters.Humanoids.AbstractLevel.CharacterData;
@@ -33,6 +34,11 @@ namespace UI.HUD.StorePanel
         [SerializeField] private Button _closeButton;
         [SerializeField] private Button _applyAdsMoneyWindowButton;
         [SerializeField] private Button _closeAdsMoneyWindowButton;
+        
+        [SerializeField] private Button _specialCar;
+        [SerializeField] private Button _specialCarButton;
+        [SerializeField] private GameObject _specialTechniquePanel;
+        
         [SerializeField] private ButtonPanel _buttonPanel;
         [SerializeField] private GameObject _rightButtonPanel;
         [SerializeField] private WorkPointUpgradePanel _pointUpgradePanel;
@@ -41,6 +47,7 @@ namespace UI.HUD.StorePanel
         [SerializeField] private Camera _cameraPhysical;
         [SerializeField] private Camera _cameraUI;
         [SerializeField] private Camera _characterVisual;
+        
         private Wallet _wallet;
         private IPauseService _pauseService;
         private int _moneyAmount;
@@ -61,6 +68,13 @@ namespace UI.HUD.StorePanel
         public event Action <BoxData> OnBoughtBox;
         public event Action <CharacterData> OnBoughtCharacter;
         private IGameEventBroadcaster _eventBroadcaster;
+        private IUpgradeTree _upgradeTree;
+        private ICharacterHandler _characterHandler;
+        private int _priceCharacterLevelUp=1500;
+        private int _priceSpecialTechnique;
+        private int _precentDecreaseCostSpecialTechnique;
+        private int _maxLevel;
+        private int _precentLevelUp;
 
         public void Initialize(SceneInitializer initializer)
         {
@@ -68,17 +82,19 @@ namespace UI.HUD.StorePanel
             _boxStore = GetComponent<BoxStore>();
             _pauseService = AllServices.Container.Single<IPauseService>();
             _eventBroadcaster=AllServices.Container.Single<IGameEventBroadcaster>(); 
-
+            _moneyAmount = AllServices.Container.Single<ICurrencyHandler>().GetCurrentMoney();
+            _characterHandler=AllServices.Container.Single<ICharacterHandler>();
+            
             _storePanel.gameObject.SetActive(!_storePanel.activeSelf);
             _sceneInitializer = initializer;
-            _moneyAmount = AllServices.Container.Single<ICurrencyHandler>().GetCurrentMoney();
             _workPointGroup = _sceneInitializer.GetPlayerCharacterInitializer().GetWorkPointGroup();
             _boxStore.Initialize(_wallet);
             SetCharacterInitializer();
             _storePanel.gameObject.SetActive(!_storePanel.activeSelf);
             // _adsStore.Initialize(_wallet);
             _wallet.Initialize();
-            
+            _upgradeTree=AllServices.Container.Single<IUpgradeTree>();
+            SetUpgrades();
             AddListener();
         }
 
@@ -146,7 +162,7 @@ namespace UI.HUD.StorePanel
         {
             int price = _priceForWorkPointUp;
 
-            if (_wallet.IsMoneyEnough(price))
+            if (_maxLevel> _selectedWorkPoint.Level && _wallet.IsMoneyEnough(price))
             {
                 _wallet.SpendMoney(price);
                 _workPointGroup.UpLevel(_selectedWorkPoint);
@@ -174,7 +190,7 @@ namespace UI.HUD.StorePanel
         public void SwitchStorePanel()
         {
             _isPanelActive = !_isPanelActive;
-            _pauseService.SetPause(_isPanelActive);
+            _pauseService.ChangePause(_isPanelActive);
             SwitchPanels(_isPanelActive);
             SwitchCameras(_isPanelActive);
         }
@@ -218,18 +234,107 @@ namespace UI.HUD.StorePanel
 
             _boxStore.BuyBox+=OnBuyBox;
             _characterStore.BuyCharacter += BuyCharacter;
+            _characterStore.OnReachLimitCharacter += IsReachLimitCharacter;
+            _specialCar.onClick.AddListener(ShowSpecialTechniquePanel);
+            _specialCarButton.onClick.AddListener(SetActiveSpecialTechnique);
+            
+          //  _healthRestoreButton.onClick.AddListener((HealthRestore) );
         }
-        public void OnBuyBox(BoxData data)
-        {
-            OnBoughtBox?.Invoke(data);
-        }
+
+     
         private void RemoveListener()
         {
             _eventBroadcaster.OnSelectedNewPoint -= CheckPointInfo;
             _characterStore.BuyCharacter -= BuyCharacter;
             _characterStore.OnMoneyEmpty -= ShowPanelAdsForMoney;
             _pointUpgradePanel.OnSelectedButton -= (BuyPointUp);
-            _boxStore.BuyBox+=OnBuyBox;
+            _boxStore.BuyBox-=OnBuyBox;
+            _specialCar.onClick.AddListener(ShowSpecialTechniquePanel);
+            _specialCarButton.onClick.AddListener(SetActiveSpecialTechnique);
+        }
+
+        private void ShowSpecialTechniquePanel()
+        {
+            _specialTechniquePanel.gameObject.SetActive(true);
+        }
+        
+        private void SetActiveSpecialTechnique()
+        {
+            int price = (int)Mathf.Round(_priceSpecialTechnique*(100-_precentDecreaseCostSpecialTechnique)/ 100);
+            
+            if ( _wallet.IsMoneyEnough(price))
+            {
+                _wallet.SpendMoney(price);
+
+                _eventBroadcaster.InvokeOnActivatedSpecialTechnique();
+            }
+            else
+            {
+                print("должен мигать кошелек");
+            }
+            _eventBroadcaster.InvokeOnCharacterLevelUp();
+        }
+
+        private void IsReachLimitCharacter(bool isReach)
+        {
+            _buttonStorePanel.gameObject.SetActive(isReach);
+        }
+
+        public void OnBuyBox(BoxData data)
+        {
+            OnBoughtBox?.Invoke(data);
+        }
+        
+        private void SetUpgrades()
+        {
+            UpdateUpgradeValue(UpgradeGroupType.Defence, UpgradeType.IncreaseMaxLevelDefensePoint, value => _maxLevel = value);
+            UpdateUpgradeValue(UpgradeGroupType.Defence, UpgradeType.IncreaseMaxLevelDefensePoint, value => _precentLevelUp = value);
+            UpdateUpgradeValue(UpgradeGroupType.SpecialTechnique, UpgradeType.AddSpecialTechnique, value => _priceSpecialTechnique = value);
+            UpdateUpgradeValue(UpgradeGroupType.SpecialTechnique, UpgradeType.DecreaseCostSpecialTechnique, value => _precentDecreaseCostSpecialTechnique = value);
+
+            _specialCar.gameObject.SetActive(_priceSpecialTechnique != 0);
+        }
+
+        private void UpdateUpgradeValue(UpgradeGroupType groupType, UpgradeType type, Action<int> setValue)
+        {
+            var upgrades = _upgradeTree.GetUpgradeValue(groupType, type);
+            if (upgrades != null && upgrades.Count > 0)
+            {
+                setValue((int)Mathf.Round(upgrades[0]));
+            }
+        }
+        
+        private void CharacterLevelUp()
+        {
+            int price = _priceCharacterLevelUp;
+            
+            if ( _wallet.IsMoneyEnough(price))
+            {
+                _wallet.SpendMoney(price);
+                _workPointGroup.UpLevel(_selectedWorkPoint);
+
+                _eventBroadcaster.InvokeOnCharacterLevelUp();
+            }
+            else
+            {
+                print("должен мигать кошелек");
+            }
+            _eventBroadcaster.InvokeOnCharacterLevelUp();
+        }
+        
+        private void HealthRestore()
+        {
+            int price = _characterInitializer.GetSelectedCharacter().Price/2;
+            
+            if ( _wallet.IsMoneyEnough(price))
+            {
+                _wallet.SpendMoney(price);
+                _characterInitializer.GetSelectedCharacter().RestoreHealth();
+            }
+            else
+            {
+                _eventBroadcaster.InvokeOnMoneyEnough();
+            }
         }
     }
 }
