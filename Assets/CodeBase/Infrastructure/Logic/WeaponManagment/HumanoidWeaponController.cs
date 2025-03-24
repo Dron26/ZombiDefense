@@ -82,8 +82,8 @@ namespace Infrastructure.Logic.WeaponManagment
 
         public void SetPoint(WorkPoint workPoint)
         {
-            _damage = (int) Mathf.Round((_damage * (workPoint.UpPrecent+_damagePrecent) / 100));
-            _range = (_range * workPoint.UpPrecent) / 100;
+            _damage = (int) Mathf.Round((_damage * (1+(workPoint.UpPrecent+_damagePrecent) / 100)));
+            _range = _range * (1+(workPoint.UpPrecent / 100));
             //SetShootingRadius();
 
             if (workPoint.IsHaveWeaponBox)
@@ -138,7 +138,7 @@ namespace Infrastructure.Logic.WeaponManagment
             //_weapon =  weapon.GetComponent<Weapon>();
             _weapon = _weaponContainer.GetItem();
             _weapon.Initialize(itemData);
-            Damage = _weapon.Damage;
+            _damage = _weapon.Damage;
             _range = _weapon.Range;
             _spread = _weapon.SpreadAngle;
 
@@ -156,7 +156,7 @@ namespace Infrastructure.Logic.WeaponManagment
             Light.gameObject.SetActive(LighInformer.HasLight);
         }
 
-        private void SetRadius() => _radius.transform.localScale = new Vector3(_range / 3.6f, _range / 3.6f, 1);
+        private void SetRadius() => _radius.transform.localScale = new Vector3(_range / 3.5f, _range / 3.5f, 1);
 
 
         private void OpenWeaponBox(AdditionalBox weaponBox)
@@ -206,10 +206,22 @@ namespace Infrastructure.Logic.WeaponManagment
         
         private void SetUpgrades()
         {
-            _damagePrecent=_upgradeTree.GetUpgradeValue(UpgradeGroupType.Weapons,UpgradeType.IncreaseDamage)[0];
-            _range+=(int)_upgradeTree.GetUpgradeValue(UpgradeGroupType.Weapons,UpgradeType.IncreaseRange)[0];
+            int i = 0;
+            UpdateUpgradeValue(UpgradeGroupType.Weapons,UpgradeType.IncreaseDamage, value => _damagePrecent = value);
+            UpdateUpgradeValue(UpgradeGroupType.Weapons,UpgradeType.IncreaseRange, value => i = value);
+            _range+=i;
+            SetRadius();
         }
-        
+
+        private void UpdateUpgradeValue(UpgradeGroupType groupType, UpgradeType type, Action<int> setValue)
+        {
+            var upgrades = _upgradeTree.GetUpgradeValue(groupType, type);
+            if (upgrades != null && upgrades.Count > 0)
+            {
+                setValue((int)Mathf.Round(upgrades[0]));
+            }
+        }
+
         public void DamageLevelUp(float percent)
         {
             _damagePrecent= Mathf.RoundToInt(_damagePrecent * (1 + percent / 100));

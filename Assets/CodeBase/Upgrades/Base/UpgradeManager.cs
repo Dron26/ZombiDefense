@@ -12,11 +12,10 @@ namespace Upgrades.Base
     {
         private IUpgradeTree _upgradeTree;
         private List<Upgrade> _unlockedUpgrades = new();
-        private UpgradeInfoPanel _infoPanel;
+        private UpgradePanel _panel;
         private Upgrade _selectedUpgrade;
         private ICurrencyHandler _сurrencyHandler;
-        
-        
+
         public UpgradeManager(ICurrencyHandler сurrencyHandler)
         {
             _сurrencyHandler = сurrencyHandler;
@@ -50,9 +49,9 @@ namespace Upgrades.Base
             _upgradeTree.UpdateBranches();
         }
 
-        public void SetData(List<UpgradeBranch> branches, UpgradeInfoPanel infoPanel)
+        public void SetData(List<UpgradeBranch> branches, UpgradePanel panel)
         {
-            _infoPanel = infoPanel;
+            _panel = panel;
             AddListener();
             
             foreach (var branch in branches)
@@ -70,13 +69,13 @@ namespace Upgrades.Base
 
         private void ShowWindow(Upgrade upgrade)
         {
-            _infoPanel.Initialize(upgrade);
-            _infoPanel.SwitchState(true);
+            _panel.Initialize(upgrade);
+            _panel.ShowApplyWindow(true);
         }
 
         private void AddListener()
         {
-            _infoPanel.OnApplyClicked += OnApplyClicked;
+            _panel.OnApplyClicked += OnApplyClicked;
         }
 
         private void OnApplyClicked()

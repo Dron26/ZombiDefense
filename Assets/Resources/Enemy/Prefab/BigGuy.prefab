@@ -1009,6 +1009,8 @@ MonoBehaviour:
   _minParticleScale: 1
   _maxParticleScale: 1
   _container: {fileID: 1711605548361259742}
+  _impactDirt: {fileID: 0}
+  _shield: {fileID: 0}
 --- !u!114 &4442603795175817498
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1056,6 +1058,8 @@ MonoBehaviour:
   _minParticleScale: 0.8
   _maxParticleScale: 1.2
   _container: {fileID: 0}
+  _impactDirt: {fileID: 0}
+  _shield: {fileID: 0}
 --- !u!54 &5999291207444856022
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1440,7 +1444,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1987840046212482851
 Transform:
   m_ObjectHideFlags: 0
@@ -1927,7 +1931,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1987840046212482861
 Transform:
   m_ObjectHideFlags: 0
@@ -2311,7 +2315,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1987840046212482871
 Transform:
   m_ObjectHideFlags: 0

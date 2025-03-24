@@ -9,10 +9,8 @@ using Infrastructure.Factories.FactoryWarriors.Enemies;
 using Interface;
 using Services;
 using Services.Audio;
-using Services.SaveLoad;
 using UnityEngine;
 using EnemyData = Enemies.EnemyData;
-using Random = System.Random;
 
 namespace Infrastructure.Logic.WaveManagment
 {
@@ -20,63 +18,51 @@ namespace Infrastructure.Logic.WaveManagment
     {
         [SerializeField] private GameObject _spawnPointGroup;
 
-        public Action OnSpawnPointsReady;
-        public Action OnStartedWave;
-        public Action OnCompletedWave;
-        public Action<Enemy> OnActivedCharacter;
+        public event Action OnSpawnPointsReady;
+        public event Action OnStartedWave;
+        public event Action OnCompletedWave;
 
         private WaveManager _waveManager;
-        private AudioManager _audioManager;
-        private Dictionary<int, List<Enemy>> CreatedWave;
+        private Dictionary<int, List<Enemy>> _createdWaveDict;
         private List<List<Enemy>> _createdWave = new();
         private List<int> _activatedWavesNumber = new();
         private List<SpawnPoint> _spawnPoints = new();
         private EnemyFactory _enemyFactory;
-        private int _maxEnemyOnLocation = new();
         private int _currentIndexEnemyOnWave;
-        private List<Enemy> _inactiveEnemys = new();
         private int _numberKilledEnemies;
         public List<int> _enemyCount;
         //private float _cycleTimer;
         //private float _cycleDuration;
         private int _countActivatedEnemiesWave;
         private int _maxEnemyOnWave;
-        private int _currentIndexWave;
-        private float _stepDelayTime;
         private bool _isStopSpawning;
         private bool _isStopRevival = false;
         private int _spawnPointsCount ;
-        private List<float> _spawnPointDelayTime = new();
         private int _delayTimeCount=4;
         public int TimeTimeBeforeNextWave => _delayTimeCount;
-        Random _systemRandom = new Random();
         private IEnemyHandler _enemyHandler;
         private ISearchService _searchService;
         private ILocationHandler _locationHandler;
         private IGameEventBroadcaster _gameEvent;
-
+        private Coroutine _spawnCoroutine;
         public void Initialize(AudioManager audioManager, EnemyFactory enemyFactory, WaveManager waveManager)
         {
             _enemyFactory = enemyFactory;
-            _audioManager = audioManager;
             _waveManager = waveManager;
-            _stepDelayTime = 0.73f;
             _enemyHandler  = AllServices.Container.Single<IEnemyHandler>();
             _searchService  = AllServices.Container.Single<ISearchService>();
             _locationHandler= AllServices.Container.Single<ILocationHandler>();
             _gameEvent= AllServices.Container.Single<IGameEventBroadcaster>();
             AddListener();
             
-            CreatedWave = new Dictionary<int, List<Enemy>>();
+            _createdWaveDict = new Dictionary<int, List<Enemy>>();
         }
-
         
-
         private void SetData(WaveData waveData)
         {
             Debug.Log("SetWaveData");
             ClearData();
-            SetSpawnPoint();
+            InitializeSpawnPoints();
             SetWave(waveData);
         }
         
@@ -85,62 +71,42 @@ namespace Infrastructure.Logic.WaveManagment
             _enemyCount= waveData.EnemyCount;
             _spawnPointsCount = _spawnPoints.Count;
             StartFillPool(waveData);
-            FillTimeQueue();
-            _currentIndexWave++ ;
         }
 
-        private void FillTimeQueue()
+        private void InitializeSpawnPoints()
         {
-            
-            for (int i = 0; i < _delayTimeCount; i++)
-            {
-                float j = _systemRandom.Next(0, _delayTimeCount) / 2.0f; 
-                _spawnPointDelayTime.Add(_systemRandom.Next(0, _spawnPoints.Count)+j);
-            }
-        }
-
-        private void SetSpawnPoint()
-        {
-            foreach (SpawnPoint point in _spawnPointGroup.transform.GetComponentsInChildren<SpawnPoint>())
-            {
-                _spawnPoints.Add(point);
-            }
+            _spawnPoints = new List<SpawnPoint>(_spawnPointGroup.GetComponentsInChildren<SpawnPoint>());
         }
 
         private void StartFillPool(WaveData waveData)
         {
             Debug.Log("StartFillPool");
             _maxEnemyOnWave = 0;
-            _createdWave.Add(new List<Enemy>());
-            CreatedWave.Add(CreatedWave.Count,new List<Enemy>());
-            _currentIndexEnemyOnWave = CreatedWave.Count-1;
-            _activatedWavesNumber.Add(CreatedWave.Count-1);
-            List<EnemyData> enemies = waveData.Enemies;
-            
-            for (int i = 0; i < enemies.Count; i++)
+    
+            int waveIndex = _createdWaveDict.Count;
+            _createdWaveDict[waveIndex] = new List<Enemy>();
+            _activatedWavesNumber.Add(0);
+
+            for (int i = 0; i < waveData.Enemies.Count; i++)
             {
+                EnemyData enemyData = waveData.Enemies[i];
+                int spawnCount = waveData.EnemyCount[i];
                 int count = 0;
-                
-                for (int j = 0; j < _spawnPointsCount; j++)
+        
+                for (int j = 0; j < _spawnPoints.Count && count < spawnCount; j++)
                 {
-                    Enemy newEnemy = _enemyFactory.Create(enemies[i].Type);
+                    Enemy newEnemy = _enemyFactory.Create(enemyData.Type);
                     newEnemy.OnEntityDeath += OnEntityDeath;
                     PreparEnemy(newEnemy, _spawnPoints[j]);
-                    CreatedWave[_currentIndexEnemyOnWave].Add(newEnemy);
+
+                    _createdWaveDict[waveIndex].Add(newEnemy);
                     count++;
 
-                    if (count == waveData.EnemyCount[i])
-                    {
-                        
-                        _maxEnemyOnWave += count;
+                    if (count == spawnCount)
                         break;
-                    }
-
-                    if (count== _spawnPointsCount)
-                    {
-                        j = 0;
-                    }
                 }
+
+                _maxEnemyOnWave += spawnCount;
             }
 
             _enemyHandler.SetMaxEnemyOnWave(_maxEnemyOnWave);
@@ -149,12 +115,13 @@ namespace Infrastructure.Logic.WaveManagment
         }
 
         private void OnEntityDeath(Entity entity)
-        { 
-            Enemy enemy =entity.GetComponent<Enemy>();
+        {
+            Enemy enemy = entity.GetComponent<Enemy>();
             _enemyHandler.EnemyDeath(enemy);
+            enemy.GetComponent<EnemyDieState>().OnRevival -= OnEnemyRevival; 
+
             _numberKilledEnemies++;
-            
-            if (_numberKilledEnemies == _maxEnemyOnLocation)
+            if (_numberKilledEnemies == _maxEnemyOnWave)
             {
                 EndWave();
             }
@@ -176,7 +143,7 @@ namespace Infrastructure.Logic.WaveManagment
 
         public void OnStartSpawn()
         {
-            StartCoroutine(StartSpawn());
+            _spawnCoroutine = StartCoroutine(StartSpawn());
         }
         public IEnumerator StartSpawn()
         {
@@ -186,13 +153,14 @@ namespace Infrastructure.Logic.WaveManagment
             _countActivatedEnemiesWave = 0;
             
            
-            foreach (Enemy enemy in CreatedWave[_createdWave.Count-1])
+            foreach (Enemy enemy in _createdWaveDict[_createdWave.Count-1])
             {
                 if (_isStopSpawning == false)
                 {
                     enemy.transform.localPosition = enemy.StartPosition;
-                    float i = _systemRandom.Next(0, _delayTimeCount) / 2.0f; 
-                    yield return new WaitForSeconds(i);
+                    
+                    float delay = UnityEngine.Random.Range(0f, _delayTimeCount / 2f);
+                    yield return new WaitForSeconds(delay);
                     Activated(enemy);
                     _countActivatedEnemiesWave++;
 
@@ -217,7 +185,6 @@ namespace Infrastructure.Logic.WaveManagment
             }
 
             OnStartedWave?.Invoke();
-            _maxEnemyOnLocation = _enemyHandler.GetActiveEnemy().Count;
             _numberKilledEnemies = 0;
             StopCoroutine(StartSpawn());
         }
@@ -234,9 +201,8 @@ namespace Infrastructure.Logic.WaveManagment
                 
                 _activatedWavesNumber[index]++;
                 _searchService.AddEntity(enemy);
-                OnActivedCharacter?.Invoke(enemy);
                 
-                if (_activatedWavesNumber[index] == CreatedWave[index].Count)
+                if (_activatedWavesNumber[index] == _createdWaveDict[index].Count)
                 {
                     StopRevival(index);
                 }
@@ -246,8 +212,12 @@ namespace Infrastructure.Logic.WaveManagment
         public void StopSpawn()
         {
             _isStopSpawning = true;
-            StopCoroutine(StartSpawn());
-            StopRevival(CreatedWave.Count-1);
+            if (_spawnCoroutine != null)
+            {
+                StopCoroutine(_spawnCoroutine);
+                _spawnCoroutine = null;
+            }
+            StopRevival(_createdWaveDict.Count - 1);
         }
 
         private void OnEnemyRevival(Enemy enemy)
@@ -259,7 +229,7 @@ namespace Infrastructure.Logic.WaveManagment
         {
             _isStopRevival = true;
 
-            foreach (Enemy enemy in CreatedWave[index])
+            foreach (Enemy enemy in _createdWaveDict[index])
             {
                 EnemyDieState enemyDieState = enemy.GetComponent<EnemyDieState>();
                 enemyDieState.StopRevival(_isStopRevival);
@@ -288,16 +258,16 @@ namespace Infrastructure.Logic.WaveManagment
 
         private void ClearEnemies()
         {
-            for (int i = 0; i < CreatedWave.Count; i++)
+            for (int i = 0; i < _createdWaveDict.Count; i++)
             {
-                if (CreatedWave[i] != null)
+                if (_createdWaveDict[i] != null)
                 {
-                    for (int j = 0; j <  CreatedWave[i].Count; j++)
+                    for (int j = 0; j <  _createdWaveDict[i].Count; j++)
                     {
-                        CreatedWave[i][j].GetComponent<EnemyDieState>().SetDestroyed();
+                        _createdWaveDict[i][j].GetComponent<EnemyDieState>().SetDestroyed();
                     }
                 
-                    CreatedWave[i].Clear();
+                    _createdWaveDict[i].Clear();
                 }
             }
             

@@ -22,15 +22,17 @@ namespace UI.GeneralMenu
         [SerializeField] private LocationUIManager _locationUIManager;
         [SerializeField]private  SettingPanel _settingPanel;
         [SerializeField] private GameObject _menuPanel;
+       // [SerializeField] private GameObject _upgradePanel;
         [SerializeField] private LocationManager _locationManager;
         [SerializeField] private Button _play;
         [SerializeField] private Button _upgradeBack;
         [SerializeField] private Button _upgrade;
-        [SerializeField] private Button _backUILocotion;
+        [SerializeField] private Button _backUILocation;
         [SerializeField] private List<UpgradeBranch> _branchContainer;
-        [SerializeField] private UpgradeWindow _upgradeWindow;
-        [SerializeField] private UpgradeInfoPanel _upgradeInfoPanel;
+        [SerializeField] private UpgradePanel _upgradePanel;
         [SerializeField] private AudioSource _soundSource;
+        [SerializeField] private Camera _upgradeCamera;
+        [SerializeField] private Camera _menuCamera;
         
         private ISaveLoadService _saveLoadService;
         private GameStateMachine _stateMachine;
@@ -40,13 +42,14 @@ namespace UI.GeneralMenu
         {
             _saveLoadService = AllServices.Container.Single<ISaveLoadService>();
             _stateMachine = stateMachine;
-            
+            _upgradeCamera.gameObject.SetActive(false);
+       //     _upgradePanel.gameObject.SetActive(false);
             _settingPanel.Initialize();
             AddListener();
 
             InitializeLocationSystem();
             // _locationPanel.SetActive(!isActive);
-            AllServices.Container.Single<IUpgradeManager>().SetData(_branchContainer,_upgradeInfoPanel);
+            AllServices.Container.Single<IUpgradeManager>().SetData(_branchContainer,_upgradePanel);
             AllServices.Container.Single<IUpgradeManager>().UpdateBranches();
             _soundSource = AllServices.Container.Single<IAudioManager>().GetSoundSource();
         }
@@ -85,30 +88,37 @@ namespace UI.GeneralMenu
         {
             AllServices.Container.Single<IUIHandler>().GetCurtain().OnClicked += OnClikedCurtain;
             _play.onClick.AddListener(()=>SwitchMenuPanelState(false));
-            _backUILocotion.onClick.AddListener(()=>SwitchMenuPanelState(true));
-            _upgrade.onClick.AddListener(SwitchPanelsState);
-            _upgradeBack.onClick.AddListener(()=>SwitchMenuPanelState(true));
+            _backUILocation.onClick.AddListener(()=>SwitchMenuPanelState(true));
+            _upgrade.onClick.AddListener(()=>SwitchUpgradePanelState(true));
+            _upgradeBack.onClick.AddListener(()=>SwitchUpgradePanelState(false));
         }
 
         private void SwitchPanelsState()
         {
-            _upgradeWindow.SwitchState();
+           
             SwitchMenuPanelState(false);
         }
         
         private void SwitchMenuPanelState(bool isActive)
         {
             _menuPanel.SetActive(isActive);
-            
         }
 
+        private void SwitchUpgradePanelState(bool isActive)
+        {
+            _upgradePanel.SwitchState(isActive);
+            _upgradeCamera.gameObject.SetActive(isActive);
+            _menuCamera.gameObject.SetActive(!isActive);
+            SwitchMenuPanelState(!isActive);
+        }
+        
         private void RemoveListener()
         {
             AllServices.Container.Single<IUIHandler>().GetCurtain().OnClicked -= OnClikedCurtain;
             _play.onClick.RemoveListener(()=>SwitchMenuPanelState(false));
-            _backUILocotion.onClick.RemoveListener(()=>SwitchMenuPanelState(true));
-            _upgrade.onClick.AddListener(()=>SwitchMenuPanelState(false));
-            _upgradeBack.onClick.AddListener(()=>SwitchMenuPanelState(true));
+            _backUILocation.onClick.RemoveListener(()=>SwitchMenuPanelState(true));
+            _upgrade.onClick.AddListener(()=>SwitchUpgradePanelState(false));
+            _upgradeBack.onClick.AddListener(()=>SwitchUpgradePanelState(false));
         }
 
         private void OnDestroy()

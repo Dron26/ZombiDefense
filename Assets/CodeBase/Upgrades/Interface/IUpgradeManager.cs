@@ -8,7 +8,7 @@ public interface IUpgradeManager:IService
 {
     bool PurchaseUpgrade(Upgrade upgrade);
     bool IsUnlocked(int upgradeId);
-    public void SetData(List<UpgradeBranch> branches, UpgradeInfoPanel infoPanel);
+    public void SetData(List<UpgradeBranch> branches, UpgradePanel panel);
     void UpdateBranches();
     public void SetTree();
 

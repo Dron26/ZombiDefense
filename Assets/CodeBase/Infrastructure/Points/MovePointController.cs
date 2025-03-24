@@ -27,8 +27,6 @@ namespace Infrastructure.Points
         public WorkPoint SelectedPoint => _selectedPoint;
         private WorkPoint _movePoint;
         private Character _selectedCharacter;
-        public UnityAction<WorkPoint> OnClickWorkpoint;
-        public UnityAction<WorkPoint> OnClickPoint;
         private bool isChracterSelected = false;
         private bool isPointToMoveTaked;
         [SerializeField] private WorkPoint _startPoint;
@@ -36,11 +34,14 @@ namespace Infrastructure.Points
         private bool isMovementOver = false;
         private ICharacterHandler _characterHandler;
         private ILocationHandler _locationHandler;
-        
+        private IGameEventBroadcaster _eventBroadcaster;
+
         public void Initialize(SceneInitializer sceneInitializer )
         {
             _characterHandler=AllServices.Container.Single<ICharacterHandler>();
             _locationHandler=AllServices.Container.Single<ILocationHandler>();
+            _eventBroadcaster=AllServices.Container.Single<IGameEventBroadcaster>(); 
+
             _sceneInitializer = sceneInitializer;
             _characterInitializer = sceneInitializer.GetPlayerCharacterInitializer();
             _activeCharacters = _characterHandler.GetActiveCharacters();
@@ -66,12 +67,12 @@ namespace Infrastructure.Points
             _previousMovePoint = _workPoints[0];
             _currentPoint = _workPoints[0]; //  _selectedPoint.SetSelected(true);
             _locationHandler.SetSelectedPointId(0);
-            OnClickPoint?.Invoke(_selectedPoint);
+            _eventBroadcaster.InvokeOnSelectedNewPoint(_selectedPoint);
         }
 
         public void OnSelectedPoint(WorkPoint newPoint)
         {
-            OnClickPoint?.Invoke(newPoint);
+            _eventBroadcaster.InvokeOnSelectedNewPoint(newPoint);
             isChracterSelected = _characterHandler.GetSelectedCharacter();
             _selectedCharacter = _characterHandler.GetSelectedCharacter();
 

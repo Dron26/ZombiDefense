@@ -23,7 +23,7 @@ namespace Data
         public GameParameters GameParameters= new();
         
         
-        public bool IsFirstStart;
+        public bool IsFirstStart=true;
 
         public void ChangeIsFirstStart() => IsFirstStart = false;
 

@@ -5,10 +5,8 @@ using Infrastructure.AIBattle;
 using Infrastructure.AIBattle.StateMachines.EnemyAI;
 using Infrastructure.AIBattle.StateMachines.EnemyAI.States;
 using Infrastructure.Logic.WeaponManagment;
-using Services.Audio;
 using UnityEngine;
 using UnityEngine.AI;
-using EnemyData = Enemies.EnemyData;
 using Random = UnityEngine.Random;
 
 namespace Enemies.AbstractEntity
@@ -25,18 +23,15 @@ namespace Enemies.AbstractEntity
         private int _price;
 
         public event Action<EnemyEventType, ItemType> OnEnemyEvent;
-        public event Action OnTakeGranadeDamage;
         public Action OnInitialized;
 
         //public Action<WeaponType> OnTakeDamage;
         public Vector3 StartPosition;
         public float MaxHealth => _maxHealth;
-        public float Health => _health;
         public int Level => _level;
         public int IndexInWave => _indexInWave;
         public EnemyData Data => _data;
 
-        private List<SkinGroup> _skinGroups = new();
         private Animator _animator;
         private EnemyAnimController _enemyAnimController;
         private EnemyFXController _fxController;

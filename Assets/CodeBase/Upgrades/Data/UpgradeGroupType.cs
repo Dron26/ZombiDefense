@@ -11,5 +11,6 @@ public enum UpgradeGroupType
     Box,
     Profit,
     CashLimit,
-    PriceUpdate
+    PriceUpdate,
+    WeaponsAdditional
 }

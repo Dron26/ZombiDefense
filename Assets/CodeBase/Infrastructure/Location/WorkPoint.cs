@@ -144,14 +144,14 @@ namespace Infrastructure.Location
             bool selected=_isSelected;
             _isSelected = isSelected;
             
-            if (selected==false)
-            {
-                StartCoroutine(SelectedCircleActivated());
-            }
-            else 
-            {
-                StopCoroutine(SelectedCircleActivated());
-            }
+            // if (selected==false)
+            // {
+            //     StartCoroutine(SelectedCircleActivated());
+            // }
+            // else 
+            // {
+            //     StopCoroutine(SelectedCircleActivated());
+            // }
             
             _selectedCircle.gameObject.SetActive(_isSelected);
         }
@@ -195,11 +195,11 @@ namespace Infrastructure.Location
             CheckCharacter();
         }
 
-        public void UpLevel(int precent)
+        public void UpLevel(int procent)
         {
             
             _selectedCircles[_level].gameObject.SetActive(false);
-            _upPrecent += precent;
+            _upPrecent += procent;
             _level++;
             _selectedCircles[_level].gameObject.SetActive(true);
         }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Data.Upgrades;
 using Enemies.AbstractEntity;
@@ -269,11 +270,28 @@ namespace Characters.Robots
             //StartCoroutine(IdleState());
         }
 
-        public void SetUpgrades()
+        private void SetUpgrades()
         {
-            _isAutoFind=(int)Mathf.Round(_upgradeTree.GetUpgradeValue(UpgradeGroupType.Turrets, UpgradeType.AddTurretAutoAim)[0])>0;
+            int i=0;
+            UpdateUpgradeValue(UpgradeGroupType.Turrets, UpgradeType.AddTurretAutoAim, value => i = value);
+            if (i != 0)
+            {
+                _isAutoFind=(int)Mathf.Round(_upgradeTree.GetUpgradeValue(UpgradeGroupType.Turrets, UpgradeType.AddTurretAutoAim)[0])>0;
+            };
+
         }
 
+        private void UpdateUpgradeValue(UpgradeGroupType groupType, UpgradeType type, Action<int> setValue)
+        {
+            var upgrades = _upgradeTree.GetUpgradeValue(groupType, type);
+            if (upgrades != null && upgrades.Count > 0)
+            {
+                setValue((int)Mathf.Round(upgrades[0]));
+            }
+        }
+        
+        
+      
         public void CarTurretActive()
         {
             _isSelected = true;

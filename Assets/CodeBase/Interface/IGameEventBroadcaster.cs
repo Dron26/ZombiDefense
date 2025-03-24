@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Characters.Humanoids.AbstractLevel;
+using Data;
 using Enemies.AbstractEntity;
 using Infrastructure.Location;
 using Services;
@@ -26,6 +27,9 @@ namespace Interface
         event Action OnMoneyEnough;
         event Action OnActivatedSpecialTechnique;
         event Action<int> OnOnSetMaxEnemy;
+        event Action<CharacterData> OnBoughtCharacter;
+        event Action<BoxData> OnBoughtBox;
+        event Action<int> OnMoneyChanged;
         public void InvokeOnSetActiveHumanoid();
         public void InvokeOnCharacterDie(Character character);
         public void InvokeOnOnHumanoidDieDie();
@@ -44,8 +48,11 @@ namespace Interface
         public void InvokeOnCharacterLevelUp();
         public void InvokeOnMoneyEnough();
         public void InvokeOnActivatedSpecialTechnique();
-
-
+        
         public void InvokeOnSetMaxEnemy(int count);
+        
+        public void InvokeOnBoughtCharacter(CharacterData data);
+        public void InvokeOnBoughtBox(BoxData data);
+        public void InvokeOnMoneyChanged(int Money);
     }
 }

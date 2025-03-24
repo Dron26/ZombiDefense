@@ -24,9 +24,6 @@ namespace Infrastructure.Logic.WaveManagment
         public Action OnClickReady;
 
         private Wallet _wallet;
-        private string _nextWave = "The next wave";
-        private string _bonus = "Bonus";
-        
         private int bonusCoins;
         private bool _isStartClick = false;
         private float timerDuration ;

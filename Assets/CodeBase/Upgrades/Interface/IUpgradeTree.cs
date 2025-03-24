@@ -6,7 +6,7 @@ public interface IUpgradeTree:IService
     public void AddUpgrade(Upgrade upgrade);
 
     public bool CanPurchase(Upgrade upgrade, int playerMoney);
-    public bool PurchaseUpgrade(Upgrade upgrade);
+    public void PurchaseUpgrade(Upgrade upgrade);
     public Upgrade GetUpgrade(UpgradeData upgradeData);
     public void SetData(List<UpgradeData> upgradeData);
     

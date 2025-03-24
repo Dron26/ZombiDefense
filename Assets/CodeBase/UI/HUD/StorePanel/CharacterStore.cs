@@ -47,7 +47,6 @@ namespace UI.HUD.StorePanel
         private CharacterData _selectedCharacter;
         private Store _store;
         private Wallet _wallet;
-        private bool _isInitialized;
         private bool _isAvailable;
         public CharacterSlot SelectedCharacterSlot => _selectedCharacterSlot;
         public CharacterData SelectedCharacter => _selectedCharacter;
@@ -67,7 +66,6 @@ namespace UI.HUD.StorePanel
             SetCharacters();
             InitializeCharacterSlots();
             InitializeButton();
-            _isInitialized = true;
             _store.IsStoreActive += OpenCharacterStore;
             _wallet = store.GetWallet();
             _characterInfoPanel.Initialize(this);
@@ -201,9 +199,21 @@ namespace UI.HUD.StorePanel
         
         private void SetUpgrades()
         {
-            _maxCount=(int)_upgradeTree.GetUpgradeValue(UpgradeGroupType.Squad,UpgradeType.IncreaseSquadSize).Last();
+            var i=0;
             
-            _isAvailable=(int)_upgradeTree.GetUpgradeValue(UpgradeGroupType.Turrets,UpgradeType.Turret).Last()>0;
+            UpdateUpgradeValue(UpgradeGroupType.Squad,UpgradeType.IncreaseSquadSize, value => _maxCount = value);
+            UpdateUpgradeValue(UpgradeGroupType.Turrets,UpgradeType.Turret, value => i = value);
+             _isAvailable = i>0;
+        }
+
+        private void UpdateUpgradeValue(UpgradeGroupType groupType, UpgradeType type, Action<int> setValue)
+        {
+            var upgrades = _upgradeTree.GetUpgradeValue(groupType, type);
+            
+            if (upgrades != null && upgrades.Count > 0)
+            {
+                setValue((int)Mathf.Round(upgrades[0]));
+            }
         }
     }
 }

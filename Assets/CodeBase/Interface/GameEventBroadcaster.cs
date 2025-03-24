@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using Characters.Humanoids.AbstractLevel;
+using Data;
 using Enemies.AbstractEntity;
 using Infrastructure.Location;
+using UnityEditor.MPE;
 
 namespace Interface
 {
@@ -27,6 +29,9 @@ namespace Interface
         public event Action<int> OnOnSetMaxEnemy;
         public event Action<int> OnUpgradePurchased;
         public event Action<int> OnUpgradeRefunded;
+        public event Action<CharacterData> OnBoughtCharacter;
+        public event Action<BoxData> OnBoughtBox;
+        public event Action<int> OnMoneyChanged;
         private readonly Dictionary<Type, List<Delegate>> _eventHandlers = new();
         private readonly Dictionary<UpgradeGroupType, Action<Upgrade>> _upgradeEvents;
         
@@ -90,5 +95,9 @@ namespace Interface
         public void InvokeOnMoneyEnough()=>OnMoneyEnough?.Invoke();
         public void InvokeOnActivatedSpecialTechnique() => OnActivatedSpecialTechnique?.Invoke();
         public void InvokeOnSetMaxEnemy(int count)=>OnOnSetMaxEnemy?.Invoke(count);
+        
+        public void InvokeOnBoughtCharacter(CharacterData data)=>OnBoughtCharacter?.Invoke(data);
+        public void InvokeOnBoughtBox(BoxData data)=>OnBoughtBox?.Invoke(data);
+        public void InvokeOnMoneyChanged(int money) => OnMoneyChanged(money);
     }
 }

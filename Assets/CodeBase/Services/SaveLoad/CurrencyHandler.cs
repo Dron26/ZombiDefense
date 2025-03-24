@@ -10,14 +10,14 @@ namespace Services.SaveLoad
     public class CurrencyHandler : ICurrencyHandler
     {
         private readonly MoneyData _moneyData;
-
+        private IGameEventBroadcaster _eventBroadcaster;
         public event Action MoneyChanged;
         private const int InitialMoneyAmount = 100000;
         public CurrencyHandler(MoneyData moneyData)
         {
             _moneyData = moneyData;
             
-            if (!AllServices.Container.Single<ISaveLoadService>().GetGameData().IsFirstStart)
+            if (AllServices.Container.Single<ISaveLoadService>().GetGameData().IsFirstStart)
             {
                 
                 AddMoney(InitialMoneyAmount);
@@ -39,6 +39,7 @@ namespace Services.SaveLoad
             _moneyData.Money = amount;
             _moneyData.TempMoney += amount;
             _moneyData.AllAmountMoney += amount;
+            _eventBroadcaster.InvokeOnMoneyChanged(_moneyData.AllAmountMoney);
             MoneyChanged?.Invoke();
         }
 

@@ -10,7 +10,6 @@ namespace UI.Locations
         [SerializeField] private int _id;
         [SerializeField] private Image _lockedImage;
         [SerializeField] private Image _unlockedImage;
-        [SerializeField] private Image _selectImage;
         [SerializeField] private Sprite _highlightedSprite;
         [SerializeField] private Image _targetImage;
 
@@ -33,9 +32,7 @@ namespace UI.Locations
 
         public void UpdateState()
         {
-          
-            
-             _lockedImage.enabled = _isLocked;
+            _lockedImage.enabled = _isLocked;
              _unlockedImage.enabled = !_isLocked;
              _button.interactable = !_isLocked;
             

@@ -24,7 +24,6 @@ public class UpgradeTree : IUpgradeTree
         string nodeKey = $"{upgrade.GroupType}_{upgrade.Type}_{upgrade.Id}";
         var node = new UpgradeNode(upgrade);
         _upgradeNodes[nodeKey] = node;
-
     }
 
     public void UpdateUpgrade(Upgrade upgrade)
@@ -36,6 +35,7 @@ public class UpgradeTree : IUpgradeTree
         
         List<UpgradeNode> groupUpgrades = _upgradeNodes.Values
             .Where(node => node.Upgrade.GroupType == upgrade.GroupType)
+            .Where(node => node.Upgrade.Type == upgrade.Type)
             .OrderBy(node => node.Upgrade.Id) 
             .ToList();
 
@@ -59,7 +59,7 @@ public class UpgradeTree : IUpgradeTree
     {
         string nodeKey = $"{upgrade.GroupType}_{upgrade.Type}_{upgrade.Id}";
 
-        if (_upgradeNodes.ContainsKey(nodeKey))
+        if (_upgradeNodes.ContainsKey(nodeKey)&&!IsUpgradeAdded(nodeKey))
         {
             bool trueOrFalse = _upgradeNodes[nodeKey].IsAvailable(_upgradeHandler.GetUnlockedUpgrades());
             bool trueOrFalse2 = !_upgradeNodes[nodeKey].Upgrade.Lock;
@@ -71,24 +71,24 @@ public class UpgradeTree : IUpgradeTree
         return false;
     }
 
-    public bool PurchaseUpgrade(Upgrade upgrade)
+
+    public bool IsUpgradeAdded( string nodeKey)
+    {
+        if (_upgradeHandler.HasPurchasedUpgrade(nodeKey)) return true;
+
+        return false;
+    }
+    
+    public void PurchaseUpgrade(Upgrade upgrade)
     {
         string nodeKey = $"{upgrade.GroupType}_{upgrade.Type}_{upgrade.Id}";
 
-        if (_upgradeHandler.HasPurchasedUpgrade(nodeKey)) return false;
         _upgradeHandler.AddPurchasedUpgrade(nodeKey);
-        foreach (var i in _saveLoadService.GetGameData().GameParameters.PurchasedUpgrades)
-        {
-            Debug.Log(i);
-        }
 
-        ;
         UpdateUpgrade(upgrade);
         // _upgradeHandler.TriggerEvent(upgrade);
         UpdateBranch(upgrade);
         _saveLoadService.Save();
-
-        return true;
     }
 
     public Upgrade GetUpgrade(UpgradeData upgradeData )
@@ -160,21 +160,32 @@ public class UpgradeTree : IUpgradeTree
         branch.SetUpgrades(branchUpgrades);
     }
 
-    public List<float> GetUpgradeValue(UpgradeGroupType groupType,UpgradeType type)
+    public List<float> GetUpgradeValue(UpgradeGroupType groupType, UpgradeType type)
     {
+        // Получаем список всех купленных апгрейдов по типу группы и типу апгрейда
         var purchasedUpgrades = _upgradeHandler.GetPurchasedUpgradesByType(groupType, type);
-        List<float> temp = new List<float>();
-        
-        if (purchasedUpgrades.Count > 0)
+        if (purchasedUpgrades.Count == 0)
         {
-            temp = _upgradeNodes.Values.Where(node => node.Upgrade.GroupType == groupType&&node.Upgrade.Type == type).Select(node => node.Upgrade).Last().UpgradesValue;
-        
-            if (temp.Count == 0)
-            {
-                temp.Add(0);
-            }
+            return new List<float> { 0 };
         }
-        
-        return temp;
+
+        var lastId = purchasedUpgrades
+            .Select(upgradeKey => upgradeKey.Split('_'))
+            .Where(parts => parts.Length == 3 && int.TryParse(parts[2], out _))
+            .Select(parts => int.Parse(parts[2]))
+            .OrderBy(id => id)
+            .LastOrDefault();
+
+        if (lastId == 0)
+        {
+            return new List<float> { 0 };
+        }
+
+        var lastPurchasedUpgradeNode = _upgradeNodes.Values
+            .FirstOrDefault(node => node.Upgrade.GroupType == groupType 
+                                    && node.Upgrade.Type == type 
+                                    && node.Upgrade.Id == lastId);
+
+        return lastPurchasedUpgradeNode?.Upgrade.UpgradesValue ?? new List<float> { 0 };
     }
 }

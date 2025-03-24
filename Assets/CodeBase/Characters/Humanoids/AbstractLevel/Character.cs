@@ -2,6 +2,7 @@ using System;
 using Data.Upgrades;
 using Enemies;
 using Enemies.AbstractEntity;
+using Infrastructure.AIBattle.StateMachines.Humanoid;
 using Infrastructure.Location;
 using Infrastructure.Logic.WeaponManagment;
 using Services.Audio;
@@ -15,7 +16,6 @@ namespace Characters.Humanoids.AbstractLevel
         public int Price => _characterData.Price;
         public bool IsMove => IsMoving;
         protected bool IsMoving;
-        
         public override bool IsLife() => _isLife;
         private bool _isLife = true;
         public Sprite Sprite => _characterData.Sprite;

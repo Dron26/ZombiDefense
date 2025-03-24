@@ -95,16 +95,26 @@ namespace Characters.Robots
         
         private void SetUpgrades()
         {
+            
             if (_isCarTurret)
             {
-                _precentAdditionalDamage=(int)Mathf.Round(_upgradeTree.GetUpgradeValue(UpgradeGroupType.SpecialTechnique, UpgradeType.IncreaseDamageSpecialTechnique)[0]);
+                UpdateUpgradeValue(UpgradeGroupType.SpecialTechnique, UpgradeType.IncreaseDamageSpecialTechnique, value => _precentAdditionalDamage = value);
             }
             else
             {
-                _precentAdditionalDamage=(int)Mathf.Round(_upgradeTree.GetUpgradeValue(UpgradeGroupType.Turrets, UpgradeType.IncreaseDamageSpecialTechnique)[0]);
+                UpdateUpgradeValue(UpgradeGroupType.Turrets, UpgradeType.IncreaseDamageSpecialTechnique, value => _precentAdditionalDamage = value);
             }
             
             _damage= Mathf.RoundToInt(_damage * (1 + _precentAdditionalDamage / 100));
+        }
+
+        private void UpdateUpgradeValue(UpgradeGroupType groupType, UpgradeType type, Action<int> setValue)
+        {
+            var upgrades = _upgradeTree.GetUpgradeValue(groupType, type);
+            if (upgrades != null && upgrades.Count > 0)
+            {
+                setValue((int)Mathf.Round(upgrades[0]));
+            }
         }
     }
 }

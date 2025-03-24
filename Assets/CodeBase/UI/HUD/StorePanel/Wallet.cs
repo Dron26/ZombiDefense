@@ -15,7 +15,7 @@ namespace UI.HUD.StorePanel
         private IUpgradeTree _upgradeTree;
 
         public int TempMoney { get; set; }
-        public int DefaultMoney = 100;
+        private int _defaultMoney = 100000;
         public event Action MoneyChanged;
         private float _profitProcent=0;
 
@@ -24,6 +24,7 @@ namespace UI.HUD.StorePanel
             _upgradeTree=AllServices.Container.Single<IUpgradeTree>();
             SetUpgrades();
             AddListener();
+            TempMoney = _defaultMoney;
         }
 
         public void AddMoneyForKilledEnemy(Enemy enemy)
@@ -77,17 +78,17 @@ namespace UI.HUD.StorePanel
         
         private void SetUpgrades()
         {
-            _profitProcent=_upgradeTree.GetUpgradeValue
-                (UpgradeGroupType.Profit,UpgradeType.IncreaseProfit)[0];
+            UpdateUpgradeValue(UpgradeGroupType.Profit,UpgradeType.IncreaseProfit, value => _profitProcent = value);
+            UpdateUpgradeValue(UpgradeGroupType.CashLimit, UpgradeType.IncreaseStartCashLimit, value => TempMoney = value);
+        }
 
-            TempMoney = (int)_upgradeTree.GetUpgradeValue
-                (UpgradeGroupType.CashLimit, UpgradeType.IncreaseStartCashLimit).Last();
-            
-            if (TempMoney==0)
+        private void UpdateUpgradeValue(UpgradeGroupType groupType, UpgradeType type, Action<int> setValue)
+        {
+            var upgrades = _upgradeTree.GetUpgradeValue(groupType, type);
+            if (upgrades != null && upgrades.Count > 0)
             {
-                TempMoney = DefaultMoney;
+                setValue((int)Mathf.Round(upgrades[0]));
             }
-            
         }
     }
 }

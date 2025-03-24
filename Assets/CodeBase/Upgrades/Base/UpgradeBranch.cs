@@ -37,6 +37,7 @@ namespace Services
                 if (matchingUpgrade != null)
                 {
                     _points[i].Initialize(matchingUpgrade);
+                    
                     string nodeKey = $"{matchingUpgrade.GroupType}_{matchingUpgrade.Type}_{matchingUpgrade.Id}";
 
                     if (_upgradeHandler.HasPurchasedUpgrade(nodeKey))
@@ -57,6 +58,7 @@ namespace Services
                         if ( unlockUpgradeId == unlockUpgradeId2&&isPurchase)
                         {
                             _points[i].IsLock(false);
+                            _points[i].Upgrade.SetLock(false);
                         }
                     }
                 }

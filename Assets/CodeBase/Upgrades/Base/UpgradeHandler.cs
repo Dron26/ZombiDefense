@@ -57,47 +57,10 @@ namespace Services
         {
             _gameParameters.AddUnlockedUpgrade(key);
         }
-
         
-        public GameParameters GetGameParametrs()
-        {
-            return _gameParameters;
-        }
-
         public List<string> GetPurchasedUpgradesByType(UpgradeGroupType groupType, UpgradeType type)
         {
             return _gameParameters.GetPurchasedUpgradesByType(groupType, type);
         }
-
-        
-        
-        public void Subscribe(UpgradeGroupType groupType, Action<Upgrade> listener)
-        {
-            if (!_upgradeEvents.ContainsKey(groupType))
-            {
-                _upgradeEvents[groupType] = null;
-            }
-            _upgradeEvents[groupType] += listener;
-        }
-        
-        
-        
-        public void Unsubscribe(UpgradeGroupType groupType, Action<Upgrade> listener)
-        {
-            if (_upgradeEvents.ContainsKey(groupType))
-            {
-                _upgradeEvents[groupType] -= listener;
-            }
-        }
-        
-        
-        public void TriggerEvent(Upgrade upgrade)
-        {
-            if (_upgradeEvents.ContainsKey(upgrade.GroupType))
-            {
-                _upgradeEvents[upgrade.GroupType]?.Invoke(upgrade);
-            }
-        }
-        
     }
 }

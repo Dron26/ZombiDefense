@@ -14,7 +14,6 @@ namespace Infrastructure.AIBattle
         private BoxData _boxData;
         public List<BaseItem> GetItems() => _items;
         public List<ItemType> GetItemsType() => _types;
-        public BoxType GetType() => _boxType;
         public BoxData GetData() => _boxData;
 
         public void Initialize(BoxData boxData)

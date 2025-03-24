@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Interface;
@@ -10,7 +11,7 @@ namespace Infrastructure.Location
 {
     public class WorkPointGroup : MonoCache
     {
-        public int persentUp=5;
+        public int procentUp=5;
         private  List<WorkPoint> _workPoints = new();
         private  List<int> _workPointsPercent = new();
         public UnityAction<WorkPoint> OnSelectPointToMove;
@@ -51,7 +52,7 @@ namespace Infrastructure.Location
             
             if (index!=-1)
             {
-                workPoint.UpLevel(persentUp*workPoint.Level);
+                workPoint.UpLevel(procentUp);
                 print("Up Level " + workPoint.Level);
             }
             else
@@ -59,14 +60,27 @@ namespace Infrastructure.Location
                 print("Error: WorkPoint not found");
             }
         }
-
         private void SetUpgrades()
         {
-            float value=_upgradeTree.GetUpgradeValue(UpgradeGroupType.Defence,UpgradeType.IncreaseDefensePoint)[0];
+            int defenceValue=0;
+            UpdateUpgradeValue(UpgradeGroupType.Defence, UpgradeType.IncreaseDefensePoint, value => defenceValue = value);
+            UpdatePoint(defenceValue);
+        }
 
+        private void UpdateUpgradeValue(UpgradeGroupType groupType, UpgradeType type, Action<int> setValue)
+        {
+            var upgrades = _upgradeTree.GetUpgradeValue(groupType, type);
+            
+            if (upgrades != null && upgrades.Count > 0)
+            {
+                setValue((int)Mathf.Round(upgrades[0]));
+            }
+        }
+        private void UpdatePoint(int defenceValue)
+        {
             for (int i = 0; i < _workPoints.Count; i++)
             {
-                _workPoints[i].SetDefenceValue(value); 
+                _workPoints[i].SetDefenceValue(defenceValue); 
             }
         }
     }

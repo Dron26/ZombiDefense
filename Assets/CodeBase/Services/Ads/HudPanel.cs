@@ -20,7 +20,6 @@ namespace Services.Ads
    [RequireComponent(typeof(RaycastHitChecker))]
     public class HudPanel:MonoCache
     {
-        [SerializeField] private GameObject _panel;
         [SerializeField] private Store _store;
         [SerializeField] private MenuPanel _menuPanel;
         [SerializeField] private TimerDisplay _timerDisplay;
@@ -83,7 +82,6 @@ namespace Services.Ads
 
         public void SwitchPanelState(bool state)
         {
-            _panel.SetActive(state);
         }
         
         public ButtonPanel GetButtonPanel() => _menuPanel.GetButtonPanel();

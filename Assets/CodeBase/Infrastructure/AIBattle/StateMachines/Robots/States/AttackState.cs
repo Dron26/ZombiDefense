@@ -29,7 +29,6 @@ namespace Infrastructure.AIBattle.StateMachines.Robots.States
         private float[] _radiusList;
         private float[] _damageList;
         private float _maxRadius;
-        private bool _isTargetSet;
         
         private void Awake()
         {
@@ -55,7 +54,6 @@ namespace Infrastructure.AIBattle.StateMachines.Robots.States
         public void InitEnemy(Enemy targetEnemy)
         {
             _enemy = targetEnemy;
-            _isTargetSet = true;
 
             if (_isAttacking == false & _isReloading == false)
             {
@@ -79,7 +77,6 @@ namespace Infrastructure.AIBattle.StateMachines.Robots.States
                     if (_currentRange <= rangeAttack & _ammoCount > 0)
                     {
                         _isAttacking = true;
-                        _isTargetSet = false;
                     }
                 }
             }
@@ -199,7 +196,6 @@ namespace Infrastructure.AIBattle.StateMachines.Robots.States
         protected override void OnDisable()
         {
             _isAttacking = false;
-            _isTargetSet = false;
             enabled = false;
         }
 

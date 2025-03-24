@@ -121,12 +121,20 @@ namespace UI.HUD.StorePanel
             _additionalEquipmentButton.OnSelectedWeaponBox -= OnSelectSmallWeaponBox;
         }
 
+        
         private void SetUpgrades()
         {
-            List<float> values=_upgradeTree.GetUpgradeValue(UpgradeGroupType.Box,UpgradeType.AddGrenadeInBox);
+            UpdateUpgradeValue(UpgradeGroupType.Box,UpgradeType.AddGrenadeInBox, value => _currentType =(BoxType) value);
+           
+        }
 
-            _currentType = (BoxType)(int)values[0];
-
+        private void UpdateUpgradeValue(UpgradeGroupType groupType, UpgradeType type, Action<int> setValue)
+        {
+            var upgrades = _upgradeTree.GetUpgradeValue(groupType, type);
+            if (upgrades != null && upgrades.Count > 0)
+            {
+                setValue((int)Mathf.Round(upgrades[0]));
+            }
         }
     }
 }

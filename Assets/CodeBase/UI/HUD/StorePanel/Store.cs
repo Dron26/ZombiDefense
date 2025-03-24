@@ -57,16 +57,11 @@ namespace UI.HUD.StorePanel
         private SceneInitializer _sceneInitializer;
         private PlayerCharacterInitializer _characterInitializer;
         private MovePointController _movePointController;
-        private int maxLevel = 3;
         private bool _isPanelActive = false;
         public Action<bool> IsStoreActive;
         public Action<WorkPoint> OnBoughtUpgrade;
-        private int _medicineBoxPrice = 100;
-        private int _weaponBoxPrice = 200;
         private WorkPoint _selectedWorkPoint;
         private BoxStore _boxStore;
-        public event Action <BoxData> OnBoughtBox;
-        public event Action <CharacterData> OnBoughtCharacter;
         private IGameEventBroadcaster _eventBroadcaster;
         private IUpgradeTree _upgradeTree;
         private ICharacterHandler _characterHandler;
@@ -122,7 +117,7 @@ namespace UI.HUD.StorePanel
 
         private void BuyCharacter(CharacterData data)
         {
-            OnBoughtCharacter?.Invoke(data);
+            _eventBroadcaster.InvokeOnBoughtCharacter(data);
             SwitchStorePanel();
         }
 
@@ -138,14 +133,13 @@ namespace UI.HUD.StorePanel
         {
             ShowPanelAdsForMoney();
             _storePanel.gameObject.SetActive(false);
-            //  _adsStore.gameObject.SetActive(true);
         }
 
         private void CheckPointInfo(WorkPoint workPoint)
         {
             _selectedWorkPoint = workPoint;
 
-            if (_selectedWorkPoint.Level <= maxLevel)
+            if (_selectedWorkPoint.Level < _maxLevel)
             {
                 _pointUpgradePanel.SwitchStateButton(true);
             }
@@ -160,6 +154,7 @@ namespace UI.HUD.StorePanel
 
         private void BuyPointUp()
         {
+            
             int price = _priceForWorkPointUp;
 
             if (_maxLevel> _selectedWorkPoint.Level && _wallet.IsMoneyEnough(price))
@@ -173,6 +168,8 @@ namespace UI.HUD.StorePanel
             {
                 print("должен мигать кошелек");
             }
+
+            CheckPointInfo(_selectedWorkPoint);
         }
 
         public List<Character> GetAvaibleCharacters() => _characters;
@@ -275,16 +272,10 @@ namespace UI.HUD.StorePanel
             _eventBroadcaster.InvokeOnCharacterLevelUp();
         }
 
-        private void IsReachLimitCharacter(bool isReach)
-        {
-            _buttonStorePanel.gameObject.SetActive(isReach);
-        }
+        private void IsReachLimitCharacter(bool isReach) => _buttonStorePanel.gameObject.SetActive(isReach);
 
-        public void OnBuyBox(BoxData data)
-        {
-            OnBoughtBox?.Invoke(data);
-        }
-        
+        public void OnBuyBox(BoxData data) => _eventBroadcaster.InvokeOnBoughtBox(data);
+
         private void SetUpgrades()
         {
             UpdateUpgradeValue(UpgradeGroupType.Defence, UpgradeType.IncreaseMaxLevelDefensePoint, value => _maxLevel = value);
@@ -293,6 +284,7 @@ namespace UI.HUD.StorePanel
             UpdateUpgradeValue(UpgradeGroupType.SpecialTechnique, UpgradeType.DecreaseCostSpecialTechnique, value => _precentDecreaseCostSpecialTechnique = value);
 
             _specialCar.gameObject.SetActive(_priceSpecialTechnique != 0);
+            if (_maxLevel==0) _maxLevel = 1;
         }
 
         private void UpdateUpgradeValue(UpgradeGroupType groupType, UpgradeType type, Action<int> setValue)

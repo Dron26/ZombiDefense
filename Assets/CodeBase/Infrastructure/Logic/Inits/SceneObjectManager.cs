@@ -41,14 +41,19 @@ namespace Infrastructure.Logic.Inits
         private WorkPoint _selectedWorkPoint;
         private Store _store;
         private MovePointController _movePointController;
+        private IGameEventBroadcaster _eventBroadcaster;
+
         public void Initialize(Store store, MovePointController movePointController, AudioManager audioManager)
         {
+            _eventBroadcaster=AllServices.Container.Single<IGameEventBroadcaster>(); 
+            
             _store=store;
             _movePointController = movePointController;
             _audioManager = audioManager;
             _characterFactory=GetComponent<CharacterFactory>();
             _boxFactory=GetComponent<BoxFactory>();
             _itemFactory=GetComponent<ItemFactory>();
+
             AddListener();
         }
 
@@ -142,23 +147,18 @@ namespace Infrastructure.Logic.Inits
     
         private void AddListener()
         {
-            _store.OnBoughtCharacter+=OnBoughtCharacter;
-            _store.OnBoughtBox+=OnBoughtBox;
-            _store.OnBoughtUpgrade+=OnBoughtUpgrade;
-            _movePointController.OnClickPoint += OnSelectedNewPoint;
+            _eventBroadcaster.OnBoughtCharacter+=OnBoughtCharacter;
+            _eventBroadcaster.OnBoughtBox+=OnBoughtBox;
+            _eventBroadcaster.OnSelectedNewPoint += OnSelectedNewPoint;
         }
 
-        private void OnBoughtUpgrade(WorkPoint point)
-        {
-            throw new NotImplementedException();
-        }
 
         private void RemoveListener()
         {
-            _store.OnBoughtCharacter-=OnBoughtCharacter;
-            _store.OnBoughtBox-=OnBoughtBox;
-            _store.OnBoughtUpgrade-=OnBoughtUpgrade;
-            _movePointController.OnClickPoint += OnSelectedNewPoint;
+            _eventBroadcaster.OnBoughtCharacter-=OnBoughtCharacter;
+            _eventBroadcaster.OnBoughtBox-=OnBoughtBox;
+            _eventBroadcaster.OnSelectedNewPoint -= OnSelectedNewPoint;
+
         }
     }
 }

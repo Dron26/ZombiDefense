@@ -42,11 +42,9 @@ namespace UI.SettingsPanel
         public void Initialize( )
         {
             _audioManager = AllServices.Container.Single<IAudioManager>();
-            _panel.SetActive(true);
             _settingPanel.Initialize();
             _buttonPanel.Initialize();
             InitializeButton();
-            _panel.SetActive(false);
             _exitPanel.SetActive(false);
             _leaderboardWindow.SetActive(false);
             _pauseService = AllServices.Container.Single<IPauseService>();
