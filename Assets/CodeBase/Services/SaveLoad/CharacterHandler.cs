@@ -21,6 +21,7 @@ namespace Services.SaveLoad
         public void SetSelectedCharacter(Character character)
         {
             _charactersData.SetSelectedCharacter(character);
+            
             if (character.TryGetComponent(out Humanoid humanoid))
             {
                 _eventBroadcaster.InvokeOnSelectedHumanoid(humanoid);

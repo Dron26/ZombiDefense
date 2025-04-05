@@ -25,7 +25,7 @@ namespace UI.Locations
         private LocationProgressData _locationData;
         public List<LocationProgressData> GetLocations() => _locations;
 
-        public void Initialize(GeneralMenu.GeneralMenu generalMenu)
+        public void Initialize( )
         {
             _gameEventBroadcaster = AllServices.Container.Single<IGameEventBroadcaster>();
             _gameEventBroadcaster.OnLocationCompleted += LocationCompleted;

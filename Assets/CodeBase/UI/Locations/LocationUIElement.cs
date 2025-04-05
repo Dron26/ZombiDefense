@@ -13,6 +13,7 @@ namespace UI.Locations
         [SerializeField] private Sprite _highlightedSprite;
         [SerializeField] private Image _targetImage;
 
+        public bool IsLock => _isLocked;
         private Button _button;
         public int Id => _id;
         public event Action<int> OnClick;

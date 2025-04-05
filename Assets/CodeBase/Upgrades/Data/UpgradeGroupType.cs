@@ -10,7 +10,9 @@ public enum UpgradeGroupType
     SpecialTechnique,
     Box,
     Profit,
+    Range,
     CashLimit,
     PriceUpdate,
-    WeaponsAdditional
+    WeaponsAdditional,
+    HealthPrice, 
 }

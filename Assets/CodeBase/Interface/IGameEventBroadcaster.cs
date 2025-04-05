@@ -53,6 +53,6 @@ namespace Interface
         
         public void InvokeOnBoughtCharacter(CharacterData data);
         public void InvokeOnBoughtBox(BoxData data);
-        public void InvokeOnMoneyChanged(int Money);
+        public void InvokeOnMoneyChanged(int money);
     }
 }

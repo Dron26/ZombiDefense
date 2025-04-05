@@ -16,7 +16,7 @@ namespace Services.SaveLoad
         public CurrencyHandler(MoneyData moneyData)
         {
             _moneyData = moneyData;
-            
+            _eventBroadcaster = AllServices.Container.Single<IGameEventBroadcaster>();
             if (AllServices.Container.Single<ISaveLoadService>().GetGameData().IsFirstStart)
             {
                 

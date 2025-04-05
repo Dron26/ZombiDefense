@@ -32,6 +32,7 @@ public class BranchPoint : MonoCache
         _description = _upgrade.Description;
         _price.text ="$ "+ _upgrade.Cost;
         Button.interactable = !_lock;
+        _iconLock.gameObject.SetActive(_lock);
     }
     
     public void IsLock(bool isLock)

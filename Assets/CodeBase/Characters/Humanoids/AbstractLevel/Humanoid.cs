@@ -149,7 +149,7 @@ namespace Characters.Humanoids.AbstractLevel
 
         public void UIInitialize() => _currentHealth = Health;
 
-        protected void SetPoint(WorkPoint workPoint)
+        public override void SetPoint(WorkPoint workPoint)
         {
             if (workPoint.IsHaveMedicineBox && _currentHealth < Health)
             {

@@ -67,15 +67,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b916d0de4634c2280fbab57f94a1ea8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _branchTypeGroupType: 7
+  _branchTypeGroupType: 8
   _points:
   - {fileID: 9144397083453808158}
   - {fileID: 2206823296728297210}
   - {fileID: 4010502682553494182}
-  - {fileID: 0}
   - {fileID: 158043759762739431}
   - {fileID: 5822562218231616330}
-  - {fileID: 0}
 --- !u!1001 &1705829891806767866
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -677,6 +675,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3866368793392018360}
     m_Modifications:
+    - target: {fileID: 2136714594444149786, guid: 27216893bada99d44a0e6317ecf7e962, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.0002975464
+      objectReference: {fileID: 0}
     - target: {fileID: 2461994757351279441, guid: 27216893bada99d44a0e6317ecf7e962, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

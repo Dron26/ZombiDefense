@@ -45,9 +45,19 @@ namespace UI.Locations
 
         private void FillGlobalInfo()
         {
-                _locationInfo.text = $"Миссий: {_locationUIElements.Count}\n" +
-                                     $" $ : {_currencyHandler.GetCurrentMoney().ToString()}";
+            int openLocation = 0;
+            foreach (var location in _locationUIElements)
+            {
+                if (!location.IsLock)
+                {
+                    openLocation++;
+                }
                 
+            }
+            
+                _locationInfo.text = $"Миссий: {openLocation}/{_locationUIElements.Count-1}\n" +
+                                     $" $ : {_currencyHandler.GetCurrentMoney()}";
+            
         }
 
         private void FillLocationInfo()
@@ -56,7 +66,7 @@ namespace UI.Locations
             if (currentLocation != null)
             {
                 _selectedLocationInfo.text = $"Волн: {currentLocation.WaveCount}\n" +
-                                             $"Прочность зомби: {currentLocation.BaseZombieHealth}\n" +
+                                             $"Количество зомби: {currentLocation.EnemyCount}\n" +
                                              $"Награда: {currentLocation.BaseReward}";
             }
             else
@@ -76,7 +86,7 @@ namespace UI.Locations
                 {
                     _locationUIElements.Add(uiElement);
 
-                    LocationProgressData locationProgressData = _locationManager.GetLocationById(uiElement.Id); // Используем LocationProgressData
+                    LocationProgressData locationProgressData = _locationManager.GetLocationById(uiElement.Id); 
                     uiElement.Initialize(locationProgressData.IsLocked, locationProgressData.IsCompleted);
                     uiElement.OnClick += HandleLocationClick;
 
@@ -90,9 +100,8 @@ namespace UI.Locations
         
         private void HandleLocationClick(int id)
         {
-            var locationHandler = AllServices.Container.Single<ILocationHandler>();
-            locationHandler.SetSelectedLocationId(id);
             _selectedLocationId=id;
+            AllServices.Container.Single<ILocationHandler>().SetSelectedLocationId(_selectedLocationId);
             SwitchEnterPanelState(true);
             FillLocationInfo(); 
         }
@@ -107,7 +116,6 @@ namespace UI.Locations
         public void SwitchPanelState(bool isActive)
         {
             _selecterPanel.SetActive(isActive);
-            
         } 
 
         public void SwitchEnterPanelState(bool isActive)

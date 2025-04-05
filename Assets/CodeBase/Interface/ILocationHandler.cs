@@ -16,7 +16,6 @@ namespace Interface
         void SetMaxEnemyOnScene(int count);  
         void SetSelectedPointId(int id);  
         LocationProgressData GetCurrentLocationData();  
-        int GetCurrentZombieHealth();  
         int GetCurrentReward();  
         void IncreaseWaveLevel();  
     }

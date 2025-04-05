@@ -49,6 +49,7 @@ namespace Infrastructure.Location
         private AdditionalBox _weaponBox;
         private bool _isHaveWeaponBox;
         private ICharacterHandler _characterHandler;
+        private  IWeaponController _weaponController;
         private float _defencePercent;
         private Vector3 _startScale;
         private Vector3 _maxScale;
@@ -154,13 +155,18 @@ namespace Infrastructure.Location
             // }
             
             _selectedCircle.gameObject.SetActive(_isSelected);
+            
+            if (_weaponController!=null)
+            {
+                _weaponController.SetSelected(_isSelected);
+            }
         }
 
-        private void SetToWeapon()
+        private void SetWeaponController()
         {
-            IWeaponController weaponController = (IWeaponController)_character.GetComponent(typeof(IWeaponController));
-            weaponController.SetPoint(this);
-            weaponController.SetSelected(_isSelected);
+            _weaponController = (IWeaponController)_character.GetComponent(typeof(IWeaponController));
+            _weaponController.SetPoint(this);
+            _weaponController.SetSelected(_isSelected);
         }
 
         public void CheckCharacter()
@@ -170,7 +176,6 @@ namespace Infrastructure.Location
                 
                 if (_isSelected)
                 {
-                    SetToWeapon();
                     _characterHandler.SetSelectedCharacter(_character);
                     _character.SetPoint(this);
                     _isBusy = true;
@@ -192,6 +197,7 @@ namespace Infrastructure.Location
             
             _character = character;
             _character.transform.parent = transform;
+            SetWeaponController();
             CheckCharacter();
         }
 
@@ -202,6 +208,7 @@ namespace Infrastructure.Location
             _upPrecent += procent;
             _level++;
             _selectedCircles[_level].gameObject.SetActive(true);
+            CheckCharacter();
         }
 
         public void SetDefenceValue(float value)
@@ -241,7 +248,9 @@ namespace Infrastructure.Location
             {
                 _character.transform.SetParent(transform.parent, true);
                 _character = null;
+                _weaponController = null;
             }
+            
             CheckCharacter();
 
         }

@@ -14,13 +14,10 @@ namespace Characters.Robots
         private SpriteRenderer Radius;
         public Light Light;
         public ItemData ItemData;
-        public int Damage { get; set; }
-        
         public virtual void Initialize(CharacterData data){}
 
         public virtual void SetPoint(WorkPoint workPoint){}
 
         public virtual void SetSelected(bool isSelected){}
-        private void SetDamage(int damage) => Damage += damage;
     }
 }

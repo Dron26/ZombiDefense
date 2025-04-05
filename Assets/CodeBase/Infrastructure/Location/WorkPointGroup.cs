@@ -11,7 +11,7 @@ namespace Infrastructure.Location
 {
     public class WorkPointGroup : MonoCache
     {
-        public int procentUp=5;
+        private int procentUp=30;
         private  List<WorkPoint> _workPoints = new();
         private  List<int> _workPointsPercent = new();
         public UnityAction<WorkPoint> OnSelectPointToMove;

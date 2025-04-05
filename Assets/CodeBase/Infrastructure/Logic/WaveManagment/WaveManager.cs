@@ -41,15 +41,7 @@ namespace Infrastructure.Logic.WaveManagment
         public List<WaveData> _groupWaveData;
         public List<List<int>> _groupEnemyCount;
         private IGameEventBroadcaster _eventBroadcaster;
-
-        private void InitializeContainer()
-        {
-            _locationHandler = AllServices.Container.Single<ILocationHandler>();
-            string path =AssetPaths.WavesContainerData + _locationHandler.SelectedLocationId;
-            _wavesContainerData = Resources.Load<WavesContainerData>(path);
-            _groupWaveData=_wavesContainerData.GroupWaveData;;
-        }
-
+        
         private void Awake()
         {
             _waveSpawner = GetComponent<WaveSpawner>();
@@ -65,11 +57,17 @@ namespace Infrastructure.Logic.WaveManagment
             _canFillWave = true;
             
             AddListener();
-            
             InitializeContainer();
             SetMaxCountEnemy();
         }
         
+        private void InitializeContainer()
+        {
+            _locationHandler = AllServices.Container.Single<ILocationHandler>();
+            string path =AssetPaths.WavesContainerData + _locationHandler.SelectedLocationId;
+            _wavesContainerData = Resources.Load<WavesContainerData>(path);
+            _groupWaveData=_wavesContainerData.GroupWaveData;;
+        }
         public void SetWaveData()
         {
             

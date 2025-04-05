@@ -28,7 +28,7 @@ namespace UI.HUD.StorePanel
         [SerializeField] private GameObject _buttonGroup;
         [SerializeField] private AdsStore _adsStore;
         [SerializeField] private GameObject _applyAdsMoneyWindow;
-        [SerializeField] CharacterStoreRotation _characterStoreRotation;
+        [SerializeField] private CharacterStoreRotation _characterStoreRotation;
         [SerializeField] private Button _buttonStorePanel;
         [SerializeField] private Button _buttonRightPanel;
         [SerializeField] private Button _closeButton;
@@ -220,22 +220,18 @@ namespace UI.HUD.StorePanel
         {
             _eventBroadcaster.OnSelectedNewPoint += CheckPointInfo;
             _characterStore.OnMoneyEmpty += ShowPanelAdsForMoney;
-            
             _pointUpgradePanel.OnSelectedButton += (BuyPointUp);
-            
             _buttonStorePanel.onClick.AddListener(SwitchStorePanel);
             _closeButton.onClick.AddListener(SwitchStorePanel);
             _buttonRightPanel.onClick.AddListener(ChangeStateButtonPanel);
             _applyAdsMoneyWindowButton.onClick.AddListener(ShowPanelAds);
             _closeAdsMoneyWindowButton.onClick.AddListener(ShowPanelAdsForMoney);
-
             _boxStore.BuyBox+=OnBuyBox;
             _characterStore.BuyCharacter += BuyCharacter;
             _characterStore.OnReachLimitCharacter += IsReachLimitCharacter;
             _specialCar.onClick.AddListener(ShowSpecialTechniquePanel);
             _specialCarButton.onClick.AddListener(SetActiveSpecialTechnique);
-            
-          //  _healthRestoreButton.onClick.AddListener((HealthRestore) );
+            //  _healthRestoreButton.onClick.AddListener((HealthRestore) );
         }
 
      

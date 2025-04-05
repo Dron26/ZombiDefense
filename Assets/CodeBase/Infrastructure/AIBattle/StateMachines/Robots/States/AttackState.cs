@@ -13,11 +13,10 @@ namespace Infrastructure.AIBattle.StateMachines.Robots.States
         private float _currentRange;
         private RobotFXController _fxController;
         private Turret _turret;
-        private HumanoidWeaponController _humanoidWeaponController;
+        private HumanoidWeaponController _weaponController;
         private bool _isShotgun;
         private bool _isAttacking;
         private bool _isReloading;
-        private Weapon _activeWeapon;
         private int _maxAmmo;
         private float _fireRate;
         private float _damage;
@@ -34,8 +33,8 @@ namespace Infrastructure.AIBattle.StateMachines.Robots.States
         {
             _fxController = GetComponent<RobotFXController>();
             _turret = GetComponent<Turret>();
-            _humanoidWeaponController = GetComponent<HumanoidWeaponController>();
-            _humanoidWeaponController.ChangeWeapon += OnWeaponChanged;
+            _weaponController = GetComponent<HumanoidWeaponController>();
+            _weaponController.UpdateWeaponData += OnWeaponChanged;
         }
 
         private void Start()
@@ -72,7 +71,7 @@ namespace Infrastructure.AIBattle.StateMachines.Robots.States
                 if (_isAttacking == false & _isReloading == false)
                 {
                     _currentRange = Vector3.Distance(transform.position, _enemy.transform.position);
-                    float rangeAttack = _humanoidWeaponController.GetRangeAttack();
+                    float rangeAttack = _weaponController.Range;
 
                     if (_currentRange <= rangeAttack & _ammoCount > 0)
                     {
@@ -96,7 +95,7 @@ namespace Infrastructure.AIBattle.StateMachines.Robots.States
                 ApplyDamageToEnemiesInRange();
             }
             else
-                _enemy.ApplyDamage(_damage, _humanoidWeaponController.ItemType);
+                _enemy.ApplyDamage(_damage, _weaponController.ItemType);
 
             if (_ammoCount == 0 & _isReloading == false)
             {
@@ -128,7 +127,7 @@ namespace Infrastructure.AIBattle.StateMachines.Robots.States
 
         private void ApplyDamageToEnemiesInRange()
         {
-            float angle = _humanoidWeaponController.GetSpreadAngle();
+            float angle = _weaponController.SpreadAngle;
             Vector3 attackDirection = _enemy.transform.position - transform.position;
 
             Collider[] hitColliders = Physics.OverlapSphere(transform.position, _maxRadius, LayerMask.GetMask("Enemy"));
@@ -157,8 +156,8 @@ namespace Infrastructure.AIBattle.StateMachines.Robots.States
                                 }
                             }
 
-                            enemy.ApplyDamage(_humanoidWeaponController.Damage * damagePercent,
-                                _humanoidWeaponController.ItemType); // применяем урон
+                            enemy.ApplyDamage(_weaponController.Damage * damagePercent,
+                                _weaponController.ItemType); // применяем урон
                         }
                     }
                 }
@@ -167,19 +166,18 @@ namespace Infrastructure.AIBattle.StateMachines.Robots.States
 
         private void OnWeaponChanged()
         {
-            _activeWeapon = _humanoidWeaponController.GetActiveItemData();
-            _maxAmmo = _activeWeapon.MaxAmmo;
+            _maxAmmo = _weaponController.MaxAmmo;
             _ammoCount = _maxAmmo;
             //  _reloadTime = _weaponController.ReloadTime;
-            _fireRate = _activeWeapon.FireRate;
-            _range = _activeWeapon.Range;
-            _damage = _humanoidWeaponController.Damage;
+            _fireRate = _weaponController.FireRate;
+            _range = _weaponController.Range;
+            _damage = _weaponController.Damage;
 
-            if (_activeWeapon.SpreadAngle>0)
+            if (_weaponController.SpreadAngle>0)
             {
-                _firstRadius = _humanoidWeaponController.GetSpreadAngle();
-                _secondRadius = _humanoidWeaponController.GetSpreadAngle() * 0.6f;
-                _thirdRadius = _humanoidWeaponController.GetSpreadAngle() * 0.3f;
+                _firstRadius = _weaponController.SpreadAngle;
+                _secondRadius = _weaponController.SpreadAngle * 0.6f;
+                _thirdRadius = _weaponController.SpreadAngle * 0.3f;
 
                 _radiusList = new[] { _firstRadius, _secondRadius, _thirdRadius };
 

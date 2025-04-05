@@ -112,10 +112,6 @@ namespace Interface
             return _locationProgressData.Find(location => location.Id == _selectedLocationId);
         }
 
-        public int GetCurrentZombieHealth()
-        {
-            return (int)(_locationProgressData[_selectedLocationId].BaseZombieHealth * Mathf.Pow(ZombieHealthMultiplier, _locationProgressData[_selectedLocationId].CurrentWaveLevel));
-        }
 
         public int GetCurrentReward()
         {

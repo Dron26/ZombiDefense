@@ -24,7 +24,6 @@ namespace Infrastructure.Logic.WaveManagment
 
         private WaveManager _waveManager;
         private Dictionary<int, List<Enemy>> _createdWaveDict;
-        private List<List<Enemy>> _createdWave = new();
         private List<int> _activatedWavesNumber = new();
         private List<SpawnPoint> _spawnPoints = new();
         private EnemyFactory _enemyFactory;
@@ -153,7 +152,7 @@ namespace Infrastructure.Logic.WaveManagment
             _countActivatedEnemiesWave = 0;
             
            
-            foreach (Enemy enemy in _createdWaveDict[_createdWave.Count-1])
+            foreach (Enemy enemy in _createdWaveDict[_createdWaveDict.Count - 1])
             {
                 if (_isStopSpawning == false)
                 {
@@ -271,18 +270,6 @@ namespace Infrastructure.Logic.WaveManagment
                 }
             }
             
-            // foreach (var enemies in CreatedWave)
-            // {
-            //     if (enemies.Count > 0)
-            //     {
-            //         foreach (var enemy in enemies)
-            //         {
-            //             enemy.GetComponent<EnemyDieState>().SetDestroyed();
-            //         }
-            //     }
-            // }
-            
-            // _createdWave = new();
         }
 
         private void AddListener()

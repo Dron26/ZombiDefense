@@ -26,11 +26,15 @@ namespace Infrastructure.Logic.WeaponManagment
         [SerializeField] private WeaponContainer _weaponContainer;
         [SerializeField] private AttachmentSetter _attachmentSetter;
         public bool CanThrowGranade => _canThrowGranade;
-        public Action ChangeWeapon;
+        public int MaxAmmo =>_weapon.MaxAmmo;
+        public float FireRate => _fireRate;
+        public float Range =>_range;
+        public float Damage =>_damage;
+
+        public Action UpdateWeaponData;
         public Action<Weapon> OnInitialized;
         public Action OnChangeGranade;
-        public float GetRangeAttack() => _weapon.Range;
-        public float GetSpreadAngle() => _spread;
+        public float SpreadAngle => _spread;
 
         public Weapon GetActiveItemData() => _weapon;
         private Weapon _weapon;
@@ -45,6 +49,7 @@ namespace Infrastructure.Logic.WeaponManagment
         private float _spread;
         private float _fireRate;
         private float _range;
+        private float _increaseRangeValue;
         private int _rangeUp;
         private bool _isGranade;
         private bool _canThrowGranade;
@@ -69,7 +74,6 @@ namespace Infrastructure.Logic.WeaponManagment
             _upgradeTree=AllServices.Container.Single<IUpgradeTree>();
             
             SetWeapon(data);
-            SetUpgrades();
             
             if (data.HaveAttachments)
             {
@@ -82,14 +86,17 @@ namespace Infrastructure.Logic.WeaponManagment
 
         public void SetPoint(WorkPoint workPoint)
         {
-            _damage = (int) Mathf.Round((_damage * (1+(workPoint.UpPrecent+_damagePrecent) / 100)));
-            _range = _range * (1+(workPoint.UpPrecent / 100));
+            _damage = (int) Mathf.Round((_weapon.Damage * (1+(workPoint.UpPrecent+_damagePrecent) / 100)));
+            _range = Mathf.RoundToInt(_increaseRangeValue * (1 + workPoint.UpPrecent / 100f));
             //SetShootingRadius();
 
             if (workPoint.IsHaveWeaponBox)
             {
                 OpenWeaponBox(workPoint.GetWeaponBox());
             }
+            
+            SetRadius();
+            UpdateWeaponData?.Invoke();
         }
 
         public void SetSelected(bool isSelected)
@@ -127,15 +134,7 @@ namespace Infrastructure.Logic.WeaponManagment
             ItemType = data.ItemData.Type;
             string path = AssetPaths.ItemsData + ItemType;
             ItemData itemData = Resources.Load<ItemData>(path);
-
-
             _weaponContainer.SetItem(ItemType);
-
-            //path = AssetPaths.WeaponPrefabs + _itemType;
-            // GameObject weapon = Instantiate(Resources.Load<GameObject>(path),_weaponContainer.transform);
-
-            //Prefab/Store/Items/WeaponPrefabs/Pistol
-            //_weapon =  weapon.GetComponent<Weapon>();
             _weapon = _weaponContainer.GetItem();
             _weapon.Initialize(itemData);
             _damage = _weapon.Damage;
@@ -148,7 +147,10 @@ namespace Infrastructure.Logic.WeaponManagment
                 SetLight();
             }
 
-            ChangeWeapon?.Invoke();
+            SetUpgrades();
+           
+            
+            UpdateWeaponData?.Invoke();
         }
 
         private void SetLight()
@@ -156,7 +158,7 @@ namespace Infrastructure.Logic.WeaponManagment
             Light.gameObject.SetActive(LighInformer.HasLight);
         }
 
-        private void SetRadius() => _radius.transform.localScale = new Vector3(_range / 3.5f, _range / 3.5f, 1);
+        private void SetRadius() => _radius.transform.localScale = new Vector3(_range / 3.4f, _range / 3.4f, 1);
 
 
         private void OpenWeaponBox(AdditionalBox weaponBox)
@@ -206,10 +208,10 @@ namespace Infrastructure.Logic.WeaponManagment
         
         private void SetUpgrades()
         {
-            int i = 0;
             UpdateUpgradeValue(UpgradeGroupType.Weapons,UpgradeType.IncreaseDamage, value => _damagePrecent = value);
-            UpdateUpgradeValue(UpgradeGroupType.Weapons,UpgradeType.IncreaseRange, value => i = value);
-            _range+=i;
+            _damage = (int) Mathf.Round((_damage * (1+(_damagePrecent) / 100)));
+            UpdateUpgradeValue(UpgradeGroupType.Range,UpgradeType.IncreaseRange, value => _increaseRangeValue = value);
+            _increaseRangeValue+=_range;
             SetRadius();
         }
 

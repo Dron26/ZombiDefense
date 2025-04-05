@@ -98,6 +98,6 @@ namespace Interface
         
         public void InvokeOnBoughtCharacter(CharacterData data)=>OnBoughtCharacter?.Invoke(data);
         public void InvokeOnBoughtBox(BoxData data)=>OnBoughtBox?.Invoke(data);
-        public void InvokeOnMoneyChanged(int money) => OnMoneyChanged(money);
+        public void InvokeOnMoneyChanged(int money) => OnMoneyChanged?.Invoke(money);
     }
 }

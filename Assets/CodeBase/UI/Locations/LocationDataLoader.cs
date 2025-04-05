@@ -37,14 +37,24 @@ namespace UI.Locations
 
                 if (data != null)
                 {
+                    int enemyCount = 0;
+                    
+                    foreach (var waveData in data.WavesContainerData.GroupWaveData)
+                    {
+                        foreach (var value in waveData.EnemyCount)
+                        {
+                            enemyCount+= value;
+                        }
+                    }
+
                     LocationProgressData location = new LocationProgressData(
                         data.Id,
                         data.IsTutorial,
                         data.IsLocked,
                         data.IsCompleted,
-                        data.BaseZombieHealth,
                         data.BaseReward,
-                        data.WaveCount,
+                        data.WavesContainerData.GroupWaveData.Count,
+                        enemyCount,
                         0 // CurrentWaveLevel изначально 0
                     );
 

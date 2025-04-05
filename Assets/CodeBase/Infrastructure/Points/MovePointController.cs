@@ -16,6 +16,8 @@ namespace Infrastructure.Points
 {
     public class MovePointController : MonoCache
     {
+        public WorkPoint SelectedPoint => _selectedPoint;
+        public WorkPoint PreviousMovePoint => _previousMovePoint;
         private PlayerCharacterInitializer _characterInitializer;
         private List<Character> _activeCharacters;
         private SceneInitializer _sceneInitializer;
@@ -24,7 +26,6 @@ namespace Infrastructure.Points
         private WorkPoint _previousMovePoint;
         private WorkPoint _selectedPoint;
         private WorkPoint _currentPoint;
-        public WorkPoint SelectedPoint => _selectedPoint;
         private WorkPoint _movePoint;
         private Character _selectedCharacter;
         private bool isChracterSelected = false;

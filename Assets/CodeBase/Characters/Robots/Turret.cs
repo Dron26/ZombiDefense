@@ -5,6 +5,7 @@ using Infrastructure.AIBattle;
 using Infrastructure.AIBattle.StateMachines.Humanoid;
 using Infrastructure.AIBattle.StateMachines.Humanoid.States;
 using Infrastructure.AssetManagement;
+using Infrastructure.Location;
 using Interface;
 using Services;
 using Services.Audio;
@@ -90,6 +91,10 @@ namespace Characters.Robots
                 _fxController.OnHitFX();
                 _currentHealth -= Mathf.Clamp(getDamage, _minHealth, _maxHealth);
             }
+        }
+
+        public override void SetPoint(WorkPoint workPoint)
+        {
         }
 
         protected override void Die()

@@ -1,3 +1,5 @@
+using Data;
+using Infrastructure.AssetManagement;
 using UnityEngine;
 
 namespace UI.Locations
@@ -12,9 +14,9 @@ namespace UI.Locations
         public bool IsCompleted;
 
         [Header("Wave Settings")]
-        public int BaseZombieHealth;
-        public int BaseReward; 
-        public int WaveCount; 
+        //public int BaseZombieHealth;
+        public int BaseReward;
         
+        public WavesContainerData WavesContainerData;
     }
 }

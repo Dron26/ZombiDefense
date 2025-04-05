@@ -57,7 +57,7 @@ namespace UI.GeneralMenu
         private void InitializeLocationSystem()
         {
             // Создаем и инициализируем LocationManager
-            _locationManager.Initialize(this);
+            _locationManager.Initialize();
 
             // Создаем и инициализируем LocationUIManager
             _locationUIManager.Initialize(_saveLoadService,_locationManager);
@@ -67,7 +67,6 @@ namespace UI.GeneralMenu
         private void OnClikedCurtain()
         {
             bool isActive = AllServices.Container.Single<ILocationHandler>().IsExitFromLocation;
-
             _menuPanel.SetActive(!isActive);
         }
 
@@ -93,12 +92,6 @@ namespace UI.GeneralMenu
             _upgradeBack.onClick.AddListener(()=>SwitchUpgradePanelState(false));
         }
 
-        private void SwitchPanelsState()
-        {
-           
-            SwitchMenuPanelState(false);
-        }
-        
         private void SwitchMenuPanelState(bool isActive)
         {
             _menuPanel.SetActive(isActive);

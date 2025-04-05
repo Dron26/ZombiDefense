@@ -12,7 +12,7 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
         private MovementState _movementState;
         private AttackState _attackState;
         private Entity _enemy;
-        private HumanoidWeaponController _humanoidWeaponController;
+        private HumanoidWeaponController _weaponController;
         private bool _isSearching;
         private PlayerCharacterAnimController _playerCharacterAnimController;
         private Coroutine _coroutine;
@@ -20,11 +20,12 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
         private ISearchService _searchService;
         private WaitForSeconds timeout;
         private bool _isMove=false;
-        
+        private float _rangeAttack;
         private void Awake()
         {
             timeout = new WaitForSeconds(time);
-            _humanoidWeaponController = GetComponent<HumanoidWeaponController>();
+            _weaponController = GetComponent<HumanoidWeaponController>();
+            _weaponController.UpdateWeaponData += OnUpdateWeaponData;
             _movementState = GetComponent<MovementState>();
             _attackState = GetComponent<AttackState>();
             _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
@@ -41,7 +42,11 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
         {
             _isMove = true;
         }
-
+        private void OnUpdateWeaponData()
+        {
+            _rangeAttack = _weaponController.Range;;
+        }
+        
         protected override void OnEnabled()
         {
             _coroutine = StartCoroutine(Search());
@@ -53,7 +58,7 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
             _isSearching = true;
             _playerCharacterAnimController.OnIdle();
 
-            float rangeAttack = _humanoidWeaponController.GetRangeAttack();
+           
 
             while (_isSearching)
             {
@@ -65,7 +70,7 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
                 {
                     float currentRange = Vector3.Distance(transform.position, _enemy.transform.position);
 
-                    if (currentRange <= rangeAttack)
+                    if (currentRange <= _rangeAttack)
                     {
                         LookEnemyPosition(_enemy.transform);
                         _isSearching = false;

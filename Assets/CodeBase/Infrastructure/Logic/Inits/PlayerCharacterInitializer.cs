@@ -66,6 +66,12 @@ namespace Infrastructure.Logic.Inits
         private void OnCreatedCharacted(Character character)
         {
             _coutnCreated++;
+            if (_movePointController.PreviousMovePoint!=_movePointController.SelectedPoint)
+            {
+                _movePointController.PreviousMovePoint.SetSelected(false);
+                _movePointController.PreviousMovePoint.CheckCharacter();
+            }
+            
             _movePointController.SelectedPoint.SetCharacter(character);
             _movePointController.SetCurrentPoint(_movePointController.SelectedPoint);
             

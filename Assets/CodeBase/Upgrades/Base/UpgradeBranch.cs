@@ -54,7 +54,7 @@ namespace Services
                         int unlockUpgradeId = _points[i].Upgrade.UnlockId;
                         int unlockUpgradeId2 = _points[unlockUpgradeId].GetId;
                         bool isPurchase = _points[unlockUpgradeId2].Upgrade.IsPurchased;
-                        
+                        Debug.LogWarning(_points);
                         if ( unlockUpgradeId == unlockUpgradeId2&&isPurchase)
                         {
                             _points[i].IsLock(false);
