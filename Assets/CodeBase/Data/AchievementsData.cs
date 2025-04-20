@@ -10,5 +10,7 @@ namespace Data
 
         public int SurvivalCount { get; set; }
         public int CountDeadCharacter { get; set; }
+        
+        public int WaveComplatedCount{ get; set;}
     }
 }

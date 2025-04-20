@@ -24,8 +24,8 @@ namespace UI.Report
         [SerializeField] private TMP_Text _infoKilledEnemiesValue;
         [SerializeField] private LeanLocalizedTextMeshProUGUI _infoProfit;
         [SerializeField] private TMP_Text _infoProfitValue;
-        [SerializeField] private LeanLocalizedTextMeshProUGUI _infoSurvival;
-        [SerializeField] private TMP_Text _infoSurvivalValue;
+        [SerializeField] private LeanLocalizedTextMeshProUGUI _infoWaveBonus;
+        [SerializeField] private TMP_Text _infoWaveBonusValue;
         [SerializeField] private LeanLocalizedTextMeshProUGUI _infoDeadMercenary;
         [SerializeField] private TMP_Text _infoDeadMercenaryValue;
         [SerializeField] private LeanLocalizedTextMeshProUGUI _infoOffer;
@@ -101,6 +101,8 @@ namespace UI.Report
                 _infoSurvivalEnemiesValue.text = _numberSurvivalEnemies.ToString();  
             }
            
+            _infoWaveBonus.TranslationName = ReportKey.Bonus.ToString();
+            _infoWaveBonusValue.text = (_achievementsHandler.WaveComplatedCount * 100f).ToString();
             _infoDeadMercenary.TranslationName = ReportKey.Dead.ToString();
             _infoDeadMercenaryValue.text = _deadMercenary.ToString();
             _infoKilledEnemies.TranslationName = ReportKey.Killed.ToString();
@@ -181,6 +183,7 @@ namespace UI.Report
         Killed,
         Profit,
         DeadOffer,
-        TasksCompleted
+        TasksCompleted,
+        Bonus
     }
 }

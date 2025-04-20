@@ -43,6 +43,7 @@ namespace Infrastructure.Logic.WaveManagment
         private ISearchService _searchService;
         private ILocationHandler _locationHandler;
         private IGameEventBroadcaster _gameEvent;
+        private IAchievementsHandler _achievements;
         private Coroutine _spawnCoroutine;
         public void Initialize(AudioManager audioManager, EnemyFactory enemyFactory, WaveManager waveManager)
         {
@@ -52,6 +53,7 @@ namespace Infrastructure.Logic.WaveManagment
             _searchService  = AllServices.Container.Single<ISearchService>();
             _locationHandler= AllServices.Container.Single<ILocationHandler>();
             _gameEvent= AllServices.Container.Single<IGameEventBroadcaster>();
+            _achievements= AllServices.Container.Single<IAchievementsHandler>();
             AddListener();
             
             _createdWaveDict = new Dictionary<int, List<Enemy>>();
@@ -253,7 +255,8 @@ namespace Infrastructure.Logic.WaveManagment
 
         private void EndWave()
         {
-
+            _achievements.SetWaveComplatedCount(_waveManager.CurrentStartedWave);
+            
             if (_waveManager.CurrentStartedWave == _waveManager.TotalWaves)
             {
                 _locationHandler.LocationCompleted();
@@ -262,6 +265,7 @@ namespace Infrastructure.Logic.WaveManagment
             
             if (_waveManager.CurrentFilledWave < _waveManager.TotalWaves)
                 OnCompletedWave?.Invoke();
+            
         }
 
         private void ClearData()

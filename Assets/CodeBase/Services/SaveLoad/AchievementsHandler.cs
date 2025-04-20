@@ -23,6 +23,7 @@ namespace Services.SaveLoad
         public int SurvivalCount => _achievementsData.SurvivalCount;
         public int DeadMercenaryCount => _achievementsData.CountDeadCharacter;
 
+        public int WaveComplatedCount => _achievementsData.WaveComplatedCount;
         private void AddKilledEnemy( Enemy enemy)
         {
             _achievementsData.NumberKilledEnemies++;
@@ -47,6 +48,12 @@ namespace Services.SaveLoad
             if (count < 0)
                 throw new ArgumentOutOfRangeException(nameof(count), "Dead mercenary count cannot be negative.");
             _achievementsData.CountDeadCharacter = count;
+        }
+        public void SetWaveComplatedCount(int count)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count), "Wave completed count cannot be negative.");
+            _achievementsData.WaveComplatedCount = count;
         }
 
         public void ResetDailyAchievements()
