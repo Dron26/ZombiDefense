@@ -20,8 +20,12 @@ namespace Data
         }
 
         public int GetActiveEnemyCount() => _activeEnemies.Count;
-        public void ClearEnemies() => _activeEnemies.Clear();
-        
+        public void ClearEnemies()
+        {
+            _activeEnemies.Clear();
+            _inactiveEnemies.Clear();
+        }
+
         public List<Entity> GetActiveEnemy() => 
             _activeEnemies.Select(enemy => (Entity)enemy).ToList();
     }

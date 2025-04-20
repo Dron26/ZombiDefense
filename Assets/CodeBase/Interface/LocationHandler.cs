@@ -57,6 +57,7 @@ namespace Interface
             {
                 selectedLocation.SetCompleted(true);
                 selectedLocation.SetCurrentWaveLevel(selectedLocation.CurrentWaveLevel + 1); // Увеличиваем уровень сложности
+                _completedLocations.Add(selectedLocation.Id);
             }
         }
 

@@ -9,6 +9,6 @@ namespace Data
         public int DayNumberKilledEnemies { get; set; }
 
         public int SurvivalCount { get; set; }
-        public int DeadMercenaryCount { get; set; }
+        public int CountDeadCharacter { get; set; }
     }
 }

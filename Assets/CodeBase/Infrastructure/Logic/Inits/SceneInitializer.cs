@@ -200,9 +200,9 @@ namespace Infrastructure.Logic.Inits
 
         private void OnClickExitToMenu()
         {
+            ClearEnemies();
             _saveLoadService.Save();
             _stateMachine.Enter<LoadLevelState, string>(Constants.Menu);
-            ClearEnemies();
             _playerCharacterInitializer.ClearData();
             _pauseService.ChangePause(true);
             AllServices.Container.Single<ISearchService>().ClearAllEntities();

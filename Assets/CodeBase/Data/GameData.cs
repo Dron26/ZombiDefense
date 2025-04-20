@@ -12,8 +12,6 @@ namespace Data
     {
         public MoneyData Money = new();
         public AchievementsData AchievementsData = new();
-        public EnemyData EnemyData = new();
-        public CharactersData Characters = new();
         public Location Location = new();
         public CameraState CameraState = new();
         public AudioData AudioData = new();

@@ -9,13 +9,12 @@ namespace Services.SaveLoad
     public class EnemyHandler:IEnemyHandler
     {
         private readonly IEnemyData _enemyData;
-        private IAchievementsHandler _achievementsHandler;
         private IGameEventBroadcaster _eventBroadcaster;
         private int _maxEnemyOnWave;
-        public EnemyHandler(IEnemyData enemyData,IAchievementsHandler achievementsHandler, IGameEventBroadcaster eventBroadcaster)
+        private bool _isSpawnEnd=false;
+        public EnemyHandler(IGameEventBroadcaster eventBroadcaster)
         {
-            _enemyData = enemyData;
-            _achievementsHandler = achievementsHandler;
+            _enemyData = new EnemyData();
             _eventBroadcaster = eventBroadcaster;
         }
 
@@ -30,12 +29,11 @@ namespace Services.SaveLoad
 
         public void EnemyDeath(Enemy enemy)
         {
-            if (_enemyData.GetActiveEnemyCount() == 1)
+            if (_enemyData.GetActiveEnemyCount() == 1&&_isSpawnEnd)
             {
                 _eventBroadcaster.InvokeLastEnemyRemained();
             }
 
-            _achievementsHandler.AddKilledEnemy();
             _eventBroadcaster.InvokeOnEnemyDeath(enemy);
             SetInactiveEnemy(enemy);
         }
@@ -55,6 +53,11 @@ namespace Services.SaveLoad
         }
         
         public int GetMaxEnemyOnWave() => _maxEnemyOnWave;
+
+        public void SetEndSpawn(bool isSpawnEnd)
+        {
+            _isSpawnEnd = isSpawnEnd;
+        }
     }
 }
 

@@ -11,9 +11,9 @@ namespace Services.SaveLoad
         private readonly CharactersData _charactersData;
         private IGameEventBroadcaster _eventBroadcaster;
 
-        public CharacterHandler(CharactersData charactersData)
+        public CharacterHandler()
         {
-            _charactersData = charactersData;
+            _charactersData = new CharactersData();
             _eventBroadcaster=AllServices.Container.Single<IGameEventBroadcaster>();
             AddListener();
         }

@@ -131,7 +131,7 @@ namespace Characters.Robots
                         }
                         
                         
-                        Debug.Log("_idleInterval");
+                        
                         yield return _idleInterval;
                     }
                 }
@@ -263,7 +263,6 @@ namespace Characters.Robots
 
         private void StopAttack()
         {
-            Debug.Log("StopAttack()");
             _isTargetSet = false;
             _fxController.OnAttackFXStop();
             StopCoroutine(AttackState());

@@ -15,9 +15,10 @@ namespace Interface
         public int WaveCount{ get; set; } 
         public int EnemyCount{ get; set; } 
         public int CurrentWaveLevel{ get; set; } 
-        
+        public bool IsAdditional;
+        public int UnlockedId;
 
-        public LocationProgressData(int id, bool isTutorial, bool isLocked, bool isCompleted, int baseReward, int waveCount,int enemyCount, int currentWaveLevel)
+        public LocationProgressData(int id, bool isTutorial, bool isLocked, bool isCompleted, int baseReward, int waveCount,int enemyCount, int currentWaveLevel,bool isAdditional,int unlockedId)
         {
             Id = id;
             IsTutorial = isTutorial;
@@ -27,6 +28,8 @@ namespace Interface
             WaveCount = waveCount;
             EnemyCount = enemyCount;
             CurrentWaveLevel = currentWaveLevel;
+            IsAdditional=isAdditional;
+            UnlockedId=unlockedId;
         }
 
         public void SetLock(bool isLocked)

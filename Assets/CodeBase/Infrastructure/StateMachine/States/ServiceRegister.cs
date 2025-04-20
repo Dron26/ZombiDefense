@@ -63,9 +63,9 @@ namespace Infrastructure.StateMachine.States
             
             var gameEventBroadcaster = services.Single<IGameEventBroadcaster>();
             services.RegisterSingle<ILocationHandler>(new LocationHandler(gameData));
-            services.RegisterSingle<ICharacterHandler>(new CharacterHandler(gameData.Characters));
+            services.RegisterSingle<ICharacterHandler>(new CharacterHandler());
             services.RegisterSingle<IAudioSettingsHandler>(new AudioSettingsHandler(gameData.AudioData));
-            services.RegisterSingle<IEnemyHandler>(new EnemyHandler(gameData.EnemyData, achievementsHandler, gameEventBroadcaster));
+            services.RegisterSingle<IEnemyHandler>(new EnemyHandler( gameEventBroadcaster));
             services.Single<IAudioManager>().Initialize();
             services.Single<ISaveLoadService>().Save();
         }

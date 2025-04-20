@@ -26,7 +26,8 @@ namespace Enemies.AbstractEntity
         public Action OnInitialized;
 
         //public Action<WeaponType> OnTakeDamage;
-        public Vector3 StartPosition;
+        public Vector3 StartPosition=> _startPosition;
+        public Vector3 _startPosition;
         public float MaxHealth => _maxHealth;
         public int Level => _level;
         public int IndexInWave => _indexInWave;
@@ -83,6 +84,7 @@ namespace Enemies.AbstractEntity
             _price = _data.Price;
             _level = _data.Level;
             _isShieldbearer = _data.HasShield;
+            gameObject.transform.position = StartPosition;
             
             if (_isShieldbearer)
             {
@@ -199,6 +201,11 @@ namespace Enemies.AbstractEntity
         {
             _shield.gameObject.SetActive(false);
             _enemyAnimController.WasShieldShattered();
+        }
+
+        public void SetStartPosition(Vector3 position)
+        {
+            _startPosition = position;
         }
     }
 }

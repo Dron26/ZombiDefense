@@ -35,7 +35,7 @@ namespace Infrastructure.Logic.WaveManagment
         private int _countActivatedEnemiesWave;
         private int _maxEnemyOnWave;
         private bool _isStopSpawning;
-        private bool _isStopRevival = false;
+        private bool _isRevivalStoped= false;
         private int _spawnPointsCount ;
         private int _delayTimeCount=4;
         public int TimeTimeBeforeNextWave => _delayTimeCount;
@@ -108,7 +108,7 @@ namespace Infrastructure.Logic.WaveManagment
                 _maxEnemyOnWave += spawnCount;
             }
 
-            _enemyHandler.SetMaxEnemyOnWave(_maxEnemyOnWave);
+            // _enemyHandler.SetMaxEnemyOnWave(_maxEnemyOnWave);
             _numberKilledEnemies = 0;
             OnSpawnPointsReady?.Invoke();
         }
@@ -117,7 +117,7 @@ namespace Infrastructure.Logic.WaveManagment
         {
             Enemy enemy = entity.GetComponent<Enemy>();
             _enemyHandler.EnemyDeath(enemy);
-            enemy.GetComponent<EnemyDieState>().OnRevival -= OnEnemyRevival; 
+            //enemy.GetComponent<EnemyDieState>().OnRevival -= OnEnemyRevival; 
 
             _numberKilledEnemies++;
             if (_numberKilledEnemies == _maxEnemyOnWave)
@@ -134,7 +134,7 @@ namespace Infrastructure.Logic.WaveManagment
             Transform spawnPointTransform = spawnPoint.transform;
             Transform enemyTransform = enemy.transform;
             enemyTransform.SetParent(spawnPoint.transform);
-            enemy.StartPosition = spawnPointTransform.position;
+            enemy.SetStartPosition(spawnPointTransform.position);
             enemyTransform.position = enemy.StartPosition;
             enemy.SetIndex(_currentIndexEnemyOnWave);
             enemy.gameObject.SetActive(false);
@@ -146,11 +146,12 @@ namespace Infrastructure.Logic.WaveManagment
         }
         public IEnumerator StartSpawn()
         {
+            _enemyHandler.SetMaxEnemyOnWave(_maxEnemyOnWave);
             int number = 0;
-
+            _enemyHandler.SetEndSpawn(false);
             _isStopSpawning = false;
             _countActivatedEnemiesWave = 0;
-            
+            _isRevivalStoped = false;
            
             foreach (Enemy enemy in _createdWaveDict[_createdWaveDict.Count - 1])
             {
@@ -187,23 +188,32 @@ namespace Infrastructure.Logic.WaveManagment
             _numberKilledEnemies = 0;
             StopCoroutine(StartSpawn());
         }
-
-     
+        
         private void Activated(Enemy enemy)
         {
             if (_isStopSpawning == false)
             {
+                int index = _waveManager.CurrentFilledWave-1;
                 enemy.transform.position = enemy.StartPosition;
                 enemy.gameObject.SetActive(true);
                 _enemyHandler.SetActiveEnemy(enemy);
-                int index = enemy.IndexInWave;
+               // int index = enemy.IndexInWave;
                 
                 _activatedWavesNumber[index]++;
                 _searchService.AddEntity(enemy);
+
+                int n = _activatedWavesNumber[index];
+                int c = _createdWaveDict[index].Count;
                 
-                if (_activatedWavesNumber[index] == _createdWaveDict[index].Count)
+                Debug.Log("index,_activatedWavesNumber,_createdWaveDict");
+                Debug.Log(index);
+                Debug.Log(n);
+                Debug.Log(c);
+                
+                if (_activatedWavesNumber[index] == _maxEnemyOnWave&&!_isRevivalStoped)
                 {
                     StopRevival(index);
+                    StopSpawn();
                 }
             }
         }
@@ -211,12 +221,19 @@ namespace Infrastructure.Logic.WaveManagment
         public void StopSpawn()
         {
             _isStopSpawning = true;
+            
             if (_spawnCoroutine != null)
             {
                 StopCoroutine(_spawnCoroutine);
                 _spawnCoroutine = null;
             }
-            StopRevival(_createdWaveDict.Count - 1);
+
+            _enemyHandler.SetEndSpawn(true);
+            
+            if (!_isRevivalStoped)
+            {
+                StopRevival(_createdWaveDict.Count - 1);
+            }
         }
 
         private void OnEnemyRevival(Enemy enemy)
@@ -226,12 +243,11 @@ namespace Infrastructure.Logic.WaveManagment
 
         private void StopRevival(int index)
         {
-            _isStopRevival = true;
-
+            _isRevivalStoped = true;
             foreach (Enemy enemy in _createdWaveDict[index])
             {
                 EnemyDieState enemyDieState = enemy.GetComponent<EnemyDieState>();
-                enemyDieState.StopRevival(_isStopRevival);
+                enemyDieState.StopRevival(true);
             }
         }
 

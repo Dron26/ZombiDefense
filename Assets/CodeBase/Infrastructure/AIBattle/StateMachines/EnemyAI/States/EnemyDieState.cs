@@ -23,7 +23,6 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
         private EnemyFXController _fxController;
         private EnemyType _enemyType;
         private List<Character> _characterInRange = new();
-        private Vector3 _thisPosition;
 
         private bool _isDeath;
         private bool _isStopRevival;
@@ -40,7 +39,6 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
             _enemyType = _enemy.Data.Type;
             _agent = StateMachine.Enemy.NavMeshAgent;
             _fxController = StateMachine.Enemy.FXController;
-            _thisPosition = transform.position;
             
             _collider = GetComponent<Collider>();
         }
@@ -49,8 +47,6 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
         {
             enabled=true;
             _isDeath = false;
-            _isStopRevival = false;
-            _canDestroyed = false;
             _isFalled = false;
 
             _agent.isStopped = true;
@@ -79,9 +75,8 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
             _wait = new WaitForSeconds(time);
             yield return  _wait;
             
-            gameObject.SetActive(false);
+            
             _isFalled = true;
-            _thisPosition = _enemy.StartPosition;
             
             // if (!_isStopRevival && !_canDestroyed)
             // {
@@ -90,7 +85,12 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
 
             if (_canDestroyed)
             {
-                Destroy(gameObject);
+                gameObject.SetActive(false);
+               // Destroy(gameObject);
+            }
+            else if (!_isStopRevival)
+            {
+                AfterDie();
             }
         }
 
@@ -121,6 +121,7 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
         public void StopRevival(bool isStopRevival)
         {
             _isStopRevival = isStopRevival;
+            _canDestroyed = isStopRevival;
         }
 
         public void SetDestroyed()

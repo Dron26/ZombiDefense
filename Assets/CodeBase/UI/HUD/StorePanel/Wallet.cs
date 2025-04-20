@@ -23,6 +23,12 @@ namespace UI.HUD.StorePanel
         {
             _upgradeTree=AllServices.Container.Single<IUpgradeTree>();
             SetUpgrades();
+            
+            if (_profitProcent==0)
+            {
+                _profitProcent = 10f;
+            }
+            
             AddListener();
             TempMoney = _defaultMoney;
         }
@@ -30,7 +36,6 @@ namespace UI.HUD.StorePanel
         public void AddMoneyForKilledEnemy(Enemy enemy)
         {
             int amountMoney = enemy.GetPrice();
-            int cost= 
             TempMoney += amountMoney;
             AllAmountMoney += amountMoney;
             MoneyForEnemy += amountMoney;
@@ -85,7 +90,7 @@ namespace UI.HUD.StorePanel
         private void UpdateUpgradeValue(UpgradeGroupType groupType, UpgradeType type, Action<int> setValue)
         {
             var upgrades = _upgradeTree.GetUpgradeValue(groupType, type);
-            if (upgrades != null && upgrades.Count > 0)
+            if (upgrades != null && upgrades.Count > 0&&upgrades[0]!=0f)
             {
                 setValue((int)Mathf.Round(upgrades[0]));
             }

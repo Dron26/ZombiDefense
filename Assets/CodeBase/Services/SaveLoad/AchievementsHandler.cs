@@ -1,5 +1,7 @@
 using System;
+using Characters.Humanoids.AbstractLevel;
 using Data;
+using Enemies.AbstractEntity;
 using Interface;
 
 namespace Services.SaveLoad
@@ -7,18 +9,21 @@ namespace Services.SaveLoad
     public class AchievementsHandler : IAchievementsHandler
     {
         private readonly AchievementsData _achievementsData;
+        private readonly IGameEventBroadcaster _gameEvent;
 
         public AchievementsHandler(AchievementsData achievementsData)
         {
             _achievementsData = achievementsData ?? throw new ArgumentNullException(nameof(achievementsData));
+            _gameEvent = AllServices.Container.Single<IGameEventBroadcaster>();
+            AddListener();
         }
 
         public int KilledEnemies => _achievementsData.NumberKilledEnemies;
         public int DailyKilledEnemies => _achievementsData.DayNumberKilledEnemies;
         public int SurvivalCount => _achievementsData.SurvivalCount;
-        public int DeadMercenaryCount => _achievementsData.DeadMercenaryCount;
+        public int DeadMercenaryCount => _achievementsData.CountDeadCharacter;
 
-        public void AddKilledEnemy()
+        private void AddKilledEnemy( Enemy enemy)
         {
             _achievementsData.NumberKilledEnemies++;
             _achievementsData.DayNumberKilledEnemies++;
@@ -41,7 +46,7 @@ namespace Services.SaveLoad
         {
             if (count < 0)
                 throw new ArgumentOutOfRangeException(nameof(count), "Dead mercenary count cannot be negative.");
-            _achievementsData.DeadMercenaryCount = count;
+            _achievementsData.CountDeadCharacter = count;
         }
 
         public void ResetDailyAchievements()
@@ -54,7 +59,18 @@ namespace Services.SaveLoad
             ResetDailyAchievements();
             ClearKilledEnemies();
             _achievementsData.SurvivalCount = 0;
-            _achievementsData.DeadMercenaryCount = 0;
+            _achievementsData.CountDeadCharacter = 0;
+        }
+        
+        private void AddListener()
+        {
+            _gameEvent.OnEnemyDeath+= AddKilledEnemy;
+            _gameEvent.OnCharacterDie += AddKilledCharacter;
+        }
+
+        public void AddKilledCharacter(Character character)
+        {
+            _achievementsData.CountDeadCharacter++;
         }
     }
 }

@@ -29,7 +29,8 @@ namespace UI.Report
         [SerializeField] private LeanLocalizedTextMeshProUGUI _infoDeadMercenary;
         [SerializeField] private TMP_Text _infoDeadMercenaryValue;
         [SerializeField] private LeanLocalizedTextMeshProUGUI _infoOffer;
-
+        [SerializeField] private TMP_Text _allProfit;
+        [SerializeField] private LeanLocalizedTextMeshProUGUI _infoAllProfit;
         [SerializeField] private Button _stayOnLocation;
         [SerializeField] private Button _backToMenu;
         [SerializeField] private Button _reset;
@@ -38,9 +39,7 @@ namespace UI.Report
         [SerializeField] private GameObject _panel;
         
         private int _numberKilledEnemies;
-        private int _allNumberKilledEnemies;
         private int _numberSurvivalEnemies;
-        private int _survival;
         private int _deadMercenary;
         private int _profit;
         public Action OnClickExitToMenu;
@@ -52,7 +51,8 @@ namespace UI.Report
         private Wallet _wallet;
         private IPauseService _pauseService;
         private IAchievementsHandler _achievementsHandler;
-        
+        private IEnemyHandler _enemyHandler;
+        private IGameEventBroadcaster _eventBroadcaster;
         public void Init(Store store,GameStateMachine stateMachine)
         {
             _stateMachine = stateMachine;
@@ -60,6 +60,8 @@ namespace UI.Report
             _wallet=store.GetWallet();
             _pauseService = AllServices.Container.Single<IPauseService>();
             _achievementsHandler = AllServices.Container.Single<IAchievementsHandler>();
+            _enemyHandler = AllServices.Container.Single<IEnemyHandler>();
+            _eventBroadcaster=AllServices.Container.Single<IGameEventBroadcaster>();
             AddListener();
         }
 
@@ -89,22 +91,26 @@ namespace UI.Report
 
             _panel.SetActive(true);
             _numberKilledEnemies = _achievementsHandler.KilledEnemies;
-            _allNumberKilledEnemies = _achievementsHandler.DailyKilledEnemies;
-            _survival = _achievementsHandler.SurvivalCount;
             _deadMercenary = _achievementsHandler.DeadMercenaryCount;
             _profit = _wallet.MoneyForEnemy;
-            _numberSurvivalEnemies=AllServices.Container.Single<EnemyHandler>().GetActiveEnemy().Count;
+            _numberSurvivalEnemies=_enemyHandler.GetActiveEnemy().Count;
             
-            _infoSurvivalEnemies.TranslationName = ReportKey.SurvivorsEnemies.ToString();
-            _infoSurvivalEnemiesValue.text = _numberSurvivalEnemies.ToString();
-            _infoSurvival.TranslationName = ReportKey.Survivors.ToString();
-            _infoSurvivalValue.text = _survival.ToString();
+            if (_numberSurvivalEnemies!=0)
+            {
+                _infoSurvivalEnemies.TranslationName = ReportKey.SurvivorsEnemies.ToString();
+                _infoSurvivalEnemiesValue.text = _numberSurvivalEnemies.ToString();  
+            }
+           
             _infoDeadMercenary.TranslationName = ReportKey.Dead.ToString();
             _infoDeadMercenaryValue.text = _deadMercenary.ToString();
             _infoKilledEnemies.TranslationName = ReportKey.Killed.ToString();
             _infoKilledEnemiesValue.text = _numberKilledEnemies.ToString();
             _infoProfit.TranslationName = ReportKey.Profit.ToString();
             _infoProfitValue.text = _profit.ToString();
+            
+            
+            _allProfit.text = _wallet.TempMoney+(_profit*0.1f).ToString();
+           // _infoAllProfit.TranslationName = ReportKey.Profit.ToString();
         }
 
         private void SwicthScene()
@@ -146,8 +152,8 @@ namespace UI.Report
             _reset.onClick.AddListener(ResetLevel);
             _continue.onClick.AddListener(SelectOk);
             
-            AllServices.Container.Single<IGameEventBroadcaster>().LastHumanoidDie+=OnLastHumanoidDie;
-            AllServices.Container.Single<IGameEventBroadcaster>().OnLocationCompleted+=ShowReport;
+            _eventBroadcaster.LastHumanoidDie+=OnLastHumanoidDie;
+            _eventBroadcaster.OnLocationCompleted+=ShowReport;
         }
 
         private void RemoveListener()
@@ -156,13 +162,14 @@ namespace UI.Report
             _reset.onClick.RemoveListener(ResetLevel);
             _continue.onClick.RemoveListener(SelectOk);
             
-            AllServices.Container.Single<IGameEventBroadcaster>().LastHumanoidDie-=OnLastHumanoidDie;
-            AllServices.Container.Single<IGameEventBroadcaster>().OnLocationCompleted-=ShowReport;
+            _eventBroadcaster.LastHumanoidDie-=OnLastHumanoidDie;
+            _eventBroadcaster.OnLocationCompleted-=ShowReport;
         }
 
         private void OnDestroy()
         {
             RemoveListener();
+            _achievementsHandler.Reset();
         }
     }
 

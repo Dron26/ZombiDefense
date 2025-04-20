@@ -1,3 +1,5 @@
+using Characters.Humanoids.AbstractLevel;
+using Enemies.AbstractEntity;
 using Services;
 
 namespace Interface
@@ -8,11 +10,11 @@ namespace Interface
         int DailyKilledEnemies { get; }
         int SurvivalCount { get; }
         int DeadMercenaryCount { get; }
-
-        void AddKilledEnemy();
         void ClearKilledEnemies();
         void SetSurvivalCount(int count);
         void SetDeadMercenaryCount(int count);
+        void AddKilledCharacter(Character character);
+        
         void Reset();
     }
 }

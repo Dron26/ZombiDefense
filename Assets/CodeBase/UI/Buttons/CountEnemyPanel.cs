@@ -41,7 +41,7 @@ namespace UI.Buttons
             _eventBroadcaster.OnOnSetMaxEnemy += SetCount;
         }
         
-        protected override void OnDisabled()
+        private void OnDestroy()
         {
             RemoveListener();
         }

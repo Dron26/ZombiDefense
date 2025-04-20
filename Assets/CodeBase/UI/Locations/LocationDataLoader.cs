@@ -55,7 +55,9 @@ namespace UI.Locations
                         data.BaseReward,
                         data.WavesContainerData.GroupWaveData.Count,
                         enemyCount,
-                        0 // CurrentWaveLevel изначально 0
+                        0, // CurrentWaveLevel изначально 0
+                        data.IsAdditional,
+                        data.UnlockedId
                     );
 
                     locations.Add(location);
@@ -67,6 +69,13 @@ namespace UI.Locations
             }
 
             InitializeLocations(locations);
+            
+            if (locations.Count > 0)
+            {
+                locations[0].SetLock(false);
+                locations[1].SetLock(false);
+            }
+            
             SyncWithSaveData(locations);
 
             return locations;
@@ -89,20 +98,25 @@ namespace UI.Locations
                 completedLocationsId.Add(0);
             }
 
-            foreach (var id in completedLocationsId)
+            foreach (int completedId in completedLocationsId)
             {
-                var locationData = locations.FirstOrDefault(x => x.Id == id);
-                if (locationData != null)
+                var completedLocation = locations.FirstOrDefault(x => x.Id == completedId);
+                if (completedLocation != null)
                 {
-                    locationData.SetCompleted(true);
-                    locationData.SetLock(false);
-
-                    var nextLocationData = locations.FirstOrDefault(x => x.Id == id + 1);
-                    nextLocationData?.SetLock(false);
+                    completedLocation.SetCompleted(true);
+                    completedLocation.SetLock(false);
                 }
                 else
                 {
-                    Debug.LogWarning($"Не найдена локация с ID: {id} среди загруженных данных.");
+                    Debug.LogWarning($"Не найдена завершенная локация с ID: {completedId}");
+                }
+            }
+
+            foreach (var location in locations)
+            {
+                if (completedLocationsId.Contains(location.UnlockedId))
+                {
+                    location.SetLock(false);
                 }
             }
 

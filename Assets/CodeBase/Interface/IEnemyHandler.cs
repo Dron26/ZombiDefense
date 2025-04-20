@@ -14,6 +14,8 @@ namespace Interface
         void Reset();
         void SetMaxEnemyOnWave(int maxEnemyOnWave);
         int GetMaxEnemyOnWave();
-        
+
+        void SetEndSpawn(bool isSpawnEnd);
+
     }
 }

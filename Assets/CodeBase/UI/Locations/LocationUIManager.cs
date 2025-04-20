@@ -66,8 +66,8 @@ namespace UI.Locations
             if (currentLocation != null)
             {
                 _selectedLocationInfo.text = $"Волн: {currentLocation.WaveCount}\n" +
-                                             $"Количество зомби: {currentLocation.EnemyCount}\n" +
-                                             $"Награда: {currentLocation.BaseReward}";
+                                             $"Количество зомби: {currentLocation.EnemyCount}\n";
+                //$"Награда: {currentLocation.BaseReward}";
             }
             else
             {

@@ -18,5 +18,7 @@ namespace UI.Locations
         public int BaseReward;
         
         public WavesContainerData WavesContainerData;
+        public bool IsAdditional;
+        public int UnlockedId;
     }
 }
