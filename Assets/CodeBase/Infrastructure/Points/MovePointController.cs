@@ -80,7 +80,7 @@ namespace Infrastructure.Points
 
             if (_selectedPoint != newPoint)
             {
-                Debug.Log("selectNewPoint");
+                //Debug.Log("selectNewPoint");
                 _selectedPoint.SelectedForMove(false);
 
                 if (newPoint.IsBusy)
@@ -125,10 +125,10 @@ namespace Infrastructure.Points
             {
                 if (_selectedCharacter.IsLife() && !_selectedCharacter.IsMove)
                 {
-                    Debug.Log("selectOldPoint");
+//                    Debug.Log("selectOldPoint");
                     if (newPoint.IsBusy == false && isPointToMoveTaked)
                     {
-                        Debug.Log("movePoint");
+//                        Debug.Log("movePoint");
                         _previousMovePoint.SetBusy(false);
                         newPoint.SetBusy(true);
                         newPoint.SelectedForMove(true);

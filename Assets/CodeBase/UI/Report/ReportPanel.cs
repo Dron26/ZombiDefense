@@ -67,6 +67,7 @@ namespace UI.Report
 
         public void ShowReport()
         {
+            Debug.Log("ShowReport()");
             StartCoroutine(Show());
         }
 

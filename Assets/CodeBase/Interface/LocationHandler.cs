@@ -5,12 +5,13 @@ using Infrastructure.Location;
 using UnityEngine;
 using Interface;
 using Services;
+using Services.SaveLoad;
 
 namespace Interface
 {
     public class LocationHandler : ILocationHandler
     {
-        private List<LocationProgressData> _locationProgressData = new List<LocationProgressData>();
+        private List<LocationProgressData> _locationProgressData;
         private int _selectedLocationId;
         private readonly List<int> _completedLocations = new List<int>();
         private int _selectedPointId;
@@ -18,7 +19,7 @@ namespace Interface
         private int _timeBeforeNextWave = 5;
         private int _maxEnemiesOnScene;
         private bool _isExitFromLocation;
-
+        private GameData _gameData;
         public int TimeBeforeNextWave => _timeBeforeNextWave;
         public bool IsExitFromLocation
         {
@@ -35,9 +36,9 @@ namespace Interface
         public float RewardMultiplier { get; set; }
         public IReadOnlyList<int> CompletedLocations => _completedLocations.AsReadOnly();
 
-        public LocationHandler(GameData gameData)
+        public LocationHandler( List<LocationProgressData> locationProgressData)
         {
-            _locationProgressData = gameData.LocationProgressData;
+            _locationProgressData = locationProgressData;
         }
 
         public void SetSelectedPointId(int id) => _selectedPointId = id;
@@ -56,22 +57,21 @@ namespace Interface
             if (selectedLocation != null)
             {
                 selectedLocation.SetCompleted(true);
-                selectedLocation.SetCurrentWaveLevel(selectedLocation.CurrentWaveLevel + 1); // Увеличиваем уровень сложности
+                selectedLocation.SetCurrentWaveLevel(selectedLocation.CurrentWaveLevel + 1);
                 _completedLocations.Add(selectedLocation.Id);
+
+                AllServices.Container.Single<ISaveLoadService>().UpdateLocationProgressData(_locationProgressData);
+
+                AllServices.Container.Single<ISaveLoadService>().Save();
             }
         }
 
         public List<int> GetCompletedLocationId()
         {
-            var completedLocations = new List<int>();
-            foreach (var location in _locationProgressData)
-            {
-                if (location.IsCompleted)
-                {
-                    completedLocations.Add(location.Id);
-                }
-            }
-            return completedLocations;
+            return _locationProgressData
+                .Where(location => location.IsCompleted)
+                .Select(location => location.Id)
+                .ToList();
         }
 
         public void SetLocationsDatas(List<LocationProgressData> locationProgressData)

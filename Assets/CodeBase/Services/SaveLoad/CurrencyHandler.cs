@@ -48,7 +48,7 @@ namespace Services.SaveLoad
             if (amount < 0)
                 throw new ArgumentException("Amount cannot be negative.", nameof(amount));
 
-            _moneyData.TempMoney -= Mathf.Clamp(amount, 0, int.MaxValue);
+            _moneyData.Money -= Mathf.Clamp(amount, 0, int.MaxValue);
             MoneyChanged?.Invoke();
         }
 

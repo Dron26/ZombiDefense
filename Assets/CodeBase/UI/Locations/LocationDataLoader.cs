@@ -101,6 +101,7 @@ namespace UI.Locations
             foreach (int completedId in completedLocationsId)
             {
                 var completedLocation = locations.FirstOrDefault(x => x.Id == completedId);
+                
                 if (completedLocation != null)
                 {
                     completedLocation.SetCompleted(true);
@@ -112,14 +113,16 @@ namespace UI.Locations
                 }
             }
 
-            foreach (var location in locations)
+            for (int i = 0; i < locations.Count; i++)
             {
-                if (completedLocationsId.Contains(location.UnlockedId))
+                if (locations[i].IsCompleted)
                 {
-                    location.SetLock(false);
+                    locations[i].SetLock(false);
+                    locations[i+1].SetLock(false);
                 }
             }
-
+            
+            //настройка сохранения
             _locationHandler.SetLocationsDatas(locations);
         }
     }

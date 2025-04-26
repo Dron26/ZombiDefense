@@ -193,7 +193,7 @@ namespace Infrastructure.Location
 
         public void SetCharacter(Character character)
         {
-            Debug.Log("SetCharacter");
+//            Debug.Log("SetCharacter");
             
             _character = character;
             _character.transform.parent = transform;

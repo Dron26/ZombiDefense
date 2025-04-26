@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Data;
 using Interface;
 using Newtonsoft.Json;
@@ -36,6 +37,18 @@ namespace Services.SaveLoad
             
             if (_dataPersistence == null)
                 Debug.LogError("Ошибка! _dataPersistence не был инициализирован.");
+        }
+        
+        public void UpdateLocationProgressData(List<LocationProgressData> locationProgressData)
+        {
+            if (GameData == null)
+            {
+                Debug.LogError("GameData is null! Cannot update location progress data.");
+                return;
+            }
+
+            GameData.LocationProgressData = locationProgressData;
+            Debug.Log("GameData location progress data updated.");
         }
 
         public GameData GetGameData()

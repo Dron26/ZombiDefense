@@ -39,7 +39,7 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
         }
         private void Move()
         {
-            Debug.Log("Move()");
+//            Debug.Log("Move()");
             if (_point != null)
             {
                 Vector3 targetPosition = _point.transform.position;
