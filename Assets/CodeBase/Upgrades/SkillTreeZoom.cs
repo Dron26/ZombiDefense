@@ -69,10 +69,10 @@ namespace Upgrades
         {
             // Проверка на колесико мыши
             float scroll = Input.GetAxis("Mouse ScrollWheel");
-            if (scroll != 0)
-            {
-                Debug.Log("Колесико мыши прокручено. Сдвиг зума: " + scroll);
-            }
+            // if (scroll != 0)
+            // {
+            //     Debug.Log("Колесико мыши прокручено. Сдвиг зума: " + scroll);
+            // }
 
             float zoomDelta = scroll * zoomSpeed;
             currentZoom = Mathf.Clamp(currentZoom - zoomDelta, minZoom, maxZoom);
@@ -87,10 +87,10 @@ namespace Upgrades
                 float currentDistance = Vector2.Distance(touch1.position, touch2.position);
                 float zoomDeltaTouch = (currentDistance - prevDistance) * 0.1f;
 
-                if (Mathf.Abs(zoomDeltaTouch) > 0.01f) // Для более точного отслеживания зума
-                {
-                    Debug.Log("Зум на таче: " + zoomDeltaTouch);
-                }
+                // if (Mathf.Abs(zoomDeltaTouch) > 0.01f) // Для более точного отслеживания зума
+                // {
+                //     Debug.Log("Зум на таче: " + zoomDeltaTouch);
+                // }
 
                 currentZoom = Mathf.Clamp(currentZoom - zoomDeltaTouch, minZoom, maxZoom);
             }
@@ -99,8 +99,8 @@ namespace Upgrades
             Camera.main.orthographicSize = Mathf.SmoothDamp(Camera.main.orthographicSize, currentZoom, ref currentVelocity.z, zoomSmoothTime);
 
             // Выводим текущий zoom и позицию камеры для проверки
-            Debug.Log("Текущий z-zoom: " + currentZoom);
-            Debug.Log("Текущая позиция камеры: " + Camera.main.transform.position);
+           // Debug.Log("Текущий z-zoom: " + currentZoom);
+                //            Debug.Log("Текущая позиция камеры: " + Camera.main.transform.position);
         }
 
         // Выводим ограничения камеры

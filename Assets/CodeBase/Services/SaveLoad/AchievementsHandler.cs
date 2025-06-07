@@ -18,22 +18,22 @@ namespace Services.SaveLoad
             AddListener();
         }
 
-        public int KilledEnemies => _achievementsData.NumberKilledEnemies;
-        public int DailyKilledEnemies => _achievementsData.DayNumberKilledEnemies;
+        public int KilledEnemies => _achievementsData.KilledEnemies;
+        public int DailyKilledEnemies => _achievementsData.AllKilledEnemies;
         public int SurvivalCount => _achievementsData.SurvivalCount;
         public int DeadMercenaryCount => _achievementsData.CountDeadCharacter;
 
         public int WaveComplatedCount => _achievementsData.WaveComplatedCount;
         private void AddKilledEnemy( Enemy enemy)
         {
-            _achievementsData.NumberKilledEnemies++;
-            _achievementsData.DayNumberKilledEnemies++;
+            _achievementsData.KilledEnemies++;
+            _achievementsData.AllKilledEnemies++;
         }
 
         public void ClearKilledEnemies()
         {
-            _achievementsData.NumberKilledEnemies = 0;
-            _achievementsData.DayNumberKilledEnemies = 0;
+            _achievementsData.KilledEnemies = 0;
+            _achievementsData.AllKilledEnemies = 0;
         }
 
         public void SetSurvivalCount(int count)
@@ -58,7 +58,7 @@ namespace Services.SaveLoad
 
         public void ResetDailyAchievements()
         {
-            _achievementsData.DayNumberKilledEnemies = 0;
+            _achievementsData.KilledEnemies = 0;
         }
         
         public void Reset()

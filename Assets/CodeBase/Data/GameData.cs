@@ -28,8 +28,6 @@ namespace Data
         public void UpdateAudioSettings(AudioData audioData) => AudioData = audioData;
         public void OnGameStart() => TimeStatistics.OnGameStart();
         public void OnGameEnd() => TimeStatistics.OnGameEnd();
-
-
     }
 
     [Serializable]

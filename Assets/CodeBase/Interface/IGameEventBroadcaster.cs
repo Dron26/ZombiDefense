@@ -30,6 +30,7 @@ namespace Interface
         event Action<CharacterData> OnBoughtCharacter;
         event Action<BoxData> OnBoughtBox;
         event Action<int> OnMoneyChanged;
+        event Action OnExitedLocation;
         public void InvokeOnSetActiveHumanoid();
         public void InvokeOnCharacterDie(Character character);
         public void InvokeOnOnHumanoidDieDie();
@@ -54,5 +55,7 @@ namespace Interface
         public void InvokeOnBoughtCharacter(CharacterData data);
         public void InvokeOnBoughtBox(BoxData data);
         public void InvokeOnMoneyChanged(int money);
+        
+        public void InvokeOnExitedLocation();
     }
 }

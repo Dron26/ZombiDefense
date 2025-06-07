@@ -39,6 +39,7 @@ namespace Interface
         public LocationHandler( List<LocationProgressData> locationProgressData)
         {
             _locationProgressData = locationProgressData;
+            AllServices.Container.Single<IGameEventBroadcaster>().OnExitedLocation+= OnExitedLocation;
         }
 
         public void SetSelectedPointId(int id) => _selectedPointId = id;
@@ -126,6 +127,11 @@ namespace Interface
             {
                 currentLocation.SetCurrentWaveLevel(currentLocation.CurrentWaveLevel + 1);
             }
+        }
+        
+        private void OnExitedLocation()
+        {
+            _isExitFromLocation = true;
         }
     }
 }

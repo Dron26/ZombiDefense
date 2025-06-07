@@ -115,11 +115,12 @@ namespace UI.Locations
 
             for (int i = 0; i < locations.Count; i++)
             {
-                if (locations[i].IsCompleted)
+
+                if (locations[locations[i].UnlockedId].IsCompleted )
                 {
                     locations[i].SetLock(false);
-                    locations[i+1].SetLock(false);
                 }
+
             }
             
             //настройка сохранения

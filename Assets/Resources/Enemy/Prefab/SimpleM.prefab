@@ -9575,7 +9575,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _shield: {fileID: 2217695322561350793}
-  StartPosition: {x: 0, y: 0, z: 0}
+  _startPosition: {x: 0, y: 0, z: 0}
 --- !u!195 &9066399932413476150
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -9653,6 +9653,7 @@ MonoBehaviour:
   _maxParticleScale: 1.2
   _container: {fileID: 435492706098707447}
   _impactDirt: {fileID: 5600658145187581838}
+  _shield: {fileID: 0}
 --- !u!114 &2014951900750315277
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10128,8 +10129,20 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 198054064319151800, guid: 558bf161c7eca4245914af0a69443f2f, type: 3}
+      propertyPath: stopAction
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 198054064319151800, guid: 558bf161c7eca4245914af0a69443f2f, type: 3}
       propertyPath: playOnAwake
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 198781131432367994, guid: 558bf161c7eca4245914af0a69443f2f, type: 3}
+      propertyPath: looping
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 198781131432367994, guid: 558bf161c7eca4245914af0a69443f2f, type: 3}
+      propertyPath: stopAction
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 198781131432367994, guid: 558bf161c7eca4245914af0a69443f2f, type: 3}
       propertyPath: playOnAwake

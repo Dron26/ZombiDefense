@@ -24,7 +24,7 @@ namespace Infrastructure.Logic.WaveManagment
         public Action OnClickReady;
 
         private Wallet _wallet;
-        private int bonusCoins;
+        private int _bonusCoins;
         private bool _isStartClick = false;
         private float timerDuration ;
         private WaveManager _waveManager;
@@ -49,6 +49,7 @@ namespace Infrastructure.Logic.WaveManagment
 
         public void ShowSkipButton()
         {
+            _bonusCoins = 0;
             _timerPanel.SetActive(true);
             _additionalPanel.SetActive(false);
             skipButton.gameObject.SetActive(true);
@@ -74,7 +75,7 @@ namespace Infrastructure.Logic.WaveManagment
             while (Time.time < startTime + timerDuration&&_isStartClick==false)
             {
                 float timeRemaining = startTime + timerDuration - Time.time;
-                bonusCoins = Mathf.FloorToInt(timeRemaining * bonusCoinsPerSecond);
+                _bonusCoins = Mathf.FloorToInt(timeRemaining * bonusCoinsPerSecond);
                 UpdateCountdownText(timeRemaining);
 
                 yield return null;
@@ -103,8 +104,11 @@ namespace Infrastructure.Logic.WaveManagment
         private void StartSpawn()
         {
             _timerPanel.SetActive(false);
-            bonusCoins = Mathf.FloorToInt(timerDuration * bonusCoinsPerSecond);
-            _wallet.AddMoney(bonusCoins);
+            
+            if (_bonusCoins>0)
+            {
+                _wallet.AddMoney(_bonusCoins);
+            }
             OnClickReady?.Invoke();
             Debug.Log("StartSpawn");
             _isStartClick = false;
@@ -114,7 +118,7 @@ namespace Infrastructure.Logic.WaveManagment
         {
             int seconds = Mathf.CeilToInt(timeRemaining);
             _timeInfo.text=seconds.ToString();
-            _bonusInfo.text=bonusCoins.ToString();
+            _bonusInfo.text=_bonusCoins.ToString();
         }
 
         private void AddListener()

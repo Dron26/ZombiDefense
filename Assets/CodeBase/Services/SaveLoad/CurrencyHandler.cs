@@ -12,14 +12,13 @@ namespace Services.SaveLoad
         private readonly MoneyData _moneyData;
         private IGameEventBroadcaster _eventBroadcaster;
         public event Action MoneyChanged;
-        private const int InitialMoneyAmount = 100000;
+        private const int InitialMoneyAmount = 500;
         public CurrencyHandler(MoneyData moneyData)
         {
             _moneyData = moneyData;
             _eventBroadcaster = AllServices.Container.Single<IGameEventBroadcaster>();
             if (AllServices.Container.Single<ISaveLoadService>().GetGameData().IsFirstStart)
             {
-                
                 AddMoney(InitialMoneyAmount);
                 AllServices.Container.Single<ISaveLoadService>().ChangeFirstStart();
             }

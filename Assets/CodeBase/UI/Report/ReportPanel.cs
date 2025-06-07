@@ -1,33 +1,36 @@
-using System;
-using System.Collections;
-using Common;
-using Infrastructure.BaseMonoCache.Code.MonoCache;
-using Infrastructure.StateMachine;
-using Infrastructure.StateMachine.States;
-using Interface;
-using Lean.Localization;
-using Services;
-using Services.PauseService;
-using Services.SaveLoad;
-using TMPro;
-using UI.HUD.StorePanel;
-using UnityEngine;
-using UnityEngine.UI;
 
-namespace UI.Report
-{
-    public class ReportPanel:MonoCache
+    using System;
+    using System.Collections;
+    using Common;
+    using Infrastructure.BaseMonoCache.Code.MonoCache;
+    using Infrastructure.StateMachine;
+    using Infrastructure.StateMachine.States;
+    using Interface;
+    using Lean.Localization;
+    using Services;
+    using Services.PauseService;
+    using TMPro;
+    using UI;
+    using UI.HUD.StorePanel;
+    using UnityEngine;
+    using UnityEngine.UI;
+
+    public class ReportPanel : MonoCache
     {
-        [SerializeField] private LeanLocalizedTextMeshProUGUI _infoSurvivalEnemies;
-        [SerializeField] private TMP_Text _infoSurvivalEnemiesValue;
-        [SerializeField] private LeanLocalizedTextMeshProUGUI _infoKilledEnemies;
-        [SerializeField] private TMP_Text _infoKilledEnemiesValue;
-        [SerializeField] private LeanLocalizedTextMeshProUGUI _infoProfit;
-        [SerializeField] private TMP_Text _infoProfitValue;
-        [SerializeField] private LeanLocalizedTextMeshProUGUI _infoWaveBonus;
-        [SerializeField] private TMP_Text _infoWaveBonusValue;
+       // [SerializeField] private LeanLocalizedTextMeshProUGUI _infoSurvivalEnemies;
+       // [SerializeField] private TMP_Text _infoSurvivalEnemiesValue;
+        
+        //[SerializeField] private LeanLocalizedTextMeshProUGUI _infoProfit;
+       // [SerializeField] private TMP_Text _infoProfitValue;
+       // [SerializeField] private LeanLocalizedTextMeshProUGUI _infoWaveBonus;
+       // [SerializeField] private TMP_Text _infoWaveBonusValue;
+       [SerializeField] private LeanLocalizedTextMeshProUGUI _infoKilledEnemies;
+       [SerializeField] private TMP_Text _infoKilledEnemiesValue;
         [SerializeField] private LeanLocalizedTextMeshProUGUI _infoDeadMercenary;
         [SerializeField] private TMP_Text _infoDeadMercenaryValue;
+        
+        [SerializeField] private TMP_Text _bonusKilledEnemiesValue;
+        [SerializeField] private TMP_Text _bonusDeadMercenaryValue;
         [SerializeField] private LeanLocalizedTextMeshProUGUI _infoOffer;
         [SerializeField] private TMP_Text _allProfit;
         [SerializeField] private LeanLocalizedTextMeshProUGUI _infoAllProfit;
@@ -35,13 +38,13 @@ namespace UI.Report
         [SerializeField] private Button _backToMenu;
         [SerializeField] private Button _reset;
         [SerializeField] private Button _continue;
-        
+        [SerializeField] private TMP_Text _bonusKilledEnemies;
+        [SerializeField] private TMP_Text _bonusWaveBonusValue;
         [SerializeField] private GameObject _panel;
-        
+
         private int _numberKilledEnemies;
         private int _numberSurvivalEnemies;
         private int _deadMercenary;
-        private int _profit;
         public Action OnClickExitToMenu;
         public Action OnClickNextLocation;
         public Action OnResetLevel;
@@ -53,15 +56,16 @@ namespace UI.Report
         private IAchievementsHandler _achievementsHandler;
         private IEnemyHandler _enemyHandler;
         private IGameEventBroadcaster _eventBroadcaster;
-        public void Init(Store store,GameStateMachine stateMachine)
+
+        public void Init(Store store, GameStateMachine stateMachine)
         {
             _stateMachine = stateMachine;
             _panel.SetActive(false);
-            _wallet=store.GetWallet();
+            _wallet = store.GetWallet();
             _pauseService = AllServices.Container.Single<IPauseService>();
             _achievementsHandler = AllServices.Container.Single<IAchievementsHandler>();
             _enemyHandler = AllServices.Container.Single<IEnemyHandler>();
-            _eventBroadcaster=AllServices.Container.Single<IGameEventBroadcaster>();
+            _eventBroadcaster = AllServices.Container.Single<IGameEventBroadcaster>();
             AddListener();
         }
 
@@ -76,7 +80,7 @@ namespace UI.Report
             yield return new WaitForSeconds(4f);
 
             SetPaused(true);
-            
+
             if (_isLastHumanoidDie)
             {
                 _reset.transform.parent.gameObject.SetActive(true);
@@ -91,29 +95,34 @@ namespace UI.Report
             }
 
             _panel.SetActive(true);
-            _numberKilledEnemies = _achievementsHandler.KilledEnemies;
-            _deadMercenary = _achievementsHandler.DeadMercenaryCount;
-            _profit = _wallet.MoneyForEnemy;
-            _numberSurvivalEnemies=_enemyHandler.GetActiveEnemy().Count;
             
-            if (_numberSurvivalEnemies!=0)
-            {
-                _infoSurvivalEnemies.TranslationName = ReportKey.SurvivorsEnemies.ToString();
-                _infoSurvivalEnemiesValue.text = _numberSurvivalEnemies.ToString();  
-            }
-           
-            _infoWaveBonus.TranslationName = ReportKey.Bonus.ToString();
-            _infoWaveBonusValue.text = (_achievementsHandler.WaveComplatedCount * 100f).ToString();
-            _infoDeadMercenary.TranslationName = ReportKey.Dead.ToString();
-            _infoDeadMercenaryValue.text = _deadMercenary.ToString();
+            // if (_numberSurvivalEnemies != 0)
+            // {
+            //     _infoSurvivalEnemies.TranslationName = ReportKey.SurvivorsEnemies.ToString();
+            //       _infoSurvivalEnemiesValue.text = _numberSurvivalEnemies.ToString();  
+            // }
+
+            //_infoWaveBonus.TranslationName = ReportKey.Bonus.ToString();
             _infoKilledEnemies.TranslationName = ReportKey.Killed.ToString();
+            _infoDeadMercenary.TranslationName = ReportKey.Dead.ToString();
+           // _infoProfit.TranslationName = ReportKey.Profit.ToString();
+             
+            _numberKilledEnemies = _achievementsHandler.KilledEnemies;
             _infoKilledEnemiesValue.text = _numberKilledEnemies.ToString();
-            _infoProfit.TranslationName = ReportKey.Profit.ToString();
-            _infoProfitValue.text = _profit.ToString();
+            _infoDeadMercenaryValue.text = _deadMercenary.ToString();
+            _deadMercenary = _achievementsHandler.DeadMercenaryCount;
+            
+            //_numberSurvivalEnemies = _enemyHandler.GetActiveEnemy().Count;
+           //  _infoWaveBonusValue.text = (_achievementsHandler.WaveComplatedCount * 100f).ToString();
             
             
-            _allProfit.text = _wallet.TempMoney+(_profit*0.1f).ToString();
-           // _infoAllProfit.TranslationName = ReportKey.Profit.ToString();
+         //   _infoProfitValue.text = _wallet.MoneyForEnemy.ToString();
+
+        // int tempValue = _wallet.MoneyForEnemy;
+         //   _bonusKilledEnemiesValue.text=tempValue.ToString()+"$";
+         //   _bonusDeadMercenaryValue.text=tempValue.ToString()+"+10%";
+            _allProfit.text = "+  "+_wallet.GetAllProfit().ToString()+"  $";
+            // _infoAllProfit.TranslationName = ReportKey.Profit.ToString();
         }
 
         private void SwicthScene()
@@ -121,26 +130,29 @@ namespace UI.Report
             _panel.SetActive(false);
             SetPaused(false);
             OnClickExitToMenu?.Invoke();
+            
         }
 
         public void OnLastHumanoidDie()
         {
-            _isLastHumanoidDie=true;
+            _isLastHumanoidDie = true;
             ShowReport();
         }
-     
-        
+
+
         private void ResetLevel()
         {
             Debug.Log("ResetLevel()");
             SetPaused(false);
             OnResetLevel?.Invoke();
-            _stateMachine.Enter<LoadLevelState,string>(Constants.Location); 
+            _stateMachine.Enter<LoadLevelState, string>(Constants.Location);
         }
+
         private void SetPaused(bool isPaused)
         {
             _pauseService.ChangePause(isPaused);
         }
+
         private void SelectOk()
         {
             _panel.SetActive(false);
@@ -148,25 +160,25 @@ namespace UI.Report
             SetPaused(false);
             OnClickExitToMenu?.Invoke();
         }
-        
+
         private void AddListener()
         {
-            _backToMenu.onClick.AddListener(SwicthScene);
-            _reset.onClick.AddListener(ResetLevel);
-            _continue.onClick.AddListener(SelectOk);
-            
-            _eventBroadcaster.LastHumanoidDie+=OnLastHumanoidDie;
-            _eventBroadcaster.OnLocationCompleted+=ShowReport;
+             _backToMenu.onClick.AddListener(SwicthScene);
+            // _reset.onClick.AddListener(ResetLevel);
+             _continue.onClick.AddListener(SelectOk);
+
+            _eventBroadcaster.LastHumanoidDie += OnLastHumanoidDie;
+            _eventBroadcaster.OnLocationCompleted += ShowReport;
         }
 
         private void RemoveListener()
         {
-            _backToMenu.onClick.RemoveListener(SwicthScene);
-            _reset.onClick.RemoveListener(ResetLevel);
-            _continue.onClick.RemoveListener(SelectOk);
-            
-            _eventBroadcaster.LastHumanoidDie-=OnLastHumanoidDie;
-            _eventBroadcaster.OnLocationCompleted-=ShowReport;
+            // _backToMenu.onClick.RemoveListener(SwicthScene);
+            // _reset.onClick.RemoveListener(ResetLevel);
+             _continue.onClick.RemoveListener(SelectOk);
+
+            _eventBroadcaster.LastHumanoidDie -= OnLastHumanoidDie;
+            _eventBroadcaster.OnLocationCompleted -= ShowReport;
         }
 
         private void OnDestroy()
@@ -187,4 +199,3 @@ namespace UI.Report
         TasksCompleted,
         Bonus
     }
-}

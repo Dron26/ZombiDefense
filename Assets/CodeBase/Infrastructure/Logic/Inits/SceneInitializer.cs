@@ -200,6 +200,7 @@ namespace Infrastructure.Logic.Inits
 
         private void OnClickExitToMenu()
         {
+            _eventBroadcaster.InvokeOnExitedLocation();
             ClearEnemies();
             _saveLoadService.Save();
             _stateMachine.Enter<LoadLevelState, string>(Constants.Menu);

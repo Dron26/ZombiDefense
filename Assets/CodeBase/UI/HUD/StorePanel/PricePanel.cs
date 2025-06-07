@@ -16,7 +16,7 @@ namespace UI.HUD.StorePanel
 
         public void Initialize(CharacterStore characterStore)
         {
-            characterStore.OnUpdateBought += SetInfo;
+            characterStore.OnUpdateSelectedCharacter += SetInfo;
             _characterStore = characterStore;
         }
     }

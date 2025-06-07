@@ -33,6 +33,11 @@ namespace UI.Locations
             _locationDataLoader = new LocationDataLoader();
             SetLocationsData();
             AddListener();
+            
+            if (AllServices.Container.Single<ILocationHandler>().IsExitFromLocation)
+            {
+                SwitchPanelState();
+            }
         }
 
         public LocationProgressData GetLocationById(int id) => _locations.FirstOrDefault(x => x.Id == id);
@@ -59,17 +64,17 @@ namespace UI.Locations
         
         private void AddListener()
         {
-            _play.onClick.AddListener(OnClikedPlay);
+            _play.onClick.AddListener(SwitchPanelState);
         }
 
-        private void OnClikedPlay()
+        public void SwitchPanelState()
         {
             _locationUIManager.SwitchPanelState(true);
         }
 
         private void RemoveListener()
         {
-            _play.onClick.RemoveListener(OnClikedPlay);
+            _play.onClick.RemoveListener(SwitchPanelState);
         }
 
         private void OnDestroy()

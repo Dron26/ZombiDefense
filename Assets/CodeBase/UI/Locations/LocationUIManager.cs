@@ -56,7 +56,7 @@ namespace UI.Locations
             }
             
                 _locationInfo.text = $"Миссий: {openLocation}/{_locationUIElements.Count-1}\n" +
-                                     $" $ : {_currencyHandler.GetCurrentMoney()}";
+                                     $" $ {_currencyHandler.GetCurrentMoney()}";
             
         }
 

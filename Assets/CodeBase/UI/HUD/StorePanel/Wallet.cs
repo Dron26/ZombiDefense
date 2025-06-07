@@ -4,6 +4,7 @@ using Enemies.AbstractEntity;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Interface;
 using Services;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace UI.HUD.StorePanel
@@ -11,11 +12,10 @@ namespace UI.HUD.StorePanel
     public class Wallet:MonoCache
     {
         public int MoneyForEnemy { get; set; }
-        public int AllAmountMoney { get; set; }
         private IUpgradeTree _upgradeTree;
 
         public int TempMoney { get; set; }
-        private int _defaultMoney = 100000;
+        private int _defaultMoney = 300;
         public event Action MoneyChanged;
         private float _profitProcent=0;
 
@@ -26,7 +26,7 @@ namespace UI.HUD.StorePanel
             
             if (_profitProcent==0)
             {
-                _profitProcent = 10f;
+                _profitProcent = 0.1f;
             }
             
             AddListener();
@@ -37,16 +37,18 @@ namespace UI.HUD.StorePanel
         {
             int amountMoney = enemy.GetPrice();
             TempMoney += amountMoney;
-            AllAmountMoney += amountMoney;
             MoneyForEnemy += amountMoney;
             MoneyChanged?.Invoke();
         }
+        
+        public  float GetAllProfit() => TempMoney+(MoneyForEnemy*0.1f);
 
         public void AddMoney(int amountMoney)
         {
-            int profit = (int) Mathf.Round(amountMoney * _profitProcent);
+            Debug.Log(TempMoney);
+            int profit = amountMoney+(int) Mathf.Round(amountMoney * _profitProcent);
             TempMoney += profit;
-            AllAmountMoney += profit;
+            
             MoneyChanged?.Invoke();
         }
 
@@ -57,7 +59,7 @@ namespace UI.HUD.StorePanel
 
         public void SpendMoney(int amountMoney)
         {
-            TempMoney -= Mathf.Clamp(amountMoney, 0, int.MaxValue);
+            TempMoney -= amountMoney;
             MoneyChanged?.Invoke();
         }
 
@@ -66,9 +68,16 @@ namespace UI.HUD.StorePanel
             return TempMoney >= price;
         }
         
+        private void  OnExitedLocation()
+        {
+           // AddMoney(Convert.ToInt32(TempMoney+(MoneyForEnemy*0.1f)));
+            AllServices.Container.Single<ICurrencyHandler>().AddMoney(TempMoney);
+        }
+        
         private void AddListener()
         {
             AllServices.Container.Single<IGameEventBroadcaster>().OnEnemyDeath += AddMoneyForKilledEnemy;
+            AllServices.Container.Single<IGameEventBroadcaster>().OnExitedLocation += OnExitedLocation;
         }
 
         protected override void OnDisable()

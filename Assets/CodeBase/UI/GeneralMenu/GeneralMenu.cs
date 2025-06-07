@@ -52,6 +52,7 @@ namespace UI.GeneralMenu
             AllServices.Container.Single<IUpgradeManager>().SetData(_branchContainer,_upgradePanel);
             AllServices.Container.Single<IUpgradeManager>().UpdateBranches();
             _soundSource = AllServices.Container.Single<IAudioManager>().GetSoundSource();
+            
         }
         
         private void InitializeLocationSystem()
@@ -67,7 +68,11 @@ namespace UI.GeneralMenu
         private void OnClikedCurtain()
         {
             bool isActive = AllServices.Container.Single<ILocationHandler>().IsExitFromLocation;
-            _menuPanel.SetActive(!isActive);
+            if (isActive)
+                _locationManager.SwitchPanelState();
+            
+            SwitchMenuPanelState(!isActive);
+
         }
 
         private void Start()

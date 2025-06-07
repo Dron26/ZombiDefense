@@ -4787,7 +4787,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _shield: {fileID: 0}
-  StartPosition: {x: 0, y: 0, z: 0}
+  _startPosition: {x: 0, y: 0, z: 0}
 --- !u!195 &9066399932413476150
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -4864,6 +4864,8 @@ MonoBehaviour:
   _minParticleScale: 0.8
   _maxParticleScale: 1.2
   _container: {fileID: 3061771952238300191}
+  _impactDirt: {fileID: 0}
+  _shield: {fileID: 0}
 --- !u!114 &2014951900750315277
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5144,6 +5146,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 9066399932423299540}
     m_Modifications:
+    - target: {fileID: 2071001600044091082, guid: 9d0519a7f8b9bb143a38f1b867cc5380, type: 3}
+      propertyPath: stopAction
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2194329948165343620, guid: 9d0519a7f8b9bb143a38f1b867cc5380, type: 3}
       propertyPath: m_RootOrder
       value: 1
