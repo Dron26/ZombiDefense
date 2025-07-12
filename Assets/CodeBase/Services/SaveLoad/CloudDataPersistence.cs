@@ -1,6 +1,8 @@
 using Data;
 using Interface;
 using Newtonsoft.Json;
+using UnityEngine;
+using YG;
 
 namespace Services.SaveLoad
 {
@@ -8,25 +10,39 @@ namespace Services.SaveLoad
     {
         public void Save(GameData data)
         {
-            string json = JsonConvert.SerializeObject(data);
-            // Тут будет код для сохранения в облаке
-            // Например, PlayerAccount.SetCloudSaveData(json);
+            var json = JsonConvert.SerializeObject(data, Formatting.None);
+            YG2.saves.GameDataJson = json;
+            YG2.SaveProgress();
+            Debug.Log("Cloud save completed");
         }
 
-        // Загружаем данные из облака
         public GameData Load()
         {
-            // Здесь код для загрузки данных из облака
-            // Например, string json = PlayerAccount.GetCloudSaveData();
-            // return !string.IsNullOrEmpty(json) ? JsonConvert.DeserializeObject<GameData>(json) : new GameData();
-            return new GameData();  // Пока возвращаем пустые данные
+            var json = YG2.saves.GameDataJson;
+
+            if (string.IsNullOrEmpty(json))
+            {
+                Debug.LogWarning("Cloud data is empty. Creating new GameData.");
+                return new GameData();
+            }
+
+            try
+            {
+                var data = JsonConvert.DeserializeObject<GameData>(json);
+                Debug.Log("Cloud load successful");
+                return data ?? new GameData();
+            }
+            catch
+            {
+                Debug.LogError("Cloud load failed. Data corrupted?");
+                return new GameData();
+            }
         }
 
-        // Сбрасываем данные в облаке
         public void Reset()
         {
-            // Сбрасываем данные в облаке
-            // Например, PlayerAccount.SetCloudSaveData("{}");
+            YG2.saves.GameDataJson = "";
+            YG2.SaveProgress();
         }
     }
 }

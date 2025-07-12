@@ -3,7 +3,6 @@ using System.Reflection;
 using Data;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Interface;
-using Plugins.SoundInstance.Core.Static;
 using Services.SaveLoad;
 using UI.Audio;
 using UnityEngine;
@@ -32,6 +31,7 @@ namespace Services.Audio
         
         public void Initialize( AudioManager audioManager)
         {
+            DontDestroyOnLoad(gameObject);
             _musicSource=GetComponent<AudioSource>();
             _mixerMusic = (AudioMixer)Resources.Load("MixerMusic");
             _audioManager = audioManager;
@@ -45,9 +45,17 @@ namespace Services.Audio
             
             
             
+            SetMusicHandler();
             SetMusicVolume(_currentVolumeMusic);
-            SetBackgroundMusics();
+           // SetBackgroundMusics();
             AddListener();
+        }
+
+        private void SetMusicHandler()
+        {
+            SI_MusicHandler musicHandler =GetComponent<SI_MusicHandler>();
+            musicHandler.Setup();
+            SoundInstance.SetMusicHandler(musicHandler);
         }
 
         private void SetBackgroundMusics()

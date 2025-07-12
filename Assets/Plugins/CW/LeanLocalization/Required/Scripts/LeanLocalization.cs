@@ -14,9 +14,8 @@ namespace Lean.Localization
 	
 	public class LeanLocalization : MonoBehaviour
 	{
-
-
 		public UnityAction Changelanguage;
+		
 		public enum DetectType
 		{
 			None,
@@ -181,7 +180,6 @@ namespace Lean.Localization
 		public void SetCurrentLanguage(string newLanguage)
 		{
 			CurrentLanguage = newLanguage;
-			Changelanguage.Invoke();
 		}
 
 		/// <summary>This sets the current language of all instances using the specified language name.</summary>

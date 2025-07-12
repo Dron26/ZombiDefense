@@ -4,18 +4,11 @@ namespace Infrastructure.StateMachine.States
     {
         private LoadingCurtain _loadingCurtain;
         
-        public GameLoopState(GameStateMachine stateMachine, LoadingCurtain loadingCurtain)
-        {
-            _loadingCurtain = loadingCurtain;
-        }
+        public GameLoopState(GameStateMachine stateMachine, LoadingCurtain loadingCurtain) => _loadingCurtain = loadingCurtain;
 
-        public void Enter()
-        {
-            _loadingCurtain.StartLoading();
-        }
+        public void Enter() => _loadingCurtain.ShowCurtain();
 
         public void Exit()
-        {
-        }
+        {}
     }
 }

@@ -1,8 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace Plugins.SoundInstance.Core.Scripts
-{
     public class SI_MusicHandler : MonoBehaviour
     {
         private bool _isAllowed;
@@ -17,29 +15,15 @@ namespace Plugins.SoundInstance.Core.Scripts
             get { return GetComponent<AudioSource>(); }
         }
 
-        private void Awake()
-        {
-            foreach (GameObject go in FindObjectsOfType<GameObject>())
-            {
-                if (go.name == "[SoundInstanceMusicLive]")
-                {
-                    Destroy(gameObject);
-                    return;
-                }
-            }
-
-            Setup();
-        }
-
         private void Update()
         {
-            if (_isAllowed && !audioSource.isPlaying)
-            {
-                if (!_needStop)
-                    StartGameplayMusic(GetRandomMusic().name, _fade);
-                else
-                    StopMusic(_fade, true);
-            }
+            // if (_isAllowed && !audioSource.isPlaying)
+            // {
+            //     if (!_needStop)
+            //         StartGameplayMusic(GetRandomMusic().name, _fade);
+            //     else
+            //         StopMusic(_fade, true);
+            // }
         }
 
         public void StopRandomMusic(bool fading)
@@ -48,11 +32,12 @@ namespace Plugins.SoundInstance.Core.Scripts
             StopMusic(_fade, fading);
         }
 
-        private void Setup()
-        {
+        public void Setup(){
+        
+        
             _storage = (MusicsStore)UnityEngine.Resources.Load("SIMusicStore");
             gameObject.name = "[SoundInstanceMusicLive]";
-            Static.SoundInstance.SetMusicHandler(this);
+            SoundInstance.SetMusicHandler(this);
             DontDestroyOnLoad(this);
             _isAllowed = true;
             _needStop = false;
@@ -80,7 +65,7 @@ namespace Plugins.SoundInstance.Core.Scripts
 
             foreach (GameObject go in FindObjectsOfType<GameObject>())
             {
-                Static.SoundInstance.CurrentMusic = _storage.GetGameplayMusic(name);
+                SoundInstance.CurrentMusic = _storage.GetGameplayMusic(name);
                 go.SendMessage("OnMusicStarted", _storage.GetGameplayMusic(name), SendMessageOptions.DontRequireReceiver);
             }
         }
@@ -155,7 +140,7 @@ namespace Plugins.SoundInstance.Core.Scripts
             {
                 currentTime += Time.deltaTime;
                 audioSource.volume = Mathf.Lerp(start,
-                    Static.SoundInstance.musicVolume, currentTime / duration);
+                    SoundInstance.musicVolume, currentTime / duration);
                 yield return null;
             }
 
@@ -182,21 +167,21 @@ namespace Plugins.SoundInstance.Core.Scripts
                 AudioClip audioClip = _storage.GetGameplayMusic(name).Song;
                 audioSource.clip = audioClip;
 
-                Static.SoundInstance.CurrentMusic = _storage.GetGameplayMusic(name);
+                SoundInstance.CurrentMusic = _storage.GetGameplayMusic(name);
             }
             else if (_isActiveMenu)
             {
                 AudioClip audioClip = _storage.GetMenuMusic(name).Song;
                 audioSource.clip = audioClip;
                 
-                Static.SoundInstance.CurrentMusic = _storage.GetMenuMusic(name);
+                SoundInstance.CurrentMusic = _storage.GetMenuMusic(name);
             }
             else if (_isActiveLoading)
             {
                 AudioClip audioClip = _storage.GetLoadingMusic(name).Song;
                 audioSource.clip = audioClip;
                 
-                Static.SoundInstance.CurrentMusic = _storage.GetLoadingMusic(name);
+                SoundInstance.CurrentMusic = _storage.GetLoadingMusic(name);
             }
 
 
@@ -272,7 +257,7 @@ namespace Plugins.SoundInstance.Core.Scripts
             {
                 currentTime += Time.deltaTime;
                 audioSource.volume = Mathf.Lerp(start,
-                    Static.SoundInstance.musicVolume, currentTime / duration);
+                    SoundInstance.musicVolume, currentTime / duration);
                 yield return null;
             }
 
@@ -281,18 +266,18 @@ namespace Plugins.SoundInstance.Core.Scripts
 
         public Music GetNextMusic()
         {
-            if (Static.SoundInstance.CurrentMusic == null)
+            if (SoundInstance.CurrentMusic == null)
             {
                 return _storage.GetMusicByIndex(0);
             }
 
             if (!(_storage.GetMusicByIndex(
-                      _storage.GetMusicIndex(Static.SoundInstance.CurrentMusic) +
+                      _storage.GetMusicIndex(SoundInstance.CurrentMusic) +
                       1) ==
                   null))
             {
                 return _storage.GetMusicByIndex(
-                    _storage.GetMusicIndex(Static.SoundInstance.CurrentMusic) + 1);
+                    _storage.GetMusicIndex(SoundInstance.CurrentMusic) + 1);
             }
             else
             {
@@ -314,4 +299,3 @@ namespace Plugins.SoundInstance.Core.Scripts
             _isAllowed = true;
         }
     }
-}

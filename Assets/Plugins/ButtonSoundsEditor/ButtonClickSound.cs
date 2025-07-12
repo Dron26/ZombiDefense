@@ -1,10 +1,9 @@
 ﻿using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace Plugins.ButtonSoundsEditor
 {
     [DisallowMultipleComponent]
-    public class ButtonClickSound : MonoBehaviour , IPointerEnterHandler, IPointerClickHandler
+    public class ButtonClickSound : MonoBehaviour
     {
         public AudioSource AudioSource;
         public AudioClip ClickSound;
@@ -20,15 +19,15 @@ namespace Plugins.ButtonSoundsEditor
             AudioSource = audioSource;
         }
         
-        public void OnPointerEnter(PointerEventData eventData)
-        {
-            AudioSource.PlayOneShot(HoverSound);
-        }
+        // public void OnPointerEnter(PointerEventData eventData)
+        // {
+        //     AudioSource.PlayOneShot(HoverSound);
+        // }
 
-        public void OnPointerClick(PointerEventData eventData)
-        {
-            AudioSource.PlayOneShot(HoverSound);
-        }
+        // public void OnPointerClick(PointerEventData eventData)
+        // {
+        //     AudioSource.PlayOneShot(HoverSound);
+        // }
     }
 
 }

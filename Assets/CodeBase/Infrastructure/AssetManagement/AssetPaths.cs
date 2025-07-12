@@ -6,7 +6,6 @@ namespace Infrastructure.AssetManagement
         public static readonly string Level = "Level";
         public static readonly string LocationsPrefabs = "Locations/Prefabs/";
         public static readonly string LocationsData = "Locations/LocationData/";
-        public static readonly string Resources = "Assets/Resources/";
         public static readonly string Boxes = "Prefab/Store/Boxes/Prefabs/";
         public static readonly string BoxesData = "Prefab/Store/Boxes/Data/";
         public static readonly string BoxesPrice = "Prefab/Store/Boxes/Data/Price";
@@ -23,7 +22,7 @@ namespace Infrastructure.AssetManagement
         public static readonly string WavesContainerData ="Enemy/Waves/Data/Containers/";
         public static readonly string UpgradeData ="Enemy/Waves/Data/Upgrade/";
         
-        public static readonly string AnimControllers ="Assets/Resources/Prefab/Store/Characters/Player/Animation";
+        public static readonly string AnimControllers ="Prefab/Store/Characters/Player/Animation";
         public static readonly string UpgradesData ="Prefab/UI/UpgradesMap/Data";
         public static readonly string GameParametersData ="Prefab/UI/UpgradesMap/GameParametersData";
     }

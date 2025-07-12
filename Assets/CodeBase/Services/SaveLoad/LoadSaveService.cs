@@ -3,6 +3,7 @@ using Data;
 using Interface;
 using Newtonsoft.Json;
 using UnityEngine;
+using YG;
 
 namespace Services.SaveLoad
 {
@@ -97,6 +98,14 @@ namespace Services.SaveLoad
         public void Initialize(ISerializationService jsonSerializationService)
         {
             throw new System.NotImplementedException();
+        }
+        
+        public void SetLeaderboardScore(string leaderboardName, int value)
+        {
+            if (YG2.infoYG.Leaderboards.enable)
+            {
+                YG2.SetLeaderboard(leaderboardName, value);
+            }
         }
     }
 }

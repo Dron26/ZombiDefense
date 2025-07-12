@@ -5,12 +5,13 @@ using Services;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using YG;
 
 namespace Upgrades
 {
     public class UpgradePanel:MonoCache
     {
-        [SerializeField] private Button _backButton;
+        [SerializeField] private Button _backButtonInfoPanel;
         [SerializeField] private Button _applyButton;
         [SerializeField] private GameObject _infoPanel;
         [SerializeField] private GameObject _upgradePanel;
@@ -21,24 +22,38 @@ namespace Upgrades
         [SerializeField] private TextMeshProUGUI _description;
         [SerializeField] private TextMeshProUGUI _resurses;
         [SerializeField] private Image _icon;
+        [SerializeField] private GameObject _purchasePanel;
+        [SerializeField] private PurchaseYG _purchaseYG;
         private Upgrade _upgrade;
-        public Action OnApplyClicked;
+        public event Action OnApplyClicked;
+        public event Action OnApplyClickedYG;
         
         [SerializeField] private Camera _upgradeCamera;
         [SerializeField] private Camera _menuCamera;
         private ICurrencyHandler _currencyHandler;
         private IGameEventBroadcaster _eventBroadcaster;
-        protected override  void OnEnabled()
+
+        public void Initialize()
+        {
+            _currencyHandler = AllServices.Container.Single<ICurrencyHandler>();
+            _eventBroadcaster = AllServices.Container.Single<IGameEventBroadcaster>();
+            AddListener();
+        }
+        
+        public void SetActive(Upgrade upgrade)
         {
             _mapPanel.SetActive(false);
             _infoPanel.SetActive(false);
-            _backButton.onClick.AddListener(()=>ShowApplyWindow(false));
-            _applyButton.onClick.AddListener(OnClickApply);
-            _currencyHandler = AllServices.Container.Single<ICurrencyHandler>();
-            _eventBroadcaster = AllServices.Container.Single<IGameEventBroadcaster>();
-            _eventBroadcaster.OnMoneyChanged += ChangeResurse;
-        }
+            
+            _upgrade = upgrade;
+            _icon.sprite = _upgrade.Icon;
+            _name.text  = _upgrade.Name;
+            _description.text = _upgrade.Description;
+            _price.text ="$ "+ _upgrade.Cost;
+            _applyButton.gameObject.SetActive(!_upgrade.IsPurchased);
 
+            
+        }
         private void ChangeResurse(int money)
         {
             _resurses.text = money.ToString();
@@ -52,7 +67,7 @@ namespace Upgrades
 
         protected override void OnDisabled()
         {
-            _backButton.onClick.RemoveListener(()=>ShowApplyWindow(false));
+            _backButtonInfoPanel.onClick.RemoveListener(()=>ShowApplyWindow(false));
             _applyButton.onClick.RemoveListener(OnClickApply);
         }
         public void SwitchState(bool isActive)
@@ -75,8 +90,26 @@ namespace Upgrades
 
         public void ShowApplyWindow(bool isActive)
         {
+            if (isActive)
+            {
+                SetId();
+            }
+            
             _infoPanel.SetActive(isActive);
+           // _purchasePanel.SetActive(isActive);
             _mapPanel.SetActive(!isActive);
+            _purchasePanel.gameObject.SetActive(_upgrade.IsPurchased == false);
+        }
+
+        private void SetId()
+        {
+            _purchaseYG.SetId(_upgrade.GroupType+"_"+_upgrade.Type+"_"+_upgrade.Id);
+        }
+        
+        private void SuccessPurchased(string id)
+        {
+            OnApplyClickedYG?.Invoke();
+            ShowApplyWindow(false);
         }
         
         private void Reset()
@@ -88,15 +121,27 @@ namespace Upgrades
             _price.text ="";
         }
 
-        public void Initialize(Upgrade upgrade)
+        private void AddListener()
         {
-            _upgrade = upgrade;
-            _icon.sprite = _upgrade.Icon;
-            _name.text  = _upgrade.Name;
-            _description.text = _upgrade.Description;
-            _price.text ="$ "+ _upgrade.Cost;
-            _applyButton.gameObject.SetActive(!_upgrade.IsPurchased);
+            _eventBroadcaster.OnMoneyChanged += ChangeResurse;
+            _backButtonInfoPanel.onClick.AddListener(()=>ShowApplyWindow(false));
+            _applyButton.onClick.AddListener(OnClickApply);
             
+            YG2.onPurchaseSuccess += SuccessPurchased;
+        }
+        
+        private void RemoveListener()
+        {
+            _eventBroadcaster.OnMoneyChanged -= ChangeResurse;
+            _backButtonInfoPanel.onClick.RemoveListener(()=>ShowApplyWindow(false));
+            _applyButton.onClick.RemoveListener(OnClickApply);
+            
+            YG2.onPurchaseSuccess -= SuccessPurchased;
+        }
+
+        private void OnDestroy()
+        {
+            RemoveListener();
         }
     }
 }

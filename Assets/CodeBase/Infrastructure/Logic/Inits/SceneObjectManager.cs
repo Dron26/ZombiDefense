@@ -35,7 +35,7 @@ namespace Infrastructure.Logic.Inits
     
         [SerializeField]private ItemFactory _itemFactory;
         private PlayerCharacterInitializer _characterInitializer; 
-        private AudioManager _audioManager;
+        private IAudioManager _audioManager;
         public UnityAction<Character> CreatedHumanoid;
         public UnityAction<AdditionalBox> BuildedBox;
         private WorkPoint _selectedWorkPoint;
@@ -43,7 +43,7 @@ namespace Infrastructure.Logic.Inits
         private MovePointController _movePointController;
         private IGameEventBroadcaster _eventBroadcaster;
 
-        public void Initialize(Store store, MovePointController movePointController, AudioManager audioManager)
+        public void Initialize(Store store, MovePointController movePointController,IAudioManager audioManager)
         {
             _eventBroadcaster=AllServices.Container.Single<IGameEventBroadcaster>(); 
             

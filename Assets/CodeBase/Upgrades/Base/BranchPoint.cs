@@ -3,43 +3,68 @@ using Infrastructure.BaseMonoCache.Code.MonoCache;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using YG;
+using YG.LanguageLegacy;
 
 public class BranchPoint : MonoCache
 {
     [SerializeField] private UpgradeType _upgradeType;
     [SerializeField] private int _id;
     [SerializeField] private bool _lock;
-    [SerializeField] private Image _iconLock;
-    [SerializeField] private Image _icon;
-    [SerializeField] private TextMeshProUGUI _name;
-    [SerializeField] private TextMeshProUGUI _price;
-    private Upgrade _upgrade;
+     private TMP_Text _name;
+     private TMP_Text _price;
+     private Text _descriptionText;
     public Button Button;
+    private Image _lockIcon;
+    private LanguageYG _languageYG;
+    private Upgrade _upgrade;
     public Upgrade Upgrade => _upgrade;
     public UpgradeType GetUpgradeType => _upgradeType;
     public List<float> UpgradesValue => _upgrade.UpgradesValue;
     public int GetId => _id;
     private string _description;
-
     public void Initialize(Upgrade upgrade)
     {
         _upgrade = upgrade;
         _upgradeType = _upgrade.Type;
         _id = _upgrade.Id;
         _lock = _upgrade.Lock;
-        _name.text  = _upgrade.Name;
-        _icon.sprite = _upgrade.Icon;
+
+        NameText text = GetComponentInChildren<NameText>();
+        _name = text.gameObject.GetComponent<TMP_Text>();
+        _name.text=_upgrade.Name;
+         _price=GetComponentInChildren<PriceText>().GetComponent<TMP_Text>();
+        Button=GetComponent<Button>();
+        GetComponentInChildren<IconUpgrade>().GetComponent<Image>().sprite = _upgrade.Icon;
         _description = _upgrade.Description;
         _price.text ="$ "+ _upgrade.Cost;
         Button.interactable = !_lock;
-        _iconLock.gameObject.SetActive(_lock);
+        _descriptionText=GetComponent<Text>();
+        _descriptionText.text = _description;
+        _lockIcon = GetComponentInChildren<IconLock>().GetComponent<Image>();
+        
+        _upgrade.SetNewText( _descriptionText.text);
+        
+        _languageYG = GetComponent<LanguageYG>();
+        _languageYG.OnSwitchLanguage+= OnChangeDescription;
+        SetLock(_lock);
     }
-    
-    public void IsLock(bool isLock)
+
+    private void OnChangeDescription()
     {
-        _iconLock.gameObject.SetActive(isLock);
+        _upgrade.SetNewText(_descriptionText.text);
+    }
+
+    public void SetLock(bool isLock)
+    {
+        _lockIcon.enabled=isLock;
         Button.interactable=!isLock;
     }
     
+    private void OnDestroy()
+    {
+        _languageYG.OnSwitchLanguage+= OnChangeDescription;
+    }
     
 }
+

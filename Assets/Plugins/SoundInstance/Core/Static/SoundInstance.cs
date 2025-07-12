@@ -1,9 +1,6 @@
-﻿using Plugins.SoundInstance.Core.Scripts;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Plugins.SoundInstance.Core.Static
-{
-    public static class SoundInstance
+public static class SoundInstance
     {
         public static float defaultVolume = 1;
         public static float musicVolume = 0.7f;
@@ -11,13 +8,11 @@ namespace Plugins.SoundInstance.Core.Static
         private static SI_MusicHandler _MusicHandler;
 
         private static Music c_music;
-
-
+        
         //
         // SOUNDS
         //
-
-
+        
         public enum Randomization
         {
             NoRandomization,
@@ -316,5 +311,6 @@ namespace Plugins.SoundInstance.Core.Static
 
         public static void StartRandomMusic() =>
             _MusicHandler.StartRandomMusic();
+        
+        
     }
-}

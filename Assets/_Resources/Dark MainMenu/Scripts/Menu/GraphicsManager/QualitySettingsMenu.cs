@@ -44,7 +44,7 @@ public class QualitySettingsMenu : MonoBehaviour {
 		QualitySettings.vSyncCount = PlayerPrefs.GetInt("vSync", QualitySettings.vSyncCount);
 		vSyncToggle.isOn = (QualitySettings.vSyncCount > 0) ? true : false;
 		QualitySettings.antiAliasing = PlayerPrefs.GetInt("aliasing", QualitySettings.antiAliasing);
-		QualitySettings.masterTextureLimit = PlayerPrefs.GetInt("texRes", QualitySettings.masterTextureLimit);
+		QualitySettings.globalTextureMipmapLimit = PlayerPrefs.GetInt("texRes", QualitySettings.globalTextureMipmapLimit);
 		QualitySettings.shadowResolution = (ShadowResolution) System.Enum.Parse(typeof(ShadowResolution), PlayerPrefs.GetString("shadowRes", QualitySettings.shadowResolution.ToString()));
 		aniso = PlayerPrefs.GetInt("aniso", 16);
 		AnisoFiltering(aniso);
@@ -55,7 +55,7 @@ public class QualitySettingsMenu : MonoBehaviour {
 	{
 		PlayerPrefs.SetInt("vSync", QualitySettings.vSyncCount);
 		PlayerPrefs.SetInt("aliasing", aliasing[antiAliasing.value]);
-		PlayerPrefs.SetInt("texRes", QualitySettings.masterTextureLimit);
+		PlayerPrefs.SetInt("texRes", QualitySettings.globalTextureMipmapLimit);
 		PlayerPrefs.SetString("shadowRes", QualitySettings.shadowResolution.ToString());
 		PlayerPrefs.SetString("shadowQuality", QualitySettings.shadows.ToString());
 		PlayerPrefs.SetInt("aniso", af[anisotropic.value]);
@@ -142,7 +142,7 @@ public class QualitySettingsMenu : MonoBehaviour {
 		}
 
 		shadowQuality.value = (int)QualitySettings.shadows;
-		textureRes.value = QualitySettings.masterTextureLimit;
+		textureRes.value = QualitySettings.globalTextureMipmapLimit;
 		qualityPreset.value = QualitySettings.GetQualityLevel();
 		qualityPreset.onValueChanged.AddListener(delegate{ApplyPresets();});
 		applyButton.onClick.AddListener(()=>{ApplySettings();});
@@ -158,7 +158,7 @@ public class QualitySettingsMenu : MonoBehaviour {
 		case 0:
 			QualitySettings.vSyncCount = 0;
 			QualitySettings.antiAliasing = 0;
-			QualitySettings.masterTextureLimit = 3;
+			QualitySettings.globalTextureMipmapLimit = 3;
 			QualitySettings.shadows = ShadowQuality.Disable;
 			QualitySettings.shadowResolution = ShadowResolution.Low;
 			anisotropic.value = 0;
@@ -168,7 +168,7 @@ public class QualitySettingsMenu : MonoBehaviour {
 		case 1:
 			QualitySettings.vSyncCount = 0;
 			QualitySettings.antiAliasing = 0;
-			QualitySettings.masterTextureLimit = 2;
+			QualitySettings.globalTextureMipmapLimit = 2;
 			QualitySettings.shadows = ShadowQuality.HardOnly;
 			QualitySettings.shadowResolution = ShadowResolution.Low;
 			anisotropic.value = 0;
@@ -178,7 +178,7 @@ public class QualitySettingsMenu : MonoBehaviour {
 		case 2:
 			QualitySettings.vSyncCount = 0;
 			QualitySettings.antiAliasing = 0;
-			QualitySettings.masterTextureLimit = 1;
+			QualitySettings.globalTextureMipmapLimit = 1;
 			QualitySettings.shadows = ShadowQuality.All;
 			QualitySettings.shadowResolution = ShadowResolution.Medium;
 			anisotropic.value = 1;
@@ -188,7 +188,7 @@ public class QualitySettingsMenu : MonoBehaviour {
 		case 3:
 			QualitySettings.vSyncCount = 0;
 			QualitySettings.antiAliasing = 0;
-			QualitySettings.masterTextureLimit = 0;
+			QualitySettings.globalTextureMipmapLimit = 0;
 			QualitySettings.shadows = ShadowQuality.All;
 			QualitySettings.shadowResolution = ShadowResolution.Medium;
 			anisotropic.value = 2;
@@ -198,7 +198,7 @@ public class QualitySettingsMenu : MonoBehaviour {
 		case 4:
 			QualitySettings.vSyncCount = 1;
 			QualitySettings.antiAliasing = 2;
-			QualitySettings.masterTextureLimit = 0;
+			QualitySettings.globalTextureMipmapLimit = 0;
 			QualitySettings.shadows = ShadowQuality.All;
 			QualitySettings.shadowResolution = ShadowResolution.High;
 			anisotropic.value = 3;
@@ -208,7 +208,7 @@ public class QualitySettingsMenu : MonoBehaviour {
 		case 5:
 			QualitySettings.vSyncCount = 1;
 			QualitySettings.antiAliasing = 4;
-			QualitySettings.masterTextureLimit = 0;
+			QualitySettings.globalTextureMipmapLimit = 0;
 			QualitySettings.shadows = ShadowQuality.All;
 			QualitySettings.shadowResolution = ShadowResolution.VeryHigh;
 			anisotropic.value = 4;
@@ -224,7 +224,7 @@ public class QualitySettingsMenu : MonoBehaviour {
 		}
 
 		vSyncToggle.isOn = (QualitySettings.vSyncCount > 0) ? true : false;
-		textureRes.value = QualitySettings.masterTextureLimit;
+		textureRes.value = QualitySettings.globalTextureMipmapLimit;
 		shadowQuality.value = (int)QualitySettings.shadows;
 
 		for(int i = 0; i < aliasing.Length; i++)
@@ -258,7 +258,7 @@ public class QualitySettingsMenu : MonoBehaviour {
 	{
 		AnisoFiltering(af[anisotropic.value]);
 		QualitySettings.vSyncCount = (vSyncToggle.isOn) ? 1 : 0;
-		QualitySettings.masterTextureLimit = texRes[textureRes.value];
+		QualitySettings.globalTextureMipmapLimit = texRes[textureRes.value];
 		QualitySettings.shadows = (ShadowQuality) System.Enum.Parse(typeof(ShadowQuality), shadowQualityList[shadowQuality.value]);
 		QualitySettings.shadowResolution = (ShadowResolution) System.Enum.Parse(typeof(ShadowResolution), shadowResolutionList[shadowRes.value]);
 		QualitySettings.antiAliasing = aliasing[antiAliasing.value];

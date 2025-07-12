@@ -46,7 +46,7 @@ namespace Infrastructure.Logic.WaveManagment
         private IGameEventBroadcaster _gameEvent;
         private IAchievementsHandler _achievements;
         private Coroutine _spawnCoroutine;
-        public void Initialize(AudioManager audioManager, EnemyFactory enemyFactory, WaveManager waveManager)
+        public void Initialize(IAudioManager audioManager, EnemyFactory enemyFactory, WaveManager waveManager)
         {
             _enemyFactory = enemyFactory;
             _waveManager = waveManager;

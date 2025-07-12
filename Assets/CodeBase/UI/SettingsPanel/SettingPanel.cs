@@ -23,7 +23,6 @@ namespace UI.SettingsPanel
         private bool _musicEnabled ;
         private float _currentVolumeSound ;
         private float _currentVolumeMusic ;
-        private bool vibrationEnabled = false;
         
         public void Initialize()
         {

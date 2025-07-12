@@ -28,13 +28,12 @@ public class UpgradeTree : IUpgradeTree
 
     public void UpdateUpgrade(Upgrade upgrade)
     {
-        // Формируем ключ для запроса улучшения
         string nodeKey = $"{upgrade.GroupType}_{upgrade.Type}_{upgrade.Id}";
         
         _upgradeNodes[nodeKey].Upgrade.SetPurchased(true);;
         
         List<UpgradeNode> groupUpgrades = _upgradeNodes.Values
-            .Where(node => node.Upgrade.GroupType == upgrade.GroupType)
+            //.Where(node => node.Upgrade.GroupType == upgrade.GroupType)
             .Where(node => node.Upgrade.Type == upgrade.Type)
             .OrderBy(node => node.Upgrade.Id) 
             .ToList();
@@ -42,10 +41,10 @@ public class UpgradeTree : IUpgradeTree
         for (int i = 0; i < groupUpgrades.Count; i++)
         {
             int unlockUpgradeId = groupUpgrades[i].Upgrade.UnlockId;
-            int unlockUpgradeId2 = groupUpgrades[unlockUpgradeId].Upgrade.Id;
-            bool isPurchase = groupUpgrades[unlockUpgradeId2].Upgrade.IsPurchased;
+            int unlockUpgradeId2 = upgrade.UnlockId;// groupUpgrades[unlockUpgradeId].Upgrade.Id;
+           // bool isPurchase = groupUpgrades[unlockUpgradeId2].Upgrade.IsPurchased;
             
-            if ( unlockUpgradeId == unlockUpgradeId2&&isPurchase)
+            if ( unlockUpgradeId == unlockUpgradeId2)
             {
                 groupUpgrades[i].Upgrade.SetLock(false);
                 _upgradeHandler.AddUnlockedUpgrade(  $"{groupUpgrades[i].Upgrade.GroupType}_{groupUpgrades[i].Upgrade.Id}");
@@ -88,7 +87,7 @@ public class UpgradeTree : IUpgradeTree
         UpdateUpgrade(upgrade);
         // _upgradeHandler.TriggerEvent(upgrade);
         UpdateBranch(upgrade);
-        _saveLoadService.Save();
+        
     }
 
     public Upgrade GetUpgrade(UpgradeData upgradeData )
@@ -162,7 +161,6 @@ public class UpgradeTree : IUpgradeTree
 
     public List<float> GetUpgradeValue(UpgradeGroupType groupType, UpgradeType type)
     {
-        // Получаем список всех купленных апгрейдов по типу группы и типу апгрейда
         var purchasedUpgrades = _upgradeHandler.GetPurchasedUpgradesByType(groupType, type);
         if (purchasedUpgrades.Count == 0)
         {
@@ -187,5 +185,19 @@ public class UpgradeTree : IUpgradeTree
                                     && node.Upgrade.Id == lastId);
 
         return lastPurchasedUpgradeNode?.Upgrade.UpgradesValue ?? new List<float> { 0 };
+    }
+
+    public void PurchaseYGBranchUpgrade(Upgrade selectedUpgrade)
+    {
+        
+        var upgradesInBranch = _upgradeNodes.Values
+            .Where(node => node.Upgrade.GroupType == selectedUpgrade.GroupType)
+            .Select(node => node.Upgrade)
+            .ToList();
+
+        foreach (var upgrade in upgradesInBranch)
+        {
+            PurchaseUpgrade(upgrade);
+        }
     }
 }

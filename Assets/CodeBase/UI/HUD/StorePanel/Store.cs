@@ -30,7 +30,6 @@ namespace UI.HUD.StorePanel
         [SerializeField] private GameObject _applyAdsMoneyWindow;
         [SerializeField] private CharacterStoreRotation _characterStoreRotation;
         [SerializeField] private Button _buttonStorePanel;
-        [SerializeField] private Button _buttonRightPanel;
         [SerializeField] private Button _closeButton;
         [SerializeField] private Button _applyAdsMoneyWindowButton;
         [SerializeField] private Button _closeAdsMoneyWindowButton;
@@ -52,7 +51,6 @@ namespace UI.HUD.StorePanel
         private IPauseService _pauseService;
         private int _moneyAmount;
         private WorkPointGroup _workPointGroup;
-        private bool isButtonPanelOpen = true;
         private List<Character> _characters = new();
         private SceneInitializer _sceneInitializer;
         private PlayerCharacterInitializer _characterInitializer;
@@ -178,12 +176,6 @@ namespace UI.HUD.StorePanel
 
         public void ChangeButtonStoreState(bool isActive) => _buttonStorePanel.gameObject.SetActive(isActive);
 
-        private void ChangeStateButtonPanel()
-        {
-            isButtonPanelOpen = !isButtonPanelOpen;
-            _rightButtonPanel.gameObject.SetActive(isButtonPanelOpen);
-        }
-
         public void SwitchStorePanel()
         {
             _isPanelActive = !_isPanelActive;
@@ -223,7 +215,6 @@ namespace UI.HUD.StorePanel
             _pointUpgradePanel.OnSelectedButton += (BuyPointUp);
             _buttonStorePanel.onClick.AddListener(SwitchStorePanel);
             _closeButton.onClick.AddListener(SwitchStorePanel);
-            _buttonRightPanel.onClick.AddListener(ChangeStateButtonPanel);
             _applyAdsMoneyWindowButton.onClick.AddListener(ShowPanelAds);
             _closeAdsMoneyWindowButton.onClick.AddListener(ShowPanelAdsForMoney);
             _boxStore.BuyBox+=OnBuyBox;

@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections;
 using UI;
+using YG;
 
 public class LoadingCurtain : MonoBehaviour
 {
@@ -18,41 +19,30 @@ public class LoadingCurtain : MonoBehaviour
     {
         DontDestroyOnLoad(gameObject);
         _canvasGroup = _panel.GetComponent<CanvasGroup>();
-        
     }
 
-    public void StartLoading()
+
+    public void ShowCurtain()
     {
+        Time.timeScale = 1;
+        
         Debug.Log("Loading");
         OnStartLoading?.Invoke();
         _panel.SetActive(true);
         _canvasGroup.blocksRaycasts = true;
         loadingIcon.SetActive(true);
-        loadingInfo.SetActive(true);
-        loadedInfo.SetActive(false);
     }
-    
-    private IEnumerator LoadSceneAsync()
-    {
-        Time.timeScale = 1;
-        yield return new WaitForSeconds(0.5f);
-        loadingInfo.SetActive(false);
-        loadedInfo.SetActive(true);
-        loadingIcon.SetActive(false);
-        
 
-        while (!Input.anyKeyDown)
-        {
-            yield return null;
-        }
-        
+    public void OnLoaded()
+    {
+        StartCoroutine(HideCurtain());
+    }
+    private IEnumerator HideCurtain()
+    {
+        _panel.SetActive(true);
+        _canvasGroup.blocksRaycasts = true;
+        yield return new WaitForSeconds(1f);
         _panel.SetActive(false);
         _canvasGroup.blocksRaycasts = false;
-        OnClicked?.Invoke();
-    }
-
-    public void OnLoaded( )
-    {
-        StartCoroutine(LoadSceneAsync());
     }
 }

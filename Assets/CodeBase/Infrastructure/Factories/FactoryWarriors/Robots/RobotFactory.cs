@@ -10,7 +10,6 @@ namespace Infrastructure.Factories.FactoryWarriors.Robots
 {
     public class RobotFactory : MonoCache, IServiceFactory
     {
-        private AudioManager _audioManager;
         public UnityAction<Turret> CreatedRobot;
         public void Create(GameObject prefab, Transform transform )
         {
@@ -31,11 +30,6 @@ namespace Infrastructure.Factories.FactoryWarriors.Robots
         private void OnInitialized( Turret turretComponent)
         {
             CreatedRobot?.Invoke(turretComponent);
-        }
-        
-        public void Initialize( AudioManager audioManager)
-        {
-            _audioManager=audioManager;
         }
     }
 }

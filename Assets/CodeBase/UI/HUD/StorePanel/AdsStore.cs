@@ -1,4 +1,10 @@
+using Common;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
+using Services;
+using Services.Ads;
+using Services.SaveLoad;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace UI.HUD.StorePanel
 {
@@ -7,7 +13,7 @@ namespace UI.HUD.StorePanel
         // [SerializeField] private Button _addMoneyButton;
         // [SerializeField] private GameObject _storePanel;
         // private int _moneyCount=> Constants.MoneyForReward;
-        // private  IAdsService _adsService;
+        // private  IAdService _adService;
         // private Wallet _wallet;
         // private ISaveLoadService SaveLoadService;
         //
@@ -24,16 +30,16 @@ namespace UI.HUD.StorePanel
         //     if (Application.isEditor)
         //         return;
         //
-        //     if (_adsService == null)
-        //         _adsService = AllServices.Container.Single<IAdsService>();
+        //     if (_adService == null)
+        //         _adService = AllServices.Container.Single<IAdService>();
         //     
         //     if (SaveLoadService == null)
         //         SaveLoadService = AllServices.Container.Single<ISaveLoadService>();
         //
-        //     _adsService.OnInitializeSuccess += AdsServiceInitializedSuccess;
-        //     _adsService.OnShowVideoAdError += ShowError;
-        //     _adsService.OnClosedVideoAd += ShowClosed;
-        //     _adsService.OnRewardedAd += AddMoneyAfterAds;
+        //     _adService.OnInitializeSuccess += AdsServiceInitializedSuccess;
+        //     _adService.OnShowVideoAdError += ShowError;
+        //     _adService.OnClosedVideoAd += ShowClosed;
+        //     _adService.OnRewardedAd += AddMoneyAfterAds;
         //     InitializeAdsSDK();
         // }
         //
@@ -41,18 +47,18 @@ namespace UI.HUD.StorePanel
         // {
         //     _addMoneyButton.onClick.RemoveListener(ShowAds);
         //
-        //     if (_adsService == null)
+        //     if (_adService == null)
         //         return;
         //
-        //     _adsService.OnInitializeSuccess -= AdsServiceInitializedSuccess;
-        //     _adsService.OnShowVideoAdError -= ShowError;
-        //     _adsService.OnClosedVideoAd -= ShowClosed;
-        //     _adsService.OnRewardedAd -= AddMoneyAfterAds;
+        //     _adService.OnInitializeSuccess -= AdsServiceInitializedSuccess;
+        //     _adService.OnShowVideoAdError -= ShowError;
+        //     _adService.OnClosedVideoAd -= ShowClosed;
+        //     _adService.OnRewardedAd -= AddMoneyAfterAds;
         // }
         //
         // private void AdsServiceInitializedSuccess()
         // {
-        //     _adsService.OnInitializeSuccess -= AdsServiceInitializedSuccess;
+        //     _adService.OnInitializeSuccess -= AdsServiceInitializedSuccess;
         //     _addMoneyButton.enabled = true;
         // }
         //
@@ -64,7 +70,7 @@ namespace UI.HUD.StorePanel
         //         return;
         //     }
         //     SoundInstance.PauseMusic();
-        //     _adsService.ShowVideoAd();
+        //     _adService.ShowVideoAd();
         // }
         //
         // private void ShowClosed()
@@ -99,10 +105,10 @@ namespace UI.HUD.StorePanel
         // private void InitializeAdsSDK()
         // {
         //     Debug.Log("InitializeAdsSDK");
-        //     if (_adsService.IsInitialized())
+        //     if (_adService.IsInitialized())
         //         AdsServiceInitializedSuccess();
         //     else
-        //         StartCoroutine(_adsService.Initialize());
+        //         StartCoroutine(_adService.Initialize());
         // }
 
     }

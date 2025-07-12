@@ -40,12 +40,11 @@ namespace Infrastructure.Logic.Inits
         public Action LastHumanoidDie;
         private int _initialPrecentUp=50;
 
-        public void Initialize(AudioManager audioManager, SceneInitializer sceneInitializer ,SceneObjectManager sceneObjectManager)
+        public void Initialize(SceneInitializer sceneInitializer ,SceneObjectManager sceneObjectManager)
         {
             _sceneObjectManager=sceneObjectManager;
             _sceneObjectManager.CreatedHumanoid +=  OnCreatedCharacted;
             _robotFactory.CreatedRobot += OnCreatedCharacted;
-            _robotFactory.Initialize(audioManager);
             _workPointsGroup.Initialize();
             FillWorkPoints();
             _store = sceneInitializer.Window.GetStoreOnPlay();

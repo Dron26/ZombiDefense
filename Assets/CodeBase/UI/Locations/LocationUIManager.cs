@@ -5,7 +5,6 @@ using Interface;
 using Services;
 using Services.SaveLoad;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -55,7 +54,7 @@ namespace UI.Locations
                 
             }
             
-                _locationInfo.text = $"Миссий: {openLocation}/{_locationUIElements.Count-1}\n" +
+                _locationInfo.text = $" {openLocation}/{_locationUIElements.Count-1}\n" +
                                      $" $ {_currencyHandler.GetCurrentMoney()}";
             
         }
@@ -82,6 +81,7 @@ namespace UI.Locations
             foreach (Transform child in _locationContainer.transform)
             {
                 var uiElement = child.GetComponent<LocationUIElement>();
+               
                 if (uiElement != null)
                 {
                     _locationUIElements.Add(uiElement);
@@ -120,7 +120,8 @@ namespace UI.Locations
 
         public void SwitchEnterPanelState(bool isActive)
         {
-            _enterLocationPanel.SetActive(isActive);
+            Enter();
+           // _enterLocationPanel.SetActive(isActive);
         }
 
         private void Enter()

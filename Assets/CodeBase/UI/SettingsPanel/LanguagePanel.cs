@@ -1,68 +1,59 @@
-using System.Collections.Generic;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Lean.Localization;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using YG;
 
 namespace UI.SettingsPanel
 {
     public class LanguagePanel:MonoCache
     {
-        [SerializeField] private Button _apply;
-        [SerializeField] private Button _selectedLanguage;
-        [SerializeField] private TMP_Text _selectedLanguageText;
-        [SerializeField] private GameObject _languagesPanel;
-        [SerializeField] private GameObject _languagePrefab;
-        [SerializeField] private List<string> _currentLanguages = new();
+        [SerializeField] private Button _rusButton;
+        [SerializeField] private Button _engButton;
+        [SerializeField] private Button _trkButton;
         
         private LeanLocalization _localization;
         
-        private string _currentLanguage=>_localization.CurrentLanguage;
+        private string _rus = "Russian";
+        private string _eng = "English"; 
+        private string _trk = "Turkey";
+        private string _RusLanguageCode = "ru";
+        private string _EngLanguageCode = "en";
+        private string _TrkLanguageCode = "tr";
         
-        private string _RusLanguage = "Russian";
-        private string _EngLanguage = "English"; 
-        private string _TrkLanguage = "Turkey";
         private void Awake()
         {
+            _rusButton.onClick.AddListener(() => SetData(_rus));
+            _engButton.onClick.AddListener(() => SetData(_eng));
+            _trkButton.onClick.AddListener(() => SetData(_trk));
+            
             _localization = FindObjectOfType<LeanLocalization>();
-            _selectedLanguage.onClick.AddListener(() => ShowPanel());
-            _apply.onClick.AddListener(() => Apply());
-            
-            foreach (var language in _currentLanguages)
-            {
-                GameObject languagePrefab=Instantiate(_languagePrefab, _languagesPanel.transform);
-                languagePrefab.GetComponent<TMP_Text>().text = language;
-                languagePrefab.GetComponent<Button>().onClick.AddListener(() => SetData(language));
-            }
-            
-            SetLanguageText();
         }
 
-        private void Apply()
-        {
-            _languagesPanel.SetActive(false);
-            _selectedLanguage.gameObject.SetActive(true);
-        }
-
-        private void ShowPanel()
-        {
-            _languagesPanel.SetActive(!_languagesPanel.activeSelf);
-            _selectedLanguage.gameObject.SetActive(!_selectedLanguage.gameObject.activeSelf);
-        }
-
-        private void SetLanguageText( )
-        {
-            _selectedLanguageText.text = _currentLanguage;
-        }
         
         private void SetData(string language)
         {
             LeanLocalization.SetCurrentLanguageAll(language);
-            ShowPanel();
-            SetLanguageText();
+            if (language==_rus)
+            {
+                YG2.SwitchLanguage(_RusLanguageCode);
+            }
+            else if (language == _eng)
+            {
+                YG2.SwitchLanguage(_EngLanguageCode);
+            }
+            else if (language == _trk)
+            {
+                YG2.SwitchLanguage(_TrkLanguageCode);
+                
+            }
         }
-        
-        
+
+        private void OnDestroy()
+        {
+            _rusButton.onClick.RemoveListener(() => SetData(_rus));
+            _engButton.onClick.RemoveListener(() => SetData(_eng));
+            _trkButton.onClick.RemoveListener(() => SetData(_trk));
+        }
     }
 }

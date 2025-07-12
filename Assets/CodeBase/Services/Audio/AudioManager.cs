@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Services.Audio
 {
-    public class AudioManager : IAudioManager
+    public class AudioManager : MonoBehaviour,IAudioManager
     {
         private MusicChanger _musicChanger;
         private SoundChanger _soundChanger;

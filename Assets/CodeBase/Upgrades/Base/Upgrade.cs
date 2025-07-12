@@ -38,4 +38,9 @@ public class Upgrade
     {
         IsPurchased=isPurchased;
     }
+    
+    public void SetNewText(string description)
+    {
+        Description=description;
+    }
 }

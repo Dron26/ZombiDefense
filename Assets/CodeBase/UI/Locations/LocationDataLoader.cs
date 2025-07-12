@@ -22,7 +22,10 @@ namespace UI.Locations
         {
             List<LocationProgressData> locations = new List<LocationProgressData>();
             string pathLocations = AssetPaths.LocationsData;
-            int count = GetterFolderCount.GetFolderItemsCount(pathLocations);
+            
+            var registry = _resourceLoadService.Load<LocationDataRegistry>("Locations/LocationDataRegistry");
+
+            int count = registry.Locations.Count;
 
             if (count <= 0)
             {

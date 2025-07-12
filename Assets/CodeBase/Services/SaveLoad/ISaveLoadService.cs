@@ -13,5 +13,7 @@ namespace Services.SaveLoad
         public void UpdateLocationProgressData(List <LocationProgressData> locationProgressData);
         public void Initialize(ISerializationService jsonSerializationService);
         public void ChangeFirstStart();
+
+        public void SetLeaderboardScore(string leaderboardName, int value);
     }
 }

@@ -30,8 +30,10 @@ namespace Infrastructure.StateMachine.States
             services.RegisterSingle<IAssets>(new AssetProvider());
             services.RegisterSingle<IGameFactory>(new GameFactory(services.Single<IAssets>()));
             services.RegisterSingle<ILocalizationService>(new LocalizationService(language));
-            services.RegisterSingle<IAdsService>(new YandexAdsService());
-            services.RegisterSingle<ILeaderboardService>(new YandexLeaderboardService());
+            
+            services.RegisterSingle<IAdService>(new AdService());
+            
+            
             services.RegisterSingle<IAuthorization>(new YandexAuthorization());
             services.RegisterSingle<IResourceLoadService>(new ResourceLoaderService());
             services.RegisterSingle<IPauseService>(new PauseService());
@@ -52,7 +54,7 @@ namespace Infrastructure.StateMachine.States
 
 
             
-            var upgradeManager = new UpgradeManager( сurrencyHandler);
+            var upgradeManager = new UpgradeManager( сurrencyHandler,saveLoadService);
             services.RegisterSingle<IUpgradeManager>(upgradeManager); 
             //UpgradeManager
             var upgradeTree = new UpgradeTree(saveLoadService, upgradeHandler);

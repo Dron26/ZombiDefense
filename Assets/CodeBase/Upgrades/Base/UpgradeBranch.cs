@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Interface;
+using Unity.VisualScripting;
 using UnityEngine;
+using YG;
 
 namespace Services
 {
@@ -27,7 +29,6 @@ namespace Services
             DistributeUpgrades();
         }
         
-
         private void DistributeUpgrades()
         {
             for (int i = 0; i < _points.Count; i++)
@@ -47,17 +48,16 @@ namespace Services
                     
                     if(_points[i].GetId==0)
                     {
-                        _points[i].IsLock(false); 
+                        _points[i].SetLock(false); 
                     }
                     else if (_points[i].GetId!=0)
                     {
                         int unlockUpgradeId = _points[i].Upgrade.UnlockId;
                         int unlockUpgradeId2 = _points[unlockUpgradeId].GetId;
                         bool isPurchase = _points[unlockUpgradeId2].Upgrade.IsPurchased;
-                        Debug.LogWarning(_points);
                         if ( unlockUpgradeId == unlockUpgradeId2&&isPurchase)
                         {
-                            _points[i].IsLock(false);
+                            _points[i].SetLock(false);
                             _points[i].Upgrade.SetLock(false);
                         }
                     }
@@ -69,16 +69,16 @@ namespace Services
             }
         }
 
-        private void OnUpgradeClicked(Upgrade upgarde )
+        private void OnUpgradeClicked(BranchPoint point)
         {
-            OnUpgradeClick?.Invoke(upgarde);
+            OnUpgradeClick?.Invoke(point.Upgrade);
         }
         
         private void AddListener()
         {
             foreach (var point in _points)
             {
-                point.Button.onClick.AddListener(() => OnUpgradeClicked(point.Upgrade));
+                point.Button.onClick.AddListener(() => OnUpgradeClicked(point));
             }
         }
     }

@@ -25,7 +25,6 @@ namespace Infrastructure.Logic.Inits
 {
     public class SceneInitializer : MonoCache
     {
-        [SerializeField] private AudioManager _audioManager;
         [SerializeField] private List<Humanoid> _avaibelCharacters;
         [SerializeField] private MovePointController _movePointController;
         [SerializeField] private List<Image> _images;
@@ -59,6 +58,7 @@ namespace Infrastructure.Logic.Inits
         private IGameEventBroadcaster _eventBroadcaster;
 
         public Action OnLoaded;
+        private IAudioManager _audioManager;
 
         public void Initialize(GameStateMachine stateMachine)
         {
@@ -70,7 +70,7 @@ namespace Infrastructure.Logic.Inits
             _saveLoadService = AllServices.Container.Single<ISaveLoadService>();
             AllServices.Container.Single<IUIHandler>().SetEvenSystem(_eventSystem);
             
-
+            _audioManager = AllServices.Container.Single<IAudioManager>(); 
             LocationFactory _locationFactory = new LocationFactory();
             LocationPrefab location = _locationFactory.Create(AllServices.Container.Single<ILocationHandler>().SelectedLocationId).GetComponent<LocationPrefab>();
             SetInitializers(location);
@@ -88,7 +88,7 @@ namespace Infrastructure.Logic.Inits
             
             _sceneObjectManager = GetComponent<SceneObjectManager>();
             
-            _playerCharacterInitializer.Initialize(_audioManager, this, _sceneObjectManager);
+            _playerCharacterInitializer.Initialize(this, _sceneObjectManager);
             Debug.Log("Finish _playerCharacterInitializer();");
 
             InitializeEnemies();
@@ -157,7 +157,7 @@ namespace Infrastructure.Logic.Inits
         }
 
         public MovePointController GetMovePointController() => _movePointController;
-        public AudioManager GetAudioController() => _audioManager;
+        public IAudioManager GetAudioController() => _audioManager;
 
 
         private void LoadCharacters()

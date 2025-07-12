@@ -4,6 +4,7 @@ using Infrastructure;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Infrastructure.StateMachine;
 using Infrastructure.StateMachine.States;
+using Integration;
 using Interface;
 using Services;
 using Services.Audio;
@@ -13,19 +14,21 @@ using UI.SettingsPanel;
 using UnityEngine;
 using UnityEngine.UI;
 using Upgrades;
+using YG;
+using Services.PlayerAuthorization;
 
 namespace UI.GeneralMenu
 {
       public class GeneralMenu:MonoCache
     {
-        [SerializeField] private GameObject _leaderboardPanel;
+        [SerializeField] private LeaderboardPanel _leaderboardPanel;
+        [SerializeField] private Button _leaderboardButton;
         [SerializeField] private LocationUIManager _locationUIManager;
         [SerializeField]private  SettingPanel _settingPanel;
         [SerializeField] private GameObject _menuPanel;
-       // [SerializeField] private GameObject _upgradePanel;
         [SerializeField] private LocationManager _locationManager;
         [SerializeField] private Button _play;
-        [SerializeField] private Button _upgradeBack;
+        [SerializeField] private Button _backUpgradePanel;
         [SerializeField] private Button _upgrade;
         [SerializeField] private Button _backUILocation;
         [SerializeField] private List<UpgradeBranch> _branchContainer;
@@ -33,6 +36,7 @@ namespace UI.GeneralMenu
         [SerializeField] private AudioSource _soundSource;
         [SerializeField] private Camera _upgradeCamera;
         [SerializeField] private Camera _menuCamera;
+        [SerializeField] private AuthorizationPanel _authorizationPanel;
         
         private ISaveLoadService _saveLoadService;
         private GameStateMachine _stateMachine;
@@ -43,16 +47,13 @@ namespace UI.GeneralMenu
             _saveLoadService = AllServices.Container.Single<ISaveLoadService>();
             _stateMachine = stateMachine;
             _upgradeCamera.gameObject.SetActive(false);
-       //     _upgradePanel.gameObject.SetActive(false);
             _settingPanel.Initialize();
             AddListener();
 
             InitializeLocationSystem();
-            // _locationPanel.SetActive(!isActive);
             AllServices.Container.Single<IUpgradeManager>().SetData(_branchContainer,_upgradePanel);
             AllServices.Container.Single<IUpgradeManager>().UpdateBranches();
             _soundSource = AllServices.Container.Single<IAudioManager>().GetSoundSource();
-            
         }
         
         private void InitializeLocationSystem()
@@ -85,7 +86,7 @@ namespace UI.GeneralMenu
         {
             _saveLoadService.Save();
             _stateMachine.Enter<LoadLevelState, string>(Constants.Location);
-            Destroy(gameObject);
+//            Destroy(gameObject);
         }
 
         private void AddListener()
@@ -93,8 +94,9 @@ namespace UI.GeneralMenu
             AllServices.Container.Single<IUIHandler>().GetCurtain().OnClicked += OnClikedCurtain;
             _play.onClick.AddListener(()=>SwitchMenuPanelState(false));
             _backUILocation.onClick.AddListener(()=>SwitchMenuPanelState(true));
+            _backUpgradePanel.onClick.AddListener(()=>SwitchUpgradePanelState(false));
             _upgrade.onClick.AddListener(()=>SwitchUpgradePanelState(true));
-            _upgradeBack.onClick.AddListener(()=>SwitchUpgradePanelState(false));
+           // _leaderboardButton.onClick.AddListener(() => _leaderboardPanel.SwitchState(true));;
         }
 
         private void SwitchMenuPanelState(bool isActive)
@@ -110,14 +112,22 @@ namespace UI.GeneralMenu
             SwitchMenuPanelState(!isActive);
         }
         
+        private void SwitchAuthorizationPanelState()
+        {
+            _authorizationPanel.SwithState(true);
+        }
+        
         private void RemoveListener()
         {
             AllServices.Container.Single<IUIHandler>().GetCurtain().OnClicked -= OnClikedCurtain;
             _play.onClick.RemoveListener(()=>SwitchMenuPanelState(false));
             _backUILocation.onClick.RemoveListener(()=>SwitchMenuPanelState(true));
-            _upgrade.onClick.AddListener(()=>SwitchUpgradePanelState(false));
-            _upgradeBack.onClick.AddListener(()=>SwitchUpgradePanelState(false));
+            _upgrade.onClick.RemoveListener(()=>SwitchUpgradePanelState(false));
+            _backUpgradePanel.onClick.RemoveListener(()=>SwitchUpgradePanelState(false));
+           // _leaderboardButton.onClick.RemoveListener(() => _leaderboardPanel.SwitchState(true));;
         }
+
+       
 
         private void OnDestroy()
         {

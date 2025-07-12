@@ -6,10 +6,9 @@ using Upgrades;
 
 public interface IUpgradeManager:IService
 {
-    bool PurchaseUpgrade(Upgrade upgrade);
-    bool IsUnlocked(int upgradeId);
+    public void PurchaseUpgrade(Upgrade upgrade);
     public void SetData(List<UpgradeBranch> branches, UpgradePanel panel);
-    void UpdateBranches();
+    public void UpdateBranches();
     public void SetTree();
 
 }
