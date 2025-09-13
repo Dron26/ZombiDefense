@@ -136,8 +136,8 @@ namespace Infrastructure.Points
                         PlayerCharactersStateMachine stateMachine =
                             _selectedCharacter.GetComponent<PlayerCharactersStateMachine>();
                         SetPoint(newPoint);
-                        stateMachine.MoveTo();
-                        stateMachine.EnterBehavior<MovementState>();
+
+                        //stateMachine.EnterBehavior<MovementState>();
                         isPointToMoveTaked = false;
                     }
                 }

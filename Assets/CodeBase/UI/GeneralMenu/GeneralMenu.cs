@@ -21,7 +21,7 @@ namespace UI.GeneralMenu
 {
       public class GeneralMenu:MonoCache
     {
-        [SerializeField] private LeaderboardPanel _leaderboardPanel;
+        [SerializeField] private Leaderboard _leaderboard;
         [SerializeField] private Button _leaderboardButton;
         [SerializeField] private LocationUIManager _locationUIManager;
         [SerializeField]private  SettingPanel _settingPanel;
@@ -36,11 +36,13 @@ namespace UI.GeneralMenu
         [SerializeField] private AudioSource _soundSource;
         [SerializeField] private Camera _upgradeCamera;
         [SerializeField] private Camera _menuCamera;
-        [SerializeField] private AuthorizationPanel _authorizationPanel;
-        
+        [SerializeField] private DailyRewardPanel   _dailyRewardPanel;
         private ISaveLoadService _saveLoadService;
         private GameStateMachine _stateMachine;
         private IUIHandler _handler;
+        private IUpgradeManager _upgradeManager;
+        
+        private DailyRewardService _dailyRewardService;
         
         public  void Initialize( GameStateMachine stateMachine)
         {
@@ -51,19 +53,30 @@ namespace UI.GeneralMenu
             AddListener();
 
             InitializeLocationSystem();
-            AllServices.Container.Single<IUpgradeManager>().SetData(_branchContainer,_upgradePanel);
-            AllServices.Container.Single<IUpgradeManager>().UpdateBranches();
+            InitializeUpgradeSystem();
+            
             _soundSource = AllServices.Container.Single<IAudioManager>().GetSoundSource();
+            _dailyRewardService=new DailyRewardService(_dailyRewardPanel);
+            
+            if (AllServices.Container.Single<IAchievementsHandler>().IsLocationPassed)
+            {
+                _locationUIManager.SwitchPanelState(true);
+                SwitchMenuPanelState(false);
+            }
         }
         
         private void InitializeLocationSystem()
         {
-            // Создаем и инициализируем LocationManager
             _locationManager.Initialize();
-
-            // Создаем и инициализируем LocationUIManager
             _locationUIManager.Initialize(_saveLoadService,_locationManager);
             _locationUIManager.OnSelectLocation += SwicthScene;
+        }
+        
+        private void InitializeUpgradeSystem()
+        {
+            _upgradeManager=AllServices.Container.Single<IUpgradeManager>();
+            _upgradeManager.SetData(_branchContainer,_upgradePanel);
+            _upgradeManager.UpdateBranches();
         }
 
         private void OnClikedCurtain()
@@ -73,7 +86,6 @@ namespace UI.GeneralMenu
                 _locationManager.SwitchPanelState();
             
             SwitchMenuPanelState(!isActive);
-
         }
 
         private void Start()
@@ -86,6 +98,7 @@ namespace UI.GeneralMenu
         {
             _saveLoadService.Save();
             _stateMachine.Enter<LoadLevelState, string>(Constants.Location);
+            AllServices.Container.Single<IAchievementsHandler>().SetPassedState(false);
 //            Destroy(gameObject);
         }
 
@@ -96,7 +109,7 @@ namespace UI.GeneralMenu
             _backUILocation.onClick.AddListener(()=>SwitchMenuPanelState(true));
             _backUpgradePanel.onClick.AddListener(()=>SwitchUpgradePanelState(false));
             _upgrade.onClick.AddListener(()=>SwitchUpgradePanelState(true));
-           // _leaderboardButton.onClick.AddListener(() => _leaderboardPanel.SwitchState(true));;
+            _leaderboardButton.onClick.AddListener(() => _leaderboard.SwitchState(true));;
         }
 
         private void SwitchMenuPanelState(bool isActive)
@@ -111,12 +124,7 @@ namespace UI.GeneralMenu
             _menuCamera.gameObject.SetActive(!isActive);
             SwitchMenuPanelState(!isActive);
         }
-        
-        private void SwitchAuthorizationPanelState()
-        {
-            _authorizationPanel.SwithState(true);
-        }
-        
+
         private void RemoveListener()
         {
             AllServices.Container.Single<IUIHandler>().GetCurtain().OnClicked -= OnClikedCurtain;
@@ -124,7 +132,7 @@ namespace UI.GeneralMenu
             _backUILocation.onClick.RemoveListener(()=>SwitchMenuPanelState(true));
             _upgrade.onClick.RemoveListener(()=>SwitchUpgradePanelState(false));
             _backUpgradePanel.onClick.RemoveListener(()=>SwitchUpgradePanelState(false));
-           // _leaderboardButton.onClick.RemoveListener(() => _leaderboardPanel.SwitchState(true));;
+            _leaderboardButton.onClick.RemoveListener(() => _leaderboard.SwitchState(true));;
         }
 
        

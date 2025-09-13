@@ -15,4 +15,10 @@ public interface IUpgradeTree:IService
     public void UpdateUpgrade(Upgrade upgrade);
     public List<float> GetUpgradeValue(UpgradeGroupType groupType, UpgradeType type);
     public void PurchaseYGBranchUpgrade(Upgrade selectedUpgrade);
+    List<Upgrade> GetAllUpgrades();
+    bool IsPurchased(Upgrade upgrade);
+
+    public UpgradeNode GetUpgradeByKey(string key);
+    List<string> GetAllUpgradeKeys();
+
 }

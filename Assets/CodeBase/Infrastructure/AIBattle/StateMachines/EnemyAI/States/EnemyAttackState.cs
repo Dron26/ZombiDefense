@@ -26,7 +26,7 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
         private bool _isAttacked;
         private bool _isThrower;
         private bool _isThrowering;
-
+        private int _explosiveAbility;
         private Coroutine _attackCoroutine;
 
         protected override void OnInitialized()
@@ -35,6 +35,11 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
             _enemyAnimController = StateMachine.Enemy.EnemyAnimController;
             _fxController = StateMachine.Enemy.FXController;
             _enemy = StateMachine.Enemy;
+
+            if (_enemy.Data.Type == EnemyType.Smoker)
+            {
+                _explosiveAbility = _enemy.Data.ExplosiveAbility.ExplosiveDamage;
+            }
         }
 
         protected override void OnEnter()
@@ -52,7 +57,6 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
             _isAttacked = false;
             _isThrowering = false;
 
-            // Запуск корутины атаки
             _attackCoroutine = StartCoroutine(AttackRoutine());
         }
 
@@ -64,15 +68,11 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
 
             _enemyAnimController.OnAttack(false);
 
-            // Остановка корутины атаки
             if (_attackCoroutine != null)
             {
                 StopCoroutine(_attackCoroutine);
                 _attackCoroutine = null;
             }
-
-            if (_character != null)
-                StopCoroutine(_fxController.OnThrowFlesh(_character.transform.position));
 
             enabled = false;
         }

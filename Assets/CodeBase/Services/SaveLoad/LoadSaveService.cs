@@ -10,6 +10,7 @@ namespace Services.SaveLoad
     public class LoadSaveService:ISaveLoadService
     {
         private  IDataPersistence _dataPersistence;
+        
 
         public GameData GameData;
 
@@ -22,7 +23,7 @@ namespace Services.SaveLoad
             }
 
             var loadedData = _dataPersistence.Load();
-            GameData = loadedData ?? new GameData(); // Если null, создаём новый объект
+            GameData = loadedData ?? new GameData(); 
 
             string json = JsonConvert.SerializeObject(GameData, Formatting.Indented);
             Debug.Log($"Loaded game data:\n{json}");
@@ -72,15 +73,15 @@ namespace Services.SaveLoad
                 return;
             }
 
+            SetLeaderboardScore("Money", GameData.Money.AllAmountMoney);
+            
             string json = JsonConvert.SerializeObject(GameData, Formatting.Indented);
             Debug.Log($"Saving game data:\n{json}");
 
             _dataPersistence.Save(GameData);
             Debug.Log("Game data saved.");
         }
-
-
-
+        
         public void ChangeFirstStart()
         {
             if (GameData == null)

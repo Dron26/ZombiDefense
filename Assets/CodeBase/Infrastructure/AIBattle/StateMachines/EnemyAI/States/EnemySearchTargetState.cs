@@ -36,14 +36,16 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
         protected override void OnEnter()
         {
             _isSearching = false;
-            _agent.isStopped = true;
+            if (_agent != null && _agent.isOnNavMesh)
+                _agent.isStopped = true;
             _searchCoroutine = StartCoroutine(Search());
         }
 
         protected override void OnExit()
         {
             _isSearching = false;
-            _agent.isStopped = false;
+            if (_agent != null && _agent.isOnNavMesh)
+                _agent.isStopped = true;
             
             if (_searchCoroutine != null)
             {

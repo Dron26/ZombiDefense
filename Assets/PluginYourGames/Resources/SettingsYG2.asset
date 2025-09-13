@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SettingsYG2
   m_EditorClassIdentifier: 
   Authorization:
-    playerPhotoSize: 0
+    playerPhotoSize: 1
     authorized: 1
     playerName: Player current
     uniqueID: 000
@@ -301,8 +301,8 @@ MonoBehaviour:
   Localization:
     setLanguageMod: 1
   Metrica:
-    enable: 1
-    metricaCounterID: 92136747
+    enable: 0
+    metricaCounterID: 0
     log: 1
     useYandexMetrica: 1
   OpenURL:
@@ -413,7 +413,10 @@ MonoBehaviour:
       color2: {r: 1, g: 0.831, b: 0.149, a: 0.7}
     fixedAspectRatio: 0
     aspectRatio: 16/9
+    disableForMobile: 1
     fillBackground: 0
+    imageBackground: 0
+    imageName: background.jpg
     gradientBackgroundByAspectRatio:
       radial: 0
       angleInclination: 140

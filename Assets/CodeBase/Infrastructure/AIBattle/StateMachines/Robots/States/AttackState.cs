@@ -39,7 +39,7 @@ namespace Infrastructure.AIBattle.StateMachines.Robots.States
 
         private void Start()
         { 
-            PlayerCharactersStateMachine.OnStartMove += StartMove;
+            PlayerCharactersStateMachine.IsMove += IsMove;
         }
 
         protected override void OnEnabled()
@@ -186,18 +186,13 @@ namespace Infrastructure.AIBattle.StateMachines.Robots.States
             }
         }
 
-        public override void ExitBehavior()
-        {
-            enabled = false;
-        }
-
         protected override void OnDisable()
         {
             _isAttacking = false;
             enabled = false;
         }
 
-        private void StartMove()
+        private void IsMove(bool isMove)
         {
             if (_isAttacking == true||_isReloading==true)
             {

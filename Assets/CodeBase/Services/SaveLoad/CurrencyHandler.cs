@@ -12,15 +12,18 @@ namespace Services.SaveLoad
         private readonly MoneyData _moneyData;
         private IGameEventBroadcaster _eventBroadcaster;
         public event Action MoneyChanged;
-        private const int InitialMoneyAmount = 500000;
+        private ISaveLoadService _saveLoadService;
+       
         public CurrencyHandler(MoneyData moneyData)
         {
             _moneyData = moneyData;
             _eventBroadcaster = AllServices.Container.Single<IGameEventBroadcaster>();
-            if (AllServices.Container.Single<ISaveLoadService>().GetGameData().IsFirstStart)
+            _saveLoadService= AllServices.Container.Single<ISaveLoadService>();
+            if (_saveLoadService.GetGameData().IsFirstStart)
             {
-                AddMoney(InitialMoneyAmount);
-                AllServices.Container.Single<ISaveLoadService>().ChangeFirstStart();
+                //AddMoney(_saveLoadService.GetGameData().RemoteConfig.GetMoneyAmount);
+                AddMoney(500000);
+                _saveLoadService.ChangeFirstStart();
             }
         }
         
@@ -33,8 +36,6 @@ namespace Services.SaveLoad
             if (amount < 0)
                 throw new ArgumentException("Amount cannot be negative.", nameof(amount));
 
-            _moneyData.Money = amount;
-            _moneyData.TempMoney += amount;
             _moneyData.AllAmountMoney += amount;
             _eventBroadcaster.InvokeOnMoneyChanged(_moneyData.AllAmountMoney);
             MoneyChanged?.Invoke();
@@ -45,7 +46,7 @@ namespace Services.SaveLoad
             if (amount < 0)
                 throw new ArgumentException("Amount cannot be negative.", nameof(amount));
 
-            _moneyData.Money -= Mathf.Clamp(amount, 0, int.MaxValue);
+            _moneyData.AllAmountMoney -= Mathf.Clamp(amount, 0, int.MaxValue);
             MoneyChanged?.Invoke();
         }
 
@@ -72,7 +73,7 @@ namespace Services.SaveLoad
         
         public void Reset()
         {
-            _moneyData.Money = 100;
+            _moneyData.AllAmountMoney = 100;
             ClearMoneyForKilledEnemy();
             _moneyData.AllAmountMoney = 0;
             _moneyData.TempMoney = 0;

@@ -15,8 +15,9 @@ namespace UI.HUD.StorePanel
         private IUpgradeTree _upgradeTree;
 
         public int TempMoney { get; set; }
-        private int _defaultMoney = 300;
-        public event Action MoneyChanged;
+        private int _defaultMoney = 3000;
+        public event Action OnMoneyChanged;
+        public event Action OnEndMoney;
         private float _profitProcent=0;
 
         public void Initialize()
@@ -38,7 +39,7 @@ namespace UI.HUD.StorePanel
             int amountMoney = enemy.GetPrice();
             TempMoney += amountMoney;
             MoneyForEnemy += amountMoney;
-            MoneyChanged?.Invoke();
+            OnMoneyChanged?.Invoke();
         }
         
         public  float GetAllProfit() => TempMoney+(MoneyForEnemy*0.1f);
@@ -49,7 +50,7 @@ namespace UI.HUD.StorePanel
             int profit = amountMoney+(int) Mathf.Round(amountMoney * _profitProcent);
             TempMoney += profit;
             
-            MoneyChanged?.Invoke();
+            OnMoneyChanged?.Invoke();
         }
 
         public int ReadAmountMoney()
@@ -60,11 +61,16 @@ namespace UI.HUD.StorePanel
         public void SpendMoney(int amountMoney)
         {
             TempMoney -= amountMoney;
-            MoneyChanged?.Invoke();
+            OnMoneyChanged?.Invoke();
         }
 
         public bool IsMoneyEnough(int price)
         {
+            if (TempMoney <= price)
+            {
+                OnEndMoney?.Invoke();
+            }
+            
             return TempMoney >= price;
         }
         

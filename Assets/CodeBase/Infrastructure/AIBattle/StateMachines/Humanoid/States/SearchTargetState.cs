@@ -35,12 +35,13 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
         }
         private void Start()
         {
-            PlayerCharactersStateMachine.OnStartMove += StartMove;
+            Debug.Log(transform.parent.name+"Start()");
+            PlayerCharactersStateMachine.IsMove += IsMove;
         }
 
-        private void StartMove()
+        private void IsMove(bool isMove)
         {
-            _isMove = true;
+            _isMove = isMove;
         }
         private void OnUpdateWeaponData()
         {
@@ -50,22 +51,34 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
         protected override void OnEnabled()
         {
             _coroutine = StartCoroutine(Search());
-            _isMove = false;
         }
 
         private IEnumerator Search()
         {
             _isSearching = true;
+            
             _playerCharacterAnimController.OnIdle();
-
-           
-
-            while (_isSearching)
+            
+            while (_isSearching&&!_isMove)
             {
+                if (transform.parent!=null)
+                {   
+                    
+                    //  Debug.Log(transform.parent.name+"Search()");
+                }
                 // Используем EntitySearchService для поиска ближайшего врага
                 
                 _enemy = _searchService.GetClosestEntity<Enemy>(transform.position);
 
+                if (_enemy != null)
+                {
+                    Debug.Log(_enemy.name+_enemy.transform.parent);
+                    if ( _enemy.IsLife()== false)
+                    {
+                        Debug.Log("AAAAAAAAAAA");
+                    }
+                }
+                
                 if (_enemy != null && _enemy.IsLife())
                 {
                     float currentRange = Vector3.Distance(transform.position, _enemy.transform.position);
@@ -109,11 +122,22 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
 
         private void ChangeState()
         {
-            if (_enemy.IsLife()&&! _isMove)
-            {
-                _attackState.InitEnemy(_enemy);
-                PlayerCharactersStateMachine.EnterBehavior<AttackState>();
-            }
+                if (_isMove)
+                    return;
+
+                if (_enemy.IsLife() && _enemy != null)
+                {
+                    _attackState.InitEnemy(_enemy);
+                    Debug.Log(transform.parent.name + "ChangeState()");
+                    PlayerCharactersStateMachine.EnterBehavior<AttackState>();
+                }
+                else
+                {
+                    if (_coroutine != null)
+                        StopCoroutine(_coroutine);
+
+                    _coroutine = StartCoroutine(Search());
+                }
         }
 
         protected override void OnDisable()
@@ -122,11 +146,6 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
                 StopCoroutine(_coroutine);
 
             _isSearching = false;
-            enabled = false;
-        }
-
-        public override void ExitBehavior()
-        {
             enabled = false;
         }
     }

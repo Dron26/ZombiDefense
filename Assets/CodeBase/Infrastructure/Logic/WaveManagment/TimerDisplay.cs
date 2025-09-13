@@ -110,7 +110,7 @@ namespace Infrastructure.Logic.WaveManagment
                 _wallet.AddMoney(_bonusCoins);
             }
             OnClickReady?.Invoke();
-            Debug.Log("StartSpawn");
+//            Debug.Log("StartSpawn");
             _isStartClick = false;
         }
 

@@ -133,5 +133,30 @@ namespace Interface
         {
             _isExitFromLocation = true;
         }
+        
+        public void UnlockAll()
+        {
+            foreach (var location in _locationProgressData)
+            {
+                location.SetLock(false);  
+                location.SetCompleted(true); 
+            }
+    
+            AllServices.Container.Single<ISaveLoadService>().UpdateLocationProgressData(_locationProgressData);
+            AllServices.Container.Single<ISaveLoadService>().Save();
+
+            Debug.Log("All locations unlocked.");
+        }
+        
+        public void LockAll()
+        {
+            foreach (var location in _locationProgressData)
+            {
+                location.SetLock(true);
+            }
+            
+            AllServices.Container.Single<ISaveLoadService>().UpdateLocationProgressData(_locationProgressData);
+            AllServices.Container.Single<ISaveLoadService>().Save();
+        }
     }
 }

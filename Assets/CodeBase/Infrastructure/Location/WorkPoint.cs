@@ -193,12 +193,21 @@ namespace Infrastructure.Location
 
         public void SetCharacter(Character character)
         {
-//            Debug.Log("SetCharacter");
-            
             _character = character;
             _character.transform.parent = transform;
+            
+            float offsetY = 0f;
+            if (_character.TryGetComponent<Collider>(out var collider))
+            {
+                offsetY = collider.bounds.extents.y; 
+            }
+
+            _character.transform.localPosition = new Vector3(0f, 0, 0f);
+
             SetWeaponController();
             CheckCharacter();
+
+            Debug.Log($"[WorkPoint] Character {_character.name} set at WorkPoint {name} Pos:{_character.transform.position}");
         }
 
         public void UpLevel(int procent)

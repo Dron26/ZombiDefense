@@ -9,6 +9,7 @@ using Infrastructure.Logic.Inits;
 using Infrastructure.Points;
 using Interface;
 using Services;
+using Services.Analytic;
 using Services.PauseService;
 using Services.SaveLoad;
 using UI.Buttons;
@@ -63,6 +64,8 @@ namespace UI.HUD.StorePanel
         private IGameEventBroadcaster _eventBroadcaster;
         private IUpgradeTree _upgradeTree;
         private ICharacterHandler _characterHandler;
+        private IAnalyticService _analyticService;
+
         private int _priceCharacterLevelUp=1500;
         private int _priceSpecialTechnique;
         private int _precentDecreaseCostSpecialTechnique;
@@ -87,6 +90,8 @@ namespace UI.HUD.StorePanel
             // _adsStore.Initialize(_wallet);
             _wallet.Initialize();
             _upgradeTree=AllServices.Container.Single<IUpgradeTree>();
+            _analyticService = AllServices.Container.Single<IAnalyticService>();
+
             SetUpgrades();
             AddListener();
         }
@@ -116,6 +121,7 @@ namespace UI.HUD.StorePanel
         private void BuyCharacter(CharacterData data)
         {
             _eventBroadcaster.InvokeOnBoughtCharacter(data);
+            _analyticService.BuyCharacter(data.Type.ToString());
             SwitchStorePanel();
         }
 
@@ -182,6 +188,10 @@ namespace UI.HUD.StorePanel
             _pauseService.ChangePause(_isPanelActive);
             SwitchPanels(_isPanelActive);
             SwitchCameras(_isPanelActive);
+            if (_isPanelActive)
+            {
+                _analyticService.ClickButton("store");
+            }
         }
 
         private void SwitchCameras(bool isActive)
@@ -261,7 +271,11 @@ namespace UI.HUD.StorePanel
 
         private void IsReachLimitCharacter(bool isReach) => _buttonStorePanel.gameObject.SetActive(isReach);
 
-        public void OnBuyBox(BoxData data) => _eventBroadcaster.InvokeOnBoughtBox(data);
+        public void OnBuyBox(BoxData data)
+        {
+            _analyticService.BuyItem(data.Type.ToString());
+            _eventBroadcaster.InvokeOnBoughtBox(data);
+        }
 
         private void SetUpgrades()
         {

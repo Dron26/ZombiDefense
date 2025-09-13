@@ -4,7 +4,7 @@ using Services;
 
 namespace Interface
 {
-    public interface IAchievementsHandler:IService
+    public interface IAchievementsHandler : IService
     {
         int KilledEnemies { get; }
         int DailyKilledEnemies { get; }
@@ -16,7 +16,14 @@ namespace Interface
         void SetDeadMercenaryCount(int count);
         void AddKilledCharacter(Character character);
         void SetWaveComplatedCount(int count);
-
+        long LastDailyRewardTimeBinary { get; }
+        string MoneyLeaderboardTableName { get; }
+        string DeadZombiesLeaderboardTableName { get; }
         void Reset();
+        
+        void SetPassedState(bool isPassed);
+        bool IsLocationPassed { get; }
+        void EndTutorial();
+        public bool IsTutorialEnded();
     }
 }

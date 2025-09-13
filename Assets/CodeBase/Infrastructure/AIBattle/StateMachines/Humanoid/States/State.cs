@@ -10,7 +10,8 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
         public void EnterBehavior() =>
             enabled = true;
 
-        public abstract void ExitBehavior();
+        public  void ExitBehavior()=>
+            enabled = false;
 
         public void Init(PlayerCharactersStateMachine playerCharactersStateMachine)
         {

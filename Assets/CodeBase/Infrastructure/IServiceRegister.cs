@@ -6,5 +6,5 @@ using Services.SaveLoad;
 
 public interface IServiceRegister
 {
-    void  RegisterServices(LoadingCurtain loadingCurtain , Language language, AllServices services,AudioManager audioManager );
+    void  RegisterServices(LoadingCurtain loadingCurtain , Language language, AllServices services,AudioManager audioManager  );
 }

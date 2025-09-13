@@ -15,7 +15,7 @@ MonoBehaviour:
   prefab: {fileID: 9066399932422974978, guid: 7c1cc7ecf2f3e0b4fb915f42f4530541, type: 3}
   Type: 5
   MaxHealth: 50
-  RangeAttack: 2
+  RangeAttack: 1.2
   Damage: 0
   Price: 20
   Level: 0
@@ -24,8 +24,8 @@ MonoBehaviour:
   IsSpecial: 0
   HasShield: 0
   ShieldHealth: 0
-  ThrowRangeAttack: 0
-  ThrowAbility: {fileID: 0}
+  ThrowRangeAttack: 5
+  ThrowAbility: {fileID: 11400000, guid: fe15e2a91d4d9d84a901c6009a8afef1, type: 2}
   ExplosiveAbility: {fileID: 0}
   CharacterController: {fileID: 9100000, guid: 7d401bf8949afbc4499839c0f8248cdd, type: 2}
   NavMeshSpeed: 1.25

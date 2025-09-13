@@ -55,7 +55,7 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI
             foreach (var state in _states.Values)
             {
                 state.Init(this);
-                state.Exit(); // Изначально все состояния выключены
+                state.Exit();
             }
         }
         private void Start()

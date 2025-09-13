@@ -24,7 +24,8 @@ namespace CameraMain
                 moveDirection.y = 0f;
                 moveDirection.Normalize();
 
-                Vector3 newPosition = _cameraTransform.position + moveDirection * _moveSpeed * Time.deltaTime;
+                Vector3 newPosition = _cameraTransform.position + moveDirection * _moveSpeed * Time.unscaledDeltaTime;
+
                 newPosition.x = Mathf.Clamp(newPosition.x, _minBounds.x, _maxBounds.x);
                 newPosition.z = Mathf.Clamp(newPosition.z, _minBounds.y, _maxBounds.y);
 

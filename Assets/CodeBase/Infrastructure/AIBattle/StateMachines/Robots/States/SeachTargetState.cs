@@ -220,11 +220,6 @@ namespace Infrastructure.AIBattle.StateMachines.Robots.States
             }
         }
 
-        public override void ExitBehavior()
-        {
-            enabled = false;
-        }
-        
         protected override void OnDisable()
         {
             if (_coroutine != null)

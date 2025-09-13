@@ -26,6 +26,7 @@ namespace Services.Ads
         [SerializeField] private ReportPanel _reportPanel;
         
         public Action OnClickExitToMenu;
+        public Action OnLocationPassed;
         private SceneInitializer _sceneInitializer;
         private WaveManager _waveManager;
         public Action OnStartSpawn;
@@ -78,6 +79,11 @@ namespace Services.Ads
         {
             OnClickExitToMenu?.Invoke();
         }
+        
+        private void LocationPassed()
+        {
+            OnLocationPassed?.Invoke();
+        }
 
         public void SwitchPanelState(bool state)
         {
@@ -94,7 +100,7 @@ namespace Services.Ads
             //_reportPanel.OnStayInLication += StartContinueSpawn;
             
             _menuPanel.OnClickExitToMenu+= OnClickExit;
-            _reportPanel.OnClickExitToMenu+= OnClickExit;
+            _reportPanel.OnLocationPassed+= LocationPassed;
             _reportPanel.OnResetLevel += ResetLevel;
             _eventBroadcaster.OnSetActiveHumanoid += ShowSkipButton;
         }
@@ -105,7 +111,7 @@ namespace Services.Ads
            // _eventBroadcaster.OnLastEnemyRemained -= ShowSkipButton;
             // _reportPanel.OnStayInLication -= StartContinueSpawn;
             _menuPanel.OnClickExitToMenu-= OnClickExit;
-            _reportPanel.OnClickExitToMenu-= OnClickExit;
+            _reportPanel.OnLocationPassed-= LocationPassed;
             _reportPanel.OnResetLevel -= ResetLevel;
             _eventBroadcaster.OnSetActiveHumanoid -= ShowSkipButton;
             

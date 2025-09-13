@@ -1,5 +1,5 @@
 using System.Collections;
-using System.Globalization;
+using System.Collections.Generic;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using TMPro;
 using UnityEngine;
@@ -15,95 +15,80 @@ namespace UI
         [SerializeField] private Button _secondTime;
         [SerializeField] private Button _thirdTime;
         [SerializeField] private Button _fourthTime;
-        
-        private TMP_Text[] _texts;
-        private TMP_Text[] _selectedTexts;
+        [SerializeField] private List<TMP_Text> _texts;
+
         private bool _isPanelActive;
         private Color _colorDefault;
-        private float _timePause = 0;
-        private float _timeNormal = 1;
-        
-        public void Start()
+        private Coroutine _timerCoroutine; 
+
+        private void Start()
         {
             _buttonTime.onClick.AddListener(ShowPanel);
-            _firstTime.onClick.AddListener(() => SetTime(_firstTime.gameObject));
-            _secondTime.onClick.AddListener(() => SetTime(_secondTime.gameObject));
-            _thirdTime.onClick.AddListener(() => SetTime(_thirdTime.gameObject));
-            _fourthTime.onClick.AddListener(() => SetTime(_fourthTime.gameObject));
+            _firstTime.onClick.AddListener(() => SetTime(0.5f, 0,1));
+            _secondTime.onClick.AddListener(() => SetTime(1f, 2,3));
+            _thirdTime.onClick.AddListener(() => SetTime(1.5f, 4,5));
+            _fourthTime.onClick.AddListener(() => SetTime(3f, 6,7));
+            _colorDefault = _texts[0].color;
+            _texts[2].color = Color.black;
+            _texts[3].color = Color.black;
             _buttonPanel.SetActive(false);
         }
 
-        private void SetTime(GameObject selectedTime)
+        private void SetTime(float timeScaleValue, int index, int timeScaleIndex)
         {
-            _texts = selectedTime.GetComponentsInChildren<TextMeshProUGUI>();
-
-            if (float.TryParse(_texts[1].text, NumberStyles.Float, CultureInfo.InvariantCulture,
-                    out float timeScaleValue))
+            foreach (var text in _texts)
             {
-                Time.timeScale = timeScaleValue;
+                text.color = _colorDefault;
+            }
+            _texts[index].color = Color.black;
+            _texts[timeScaleIndex].color = Color.black;
+            
+            Time.timeScale = timeScaleValue;
+
+            if (_timerCoroutine != null)
+            {
+                StopCoroutine(_timerCoroutine);
             }
 
-            SetColorText();
-        }
-
-        private void SetColorText()
-        {
-            if (_selectedTexts != null && _selectedTexts != _texts)
+            if (_isPanelActive)
             {
-                _colorDefault = _texts[1].color;
-
-                foreach (var item in _selectedTexts)
-                {
-                    item.color = _colorDefault;
-                }
+                _timerCoroutine = StartCoroutine(StartTimer());
             }
-
-            for (int i = 0; i < _texts.Length; i++)
-            {
-                _texts[i].color = Color.black;
-            }
-
-            _selectedTexts = _texts;
         }
 
         private void ShowPanel()
         {
             _isPanelActive = !_isPanelActive;
             _buttonPanel.SetActive(_isPanelActive);
-            
+
             if (_isPanelActive)
             {
                 _buttonTime.interactable = false;
-                StartCoroutine(StartTimer());
+                if (_timerCoroutine != null)
+                {
+                    StopCoroutine(_timerCoroutine);
+                }
+                _timerCoroutine = StartCoroutine(StartTimer());
             }
             else
             {
-                StopCoroutine(StartTimer());
+                if (_timerCoroutine != null)
+                {
+                    StopCoroutine(_timerCoroutine);
+                    _timerCoroutine = null;
+                }
+                _buttonTime.interactable = true;
             }
         }
 
         private IEnumerator StartTimer()
         {
-            yield return new WaitForSecondsRealtime(3);
-            
+            yield return new WaitForSecondsRealtime(4f);
+
             _buttonTime.interactable = true;
             _buttonPanel.SetActive(false);
-            _isPanelActive = !_isPanelActive;
-        }
-
-        public void SetPause(bool isActive)
-        {
-            
-            if (isActive)
-            {
-                _timeNormal=Time.timeScale;
-                Time.timeScale = _timePause;
-            }
-            else
-            {
-                Time.timeScale = _timeNormal;
-            }
-            
+            _isPanelActive = false;
+            _timerCoroutine = null; 
         }
     }
 }

@@ -10,5 +10,6 @@ public interface IUpgradeManager:IService
     public void SetData(List<UpgradeBranch> branches, UpgradePanel panel);
     public void UpdateBranches();
     public void SetTree();
-
+    void UnlockAll();
+    void LockAll();
 }

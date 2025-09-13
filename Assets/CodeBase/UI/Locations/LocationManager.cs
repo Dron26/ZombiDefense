@@ -4,6 +4,7 @@ using Infrastructure.AssetManagement;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Interface;
 using Services;
+using Services.SaveLoad;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -60,7 +61,6 @@ namespace UI.Locations
         {
             _locations = _locationDataLoader.LoadLocations();
         }
-        
         
         private void AddListener()
         {

@@ -23,7 +23,7 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid
         private ISwitcherState _currentBehavior;
         private SceneInitializer _sceneInitializer;
         private Character _character;
-        public Action OnStartMove;
+        public Action<bool> IsMove;
 
         private void Awake()
         {
@@ -71,9 +71,9 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid
             throw new NotImplementedException();
         }
 
-        public void MoveTo()
+        public void OnMove(bool isMove)
         {
-            OnStartMove?.Invoke();
+            IsMove?.Invoke(isMove);
         }
 
         protected override void OnDisable()

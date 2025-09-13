@@ -7,187 +7,168 @@ using Infrastructure.Location;
 using Infrastructure.Logic.Inits;
 using Infrastructure.Logic.WaveManagment;
 using Infrastructure.Points;
+using Interface;
 using Lean.Localization;
+using Services;
+using Services.SaveLoad;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using YG;
 
 namespace Infrastructure.Tutorial
 {
     public class TutorialLevel : MonoCache
     {
-        [SerializeField] private TMP_Text tutorialText;
-        private Dictionary<Image, Image> _showObjects;
-        [SerializeField] private List<Image> _buttons;
-        [SerializeField] private List<Image> _urrows;
-        [SerializeField] private Humanoid _humanoid;
-        [SerializeField] private WorkPoint _firstPoint;
-        [SerializeField] private WorkPoint _secondPoint;
+        [SerializeField] private List<Image> _images;
+        [SerializeField] private List<Image> _arrows;
+        [SerializeField] private List<Button> _buttons;
+       [SerializeField] private TextMeshProUGUI _tutorialText;
         [SerializeField] private Image _dimm;
-        [SerializeField] private GameObject _doorFirst;
-        [SerializeField] private GameObject _doorSecond;
-        private int _eulerDoor = 129;
-        private Quaternion _rotationDoorFirst;
-        private Quaternion _rotationDoorSecond;
+        [SerializeField] private Button _back;
+        [SerializeField] private GameObject _panel;
         private Image _currentImage;
-        private LeanLocalizedTextMeshProUGUI _localizedTextMesh;
-        private int currentDialogIndex = 0;
-        private List<string> _dialogTexts;
-        private Color _currentColor;
-        private Coroutine tutorialCoroutine;
-        private int _numberForStartChangeColor = 2;
-        private bool _keyPressed = false;
         private int _currentImageIndex = 0;
+        private int _currentDialogIndex = 0;
+        private bool _keyPressed = false;
+        private Coroutine _tutorialCoroutine;
+        private Coroutine _brightnessCoroutine;
+        private Color _currentColor;
         public Action OnEndTutorial;
-        private bool _isCharacterCreated = false;
-        private PlayerCharacterInitializer _characterInitializer;
-        private WaveManager _waveManager;
-        private int numberForCreatedCharacter = 9;
-        private bool _isChangedColor = false;
-        private MovePointController _movePointController;
-        private SceneInitializer _initializer;
 
-        private void Start()
+        // Локализованные тексты для туториала
+        private readonly string[] _dialogsRu = {
+            "Здравия желаю, Капитан! Зомби атакуют аванпост:Вам желательно пройти обучение!",
+            "Будь внимателен, я подсвечу элементы управления. Нажимай любую клавишу, чтобы продолжить.",
+            "Это меню магазина. Покупай бойцов и оборудование для защиты аванпоста.",
+            "Кнопка повышения уровня позиции. Улучшает навыки бойцов на ней.",
+            "Тут можешь купить доп снаряжение и медикаменты.",
+            "Скрывает нижнюю панель управления для удобства.",
+            "Управляй скоростью игры и бойцами здесь.",
+            "Показывает количество врагов на локации.",
+            "Твой кредитный баланс для покупок.",
+            "Выход в меню игры.",
+            "Теперь ты готов защищать аванпост! Начинай операцию!"
+        };
+
+        private readonly string[] _dialogsEn = {
+            "I wish you good health, Captain! Zombies are attacking the outpost:It is advisable for you to complete the training!",
+            "Be careful, I'll highlight the controls. Press any key to continue.",
+            "This is the store menu. Buy fighters and equipment to defend the outpost.",
+            "Position upgrade button. Improves the skills of the fighters on it.",
+            "Here you can buy additional equipment and medicines.",
+            "Hides the lower control panel for convenience.",
+            "Control the speed of the game and the fighters here.",
+            "Shows the number of enemies in the location.",
+            "Your credit balance for purchases.",
+            "Exit the game menu.",
+            "Now you're ready to defend the outpost! Start the operation!"
+        };
+
+        private readonly string[] _dialogsTr = {
+            "lamlar dilerim, Kaptan! Zombiler karakola saldırıyor: Eğitim almanız tavsiye edilir!",
+            "Dikkatli ol, kontrolleri aydınlatacağım. Devam etmek için herhangi bir tuşa bas.",
+            "Bu mağazanın menüsü. Karakolu korumak için savaşçılar ve ekipman satın alın.",
+            "Konum seviyesini yükseltme düğmesi. Savaşçıların üzerindeki becerilerini geliştirir.",
+            "Burada ek ekipman ve ilaç satın alabilirsiniz.",
+            "Kolaylık sağlamak için alt kontrol panelini gizler.",
+            "Oyunun hızını ve buradaki savaşçıları kontrol edin.",
+            "Konumdaki düşman sayısını gösterir.",
+            "Satın alımlar için kredi bakiyeniz.",
+            "Oyun menüsüne çıkış.",
+            "Artık karakolu savunmaya hazırsın! Ameliyata başla!"
+        };
+
+        protected override void OnEnabled()
         {
-            _localizedTextMesh = tutorialText.GetComponent<LeanLocalizedTextMeshProUGUI>();
-            _characterInitializer = GetComponentInChildren<PlayerCharacterInitializer>();
-            _waveManager = GetComponentInChildren<WaveManager>();
-
-            FillDictionary();
+            YG2.onSwitchLang += OnSwitchLanguage;
+            _back.onClick.AddListener(EndTutorial);
         }
 
-        private void FillDictionary()
+        protected override void OnDisabled()
         {
-            _showObjects = new Dictionary<Image, Image>();
-
-            for (int i = 0; i < _buttons.Count; i++)
-            {
-                _urrows[i].gameObject.SetActive(false);
-                _showObjects.Add(_buttons[i], _urrows[i]);
-            }
+            YG2.onSwitchLang -= OnSwitchLanguage;
+            _back.onClick.RemoveListener(EndTutorial);
         }
+        
 
-        private void HandleEscapeKey()
+        public void Start()
         {
-            EndTutorial();
-        }
+            if (!AllServices.Container.Single<ILocationHandler>().GetCurrentLocationData().IsTutorial)
+                return;
 
-        public void Initialize(SceneInitializer sceneInitializer)
-        {
-            _dialogTexts = new List<string>();
-            _currentImageIndex = 0;
+            if (AllServices.Container.Single<IAchievementsHandler>().IsTutorialEnded())
+                return;
+            
+            _panel.SetActive(true);
             _dimm.enabled = true;
-            _movePointController = sceneInitializer.GetMovePointController();
-            _initializer = sceneInitializer;
-            _rotationDoorFirst = _doorFirst.transform.rotation;
-            _rotationDoorSecond = _doorSecond.transform.rotation;
-
-            foreach (TutorialDialogKey dialog in Enum.GetValues(typeof(TutorialDialogKey)))
-            {
-                _dialogTexts.Add(dialog.ToString());
-            }
-
-            tutorialCoroutine = StartCoroutine(RunTutorial());
+            _currentImageIndex = 0;
+            _currentDialogIndex = 0;
+            _tutorialCoroutine = StartCoroutine(RunTutorial());
         }
 
-        public IEnumerator RunTutorial()
+        private IEnumerator RunTutorial()
         {
             yield return new WaitForSeconds(1f);
-            _initializer.GetHudPanel().SwitchPanelState(false);
-           
 
-            foreach (string dialogText in _dialogTexts)
+            while (_currentDialogIndex < _dialogsRu.Length)
             {
                 _keyPressed = false;
-                _localizedTextMesh.TranslationName = dialogText;
+                UpdateText(YG2.lang);
 
-                if (currentDialogIndex >= _numberForStartChangeColor && _currentImageIndex < _showObjects.Count)
+                if (_currentDialogIndex >= 2 && _currentImageIndex < _buttons.Count+1)
                 {
-                    _isChangedColor = true;
                     ChangeImageAndBrightness();
-                }
-                else
-                {
-                    _isChangedColor = false;
-                }
-
-                if (currentDialogIndex == numberForCreatedCharacter)
-                {
-                    ChangeImageBrightness(1f);
-                    StopCoroutine(ChangeImageBrightness());
-                    tutorialText.color = Color.white;
-                    
-                }
-
-                if (currentDialogIndex == numberForCreatedCharacter + 1)
-                {
-                    MoveCharacters(_firstPoint);
-                }
-
-                if (currentDialogIndex == numberForCreatedCharacter + 2)
-                {
-                    MoveCharacters(_secondPoint);
-                }
-
-                if (currentDialogIndex == numberForCreatedCharacter + 3)
-                {
-                    SetCharacters();
-                    OpenDoor();
                 }
 
                 yield return WaitForKeyPress();
-
-                currentDialogIndex++;
+                _currentDialogIndex++;
             }
 
             EndTutorial();
         }
 
-        private void OpenDoor()
+        private void UpdateText(string lang)
         {
-            _rotationDoorFirst.eulerAngles=new Vector3(0,_eulerDoor,0);
-            _rotationDoorSecond.eulerAngles=new Vector3(0,-_eulerDoor,0);
+            _tutorialText.text = GetLocalizedText(lang);
         }
 
-        private void MoveCharacters(WorkPoint point)
+        private string GetLocalizedText(string lang)
         {
-            for (int i = 0; i < 2; i++)
+            switch (lang)
             {
-                _movePointController.OnSelectedPoint(point);
+                case "ru":
+                    return _dialogsRu[_currentDialogIndex];
+                case "en":
+                    return _dialogsEn[_currentDialogIndex];
+                case "tr":
+                    return _dialogsTr[_currentDialogIndex];
+                default:
+                    Debug.LogWarning($"Unsupported language: {lang}. Falling back to English.");
+                    return _dialogsEn[_currentDialogIndex];
             }
         }
-        
-        private void SetCharacters()
-        {
-            _dimm.enabled = false;
-            if (_isCharacterCreated) return;
-            _characterInitializer.SetCreatedCharacter(_humanoid);
-            _waveManager.SetWaveData();
-            _isCharacterCreated = true;
-        }
-        
+
         private IEnumerator WaitForKeyPress()
         {
             while (!_keyPressed)
             {
                 if (Input.GetKeyDown(KeyCode.Escape))
                 {
-                    HandleEscapeKey();
+                    EndTutorial();
+                    yield break;
                 }
                 else if (Input.anyKeyDown)
                 {
                     _keyPressed = true;
-                    
-                    if (currentDialogIndex>=_numberForStartChangeColor&&_currentImageIndex<_showObjects.Count)
+                    if (_currentDialogIndex >= 2 && _currentImageIndex < _buttons.Count)
                     {
-                        _urrows[_currentImageIndex].gameObject.SetActive(false);
-                        StopCoroutine(ChangeImageBrightness());
+                        _arrows[_currentImageIndex].gameObject.SetActive(false);
+                        if (_brightnessCoroutine != null)
+                        {
+                            StopCoroutine(_brightnessCoroutine);
+                        }
                         ChangeImageBrightness(1f);
-                    }
-                    
-                    
-                    if (_isChangedColor)
-                    {
                         _currentImageIndex++;
                     }
                 }
@@ -195,105 +176,69 @@ namespace Infrastructure.Tutorial
                 yield return null;
             }
         }
-        
+
         private void EndTutorial()
         {
-            _initializer.GetHudPanel().SwitchPanelState(true);
-            StopCoroutine(RunTutorial());
-            OnEndTutorial?.Invoke();
+            if (_brightnessCoroutine != null)
+            {
+                StopCoroutine(_brightnessCoroutine);
+            }
+            if (_tutorialCoroutine != null)
+            {
+                StopCoroutine(_tutorialCoroutine);
+            }
+            
+            //_blockDimm.enabled = false;
+            _dimm.enabled = false;
+            AllServices.Container.Single<IAchievementsHandler>().EndTutorial();
+            _panel.SetActive(false);
+            gameObject.SetActive(false);
+        }
+
+        private void ChangeImageAndBrightness()
+        {
+            _currentImage = _images[_currentImageIndex];
+            _brightnessCoroutine = StartCoroutine(ChangeImageBrightness());
         }
 
         private IEnumerator ChangeImageBrightness()
         {
-            
-            bool increasingBrightness = true; 
-            float currentBrightness = 1.0f; 
-            float brightnessChangeStep = 0.03f; 
-            float brightnessChangeInterval = 0.01f; 
-            
-            _currentColor=_currentImage.color;
-            _urrows[_currentImageIndex].gameObject.SetActive(true);
-            
-            while (!_keyPressed) 
+            bool increasingBrightness = true;
+            float currentBrightness = 1f;
+            float brightnessChangeStep = 0.03f;
+            float brightnessChangeInterval = 0.01f;
+
+            _currentColor = _currentImage.color;
+            _arrows[_currentImageIndex].gameObject.SetActive(true);
+
+            while (!_keyPressed)
             {
-                if (increasingBrightness && currentBrightness >= 1.0f)
+                if (increasingBrightness && currentBrightness >= 1f)
                 {
                     increasingBrightness = false;
                 }
-                else if (!increasingBrightness && currentBrightness <= 0)
+                else if (!increasingBrightness && currentBrightness <= 0f)
                 {
                     increasingBrightness = true;
                 }
 
                 ChangeImageBrightness(currentBrightness);
 
-                if (increasingBrightness)
-                {
-                    currentBrightness += brightnessChangeStep;
-                }
-                else
-                {
-                    currentBrightness -= brightnessChangeStep;
-                }
-
+                currentBrightness += increasingBrightness ? brightnessChangeStep : -brightnessChangeStep;
                 yield return new WaitForSeconds(brightnessChangeInterval);
             }
+
             ChangeImageBrightness(1f);
         }
 
         private void ChangeImageBrightness(float brightness)
         {
-            
-            _currentImage.color = new Color(brightness, brightness, brightness);
-        }
-        
-        private void ChangeImageAndBrightness()
-        {
-            _currentImage=_buttons[_currentImageIndex];
-            StartCoroutine(ChangeImageBrightness());
+            _currentImage.color = new Color(brightness, brightness, brightness, _currentColor.a);
         }
 
-        public void SetImages(List<Image> images)
+        private void OnSwitchLanguage(string lang)
         {
-            _buttons=images;
+            UpdateText(lang);
         }
     }
-
-    public enum TutorialDialogKey
-    {
-        WelcomeToTheTutorial,
-        WarningTutorial,
-        StoreTutorial,
-        PointUpTutorial,
-        AdditionalTutorial,
-        HidePanelTutorial,
-        TimePanelTutorial,
-        MoneyPanelTutorial,
-        MenuPanelTutorial,
-        MoveBetweenTutorial,
-        RadiusAttackTutorial,
-        TakeMedicalKit,
-        ReadyTutorial,
-    }
-
-//  Здравия желаю Капитан! Зомби наступают по всем фронтам и  мы сильно ограничены по времени, поэтому постараюсь быстро ввести тебя в курс дела.
-//  Будь внимателен, я буду подсвечивать элементы управления и обьяснять их назначения. Не перебивай, все вопросы потом.
-//  Это меню магазина, там ты можешь купить бойцов и оборудование для проведения операций
-//  Повышает уровень позиции, попутно увеличиваются навыки находящегося на них бойца
-//  скрывает нижнюю панель управления
-//  Ты можешь контролировать скорость игры и управлять бойцами 
-//  твой кредитный баланс
-//  выход в меню
-//  Ты можешь перемещать бойцов между позициями в зависимости от поставлвленых задач
-//  У каждой боевой единицы визуально отображается радиус атаки
-//  Так же могут быть дополнительные виды оружия
-//  после того как твой отряд будет готов можешь начать операцию
-//Если во время сражения кто то получил повреждения,  то при наличии аптечки можно восстановить здоровье
-//  По завершению операции будет предоставлен отчет
-//
-//
-//
-//
-//
-// 
 }

@@ -18,7 +18,7 @@ namespace Infrastructure.Factories.FactoryWarriors.Humanoids
             Humanoid humanoidComponent = newHumanoid.GetComponent<Humanoid>();
             HumanoidWeaponController humanoidWeaponController  = newHumanoid.GetComponent<HumanoidWeaponController>();
             Transform newHumanoidTransform = humanoidComponent.transform;
-            newHumanoidTransform.localPosition = Vector3.zero;
+            //newHumanoidTransform.localPosition = Vector3.zero;
             newHumanoidTransform.tag="PlayerUnit";
             //humanoidComponent.OnInitialize += OnInitialized;
             float randomAngle = Random.Range(0f, 360f);

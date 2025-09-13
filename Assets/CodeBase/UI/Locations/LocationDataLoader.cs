@@ -46,7 +46,7 @@ namespace UI.Locations
                     {
                         foreach (var value in waveData.EnemyCount)
                         {
-                            enemyCount+= value;
+                            enemyCount += value;
                         }
                     }
 
@@ -60,7 +60,22 @@ namespace UI.Locations
                         enemyCount,
                         0, // CurrentWaveLevel изначально 0
                         data.IsAdditional,
-                        data.UnlockedId
+                        data.UnlockedId,
+                        data.TitleRu,
+                        data.TitleEn,
+                        data.TitleTr,
+                        data.ContextRu,
+                        data.ContextEn,
+                        data.ContextTr,
+                        data.ObjectiveRu,
+                        data.ObjectiveEn,
+                        data.ObjectiveTr,
+                        data.LocationRu,
+                        data.LocationEn,
+                        data.LocationTr,
+                        data.TipRu,
+                        data.TipEn,
+                        data.TipTr
                     );
 
                     locations.Add(location);
@@ -71,35 +86,15 @@ namespace UI.Locations
                 }
             }
 
-            InitializeLocations(locations);
-            
-            if (locations.Count > 0)
-            {
-                locations[0].SetLock(false);
-                locations[1].SetLock(false);
-            }
             
             SyncWithSaveData(locations);
 
             return locations;
         }
 
-        private void InitializeLocations(List<LocationProgressData> locations)
-        {
-            if (locations.Count > 0)
-            {
-                locations[0].SetLock(false);
-            }
-        }
-
         private void SyncWithSaveData(List<LocationProgressData> locations)
         {
             List<int> completedLocationsId = _locationHandler.GetCompletedLocationId();
-
-            if (completedLocationsId.Count == 0 && locations.Count > 0)
-            {
-                completedLocationsId.Add(0);
-            }
 
             foreach (int completedId in completedLocationsId)
             {
@@ -118,15 +113,13 @@ namespace UI.Locations
 
             for (int i = 0; i < locations.Count; i++)
             {
-
-                if (locations[locations[i].UnlockedId].IsCompleted )
+                if (locations[locations[i].UnlockedId].IsCompleted)
                 {
                     locations[i].SetLock(false);
                 }
-
             }
             
-            //настройка сохранения
+            // Настройка сохранения
             _locationHandler.SetLocationsDatas(locations);
         }
     }

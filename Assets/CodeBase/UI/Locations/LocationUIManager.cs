@@ -7,6 +7,7 @@ using Services.SaveLoad;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using YG;
 
 namespace UI.Locations
 {
@@ -16,8 +17,13 @@ namespace UI.Locations
         [SerializeField] private GameObject _selecterPanel;
         [SerializeField] private GameObject _enterLocationPanel;
         [SerializeField] private TextMeshProUGUI _locationInfo;
-        [SerializeField] private TextMeshProUGUI _selectedLocationInfo;
-        [SerializeField] private TextMeshProUGUI _selectedLocationHistory;
+        
+        [SerializeField] private TextMeshProUGUI _title;
+        [SerializeField] private TextMeshProUGUI _context;
+        [SerializeField] private TextMeshProUGUI _location;
+        [SerializeField] private TextMeshProUGUI _objective;
+        [SerializeField] private TextMeshProUGUI _tip;
+        
         [SerializeField] private Button _back;
         [SerializeField] private Button _backEnterLocationr;
         [SerializeField] private Button _enter;
@@ -29,6 +35,13 @@ namespace UI.Locations
         private ICurrencyHandler _currencyHandler;
         private int _completedLocationCount;
         private int _selectedLocationId;
+        private LocationProgressData  _currentLocation;
+        protected override void OnEnabled()
+        {
+            YG2.onSwitchLang += OnSwitchLanguage;
+        }
+
+        
         public void Initialize(ISaveLoadService saveLoadService, LocationManager locationManager)
         {
             _locationManager = locationManager;
@@ -51,7 +64,6 @@ namespace UI.Locations
                 {
                     openLocation++;
                 }
-                
             }
             
                 _locationInfo.text = $" {openLocation}/{_locationUIElements.Count-1}\n" +
@@ -61,19 +73,46 @@ namespace UI.Locations
 
         private void FillLocationInfo()
         {
-            var currentLocation = _locationManager.GetLocationById(_selectedLocationId);
-            if (currentLocation != null)
+            _currentLocation= _locationManager.GetLocationById(_selectedLocationId);
+           
+            
+            if (_currentLocation != null)
             {
-                _selectedLocationInfo.text = $"Волн: {currentLocation.WaveCount}\n" +
-                                             $"Количество зомби: {currentLocation.EnemyCount}\n";
+                
+                UpdateUI(YG2.envir.language);
+                // _selectedLocationInfo.text = $"Волн: {_currentLocation.WaveCount}\n" +
+                //                              $"Количество зомби: {_currentLocation.EnemyCount}\n";
+                 
                 //$"Награда: {currentLocation.BaseReward}";
             }
-            else
-            {
-                _selectedLocationHistory.text = "Информация о локации недоступна.";
-            }
+            
         }
 
+        private void UpdateUI(string lang)
+        {
+             _title.text = GetLocalizedText(_currentLocation.TitleRu, _currentLocation.TitleEn, _currentLocation.TitleTr, lang);
+            _context.text = GetLocalizedText(_currentLocation.ContextRu, _currentLocation.ContextEn, _currentLocation.ContextTr, lang);
+            _objective.text = GetLocalizedText(_currentLocation.ObjectiveRu, _currentLocation.ObjectiveEn, _currentLocation.ObjectiveTr, lang);
+            _location.text = GetLocalizedText(_currentLocation.LocationRu, _currentLocation.LocationEn, _currentLocation.LocationTr, lang);
+           _tip.text = GetLocalizedText(_currentLocation.TipRu, _currentLocation.TipEn, _currentLocation.TipTr, lang);
+        }
+
+        private string GetLocalizedText(string ru, string en, string tr, string currentLang)
+        {
+            switch (currentLang)
+            {
+                case "ru":
+                    return string.IsNullOrEmpty(ru) ? en : ru;
+                case "en":
+                    return string.IsNullOrEmpty(en) ? ru : en;
+                case "tr":
+                    return string.IsNullOrEmpty(tr) ? en : tr;
+                default:
+                    Debug.LogWarning($"Unsupported language: {currentLang}. Falling back to English.");
+                    return en;
+            }
+        }
+        
         private void FillLocationElement()
         {
             _locationUIElements = new List<LocationUIElement>();
@@ -120,8 +159,8 @@ namespace UI.Locations
 
         public void SwitchEnterPanelState(bool isActive)
         {
-            Enter();
-           // _enterLocationPanel.SetActive(isActive);
+          //  Enter();
+            _enterLocationPanel.SetActive(isActive);
         }
 
         private void Enter()
@@ -139,7 +178,14 @@ namespace UI.Locations
             _back.onClick.RemoveListener(()=>SwitchPanelState(false));
             _backEnterLocationr.onClick.RemoveListener(()=>SwitchEnterPanelState(false));
             _enter.onClick.RemoveListener(Enter);
+            YG2.onSwitchLang -= OnSwitchLanguage;
         }
+
+        private void OnSwitchLanguage(string lang)
+        {
+            UpdateUI(lang);
+        }
+
 
         protected override void OnDisabled()
         {

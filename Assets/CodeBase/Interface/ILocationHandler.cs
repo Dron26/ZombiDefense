@@ -18,5 +18,8 @@ namespace Interface
         LocationProgressData GetCurrentLocationData();  
         int GetCurrentReward();  
         void IncreaseWaveLevel();  
+        void UnlockAll();
+        void LockAll();
+
     }
 }

@@ -53,8 +53,5 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
             }
         }
 
-        public override void ExitBehavior()
-        {
-        }
     }
 }

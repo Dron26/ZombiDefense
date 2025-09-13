@@ -14,7 +14,7 @@ namespace Services.SaveLoad
         private bool _isSpawnEnd=false;
         public EnemyHandler(IGameEventBroadcaster eventBroadcaster)
         {
-            _enemyData = new EnemyData();
+            _enemyData = new EnemyesData();
             _eventBroadcaster = eventBroadcaster;
         }
 

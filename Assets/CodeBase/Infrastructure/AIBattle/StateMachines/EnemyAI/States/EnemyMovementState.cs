@@ -51,13 +51,6 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
             enabled = true;
             _isWalking = false;
             _isTargetSet = false;
-
-            if (_target != null)
-            {
-                Move();
-            }
-
-            // Запуск корутины проверки расстояния
             _checkDistanceCoroutine = StartCoroutine(CheckDistance());
         }
 
@@ -109,7 +102,6 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
             while (_target.IsLife() && _enemy.IsLife())
             {
                 float distance = Vector3.Distance(transform.position, _targetTransform.position);
-                _agent.SetDestination(_targetTransform.position);
 
                 if (!_isThrower && distance <= _stoppingDistance)
                 {
@@ -119,7 +111,7 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
 
                 if (_isThrower)
                 {
-                    if (distance <= _throwerStoppingDistance && distance > _throwerStoppingDistance / 3)
+                    if (distance <= _throwerStoppingDistance && distance > (_throwerStoppingDistance / 3))
                     {
                         ChangeState<EnemyAttackState>();
                         yield break;
@@ -136,8 +128,14 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
                     _animator.SetBool(_enemyAnimController.Walk, true);
                     _agent.speed = _enemy.Data.NavMeshSpeed;
                     _isWalking = true;
+                    
+                    if (_target != null)
+                    {
+                        Move();
+                    }
                 }
 
+                _agent.SetDestination(_targetTransform.position);
                 yield return new WaitForSeconds(CheckDistanceInterval);
             }
 

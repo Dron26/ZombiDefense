@@ -10,9 +10,11 @@ using Infrastructure.Logic.WaveManagment;
 using Infrastructure.Points;
 using Infrastructure.StateMachine;
 using Infrastructure.StateMachine.States;
+using Infrastructure.Tutorial;
 using Interface;
 using Services;
 using Services.Ads;
+using Services.Analytic;
 using Services.Audio;
 using Services.PauseService;
 using Services.SaveLoad;
@@ -35,6 +37,7 @@ namespace Infrastructure.Logic.Inits
         [SerializeField] private EventSystem _eventSystem;
         [SerializeField] private GlobalTimer _globalTimer;
         [SerializeField] private AudioSource _soundSource;
+        [SerializeField] private MissionUI _missionUI;
 
         private SceneObjectManager _sceneObjectManager;
         private LoadingCurtain _loadingCurtain;
@@ -59,6 +62,8 @@ namespace Infrastructure.Logic.Inits
 
         public Action OnLoaded;
         private IAudioManager _audioManager;
+        private IAnalyticService _analyticService;
+
 
         public void Initialize(GameStateMachine stateMachine)
         {
@@ -104,7 +109,9 @@ namespace Infrastructure.Logic.Inits
             Debug.Log("Finish _movePointController();");
             _pauseService = AllServices.Container.Single<IPauseService>();
             _soundSource=AllServices.Container.Single<IAudioManager>().GetSoundSource();
-            
+            _analyticService= AllServices.Container.Single<IAnalyticService>();
+            _analyticService.StartLevel();
+            _missionUI.DisplayMission(AllServices.Container.Single<ILocationHandler>().GetCurrentLocationData());
         }
 
         private void SetInitializers(LocationPrefab location)
@@ -198,7 +205,7 @@ namespace Infrastructure.Logic.Inits
             //InitializeEnemies();
         }
 
-        private void OnClickExitToMenu()
+        private void ClickExitToMenu()
         {
             _eventBroadcaster.InvokeOnExitedLocation();
             ClearEnemies();
@@ -206,6 +213,23 @@ namespace Infrastructure.Logic.Inits
             _stateMachine.Enter<LoadLevelState, string>(Constants.Menu);
             _playerCharacterInitializer.ClearData();
             _pauseService.ChangePause(true);
+            _analyticService.ExitLevel();
+            AllServices.Container.Single<ISearchService>().ClearAllEntities();
+            
+            //Destroy(_location.gameObject);
+            // Destroy(transform.parent.gameObject);
+        }
+        
+        private void LocationPassed()
+        {
+            _eventBroadcaster.InvokeOnExitedLocation();
+            ClearEnemies();
+            _saveLoadService.Save();
+            AllServices.Container.Single<IAchievementsHandler>().SetPassedState(true);
+            _stateMachine.Enter<LoadLevelState, string>(Constants.Menu);
+            _playerCharacterInitializer.ClearData();
+            _pauseService.ChangePause(true);
+            _analyticService.ExitLevel();
             AllServices.Container.Single<ISearchService>().ClearAllEntities();
             
             //Destroy(_location.gameObject);
@@ -230,8 +254,9 @@ namespace Infrastructure.Logic.Inits
         {
             _timerDisplay.OnClickReady += _waveManager.Spawn;
             _hudPanel.OnStartSpawn += OnClickContinueStartSpawn;
-            _hudPanel.OnClickExitToMenu += OnClickExitToMenu;
+            _hudPanel.OnClickExitToMenu += ClickExitToMenu;
             _hudPanel.OnResetLevel += ResetLevel;
+            _hudPanel.OnLocationPassed += LocationPassed;
             _loadingCurtain.OnClicked += OnClikedCurtain;
             _playerCharacterInitializer.CreatedCharacter += SetInfo;
             _eventBroadcaster.LastHumanoidDie += OnLastHumanoidDie;
@@ -240,7 +265,8 @@ namespace Infrastructure.Logic.Inits
         private void RemoveListener()
         {
             _hudPanel.OnStartSpawn -= OnClickContinueStartSpawn;
-            _hudPanel.OnClickExitToMenu -= OnClickExitToMenu;
+            _hudPanel.OnClickExitToMenu -= ClickExitToMenu;
+            _hudPanel.OnLocationPassed -= LocationPassed;
             _hudPanel.OnResetLevel -= ResetLevel;
             _loadingCurtain.OnClicked -= OnClikedCurtain;
             _playerCharacterInitializer.CreatedCharacter -= SetInfo;

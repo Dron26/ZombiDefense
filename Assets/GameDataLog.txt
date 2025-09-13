@@ -1,0 +1,1923 @@
+=== GAME DATA EXPORT ===
+Generated: 15.07.2025 12:01:05
+
+=== CHARACTER DATA (9 items) ===
+
+=== Character Data: Engeneer ===
+Type: Engeneer
+Health: 50
+Price: 50
+HaveAttachments: False
+CanMove: True
+HaveWeaponLight: False
+ItemData: Medium
+Sprite: Engeneer
+Ring: Ring
+CharacterController: Engeneer
+----------------------
+
+=== Character Data: Flammer ===
+Type: Flammer
+Health: 50
+Price: 50
+HaveAttachments: True
+CanMove: True
+HaveWeaponLight: False
+ItemData: Flammer
+Sprite: Flammer
+Ring: Ring
+CharacterController: Flammer
+----------------------
+
+=== Character Data: Grenadier ===
+Type: Grenadier
+Health: 40
+Price: 100
+HaveAttachments: False
+CanMove: True
+HaveWeaponLight: True
+ItemData: Shotgun
+Sprite: Grenader
+Ring: Ring
+CharacterController: Grenadier
+----------------------
+
+=== Character Data: Gunner ===
+Type: Gunner
+Health: 50
+Price: 50
+HaveAttachments: True
+CanMove: True
+HaveWeaponLight: False
+ItemData: Heavymachinegun
+Sprite: Gunner
+Ring: Ring
+CharacterController: Gunner
+----------------------
+
+=== Character Data: Scout ===
+Type: Scout
+Health: 60
+Price: 70
+HaveAttachments: False
+CanMove: True
+HaveWeaponLight: True
+ItemData: Submachinegun
+Sprite: Scaut
+Ring: Ring
+CharacterController: Scout
+----------------------
+
+=== Character Data: Sergeant ===
+Type: Sergeant
+Health: 70
+Price: 120
+HaveAttachments: False
+CanMove: True
+HaveWeaponLight: True
+ItemData: Rifle
+Sprite: Sergant
+Ring: Ring
+CharacterController: Sergeant
+----------------------
+
+=== Character Data: Sniper ===
+Type: Sniper
+Health: 30
+Price: 150
+HaveAttachments: False
+CanMove: True
+HaveWeaponLight: False
+ItemData: Sniper
+Sprite: Sniper
+Ring: Ring
+CharacterController: Sniper
+----------------------
+
+=== Character Data: Soldier ===
+Type: Soldier
+Health: 90000
+Price: 50
+HaveAttachments: False
+CanMove: True
+HaveWeaponLight: False
+ItemData: Pistol
+Sprite: Soldier
+Ring: Ring
+CharacterController: Soldier
+----------------------
+
+=== Character Data: Turret ===
+Type: Turret
+Health: 70
+Price: 250
+HaveAttachments: False
+CanMove: False
+HaveWeaponLight: False
+ItemData: Turret
+Sprite: Turret
+Ring: Ring
+CharacterController: None
+----------------------
+
+=============================================
+
+=== ITEM DATA (11 items) ===
+
+=== Item Data: Flammer ===
+Type: Flammer
+Damage: 10
+MaxAmmo: 2147483647
+ReloadTime: 0
+FireRate: 0
+Range: 14
+SpreadAngle: 20
+TimeBeforeExplosion: 0
+IsMedicine: False
+RecoveryRate: 0
+IsGranade: False
+GrenadeId: 0
+ActionClip: sounddrom
+ReloadClip: reload
+ExplosionEffect: None
+----------------------
+
+=== Item Data: Grenade ===
+Type: Grenade
+Damage: 30
+MaxAmmo: 1
+ReloadTime: 0
+FireRate: 0
+Range: 5
+SpreadAngle: 0
+TimeBeforeExplosion: 3
+IsMedicine: False
+RecoveryRate: 0
+IsGranade: False
+GrenadeId: 1
+ActionClip: Explosion1
+ReloadClip: reload
+ExplosionEffect: FX_Grenade_Explosive_01 1
+----------------------
+
+=== Item Data: Heavymachinegun ===
+Type: Heavymachinegun
+Damage: 2
+MaxAmmo: 50
+ReloadTime: 0
+FireRate: 0
+Range: 10
+SpreadAngle: 0
+TimeBeforeExplosion: 0
+IsMedicine: False
+RecoveryRate: 0
+IsGranade: False
+GrenadeId: 0
+ActionClip: shot
+ReloadClip: reload
+ExplosionEffect: None
+----------------------
+
+=== Item Data: MedicalKit ===
+Type: MedicalKit
+Damage: 0
+MaxAmmo: 0
+ReloadTime: 0
+FireRate: 0
+Range: 0
+SpreadAngle: 0
+TimeBeforeExplosion: 0
+IsMedicine: True
+RecoveryRate: 60
+IsGranade: False
+GrenadeId: 0
+ActionClip: None
+ReloadClip: None
+ExplosionEffect: None
+----------------------
+
+=== Item Data: Medium ===
+Type: Medium
+Damage: 5
+MaxAmmo: 5000000
+ReloadTime: 0
+FireRate: 0
+Range: 8
+SpreadAngle: 3
+TimeBeforeExplosion: 0
+IsMedicine: False
+RecoveryRate: 0
+IsGranade: False
+GrenadeId: 0
+ActionClip: sounddrom (2)
+ReloadClip: reload
+ExplosionEffect: None
+----------------------
+
+=== Item Data: Pistol ===
+Type: Pistol
+Damage: 8
+MaxAmmo: 9
+ReloadTime: 0
+FireRate: 0
+Range: 5
+SpreadAngle: 0
+TimeBeforeExplosion: 0
+IsMedicine: False
+RecoveryRate: 0
+IsGranade: False
+GrenadeId: 0
+ActionClip: Shot
+ReloadClip: Reload
+ExplosionEffect: None
+----------------------
+
+=== Item Data: Rifle ===
+Type: Rifle
+Damage: 8
+MaxAmmo: 20
+ReloadTime: 0
+FireRate: 0
+Range: 8
+SpreadAngle: 0
+TimeBeforeExplosion: 0
+IsMedicine: False
+RecoveryRate: 0
+IsGranade: False
+GrenadeId: 0
+ActionClip: shot
+ReloadClip: reload
+ExplosionEffect: None
+----------------------
+
+=== Item Data: Shotgun ===
+Type: Shotgun
+Damage: 15
+MaxAmmo: 6
+ReloadTime: 0
+FireRate: 0
+Range: 7
+SpreadAngle: 20
+TimeBeforeExplosion: 0
+IsMedicine: False
+RecoveryRate: 0
+IsGranade: False
+GrenadeId: 0
+ActionClip: 522284__filmmakersmanual__shotgun-firing-3
+ReloadClip: Reload
+ExplosionEffect: None
+----------------------
+
+=== Item Data: Sniper ===
+Type: Sniper
+Damage: 40
+MaxAmmo: 1
+ReloadTime: 0
+FireRate: 0
+Range: 16
+SpreadAngle: 0
+TimeBeforeExplosion: 0
+IsMedicine: False
+RecoveryRate: 0
+IsGranade: False
+GrenadeId: 0
+ActionClip: ShotEjectReload
+ReloadClip: reload
+ExplosionEffect: None
+----------------------
+
+=== Item Data: Submachinegun ===
+Type: Submachinegun
+Damage: 7
+MaxAmmo: 30
+ReloadTime: 0
+FireRate: 0
+Range: 7
+SpreadAngle: 0
+TimeBeforeExplosion: 0
+IsMedicine: False
+RecoveryRate: 0
+IsGranade: False
+GrenadeId: 0
+ActionClip: shot
+ReloadClip: reload
+ExplosionEffect: None
+----------------------
+
+=== Item Data: Turret ===
+Type: Turret
+Damage: 12
+MaxAmmo: 2147483647
+ReloadTime: 0
+FireRate: 0
+Range: 10
+SpreadAngle: 0
+TimeBeforeExplosion: 0
+IsMedicine: False
+RecoveryRate: 0
+IsGranade: False
+GrenadeId: 0
+ActionClip: ShotEjectReload
+ReloadClip: reload
+ExplosionEffect: None
+----------------------
+
+=============================================
+
+=== LOCATION DATA (36 items) ===
+
+=== Location Data: 0 ===
+Id: 0
+IsTutorial: True
+IsLocked: False
+IsCompleted: False
+BaseReward: 100
+IsAdditional: False
+UnlockedId: 0
+WavesContainerData: 1
+----------------------
+
+=== Location Data: 1 ===
+Id: 1
+IsTutorial: False
+IsLocked: False
+IsCompleted: False
+BaseReward: 120
+IsAdditional: False
+UnlockedId: 1
+WavesContainerData: 1
+----------------------
+
+=== Location Data: 2 ===
+Id: 2
+IsTutorial: False
+IsLocked: True
+IsCompleted: False
+BaseReward: 150
+IsAdditional: False
+UnlockedId: 1
+WavesContainerData: 2
+----------------------
+
+=== Location Data: 3 ===
+Id: 3
+IsTutorial: False
+IsLocked: True
+IsCompleted: False
+BaseReward: 170
+IsAdditional: False
+UnlockedId: 2
+WavesContainerData: 3
+----------------------
+
+=== Location Data: 4 ===
+Id: 4
+IsTutorial: False
+IsLocked: True
+IsCompleted: False
+BaseReward: 200
+IsAdditional: True
+UnlockedId: 3
+WavesContainerData: 4
+----------------------
+
+=== Location Data: 5 ===
+Id: 5
+IsTutorial: False
+IsLocked: True
+IsCompleted: False
+BaseReward: 220
+IsAdditional: False
+UnlockedId: 2
+WavesContainerData: 4
+----------------------
+
+=== Location Data: 6 ===
+Id: 6
+IsTutorial: False
+IsLocked: True
+IsCompleted: False
+BaseReward: 230
+IsAdditional: False
+UnlockedId: 5
+WavesContainerData: 4
+----------------------
+
+=== Location Data: 7 ===
+Id: 7
+IsTutorial: False
+IsLocked: True
+IsCompleted: False
+BaseReward: 240
+IsAdditional: False
+UnlockedId: 6
+WavesContainerData: 4
+----------------------
+
+=== Location Data: 8 ===
+Id: 8
+IsTutorial: False
+IsLocked: True
+IsCompleted: False
+BaseReward: 260
+IsAdditional: True
+UnlockedId: 7
+WavesContainerData: 4
+----------------------
+
+=== Location Data: 9 ===
+Id: 9
+IsTutorial: False
+IsLocked: True
+IsCompleted: False
+BaseReward: 280
+IsAdditional: False
+UnlockedId: 5
+WavesContainerData: 4
+----------------------
+
+=== Location Data: 10 ===
+Id: 10
+IsTutorial: False
+IsLocked: True
+IsCompleted: False
+BaseReward: 300
+IsAdditional: False
+UnlockedId: 9
+WavesContainerData: 4
+----------------------
+
+=== Location Data: 11 ===
+Id: 11
+IsTutorial: False
+IsLocked: True
+IsCompleted: False
+BaseReward: 320
+IsAdditional: False
+UnlockedId: 10
+WavesContainerData: 4
+----------------------
+
+=== Location Data: 12 ===
+Id: 12
+IsTutorial: False
+IsLocked: True
+IsCompleted: False
+BaseReward: 320
+IsAdditional: True
+UnlockedId: 11
+WavesContainerData: 4
+----------------------
+
+=== Location Data: 13 ===
+Id: 13
+IsTutorial: False
+IsLocked: True
+IsCompleted: False
+BaseReward: 340
+IsAdditional: False
+UnlockedId: 6
+WavesContainerData: 4
+----------------------
+
+=== Location Data: 14 ===
+Id: 14
+IsTutorial: False
+IsLocked: True
+IsCompleted: False
+BaseReward: 350
+IsAdditional: True
+UnlockedId: 13
+WavesContainerData: 4
+----------------------
+
+=== Location Data: 15 ===
+Id: 15
+IsTutorial: False
+IsLocked: True
+IsCompleted: False
+BaseReward: 360
+IsAdditional: False
+UnlockedId: 13
+WavesContainerData: 4
+----------------------
+
+=== Location Data: 16 ===
+Id: 16
+IsTutorial: False
+IsLocked: True
+IsCompleted: False
+BaseReward: 380
+IsAdditional: True
+UnlockedId: 15
+WavesContainerData: 4
+----------------------
+
+=== Location Data: 17 ===
+Id: 17
+IsTutorial: False
+IsLocked: True
+IsCompleted: False
+BaseReward: 380
+IsAdditional: False
+UnlockedId: 16
+WavesContainerData: 4
+----------------------
+
+=== Location Data: 18 ===
+Id: 18
+IsTutorial: False
+IsLocked: True
+IsCompleted: False
+BaseReward: 390
+IsAdditional: True
+UnlockedId: 17
+WavesContainerData: 4
+----------------------
+
+=== Location Data: 19 ===
+Id: 19
+IsTutorial: False
+IsLocked: True
+IsCompleted: False
+BaseReward: 400
+IsAdditional: False
+UnlockedId: 17
+WavesContainerData: 4
+----------------------
+
+=== Location Data: 20 ===
+Id: 20
+IsTutorial: False
+IsLocked: True
+IsCompleted: False
+BaseReward: 400
+IsAdditional: False
+UnlockedId: 19
+WavesContainerData: 4
+----------------------
+
+=== Location Data: 21 ===
+Id: 21
+IsTutorial: False
+IsLocked: True
+IsCompleted: False
+BaseReward: 420
+IsAdditional: False
+UnlockedId: 20
+WavesContainerData: 4
+----------------------
+
+=== Location Data: 22 ===
+Id: 22
+IsTutorial: False
+IsLocked: True
+IsCompleted: False
+BaseReward: 440
+IsAdditional: True
+UnlockedId: 21
+WavesContainerData: 4
+----------------------
+
+=== Location Data: 23 ===
+Id: 23
+IsTutorial: False
+IsLocked: True
+IsCompleted: False
+BaseReward: 440
+IsAdditional: False
+UnlockedId: 20
+WavesContainerData: 4
+----------------------
+
+=== Location Data: 24 ===
+Id: 24
+IsTutorial: False
+IsLocked: True
+IsCompleted: False
+BaseReward: 480
+IsAdditional: False
+UnlockedId: 23
+WavesContainerData: 4
+----------------------
+
+=== Location Data: 25 ===
+Id: 25
+IsTutorial: False
+IsLocked: True
+IsCompleted: False
+BaseReward: 480
+IsAdditional: True
+UnlockedId: 24
+WavesContainerData: 4
+----------------------
+
+=== Location Data: 26 ===
+Id: 26
+IsTutorial: False
+IsLocked: True
+IsCompleted: False
+BaseReward: 500
+IsAdditional: False
+UnlockedId: 23
+WavesContainerData: 4
+----------------------
+
+=== Location Data: 27 ===
+Id: 27
+IsTutorial: False
+IsLocked: True
+IsCompleted: False
+BaseReward: 520
+IsAdditional: False
+UnlockedId: 26
+WavesContainerData: 4
+----------------------
+
+=== Location Data: 28 ===
+Id: 28
+IsTutorial: False
+IsLocked: True
+IsCompleted: False
+BaseReward: 560
+IsAdditional: False
+UnlockedId: 27
+WavesContainerData: 4
+----------------------
+
+=== Location Data: 29 ===
+Id: 29
+IsTutorial: False
+IsLocked: True
+IsCompleted: False
+BaseReward: 580
+IsAdditional: False
+UnlockedId: 28
+WavesContainerData: 4
+----------------------
+
+=== Location Data: 30 ===
+Id: 30
+IsTutorial: False
+IsLocked: True
+IsCompleted: False
+BaseReward: 600
+IsAdditional: False
+UnlockedId: 29
+WavesContainerData: 4
+----------------------
+
+=== Location Data: 31 ===
+Id: 31
+IsTutorial: False
+IsLocked: True
+IsCompleted: False
+BaseReward: 650
+IsAdditional: False
+UnlockedId: 30
+WavesContainerData: 4
+----------------------
+
+=== Location Data: 32 ===
+Id: 32
+IsTutorial: False
+IsLocked: True
+IsCompleted: False
+BaseReward: 680
+IsAdditional: False
+UnlockedId: 31
+WavesContainerData: 4
+----------------------
+
+=== Location Data: 33 ===
+Id: 33
+IsTutorial: False
+IsLocked: True
+IsCompleted: False
+BaseReward: 800
+IsAdditional: True
+UnlockedId: 31
+WavesContainerData: 4
+----------------------
+
+=== Location Data: 34 ===
+Id: 34
+IsTutorial: False
+IsLocked: True
+IsCompleted: False
+BaseReward: 1000
+IsAdditional: False
+UnlockedId: 32
+WavesContainerData: 4
+----------------------
+
+=== Location Data: 35 ===
+Id: 35
+IsTutorial: False
+IsLocked: True
+IsCompleted: False
+BaseReward: 5000
+IsAdditional: True
+UnlockedId: 34
+WavesContainerData: 4
+----------------------
+
+=============================================
+
+=== UPGRADE DATA (67 items) ===
+
+=== Upgrade Data: 0 ===
+Id: 0
+Name: Авиаудар
+Description: Вызывайте мощный авиаудар в случае большой угрозы от орд зомби
+Cost: 3000
+Type: IncreaseDamageAirstrike
+GroupType: AirStrikes
+UnlockId: 0
+Lock: False
+Icon: VectorThrust_2016-03-16_22-31-04
+Upgrade Values:
+- 500
+----------------------
+
+=== Upgrade Data: 1 ===
+Id: 1
+Name: Авиаудар
+Description: Стоимость каждого авиаудара снизится на 20%
+Cost: 5000
+Type: DecreaseCostAirstrike
+GroupType: AirStrikes
+UnlockId: 0
+Lock: True
+Icon: VectorThrust_2016-03-16_22-31-04
+Upgrade Values:
+- 20
+----------------------
+
+=== Upgrade Data: 2 ===
+Id: 2
+Name: Авиаудар
+Description: Стоимость каждого авиаудара снизится на 40%
+Cost: 9000
+Type: DecreaseCostAirstrike
+GroupType: AirStrikes
+UnlockId: 1
+Lock: True
+Icon: VectorThrust_2016-03-16_22-31-04
+Upgrade Values:
+- 40
+----------------------
+
+=== Upgrade Data: 3 ===
+Id: 3
+Name: Авиаудар
+Description: Стоимость каждого авиаудара снизится на 60%
+Cost: 15000
+Type: DecreaseCostAirstrike
+GroupType: AirStrikes
+UnlockId: 2
+Lock: True
+Icon: VectorThrust_2016-03-16_22-31-04
+Upgrade Values:
+- 60
+----------------------
+
+=== Upgrade Data: 4 ===
+Id: 4
+Name: Авиаудар
+Description: Урон авиаудара увеличится с 500 до 1000
+Cost: 10000
+Type: IncreaseDamageAirstrike
+GroupType: AirStrikes
+UnlockId: 0
+Lock: True
+Icon: VectorThrust_2016-03-16_22-31-04
+Upgrade Values:
+- 1000
+----------------------
+
+=== Upgrade Data: 5 ===
+Id: 5
+Name: Авиаудар
+Description: Урон авиаудара увеличится с 1000 до 1500
+Cost: 15000
+Type: IncreaseDamageAirstrike
+GroupType: AirStrikes
+UnlockId: 4
+Lock: True
+Icon: VectorThrust_2016-03-16_22-31-04
+Upgrade Values:
+- 1500
+----------------------
+
+=== Upgrade Data: 6 ===
+Id: 6
+Name: Авиаудар
+Description: Урон авиаудара увеличится с 1500 до 2000
+Cost: 20000
+Type: IncreaseDamageAirstrike
+GroupType: AirStrikes
+UnlockId: 5
+Lock: True
+Icon: VectorThrust_2016-03-16_22-31-04
+Upgrade Values:
+- 2000
+----------------------
+
+=== Upgrade Data: 0 ===
+Id: 0
+Name: Размер поставок +
+Description: Каждый ящик с припасами будет содержать 3 гранаты
+Cost: 3000
+Type: AddGrenadeInBox
+GroupType: Box
+UnlockId: 0
+Lock: False
+Icon: BoxIcon
+Upgrade Values:
+- 1
+----------------------
+
+=== Upgrade Data: 1 ===
+Id: 1
+Name: Размер поставок ++
+Description: Каждый ящик с припасами будет содержать 6 гранат
+Cost: 6000
+Type: AddGrenadeInBox
+GroupType: Box
+UnlockId: 0
+Lock: True
+Icon: BoxIcon
+Upgrade Values:
+- 2
+- 6
+----------------------
+
+=== Upgrade Data: 0 ===
+Id: 0
+Name: Урон 10%
+Description: Урон наносимый всеми видами оружия будет увеличен на 10%
+Cost: 4000
+Type: IncreaseDamage
+GroupType: Weapons
+UnlockId: 0
+Lock: False
+Icon: ICON_SM_Wep_Preset_A_Rifle_03_Military
+Upgrade Values:
+- 10
+----------------------
+
+=== Upgrade Data: 1 ===
+Id: 1
+Name: Урон 20%
+Description: Урон наносимый всеми видами оружия будет увеличен на 20%
+Cost: 6000
+Type: IncreaseDamage
+GroupType: Weapons
+UnlockId: 0
+Lock: True
+Icon: ICON_SM_Wep_Preset_A_Rifle_03_Military
+Upgrade Values:
+- 20
+----------------------
+
+=== Upgrade Data: 2 ===
+Id: 2
+Name: Урон 35%
+Description: Урон наносимый всеми видами оружия будет увеличен на 35%
+Cost: 10000
+Type: IncreaseDamage
+GroupType: Weapons
+UnlockId: 1
+Lock: True
+Icon: ICON_SM_Wep_Preset_A_Rifle_03_Military
+Upgrade Values:
+- 35
+----------------------
+
+=== Upgrade Data: 3 ===
+Id: 3
+Name: Урон 50%
+Description: Урон наносимый всеми видами оружия будет увеличен на 50%
+Cost: 15000
+Type: IncreaseDamage
+GroupType: Weapons
+UnlockId: 2
+Lock: True
+Icon: ICON_SM_Wep_Preset_A_Rifle_03_Military
+Upgrade Values:
+- 50
+----------------------
+
+=== Upgrade Data: 4 ===
+Id: 4
+Name: Урон 70%
+Description: Урон наносимый всеми видами оружия будет увеличен на 70%
+Cost: 24000
+Type: IncreaseDamage
+GroupType: Weapons
+UnlockId: 3
+Lock: True
+Icon: ICON_SM_Wep_Preset_A_Rifle_03_Military
+Upgrade Values:
+- 70
+----------------------
+
+=== Upgrade Data: 5 ===
+Id: 5
+Name: Урон 100%
+Description: Урон наносимый всеми видами оружия будет увеличен на 100%
+Cost: 35000
+Type: IncreaseDamage
+GroupType: Weapons
+UnlockId: 4
+Lock: True
+Icon: ICON_SM_Wep_Preset_A_Rifle_03_Military
+Upgrade Values:
+- 100
+----------------------
+
+=== Upgrade Data: 0 ===
+Id: 0
+Name: Защита 30%
+Description: Увеличение защиты поля на 30% от атак зомби
+Cost: 5000
+Type: IncreaseDefensePoint
+GroupType: Defence
+UnlockId: 0
+Lock: False
+Icon: SPR_HUD_Reticle_Circle_Med
+Upgrade Values:
+- 30
+----------------------
+
+=== Upgrade Data: 1 ===
+Id: 1
+Name: Уровень поля 2
+Description: Увеличит максимальный уровень поля до 2
+Cost: 5000
+Type: IncreaseMaxLevelDefensePoint
+GroupType: Defence
+UnlockId: 0
+Lock: True
+Icon: SPR_HUD_Reticle_Circle_Med
+Upgrade Values:
+- 60
+----------------------
+
+=== Upgrade Data: 2 ===
+Id: 2
+Name: Уровень поля 3
+Description: Увеличит максимальный уровень поля до 3
+Cost: 5000
+Type: IncreaseMaxLevelDefensePoint
+GroupType: Defence
+UnlockId: 1
+Lock: True
+Icon: SPR_HUD_Reticle_Circle_Med
+Upgrade Values:
+- 70
+----------------------
+
+=== Upgrade Data: 3 ===
+Id: 3
+Name: Стоимость 1,000$
+Description: Стоимость улучшения  поля 2го уровня уменьшится с 1.500$  до 1.000$
+Cost: 15000
+Type: DecreaseCostDefensePoint
+GroupType: Defence
+UnlockId: 2
+Lock: True
+Icon: SPR_HUD_Reticle_Circle_Med
+Upgrade Values:
+- 1000
+----------------------
+
+=== Upgrade Data: 4 ===
+Id: 4
+Name: Стоимость 2,000$
+Description: Стоимость улучшения поля  3го уровня   уменьшится с 3.000$  до 2.000$
+Cost: 30000
+Type: DecreaseCostDefensePoint
+GroupType: Defence
+UnlockId: 1
+Lock: True
+Icon: SPR_HUD_Reticle_Circle_Med
+Upgrade Values:
+- 2000
+----------------------
+
+=== Upgrade Data: 0 ===
+Id: 0
+Name: Урон 300
+Description: Мощность взрыва гранаты увеличится до 300
+Cost: 5000
+Type: IncreaseGrenadeDamage
+GroupType: PriceUpdate
+UnlockId: 0
+Lock: False
+Icon: ICON_SM_Wep_Grenade_01_Military 1
+Upgrade Values:
+- 300
+----------------------
+
+=== Upgrade Data: 1 ===
+Id: 1
+Name: Урон 400
+Description: Мощность взрыва гранаты увеличится до 400
+Cost: 9000
+Type: IncreaseGrenadeDamage
+GroupType: PriceUpdate
+UnlockId: 0
+Lock: True
+Icon: ICON_SM_Wep_Grenade_01_Military 1
+Upgrade Values:
+- 400
+----------------------
+
+=== Upgrade Data: 2 ===
+Id: 2
+Name: Урон 700
+Description: Мощность взрыва гранаты увеличится до 700
+Cost: 12000
+Type: IncreaseGrenadeDamage
+GroupType: PriceUpdate
+UnlockId: 1
+Lock: True
+Icon: ICON_SM_Wep_Grenade_01_Military 1
+Upgrade Values:
+- 700
+----------------------
+
+=== Upgrade Data: 3 ===
+Id: 3
+Name: Урон 1200
+Description: Мощность взрыва гранаты увеличится до 1200
+Cost: 12000
+Type: IncreaseGrenadeDamage
+GroupType: PriceUpdate
+UnlockId: 2
+Lock: True
+Icon: ICON_SM_Wep_Grenade_01_Military 1
+Upgrade Values:
+- 1200
+----------------------
+
+=== Upgrade Data: 4 ===
+Id: 4
+Name: Урон 2000
+Description: Мощность взрыва гранаты увеличится до 2000
+Cost: 26000
+Type: IncreaseGrenadeDamage
+GroupType: PriceUpdate
+UnlockId: 3
+Lock: True
+Icon: ICON_SM_Wep_Grenade_01_Military 1
+Upgrade Values:
+- 2000
+----------------------
+
+=== Upgrade Data: 0 ===
+Id: 0
+Name: Стоимость умений -10
+Description: Стоимость повышения уровня уменьшится на 10%
+Cost: 4000
+Type: DecreasePriceUpdate
+GroupType: PriceUpdate
+UnlockId: 0
+Lock: False
+Icon: Cash
+Upgrade Values:
+- 10
+----------------------
+
+=== Upgrade Data: 1 ===
+Id: 1
+Name: Стоимость умений -20
+Description: Стоимость повышения уровня уменьшится на 20%
+Cost: 7000
+Type: DecreasePriceUpdate
+GroupType: CashLimit
+UnlockId: 0
+Lock: True
+Icon: Cash
+Upgrade Values:
+- 20
+----------------------
+
+=== Upgrade Data: 2 ===
+Id: 2
+Name: Стоимость умений -30
+Description: Стоимость повышения уровня уменьшится на 30%
+Cost: 10000
+Type: DecreasePriceUpdate
+GroupType: CashLimit
+UnlockId: 1
+Lock: True
+Icon: Cash
+Upgrade Values:
+- 30
+----------------------
+
+=== Upgrade Data: 3 ===
+Id: 3
+Name: Стоимость умений -40
+Description: Стоимость повышения уровня уменьшится на 40%
+Cost: 15000
+Type: DecreasePriceUpdate
+GroupType: CashLimit
+UnlockId: 2
+Lock: True
+Icon: Cash
+Upgrade Values:
+- 40
+----------------------
+
+=== Upgrade Data: 4 ===
+Id: 4
+Name: Стоимость умений -50
+Description: Стоимость повышения уровня уменьшится на 50%
+Cost: 20000
+Type: DecreasePriceUpdate
+GroupType: PriceUpdate
+UnlockId: 3
+Lock: True
+Icon: Cash
+Upgrade Values:
+- 50
+----------------------
+
+=== Upgrade Data: 0 ===
+Id: 0
+Name: +20% Доход
+Description: Доход за каждого убитого зомби увеличится на 10%, благодаря государственному гранту в пользу военной научно-исследовательской лаборатории.
+Cost: 5000
+Type: IncreaseProfit
+GroupType: Profit
+UnlockId: 0
+Lock: False
+Icon: Cash
+Upgrade Values:
+- 20
+----------------------
+
+=== Upgrade Data: 1 ===
+Id: 1
+Name: +30% Доход
+Description: Доход за каждого убитого зомби увеличится на 20%, благодаря государственному гранту в пользу военной научно-исследовательской лаборатории.
+Cost: 8000
+Type: IncreaseProfit
+GroupType: Profit
+UnlockId: 0
+Lock: True
+Icon: Cash
+Upgrade Values:
+- 30
+----------------------
+
+=== Upgrade Data: 2 ===
+Id: 2
+Name: +40% Доход
+Description: Доход за каждого убитого зомби увеличится на 30%, благодаря государственному гранту в пользу военной научно-исследовательской лаборатории.
+Cost: 16000
+Type: IncreaseProfit
+GroupType: Profit
+UnlockId: 1
+Lock: True
+Icon: Cash
+Upgrade Values:
+- 40
+----------------------
+
+=== Upgrade Data: 3 ===
+Id: 3
+Name: +50% Доход
+Description: Доход за каждого убитого зомби увеличится на 50%, благодаря государственному гранту в пользу военной научно-исследовательской лаборатории.
+Cost: 20000
+Type: IncreaseProfit
+GroupType: Profit
+UnlockId: 2
+Lock: True
+Icon: Cash
+Upgrade Values:
+- 50
+----------------------
+
+=== Upgrade Data: 0 ===
+Id: 0
+Name: Дальность +1м
+Description: Дальность стрельбы всех видов оружия будет увеличена 
+Cost: 5000
+Type: IncreaseRange
+GroupType: Range
+UnlockId: 0
+Lock: False
+Icon: ICON_SM_Wep_Mod_Scope_03_Military
+Upgrade Values:
+- 1
+----------------------
+
+=== Upgrade Data: 1 ===
+Id: 1
+Name: Дальность +2м
+Description: Дальность стрельбы всех видов оружия будет увеличена 
+Cost: 7000
+Type: IncreaseRange
+GroupType: Range
+UnlockId: 0
+Lock: True
+Icon: ICON_SM_Wep_Mod_Scope_03_Military
+Upgrade Values:
+- 2
+----------------------
+
+=== Upgrade Data: 2 ===
+Id: 2
+Name: Дальность +3м
+Description: Дальность стрельбы всех видов оружия будет увеличена 
+Cost: 10000
+Type: IncreaseRange
+GroupType: Range
+UnlockId: 1
+Lock: True
+Icon: ICON_SM_Wep_Mod_Scope_03_Military
+Upgrade Values:
+- 3
+----------------------
+
+=== Upgrade Data: 3 ===
+Id: 3
+Name: Дальность +4м
+Description: Дальность стрельбы всех видов оружия будет увеличена 
+Cost: 16000
+Type: IncreaseRange
+GroupType: Range
+UnlockId: 2
+Lock: True
+Icon: ICON_SM_Wep_Mod_Scope_03_Military
+Upgrade Values:
+- 4
+----------------------
+
+=== Upgrade Data: 0 ===
+Id: 0
+Name: Восстановление 1%
+Description: Здоровье раненых солдат восстанавливается 1% в секунду
+Cost: 2000
+Type: RestoreHealth
+GroupType: Health
+UnlockId: 0
+Lock: False
+Icon: ICON_SM_Prop_MedicalBox_02_BattleRoyale
+Upgrade Values:
+- 1
+----------------------
+
+=== Upgrade Data: 1 ===
+Id: 1
+Name: Восстановление 2%
+Description: Здоровье раненых солдат восстанавливается 2% в секунду
+Cost: 4500
+Type: RestoreHealth
+GroupType: Health
+UnlockId: 0
+Lock: True
+Icon: ICON_SM_Prop_MedicalBox_02_BattleRoyale
+Upgrade Values:
+- 2
+----------------------
+
+=== Upgrade Data: 2 ===
+Id: 2
+Name: Восстановление 3%
+Description: Здоровье раненых солдат восстанавливается 3% в секунду
+Cost: 10000
+Type: RestoreHealth
+GroupType: Health
+UnlockId: 1
+Lock: True
+Icon: ICON_SM_Prop_MedicalBox_02_BattleRoyale
+Upgrade Values:
+- 2
+----------------------
+
+=== Upgrade Data: 3 ===
+Id: 3
+Name: Восстановление 5%
+Description: Здоровье раненых солдат восстанавливается 5% в секунду
+Cost: 20000
+Type: RestoreHealth
+GroupType: Health
+UnlockId: 2
+Lock: True
+Icon: ICON_SM_Prop_MedicalBox_02_BattleRoyale
+Upgrade Values:
+- 5
+----------------------
+
+=== Upgrade Data: 0 ===
+Id: 0
+Name: Стоимость лечения -20%
+Description: Стоимость лечения будет снижена на 20%
+Cost: 5000
+Type: RestoreHealthCost
+GroupType: HealthPrice
+UnlockId: 0
+Lock: False
+Icon: Cash
+Upgrade Values:
+- 20
+----------------------
+
+=== Upgrade Data: 1 ===
+Id: 1
+Name: Стоимость лечения -40%
+Description: Стоимость лечения будет снижена на 40%
+Cost: 10000
+Type: RestoreHealthCost
+GroupType: HealthPrice
+UnlockId: 0
+Lock: True
+Icon: Cash
+Upgrade Values:
+- 40
+----------------------
+
+=== Upgrade Data: 2 ===
+Id: 2
+Name: Стоимость лечения -60%
+Description: Стоимость лечения будет снижена на 60%
+Cost: 15000
+Type: RestoreHealthCost
+GroupType: HealthPrice
+UnlockId: 1
+Lock: True
+Icon: Cash
+Upgrade Values:
+- 60
+----------------------
+
+=== Upgrade Data: 0 ===
+Id: 0
+Name: Размер отряда: 4
+Description: Увеличивает максимальный размер отряда до 4
+Cost: 1000
+Type: IncreaseSquadSize
+GroupType: Squad
+UnlockId: 0
+Lock: False
+Icon: ICON_SM_Wep_Preset_A_Sniper_01_Military (1) (1)
+Upgrade Values:
+- 4
+----------------------
+
+=== Upgrade Data: 1 ===
+Id: 1
+Name: Размер отряда: 5
+Description: Увеличивает максимальный размер отряда до 5
+Cost: 3000
+Type: IncreaseSquadSize
+GroupType: Squad
+UnlockId: 0
+Lock: True
+Icon: ICON_SM_Wep_Preset_A_Sniper_01_Military (1) (1)
+Upgrade Values:
+- 5
+----------------------
+
+=== Upgrade Data: 2 ===
+Id: 2
+Name: Размер отряда: 6
+Description: Увеличивает максимальный размер отряда до 6
+Cost: 6000
+Type: IncreaseSquadSize
+GroupType: Squad
+UnlockId: 1
+Lock: True
+Icon: ICON_SM_Wep_Preset_A_Sniper_01_Military (1) (1)
+Upgrade Values:
+- 6
+----------------------
+
+=== Upgrade Data: 3 ===
+Id: 3
+Name: Размер отряда: 8
+Description: Увеличивает максимальный размер отряда до 8
+Cost: 10000
+Type: IncreaseSquadSize
+GroupType: Squad
+UnlockId: 2
+Lock: True
+Icon: ICON_SM_Wep_Preset_A_Sniper_01_Military (1) (1)
+Upgrade Values:
+- 8
+----------------------
+
+=== Upgrade Data: 4 ===
+Id: 4
+Name: Размер отряда: 16
+Description: Увеличивает максимальный размер отряда до 16
+Cost: 25000
+Type: IncreaseSquadSize
+GroupType: Squad
+UnlockId: 3
+Lock: True
+Icon: ICON_SM_Wep_Preset_A_Sniper_01_Military (1) (1)
+Upgrade Values:
+- 16
+----------------------
+
+=== Upgrade Data: 0 ===
+Id: 0
+Name: БТР с пулеметом
+Description: Позволит использовать пулеметы на БТРах
+Cost: 5000
+Type: AddSpecialTechnique
+GroupType: SpecialTechnique
+UnlockId: 0
+Lock: False
+Icon: SpecialCar
+Upgrade Values:
+- 30000
+----------------------
+
+=== Upgrade Data: 1 ===
+Id: 1
+Name: Стоимость -10%
+Description: Стоимость активации пулемета  БТРа уменьшится на 10%
+Cost: 10000
+Type: DecreaseCostSpecialTechnique
+GroupType: SpecialTechnique
+UnlockId: 0
+Lock: True
+Icon: SpecialCar
+Upgrade Values:
+- 10
+----------------------
+
+=== Upgrade Data: 2 ===
+Id: 2
+Name: Стоимость -25%
+Description: Стоимость активации пулемета  БТРа уменьшится на 25%
+Cost: 16000
+Type: DecreaseCostSpecialTechnique
+GroupType: SpecialTechnique
+UnlockId: 1
+Lock: True
+Icon: SpecialCar
+Upgrade Values:
+- 25
+----------------------
+
+=== Upgrade Data: 3 ===
+Id: 3
+Name: Урон +30%
+Description: Урон пулемета БТРа +30%
+Cost: 7000
+Type: IncreaseDamageSpecialTechnique
+GroupType: SpecialTechnique
+UnlockId: 0
+Lock: True
+Icon: SpecialCar
+Upgrade Values:
+- 30
+----------------------
+
+=== Upgrade Data: 4 ===
+Id: 4
+Name: Урон +50%
+Description: Урон пулемета БТРа +50%
+Cost: 10000
+Type: IncreaseDamageSpecialTechnique
+GroupType: SpecialTechnique
+UnlockId: 3
+Lock: True
+Icon: SpecialCar
+Upgrade Values:
+- 50
+----------------------
+
+=== Upgrade Data: 0 ===
+Id: 0
+Name: Начало с 300$
+Description: Начинайте каждую миссию с 300$
+Cost: 1500
+Type: IncreaseStartCashLimit
+GroupType: CashLimit
+UnlockId: 0
+Lock: False
+Icon: Cash
+Upgrade Values:
+- 300
+----------------------
+
+=== Upgrade Data: 1 ===
+Id: 1
+Name: Начало с 400$
+Description: Начинайте каждую миссию с 400$
+Cost: 3000
+Type: IncreaseStartCashLimit
+GroupType: CashLimit
+UnlockId: 0
+Lock: True
+Icon: Cash
+Upgrade Values:
+- 400
+----------------------
+
+=== Upgrade Data: 2 ===
+Id: 2
+Name: Начало с 600$
+Description: Начинайте каждую миссию с 600$
+Cost: 6000
+Type: IncreaseStartCashLimit
+GroupType: CashLimit
+UnlockId: 1
+Lock: True
+Icon: Cash
+Upgrade Values:
+- 600
+----------------------
+
+=== Upgrade Data: 3 ===
+Id: 3
+Name: Начало с 1000$
+Description: Начинайте каждую миссию с 1000$
+Cost: 9000
+Type: IncreaseStartCashLimit
+GroupType: CashLimit
+UnlockId: 2
+Lock: True
+Icon: Cash
+Upgrade Values:
+- 1000
+----------------------
+
+=== Upgrade Data: 0 ===
+Id: 0
+Name: Турель
+Description: Автоматическая турель Преимущества: высокая скорость стрельбы, полное автоматическое управление. Не подвергается нападению зомби. это полностью автоматическая турель использует лазерный луч для определения линии огня. При пересечении луча, турель начинает огонь. Направление стрельбы может быть установлено вручную, чтобы создать смертельную сеть. Основной создать смертельную сеть. Основной особенностью турели является то, что зомби не могут распознать опасность, следовательно, они не будут нападать на неё.
+Cost: 5000
+Type: Turret
+GroupType: Turrets
+UnlockId: 0
+Lock: False
+Icon: turret
+Upgrade Values:
+- 1
+----------------------
+
+=== Upgrade Data: 1 ===
+Id: 1
+Name: Двойная турель
+Description: Основной урон автоматических турелей будет увеличен на 20%
+Cost: 7000
+Type: AddTwoTurretGun
+GroupType: Turrets
+UnlockId: 0
+Lock: True
+Icon: TwoTurrwt
+Upgrade Values:
+- 25
+----------------------
+
+=== Upgrade Data: 2 ===
+Id: 2
+Name: Автоприцел
+Description: Использование автоматического наведения.
+Cost: 25000
+Type: AddTurretAutoAim
+GroupType: Turrets
+UnlockId: 1
+Lock: True
+Icon: TwoTurrwt
+Upgrade Values:
+- 1
+----------------------
+
+=== Upgrade Data: 3 ===
+Id: 3
+Name: Урон +30%
+Description: Основной урон автоматических турелей будет увеличен на 45%
+Cost: 5000
+Type: IncreaseDamageTurret
+GroupType: Turrets
+UnlockId: 0
+Lock: True
+Icon: TwoTurrwt
+Upgrade Values:
+- 45
+----------------------
+
+=== Upgrade Data: 4 ===
+Id: 4
+Name: Урон +60%
+Description: Основной урон автоматических турелей будет увеличен на 60%
+Cost: 25000
+Type: IncreaseDamageTurret
+GroupType: Turrets
+UnlockId: 3
+Lock: True
+Icon: TwoTurrwt
+Upgrade Values:
+- 60
+----------------------
+
+=== Upgrade Data: 0 ===
+Id: 0
+Name: Макс. уровень 2
+Description: Максимальный уровень рекрутов увеличится до 2
+Cost: 3000
+Type: IncreaseUnitLevel
+GroupType: Supplies
+UnlockId: 0
+Lock: False
+Icon: SPR_HUD_MilitaryCombat_Example_CharacterPortrait_04
+Upgrade Values:
+- 2
+----------------------
+
+=== Upgrade Data: 1 ===
+Id: 1
+Name: Макс. уровень 3
+Description: Максимальный уровень рекрутов увеличится до 3
+Cost: 4000
+Type: IncreaseUnitLevel
+GroupType: Supplies
+UnlockId: 0
+Lock: True
+Icon: SPR_HUD_MilitaryCombat_Example_CharacterPortrait_04 (1)
+Upgrade Values:
+- 3
+----------------------
+
+=== Upgrade Data: 2 ===
+Id: 2
+Name: Макс. уровень 4
+Description: Максимальный уровень рекрутов увеличится до 4
+Cost: 10000
+Type: IncreaseUnitLevel
+GroupType: Supplies
+UnlockId: 1
+Lock: True
+Icon: SPR_HUD_MilitaryCombat_Example_CharacterPortrait_04 (2)
+Upgrade Values:
+- 4
+----------------------
+
+=============================================
+
+=== ENEMY DATA (10 items) ===
+
+=== Enemy Data: BigGuy ===
+Type: BigGuy
+MaxHealth: 200
+RangeAttack: 1
+Damage: 15
+Price: 100
+Level: 1
+
+[Abilities]
+IsThrower: False
+IsPolice: False
+IsSpecial: False
+HasShield: False
+ShieldHealth: 0
+ThrowRangeAttack: 0
+
+Prefab: BigGuy
+CharacterController: BigGuy
+NavMeshSpeed: 0,6
+
+[Special Abilities]
+ThrowAbility: None
+ExplosiveAbility: None
+----------------------
+
+=== Enemy Data: Fatman ===
+Type: Fatman
+MaxHealth: 70
+RangeAttack: 1
+Damage: 60
+Price: 50
+Level: 1
+
+[Abilities]
+IsThrower: False
+IsPolice: False
+IsSpecial: False
+HasShield: False
+ShieldHealth: 0
+ThrowRangeAttack: 0
+
+Prefab: Fatman
+CharacterController: Fatman
+NavMeshSpeed: 0,55
+
+[Special Abilities]
+ThrowAbility: None
+ExplosiveAbility: None
+----------------------
+
+=== Enemy Data: SimpleF ===
+Type: SimpleF
+MaxHealth: 60
+RangeAttack: 2
+Damage: 8
+Price: 10
+Level: 0
+
+[Abilities]
+IsThrower: False
+IsPolice: False
+IsSpecial: False
+HasShield: False
+ShieldHealth: 0
+ThrowRangeAttack: 0
+
+Prefab: SimpleF
+CharacterController: Simple
+NavMeshSpeed: 1,25
+
+[Special Abilities]
+ThrowAbility: None
+ExplosiveAbility: None
+----------------------
+
+=== Enemy Data: SimpleFThrower ===
+Type: SimpleFThrower
+MaxHealth: 50
+RangeAttack: 2
+Damage: 0
+Price: 20
+Level: 0
+
+[Abilities]
+IsThrower: True
+IsPolice: False
+IsSpecial: False
+HasShield: False
+ShieldHealth: 0
+ThrowRangeAttack: 0
+
+Prefab: SimpleFThrower
+CharacterController: Simple
+NavMeshSpeed: 1,25
+
+[Special Abilities]
+ThrowAbility: None
+ExplosiveAbility: None
+----------------------
+
+=== Enemy Data: SimpleM ===
+Type: SimpleM
+MaxHealth: 65
+RangeAttack: 2
+Damage: 10
+Price: 12
+Level: 0
+
+[Abilities]
+IsThrower: False
+IsPolice: False
+IsSpecial: False
+HasShield: False
+ShieldHealth: 0
+ThrowRangeAttack: 0
+
+Prefab: SimpleM
+CharacterController: Simple
+NavMeshSpeed: 1,25
+
+[Special Abilities]
+ThrowAbility: None
+ExplosiveAbility: None
+----------------------
+
+=== Enemy Data: SimpleMPolice ===
+Type: SimpleMPolice
+MaxHealth: 70
+RangeAttack: 2
+Damage: 15
+Price: 20
+Level: 0
+
+[Abilities]
+IsThrower: False
+IsPolice: True
+IsSpecial: False
+HasShield: False
+ShieldHealth: 0
+ThrowRangeAttack: 0
+
+Prefab: SimpleM
+CharacterController: Simple
+NavMeshSpeed: 1,25
+
+[Special Abilities]
+ThrowAbility: None
+ExplosiveAbility: None
+----------------------
+
+=== Enemy Data: SimpleMPoliceShieldbearer ===
+Type: SimpleMPoliceShieldbearer
+MaxHealth: 70
+RangeAttack: 2
+Damage: 15
+Price: 30
+Level: 0
+
+[Abilities]
+IsThrower: False
+IsPolice: True
+IsSpecial: False
+HasShield: True
+ShieldHealth: 30
+ThrowRangeAttack: 0
+
+Prefab: SimpleM
+CharacterController: SimpleShield
+NavMeshSpeed: 1,25
+
+[Special Abilities]
+ThrowAbility: None
+ExplosiveAbility: None
+----------------------
+
+=== Enemy Data: SimpleMSpecial ===
+Type: SimpleMSpecial
+MaxHealth: 90
+RangeAttack: 2
+Damage: 18
+Price: 35
+Level: 0
+
+[Abilities]
+IsThrower: False
+IsPolice: False
+IsSpecial: True
+HasShield: False
+ShieldHealth: 0
+ThrowRangeAttack: 0
+
+Prefab: SimpleM
+CharacterController: Simple
+NavMeshSpeed: 1,25
+
+[Special Abilities]
+ThrowAbility: None
+ExplosiveAbility: None
+----------------------
+
+=== Enemy Data: SimpleMSpecialShieldbearer ===
+Type: SimpleMSpecialShieldbearer
+MaxHealth: 90
+RangeAttack: 2
+Damage: 18
+Price: 45
+Level: 0
+
+[Abilities]
+IsThrower: False
+IsPolice: False
+IsSpecial: True
+HasShield: True
+ShieldHealth: 40
+ThrowRangeAttack: 0
+
+Prefab: SimpleM
+CharacterController: SimpleShield
+NavMeshSpeed: 1,25
+
+[Special Abilities]
+ThrowAbility: None
+ExplosiveAbility: None
+----------------------
+
+=== Enemy Data: Smoker ===
+Type: Smoker
+MaxHealth: 60
+RangeAttack: 3
+Damage: 20
+Price: 50
+Level: 1
+
+[Abilities]
+IsThrower: False
+IsPolice: False
+IsSpecial: False
+HasShield: False
+ShieldHealth: 0
+ThrowRangeAttack: 0
+
+Prefab: Smoker
+CharacterController: Smoker
+NavMeshSpeed: 0,55
+
+[Special Abilities]
+ThrowAbility: None
+ExplosiveAbility: None
+----------------------
+
+=============================================
+

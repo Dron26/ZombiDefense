@@ -14,48 +14,13 @@ namespace Services
         public void RegisterSingle<TService>(TService implementation) where TService :IService => 
             Implementation<TService>.ServiceInstance=implementation;
 
-        public TService Single<TService>() where TService :IService =>
+        public TService Single<TService>() where TService : IService =>
             Implementation<TService>.ServiceInstance;
 
         private static class Implementation<TService> where TService : IService
         {
             public static TService ServiceInstance;
         }
-        //
-        // public void RegisterService<TService>(TService service) where TService : IService
-        // {
-        //     if (!_services.ContainsKey(typeof(TService)))
-        //     {
-        //         _services.Add(typeof(TService), service);
-        //     }
-        //     else
-        //     {
-        //         Debug.LogWarning($"Service of type {typeof(TService)} already registered.");
-        //     }
-        // }
-        //
-        // public void UnregisterService<TService>() where TService : IService
-        // {
-        //     if (_services.ContainsKey(typeof(TService)))
-        //     {
-        //         _services.Remove(typeof(TService));
-        //     }
-        //     else
-        //     {
-        //         Debug.LogWarning($"Service of type {typeof(TService)} not found for removal.");
-        //     }
-        // }
-        //
-        // public TService GetService<TService>() where TService : IService
-        // {
-        //     if (_services.TryGetValue(typeof(TService), out var service))
-        //     {
-        //         return (TService)service;
-        //     }
-        //     else
-        //     {
-        //         throw new InvalidOperationException($"Service of type {typeof(TService)} not found.");
-        //     }
-        // }
+       
     }
 }

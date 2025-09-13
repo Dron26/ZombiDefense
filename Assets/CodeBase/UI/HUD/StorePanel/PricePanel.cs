@@ -11,7 +11,7 @@ namespace UI.HUD.StorePanel
         
         public void SetInfo()
         {
-            _priceText.text = $"Price: ${_characterStore.SelectedCharacterSlot.Price.ToString()}";
+            _priceText.text = $" ${_characterStore.SelectedCharacterSlot.Price.ToString()}";
         }
 
         public void Initialize(CharacterStore characterStore)

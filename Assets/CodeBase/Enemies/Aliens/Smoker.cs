@@ -14,7 +14,7 @@ namespace Enemies.Aliens
 
         public override void PushForGranade()
         {
-        
+            
         }
 
         public override void AdditionalDamage(float getDamage, ItemType itemItemType)

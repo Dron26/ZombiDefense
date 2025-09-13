@@ -15,6 +15,7 @@ using Services.Audio;
 using Services.SaveLoad;
 using UI.HUD.StorePanel;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Events;
 
 namespace Infrastructure.Logic.Inits
@@ -88,6 +89,8 @@ namespace Infrastructure.Logic.Inits
             }
             
             _eventBroadcaster.InvokeOnSetActiveCharacter(character);
+            var agent = character.transform.GetComponent<NavMeshAgent>();
+            agent.enabled = true;
             CreatedCharacter?.Invoke();
         }
 
@@ -96,21 +99,17 @@ namespace Infrastructure.Logic.Inits
             _robotFactory.Create(turret.gameObject, transform);
         }
 
-        public void SetCreatedCharacter(Character character )
+        public void SetCreatedCharacter(Character character)
         {
             Transform point = _movePointController.SelectedPoint.transform;
-            Transform characterTransform = character.transform;
-            characterTransform.parent=point;
-            characterTransform.localPosition = Vector3.zero;
-            
-            
-            
-            if (character.TryGetComponent( out Humanoid humanoid))
+            character.transform.parent = point;
+
+            if (character.TryGetComponent(out Humanoid humanoid))
             {
                 _countOrdered++;
                 _workPointsGroup.OnSelected(_movePointController.SelectedPoint);
             }
-            else if(character.TryGetComponent( out Turret turret))
+            else if(character.TryGetComponent(out Turret turret))
             {
                 _countOrdered++;
                 _workPointsGroup.OnSelected(_movePointController.SelectedPoint);

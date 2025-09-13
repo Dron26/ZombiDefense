@@ -32,6 +32,7 @@ namespace Interface
         public event Action<BoxData> OnBoughtBox;
         public event Action<int> OnMoneyChanged;
         public event Action OnExitedLocation;
+        public event Action OnApplicationQuit;
         private readonly Dictionary<Type, List<Delegate>> _eventHandlers = new();
         private readonly Dictionary<UpgradeGroupType, Action<Upgrade>> _upgradeEvents;
         
@@ -100,5 +101,7 @@ namespace Interface
         public void InvokeOnBoughtBox(BoxData data)=>OnBoughtBox?.Invoke(data);
         public void InvokeOnMoneyChanged(int money) => OnMoneyChanged?.Invoke(money);
         public void InvokeOnExitedLocation() => OnExitedLocation?.Invoke();
+        
+        public void InvokeOnApplicationQuit()=>OnApplicationQuit();
     }
 }

@@ -1,12 +1,13 @@
 using Data.Settings.Language;
 using Infrastructure.AssetManagement;
+using Integration;
 using Interface;
 using Services;
 using Services.Ads;
+using Services.Analytic;
 using Services.Audio;
 using Services.Localization;
 using Services.PauseService;
-using Services.PlayerAuthorization;
 using Services.SaveLoad;
 using Upgrades.Base;
 
@@ -21,20 +22,15 @@ namespace Infrastructure.StateMachine.States
         }
 
         public void RegisterServices(LoadingCurtain loadingCurtain, Language language, AllServices services,
-            AudioManager audioManager)
+            AudioManager audioManager )
         {
             var saveLoadService = new LoadSaveService();
             services.RegisterSingle<ISaveLoadService>(saveLoadService);
-            
             services.RegisterSingle<IGameEventBroadcaster>(new GameEventBroadcaster());
             services.RegisterSingle<IAssets>(new AssetProvider());
             services.RegisterSingle<IGameFactory>(new GameFactory(services.Single<IAssets>()));
             services.RegisterSingle<ILocalizationService>(new LocalizationService(language));
-            
             services.RegisterSingle<IAdService>(new AdService());
-            
-            
-            services.RegisterSingle<IAuthorization>(new YandexAuthorization());
             services.RegisterSingle<IResourceLoadService>(new ResourceLoaderService());
             services.RegisterSingle<IPauseService>(new PauseService());
             services.RegisterSingle<ISearchService>(new EntitySearchService());
@@ -43,20 +39,17 @@ namespace Infrastructure.StateMachine.States
             var uiHandler = new UIHandler();
             uiHandler.SetCurtain(loadingCurtain);
             services.RegisterSingle<IUIHandler>(uiHandler);
-            
+
             var gameData = services.Single<ISaveLoadService>().Load();
-            
             var upgradeHandler=new UpgradeHandler(gameData.GameParameters);
             services.RegisterSingle<IUpgradeHandler>(upgradeHandler);
             
             var сurrencyHandler=new CurrencyHandler(gameData.Money);
             services.RegisterSingle<ICurrencyHandler>(сurrencyHandler);
-
-
             
             var upgradeManager = new UpgradeManager( сurrencyHandler,saveLoadService);
             services.RegisterSingle<IUpgradeManager>(upgradeManager); 
-            //UpgradeManager
+            
             var upgradeTree = new UpgradeTree(saveLoadService, upgradeHandler);
             services.RegisterSingle<IUpgradeTree>(upgradeTree);
             services.Single<IUpgradeManager>().SetTree();
@@ -68,6 +61,9 @@ namespace Infrastructure.StateMachine.States
             services.RegisterSingle<ICharacterHandler>(new CharacterHandler());
             services.RegisterSingle<IAudioSettingsHandler>(new AudioSettingsHandler(gameData.AudioData));
             services.RegisterSingle<IEnemyHandler>(new EnemyHandler( gameEventBroadcaster));
+            services.RegisterSingle<IGameTimerTracker>(new GameTimeTracker());
+            services.RegisterSingle<IAnalyticService>(new AnalyticService());
+            
             services.Single<IAudioManager>().Initialize();
             services.Single<ISaveLoadService>().Save();
         }

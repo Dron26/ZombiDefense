@@ -17,6 +17,7 @@ using Services.Audio;
 using Services.SaveLoad;
 using UI.HUD.StorePanel;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Events;
 using CharacterData = Characters.Humanoids.AbstractLevel.CharacterData;
 using Random = UnityEngine.Random;
@@ -104,6 +105,7 @@ namespace Infrastructure.Logic.Inits
                 WeaponController weaponController  = prefab.GetComponent<WeaponController>();
                 
                 weaponController.Initialize(characterData);
+                
                 character.Initialize(characterData);
             }
             else
@@ -126,6 +128,8 @@ namespace Infrastructure.Logic.Inits
     
         private void OnBuildedCharacter(Character character)
         {
+            var agent = character.transform.GetComponent<NavMeshAgent>();
+            agent.enabled = false;
             CreatedHumanoid?.Invoke(character);
         }
     

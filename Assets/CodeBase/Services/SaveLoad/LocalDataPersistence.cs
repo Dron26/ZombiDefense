@@ -13,8 +13,8 @@ public class LocalDataPersistence : IDataPersistence
     {
         
         var json = JsonConvert.SerializeObject(data);
-        Debug.Log($"Saving to PlayerPrefs: {Key} = {json}");
-        Debug.Log($"Saving game data:\n{json}");
+       // Debug.Log($"Saving to PlayerPrefs: {Key} = {json}");
+       // Debug.Log($"Saving game data:\n{json}");
 
         PlayerPrefs.SetString(Key, json);
         PlayerPrefs.Save();
@@ -28,7 +28,7 @@ public class LocalDataPersistence : IDataPersistence
         try
         {
             string json = PlayerPrefs.GetString(Key);
-            Debug.Log($"Loaded JSON: {json}");
+          //  Debug.Log($"Loaded JSON: {json}");
             if (string.IsNullOrEmpty(json))
             {
                 Debug.LogWarning("No saved data found.");

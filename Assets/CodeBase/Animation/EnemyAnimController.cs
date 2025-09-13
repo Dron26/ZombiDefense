@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Data;
 using Enemies;
@@ -19,6 +20,7 @@ namespace Animation
         public readonly int IsAttack = Animator.StringToHash("IsAttack");
         public readonly int IsHit = Animator.StringToHash("IsHit");
         public readonly int Die = Animator.StringToHash("Die");
+        public readonly int IsThrow = Animator.StringToHash("IsThrow");
         public readonly int Threw = Animator.StringToHash("Threw");
         public readonly int GranadeTakeDamage = Animator.StringToHash("GranadeTakeDamage");
         public readonly int WakeUp = Animator.StringToHash("WakeUp");
@@ -62,29 +64,11 @@ namespace Animation
             _data = _enemy.Data;
             _isThrower = _data.IsThrower;
             _isShieldbearer = _data.HasShield;
-            //enemy.OnTakeDamage += OnHitFX;
-            // enemy.OnDeath += OnDieFX;
             
             SetSkin();
-            //SetAnimInfo();
             SetAnimation();
         }
-
         
-        // private void SetAnimInfo()
-        // {
-        //     List<int> animHashNames = new() { Walk };
-        //
-        //     foreach (int name in animHashNames)
-        //     {
-        //         string animName = GetAnimatorParameterName(name);
-        //         AnimationClip clip = GetAnimationClip(animName);
-        //         if (clip != null)
-        //         {
-        //             _animInfo.Add(name, clip.length);
-        //         }
-        //     }
-        // }
 
         private void SetSkin()
         {
@@ -141,6 +125,7 @@ namespace Animation
                 //{ "Scream", _screamClips },
                 { "Death", _deathClips },
                 { "Idle", _idleClips }
+                
             };
 
             foreach (var animationClip in animationClips)
@@ -151,7 +136,7 @@ namespace Animation
 
             if (_isThrower)
             {
-                _animatorOverrideController["Attack"] = animationClips["Attack"][0];
+                _animatorOverrideController["Attack"] = _throwClips[0];
             }
 
             _animator.runtimeAnimatorController = _animatorOverrideController;
@@ -186,7 +171,6 @@ namespace Animation
             _animator.SetTrigger(Die);
         }
 
-        // поставить смерть и падение под землю  по событию в анимации
 
 
         public void OnAttack(bool isActive)
@@ -194,11 +178,21 @@ namespace Animation
             _animator.SetBool(IsAttack, isActive);
         }
 
+        public void OnThrowAttack()
+        {
+            StartCoroutine(ThrowAttack());
+        }
+        
         public void OnGranadeTakeDamage()
         {
             _animator.SetBool(GranadeTakeDamage, true);
         }
 
+        private IEnumerator ThrowAttack()
+        {
+            _animator.SetTrigger(IsThrow);
+            yield break;
+        }
 
         private string GetAnimatorParameterName(int nameHash)
         {
@@ -240,6 +234,11 @@ namespace Animation
         public void WasShieldShattered()
         {
             _animatorOverrideController["Walk"] = _tempClip;
+        }
+
+        public void SetWalk(bool b)
+        {
+            _animator.SetBool(Walk, b);
         }
     }
 }

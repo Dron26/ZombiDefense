@@ -15,19 +15,14 @@ namespace Data
         public Location Location = new();
         public CameraState CameraState = new();
         public AudioData AudioData = new();
-        public TimeStatistics TimeStatistics = new();
         public ScalingData Scaling = new();
-        public List<LocationProgressData> LocationProgressData= new();
-        public GameParameters GameParameters= new();
-        
-        
-        public bool IsFirstStart=true;
-
+        public List<LocationProgressData> LocationProgressData = new();
+        public GameParameters GameParameters = new();
+        public bool IsFirstStart = true;
+        public RemoteConfig RemoteConfig=new RemoteConfig();
         public void ChangeIsFirstStart() => IsFirstStart = false;
 
         public void UpdateAudioSettings(AudioData audioData) => AudioData = audioData;
-        public void OnGameStart() => TimeStatistics.OnGameStart();
-        public void OnGameEnd() => TimeStatistics.OnGameEnd();
     }
 
     [Serializable]

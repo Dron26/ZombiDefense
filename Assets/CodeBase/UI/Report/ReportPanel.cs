@@ -8,6 +8,7 @@
     using Interface;
     using Lean.Localization;
     using Services;
+    using Services.Analytic;
     using Services.PauseService;
     using TMPro;
     using UI;
@@ -17,14 +18,7 @@
 
     public class ReportPanel : MonoCache
     {
-       // [SerializeField] private LeanLocalizedTextMeshProUGUI _infoSurvivalEnemies;
-       // [SerializeField] private TMP_Text _infoSurvivalEnemiesValue;
-        
-        //[SerializeField] private LeanLocalizedTextMeshProUGUI _infoProfit;
-       // [SerializeField] private TMP_Text _infoProfitValue;
-       // [SerializeField] private LeanLocalizedTextMeshProUGUI _infoWaveBonus;
-       // [SerializeField] private TMP_Text _infoWaveBonusValue;
-       [SerializeField] private LeanLocalizedTextMeshProUGUI _infoKilledEnemies;
+        [SerializeField] private LeanLocalizedTextMeshProUGUI _infoKilledEnemies;
        [SerializeField] private TMP_Text _infoKilledEnemiesValue;
         [SerializeField] private LeanLocalizedTextMeshProUGUI _infoDeadMercenary;
         [SerializeField] private TMP_Text _infoDeadMercenaryValue;
@@ -45,7 +39,7 @@
         private int _numberKilledEnemies;
         private int _numberSurvivalEnemies;
         private int _deadMercenary;
-        public Action OnClickExitToMenu;
+        public Action OnLocationPassed;
         public Action OnClickNextLocation;
         public Action OnResetLevel;
         private GlobalTimer _globalTimer;
@@ -56,7 +50,7 @@
         private IAchievementsHandler _achievementsHandler;
         private IEnemyHandler _enemyHandler;
         private IGameEventBroadcaster _eventBroadcaster;
-
+        private IAnalyticService _analyticService;
         public void Init(Store store, GameStateMachine stateMachine)
         {
             _stateMachine = stateMachine;
@@ -66,6 +60,8 @@
             _achievementsHandler = AllServices.Container.Single<IAchievementsHandler>();
             _enemyHandler = AllServices.Container.Single<IEnemyHandler>();
             _eventBroadcaster = AllServices.Container.Single<IGameEventBroadcaster>();
+            _analyticService= AllServices.Container.Single<IAnalyticService>();
+
             AddListener();
         }
 
@@ -86,50 +82,34 @@
                 _reset.transform.parent.gameObject.SetActive(true);
                 _continue.transform.parent.gameObject.SetActive(false);
                 _infoOffer.TranslationName = ReportKey.DeadOffer.ToString();
+                _analyticService.LoseLevel();
             }
             else
             {
                 _reset.transform.parent.gameObject.SetActive(false);
                 _continue.transform.parent.gameObject.SetActive(true);
                 _infoOffer.TranslationName = ReportKey.TasksCompleted.ToString();
+                _analyticService.WinLevel();
             }
 
             _panel.SetActive(true);
             
-            // if (_numberSurvivalEnemies != 0)
-            // {
-            //     _infoSurvivalEnemies.TranslationName = ReportKey.SurvivorsEnemies.ToString();
-            //       _infoSurvivalEnemiesValue.text = _numberSurvivalEnemies.ToString();  
-            // }
-
-            //_infoWaveBonus.TranslationName = ReportKey.Bonus.ToString();
             _infoKilledEnemies.TranslationName = ReportKey.Killed.ToString();
             _infoDeadMercenary.TranslationName = ReportKey.Dead.ToString();
-           // _infoProfit.TranslationName = ReportKey.Profit.ToString();
              
             _numberKilledEnemies = _achievementsHandler.KilledEnemies;
             _infoKilledEnemiesValue.text = _numberKilledEnemies.ToString();
             _infoDeadMercenaryValue.text = _deadMercenary.ToString();
             _deadMercenary = _achievementsHandler.DeadMercenaryCount;
             
-            //_numberSurvivalEnemies = _enemyHandler.GetActiveEnemy().Count;
-           //  _infoWaveBonusValue.text = (_achievementsHandler.WaveComplatedCount * 100f).ToString();
-            
-            
-         //   _infoProfitValue.text = _wallet.MoneyForEnemy.ToString();
-
-        // int tempValue = _wallet.MoneyForEnemy;
-         //   _bonusKilledEnemiesValue.text=tempValue.ToString()+"$";
-         //   _bonusDeadMercenaryValue.text=tempValue.ToString()+"+10%";
             _allProfit.text = "+  "+_wallet.GetAllProfit().ToString()+"  $";
-            // _infoAllProfit.TranslationName = ReportKey.Profit.ToString();
         }
 
         private void SwicthScene()
         {
             _panel.SetActive(false);
             SetPaused(false);
-            OnClickExitToMenu?.Invoke();
+            OnLocationPassed?.Invoke();
             
         }
 
@@ -156,15 +136,13 @@
         private void SelectOk()
         {
             _panel.SetActive(false);
-            //_saveLoadService.ExitFromLocation(true);
             SetPaused(false);
-            OnClickExitToMenu?.Invoke();
+            OnLocationPassed?.Invoke();
         }
 
         private void AddListener()
         {
              _backToMenu.onClick.AddListener(SwicthScene);
-            // _reset.onClick.AddListener(ResetLevel);
              _continue.onClick.AddListener(SelectOk);
 
             _eventBroadcaster.LastHumanoidDie += OnLastHumanoidDie;
@@ -173,8 +151,6 @@
 
         private void RemoveListener()
         {
-            // _backToMenu.onClick.RemoveListener(SwicthScene);
-            // _reset.onClick.RemoveListener(ResetLevel);
              _continue.onClick.RemoveListener(SelectOk);
 
             _eventBroadcaster.LastHumanoidDie -= OnLastHumanoidDie;

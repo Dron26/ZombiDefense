@@ -12,8 +12,8 @@ namespace UI.HUD.StorePanel
 {
     public  class AdditionalEquipment:MonoCache
     {
-        [SerializeField]  private MedicineBoxButton _medicineBoxButton;
-        [SerializeField]  private WeaponBoxButton weaponBoxButton;
+        [SerializeField]  private Button _medicineBoxButton;
+        [SerializeField]  private Button _weaponBoxButton;
         [SerializeField] private GameObject _additionalPanel;
         [SerializeField] private GameObject _additionalPanelButton;
         
@@ -31,16 +31,16 @@ namespace UI.HUD.StorePanel
 
             AddListener();
             
-            weaponBoxButton.SwitchStateButton(false);
-            _medicineBoxButton.SwitchStateButton(false);
+            _weaponBoxButton.gameObject.SetActive(false);
+            _medicineBoxButton.gameObject.SetActive(false);
             _buttonAdditionalPanel=_additionalPanel.GetComponent<Button>();
             _buttonAdditionalPanel.onClick.AddListener(OnSelectButton);
         }
         private void AddListener()
         {
             _eventBroadcaster.OnSelectedNewPoint += CheckPointInfo;
-            _medicineBoxButton.OnSelected+=SelectedMedicineBox;
-            weaponBoxButton.OnSelected+=SelectedWeaponBox;
+            _medicineBoxButton.onClick.AddListener(SelectedMedicineBox);
+            _weaponBoxButton.onClick.AddListener(SelectedWeaponBox);
         }
         
         private void SelectedMedicineBox()
@@ -65,7 +65,7 @@ namespace UI.HUD.StorePanel
             }
             else
             {
-                StartCoroutine(StartTimer(3));
+                StopCoroutine(StartTimer(3));
             }
         }
 
@@ -82,9 +82,9 @@ namespace UI.HUD.StorePanel
             _isWeaponActive=!workPoint.IsHaveWeaponBox;
             _isMedicineActive=!workPoint.IsHaveMedicineBox;
  
-            weaponBoxButton.SwitchStateButton(_isWeaponActive);
-                
-            _medicineBoxButton.SwitchStateButton(_isMedicineActive);
+            _weaponBoxButton.gameObject.SetActive(_isWeaponActive);
+            
+            _medicineBoxButton.gameObject.SetActive(_isMedicineActive);
 
             if (_isMedicineActive==_isWeaponActive==false)
             {
@@ -101,8 +101,8 @@ namespace UI.HUD.StorePanel
         {
             _eventBroadcaster.OnSelectedNewPoint -= CheckPointInfo;
             
-            _medicineBoxButton.OnSelected-=SelectedMedicineBox;
-            weaponBoxButton.OnSelected-=SelectedWeaponBox;
+            _medicineBoxButton.onClick.RemoveListener(SelectedMedicineBox);
+            _weaponBoxButton.onClick.RemoveListener(SelectedWeaponBox);
         }
 
         private void OnDestroy()

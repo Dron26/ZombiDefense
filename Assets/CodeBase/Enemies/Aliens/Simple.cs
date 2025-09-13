@@ -19,7 +19,6 @@ namespace Enemies.Aliens
             {
                 OnAction(EnemyEventType.TakeDamage,itemItemType);
             }
-            
         }
     }
 }

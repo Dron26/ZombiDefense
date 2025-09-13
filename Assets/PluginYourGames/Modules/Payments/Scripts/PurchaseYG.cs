@@ -50,7 +50,7 @@ namespace YG
         {
             if (data == null)
             {
-                Debug.LogError($"No product with ID found: {id}");
+                 Debug.Log($"No product with ID found: {id}");
                 return;
             }
 

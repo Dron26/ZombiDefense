@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Animation;
+using Data;
 using Infrastructure.AIBattle;
 using Infrastructure.AIBattle.StateMachines.EnemyAI;
 using Infrastructure.AIBattle.StateMachines.EnemyAI.States;

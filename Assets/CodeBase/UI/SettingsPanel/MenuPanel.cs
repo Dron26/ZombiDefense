@@ -1,6 +1,7 @@
 using System;
 using Infrastructure.BaseMonoCache.Code.MonoCache;
 using Services;
+using Services.Analytic;
 using Services.Audio;
 using Services.PauseService;
 using UI.Buttons;
@@ -26,6 +27,7 @@ namespace UI.SettingsPanel
         private IAudioManager _audioManager;
         
         private IPauseService _pauseService;
+        private IAnalyticService _analyticService;
 
         public Action OnClickExitToMenu;
         
@@ -36,6 +38,7 @@ namespace UI.SettingsPanel
             _buttonPanel.Initialize();
             InitializeButton();
             _pauseService = AllServices.Container.Single<IPauseService>();
+            _analyticService = AllServices.Container.Single<IAnalyticService>();
         }
 
         private void InitializeButton()
@@ -52,6 +55,8 @@ namespace UI.SettingsPanel
             _panel.SetActive(!_panel.activeSelf);
             _resursePanel.SetActive(!_resursePanel.activeSelf); 
             _buttonPanel.SwitchPanelState();
+            if (_panel.activeSelf) _analyticService.PauseLevel();
+            else _analyticService.ResumeLevel();
         }
 
         private void SwicthScene()

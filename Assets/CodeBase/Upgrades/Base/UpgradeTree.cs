@@ -200,4 +200,24 @@ public class UpgradeTree : IUpgradeTree
             PurchaseUpgrade(upgrade);
         }
     }
+    public List<Upgrade> GetAllUpgrades()
+    {
+        return _upgradeNodes.Values.Select(node => node.Upgrade).ToList();
+    }
+
+    public bool IsPurchased(Upgrade upgrade)
+    {
+        string nodeKey = $"{upgrade.GroupType}_{upgrade.Type}_{upgrade.Id}";
+        return _upgradeHandler.HasPurchasedUpgrade(nodeKey);
+    }
+    
+    public List<string> GetAllUpgradeKeys()
+    {
+        return _upgradeNodes.Keys.ToList();
+    }
+    
+    public UpgradeNode GetUpgradeByKey(string key)
+    {
+        return _upgradeNodes.TryGetValue(key, out var node) ? node : null;
+    }
 }

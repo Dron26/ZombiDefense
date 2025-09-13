@@ -53,8 +53,5 @@ namespace Infrastructure.AIBattle.StateMachines.Robots.States
             yield break;
         }
 
-        public override void ExitBehavior()
-        {
-        }
     }
 }

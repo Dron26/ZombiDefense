@@ -26,9 +26,6 @@ namespace Enemies.Aliens
             else if(getDamage>=_minDamage)
             {
            
-            
-            
-
                 Debug.Log("Бабах");
                 Destroy(gameObject,2);
             }

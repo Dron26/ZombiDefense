@@ -8,7 +8,7 @@ namespace CameraMain
     //[RequireComponent(typeof(MovementHandler))]
     public class MultiInputMovement : MonoCache
     {
-        public float moveSpeed = 5f;
+        public float moveSpeed;
         public Vector2 minBounds;
         public Vector2 maxBounds;
 

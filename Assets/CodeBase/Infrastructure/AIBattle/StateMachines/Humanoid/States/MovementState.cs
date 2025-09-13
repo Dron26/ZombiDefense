@@ -39,7 +39,8 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
         }
         private void Move()
         {
-//            Debug.Log("Move()");
+            
+            Debug.Log("Move()");
             if (_point != null)
             {
                 Vector3 targetPosition = _point.transform.position;
@@ -49,6 +50,7 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
                 _humanoid.IsMoving(true);
                 _isSetDestination = true;
                 _coroutine=StartCoroutine(CheckDistance()) ;
+                PlayerCharactersStateMachine.IsMove(true);
             }
             else
             {
@@ -70,6 +72,8 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
                 if (distance <= _minDistance)
                 {
                     _point.SetCharacter(_humanoid);
+                    Debug.Log(" _point.SetCharacter");
+                    PlayerCharactersStateMachine.IsMove(false);
                     PlayerCharactersStateMachine.EnterBehavior<SearchTargetState>();
                 }
                 
@@ -78,6 +82,9 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
         }
         protected override void OnDisable()
         {
+            
+            Debug.Log(" _OnDisableSetCharacter");
+
             _reachedDestination = true;
             _isSetDestination = false;
             _humanoid.IsMoving(false);
@@ -87,11 +94,6 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
             if (_coroutine != null)
                 StopCoroutine(_coroutine);
             
-        }
-
-        public override void ExitBehavior()
-        {
-            enabled = false;
         }
     }
 }

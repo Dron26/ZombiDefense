@@ -11,17 +11,20 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
     public class AttackState : State
     {
         private readonly WaitForSeconds _waitForSeconds = new(0.1f);
-        private Entity _enemy;
-        private Transform _transformEnemy;
+        private Entity _targetEnemy;
+        private Transform _targetTransform;
         private float _currentRange;
-        private PlayerCharacterAnimController _playerCharacterAnimController;
+
+        private PlayerCharacterAnimController _animController;
         private FXController _fxController;
         private Characters.Humanoids.AbstractLevel.Humanoid _humanoid;
         private HumanoidWeaponController _weaponController;
+
         private bool _isSpecialWeapon;
-        private SphereCollider _attackTrigger;
         private bool _isAttacking;
         private bool _isReloading;
+        private bool _isMove;
+
         private List<Enemy> _enemiesInRange = new();
         private int _maxAmmo;
         private int _ammoCount;
@@ -31,85 +34,64 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
         private float[] _radiusList;
         private float[] _damageList;
         private float _accumulationDamage;
-        private bool _isTargetSet;
-        private bool _isMove;
         private ItemType _weaponType;
 
-        private void Awake()
+        protected  void Awake()
         {
-            _playerCharacterAnimController = GetComponent<PlayerCharacterAnimController>();
+            _animController = GetComponent<PlayerCharacterAnimController>();
             _fxController = GetComponent<FXController>();
             _humanoid = GetComponent<Characters.Humanoids.AbstractLevel.Humanoid>();
             _weaponController = GetComponent<HumanoidWeaponController>();
             _weaponController.UpdateWeaponData += OnUpdateWeaponData;
         }
 
-        private void Start()
-        {
-            PlayerCharactersStateMachine.OnStartMove += StartMove;
-        }
-
         protected override void OnEnabled()
         {
-            Debug.Log("OnEnabled()");
+            Debug.Log("OnEnabledAttack()");
             if (!_isAttacking && !_isReloading)
             {
-                _isMove = false;
                 Attack();
             }
         }
 
         public void InitEnemy(Entity targetEnemy)
         {
-            Debug.Log("InitEnemy()");
-            _enemy = targetEnemy;
-            _transformEnemy = _enemy.transform;
-            _isTargetSet = true;
+            if (targetEnemy == null) return;
+            _targetEnemy = targetEnemy;
+            _targetTransform = targetEnemy.transform;
         }
 
         private void Attack()
         {
             Debug.Log("Attack()");
-            if (_enemy.IsLife())
-            {
-               
-                
-                if (_ammoCount == 0 && !_isReloading)
-                {
-                    Reload();
-                }
-                else if (!_isAttacking && !_isReloading)
-                {
-                    //NullReferenceException: Object reference not set to an instance of an object
-                    _currentRange = Vector3.Distance(transform.position, _transformEnemy.position);
-                    if (_currentRange <= _range && _ammoCount > 0)
-                    {
-                        _isAttacking = true;
-                        _isTargetSet = false;
-                        
-                        _playerCharacterAnimController.OnShoot(true);
-                        Debug.Log("OnShoot(true)");
-                        
-                        if (_weaponType == ItemType.Medium||_weaponType == ItemType.Flammer)
-                        {
-                            transform.DOLookAt(_transformEnemy.position, 0.3f);
-                            _fxController.OnAttackFX();
-                        }
-                        else
-                        {
-                            transform.DOLookAt(_transformEnemy.position, 2f);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                if (_weaponType == ItemType.Medium||_weaponType == ItemType.Flammer)
-                {
-                    _fxController.OnAttackFXStop();
-                }
 
-                ChangeState<SearchTargetState>();
+            if (_targetEnemy == null || !_targetEnemy.IsLife())
+            {
+                StopFX();
+                PlayerCharactersStateMachine.EnterBehavior<SearchTargetState>();
+                return;
+            }
+
+            _currentRange = Vector3.Distance(transform.position, _targetTransform.position);
+
+            if (_ammoCount <= 0 && !_isReloading)
+            {
+                Reload();
+                return;
+            }
+
+            if (!_isAttacking && !_isReloading && _currentRange <= _range)
+            {
+                _isAttacking = true;
+                _accumulationDamage = 0;
+
+                _animController.OnShoot(true);
+
+                float lookTime = (_weaponType == ItemType.Medium || _weaponType == ItemType.Flammer) ? 0.3f : 0.1f;
+                transform.DOLookAt(_targetTransform.position, lookTime);
+
+                if (_weaponType == ItemType.Medium || _weaponType == ItemType.Flammer)
+                    _fxController.OnAttackFX();
             }
         }
 
@@ -117,22 +99,20 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
         {
             _isAttacking = false;
             _ammoCount--;
-            Debug.Log("FinishAnimationAttackPlay()");
-            if (_isSpecialWeapon)
-            {
-                ApplyDamageToEnemiesInRange();
-            }
-            else
-            {
-                _enemy.ApplyDamage(_damage, _weaponType);
-            }
 
-            if (_ammoCount == 0 && !_isReloading&&!_isMove)
+            if (_isSpecialWeapon)
+                ApplyDamageToEnemiesInRange();
+            else if (_targetEnemy != null && _targetEnemy.IsLife() && _currentRange <= _range)
             {
-                Reload();
+                _targetEnemy.ApplyDamage(_damage, _weaponType);
             }
-            else
+            
+            if (_ammoCount <= 0 && !_isReloading && !_isMove)
+                Reload();
+            if (enabled)
             {
+                Debug.Log("enabledAttack()");
+
                 Attack();
             }
         }
@@ -142,56 +122,46 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
             _isReloading = true;
             _isAttacking = false;
 
-            _playerCharacterAnimController.OnShoot(false);
-            _playerCharacterAnimController.ReloadWeapon(true);
+            _animController.OnShoot(false);
+            _animController.ReloadWeapon(true);
         }
 
         public void OnReloadEnd()
         {
-            Debug.Log("OnReloadEnd()");
             _ammoCount = _maxAmmo;
             _isReloading = false;
-            _playerCharacterAnimController.ReloadWeapon(false);
-            Attack();
-        }
-
-        private void ChangeState<TState>() where TState : State
-        {
-            _accumulationDamage = 0;
-            Debug.Log("AttackChangeState()");
-            PlayerCharactersStateMachine.EnterBehavior<TState>();
+            _animController.ReloadWeapon(false);
+            if (enabled)
+            {
+                Attack();
+            }
         }
 
         private void ApplyDamageToEnemiesInRange()
         {
-            float angle = _weaponController.SpreadAngle;
-            Vector3 attackDirection = _enemy.transform.position - transform.position;
+            Vector3 attackDir = _targetTransform.position - transform.position;
+
             _enemiesInRange = AllServices.Container.Single<ISearchService>()
                 .GetEntitiesInRange<Enemy>(transform.position, _maxRange);
 
             foreach (var enemy in _enemiesInRange)
             {
-                if (enemy.IsLife())
+                if (!enemy.IsLife()) continue;
+
+                Vector3 dirToEnemy = enemy.transform.position - transform.position;
+                float angleToEnemy = Vector3.Angle(attackDir, dirToEnemy);
+
+                if (angleToEnemy <= _weaponController.SpreadAngle)
                 {
-                    Vector3 directionToEnemy = enemy.transform.position - transform.position;
-                    float angleToEnemy = Vector3.Angle(attackDirection, directionToEnemy);
+                    float distance = Vector3.Distance(transform.position, enemy.transform.position);
+                    float damagePercent = CalculateDamagePercent(distance);
 
-                    if (angleToEnemy <= angle)
+                    if (_weaponType != ItemType.Medium)
+                        enemy.ApplyDamage(_damage * damagePercent, _weaponType);
+                    else
                     {
-                        float distance = Vector3.Distance(transform.position, enemy.transform.position);
-                        float damagePercent = CalculateDamagePercent(distance);
-
-                        if (_weaponType != ItemType.Medium)
-                        {
-                            enemy.ApplyDamage(_damage * damagePercent, _weaponType);
-                        }
-                        else
-                        {
-                            _accumulationDamage += _damage;
-                            enemy.ApplyDamage(_accumulationDamage, _weaponType);
-                            Debug.Log(_accumulationDamage);
-                        }
-
+                        _accumulationDamage += _damage;
+                        enemy.ApplyDamage(_accumulationDamage, _weaponType);
                     }
                 }
             }
@@ -202,19 +172,15 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
         private float CalculateDamagePercent(float distance)
         {
             for (int i = 0; i < _radiusList.Length; i++)
-            {
                 if (distance <= _radiusList[i])
-                {
                     return _damageList[i];
-                }
-            }
 
             return 0;
         }
 
         private void OnUpdateWeaponData()
         {
-            _weaponType=_weaponController.ItemType;
+            _weaponType = _weaponController.ItemType;
             _maxAmmo = _weaponController.MaxAmmo;
             _ammoCount = _maxAmmo;
             _damage = _weaponController.Damage;
@@ -226,18 +192,11 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
                 _radiusList = new[]
                 {
                     _weaponController.Range * 0.4f,
-                    _weaponController.Range * 0.6f, _weaponController.Range
+                    _weaponController.Range * 0.6f,
+                    _weaponController.Range
                 };
-                _damageList = new[] { 1.3f, 1f,  0.5f };
-
-                if (_weaponType == ItemType.Medium)
-                {
-                    _maxRange = _radiusList[2]*2;
-                }
-                else
-                {
-                    _maxRange = _radiusList[2];
-                }
+                _damageList = new[] { 1.3f, 1f, 0.5f };
+                _maxRange = _weaponType == ItemType.Medium ? _radiusList[2] * 2 : _radiusList[2];
             }
             else
             {
@@ -245,32 +204,34 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
             }
         }
 
-        public override void ExitBehavior()
+        private void StopFX()
         {
-            Debug.Log("ExitBehavior()");
-            enabled = false;
-            
+            if (_weaponType == ItemType.Medium || _weaponType == ItemType.Flammer)
+                _fxController.OnAttackFXStop();
         }
 
         protected override void OnDisable()
         {
-            Debug.Log("OnDisable()");
+            Debug.Log("OnDisableAttack()");
+            base.OnDisable();
             _isAttacking = false;
-            _isTargetSet = false;
-            _transformEnemy = null;
-            _playerCharacterAnimController.OnShoot(false);
+            _isReloading = false;
+            _targetEnemy = null;
+            _targetTransform = null;
+            _animController.OnShoot(false);
+            if (_weaponController != null)
+                _weaponController.UpdateWeaponData -= OnUpdateWeaponData;
         }
 
-        private void StartMove()
+        public void StartMove()
         {
-            Debug.Log("StartMove()");
             if (_isAttacking || _isReloading)
             {
-                _playerCharacterAnimController.ReloadWeapon(false);
+                _animController.ReloadWeapon(false);
                 _isReloading = false;
-                _playerCharacterAnimController.OnShoot(false);
+                _animController.OnShoot(false);
                 _isMove = true;
-                enabled = false;
+                enabled = false; // временно блокируем state
             }
         }
     }
