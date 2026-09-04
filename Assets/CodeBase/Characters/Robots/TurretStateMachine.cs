@@ -36,7 +36,6 @@ namespace Characters.Robots
         public float _maxTurnAngle = 180.0f; 
         private float minTurnTime = 1f; 
         public float _minTurnAngle = 10f;
-        private float _turnTime = 0.3f;
         private float minDistanceToHit = 2.0f;
         private ISearchService _searchService;
         private IUpgradeTree _upgradeTree;
@@ -164,7 +163,7 @@ namespace Characters.Robots
 
         private void LookEnemyPosition(Vector3 hitPosition)
         {
-            float _turnTime = 1f;
+            float turnTime = 1f;
 
             if (currentTurnCoroutine != null)
             {
@@ -181,12 +180,12 @@ namespace Characters.Robots
 
             float angle = Vector3.Angle(direction, transform.forward);
 
-            _turnTime = Mathf.Lerp(minTurnTime, maxTurnTime, (angle - _minTurnAngle) / (_maxTurnAngle - _minTurnAngle));
-            _turnTime = Mathf.Min(_turnTime, maxTurnTime);
+            turnTime = Mathf.Lerp(minTurnTime, maxTurnTime, (angle - _minTurnAngle) / (_maxTurnAngle - _minTurnAngle));
+            turnTime = Mathf.Min(turnTime, maxTurnTime);
 
             if (Vector3.Dot(direction.normalized, _gun.transform.forward) < 0)
             {
-                currentTurnCoroutine = StartCoroutine(TurnTowardsHit(hitPosition, _turnTime, true));
+                currentTurnCoroutine = StartCoroutine(TurnTowardsHit(hitPosition, turnTime, true));
                 return;
             }
 
@@ -195,7 +194,7 @@ namespace Characters.Robots
                 return;
             }
 
-            currentTurnCoroutine = StartCoroutine(TurnTowardsHit(hitPosition, _turnTime, false));
+            currentTurnCoroutine = StartCoroutine(TurnTowardsHit(hitPosition, turnTime, false));
         }
 
         private IEnumerator TurnTowardsHit(Vector3 hitPosition, float turnTime, bool shouldShoot)

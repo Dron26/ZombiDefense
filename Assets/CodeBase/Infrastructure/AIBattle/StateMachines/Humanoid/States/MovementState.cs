@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using Infrastructure.Location;
 using UnityEngine;
 using UnityEngine.AI;
@@ -13,7 +13,6 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
         private PlayerCharacterAnimController _playerCharacterAnimController;
         private float _minDistance = 0.3f;
         private bool _reachedDestination = true;
-        private bool _isSetDestination = false;
         private Characters.Humanoids.AbstractLevel.Humanoid _humanoid;
         private Coroutine _coroutine;
 
@@ -34,7 +33,6 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
         {
             _point = newPoint;
             _reachedDestination = true;
-            _isSetDestination = false;
             PlayerCharactersStateMachine.EnterBehavior<MovementState>();
         }
         private void Move()
@@ -47,8 +45,7 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
                 _playerCharacterAnimController.OnShoot(false);
                 _playerCharacterAnimController.Move(true);
                 _agent.SetDestination(targetPosition);
-                _humanoid.IsMoving(true);
-                _isSetDestination = true;
+                _humanoid.SetMoving(true);
                 _coroutine=StartCoroutine(CheckDistance()) ;
                 PlayerCharactersStateMachine.IsMove(true);
             }
@@ -86,8 +83,7 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
             Debug.Log(" _OnDisableSetCharacter");
 
             _reachedDestination = true;
-            _isSetDestination = false;
-            _humanoid.IsMoving(false);
+            _humanoid.SetMoving(false);
             _playerCharacterAnimController.Move(false);
             StopCoroutine(CheckDistance());
             

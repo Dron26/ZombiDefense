@@ -4,6 +4,7 @@ using Interface;
 using Services;
 using Services.SaveLoad;
 using UnityEngine;
+using UnityEngine.tvOS;
 
 namespace Data
 {
@@ -20,6 +21,7 @@ namespace Data
         public GameParameters GameParameters = new();
         public bool IsFirstStart = true;
         public RemoteConfig RemoteConfig=new RemoteConfig();
+        
         public void ChangeIsFirstStart() => IsFirstStart = false;
 
         public void UpdateAudioSettings(AudioData audioData) => AudioData = audioData;

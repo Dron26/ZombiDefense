@@ -103,7 +103,7 @@ namespace Upgrades
 
         private void SetId()
         {
-            _purchaseYG.SetId(_upgrade.GroupType+"_"+_upgrade.Type+"_"+_upgrade.Id);
+            _purchaseYG.id=(_upgrade.GroupType+"_"+_upgrade.Type+"_"+_upgrade.Id);
         }
         
         private void SuccessPurchased(string id)

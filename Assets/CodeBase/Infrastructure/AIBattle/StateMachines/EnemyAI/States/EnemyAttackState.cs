@@ -18,7 +18,6 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
         private float _currentRange;
         private float _throwerRange;
         private float _rangeHit;
-        private bool _isAttack;
         private Animator _animator;
         private EnemyAnimController _enemyAnimController;
         private EnemyFXController _fxController;
@@ -53,7 +52,6 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
                 _throwerRange = _enemy.GetThrowerRangeAttack();
             }
 
-            _isAttack = false;
             _isAttacked = false;
             _isThrowering = false;
 
@@ -62,7 +60,6 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
 
         protected override void OnExit()
         {
-            _isAttack = false;
             _isAttacked = false;
             _isThrowering = false;
 
@@ -99,9 +96,9 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
                     PerformThrow();
                     yield break;
                 }
-                else if(!_isThrower&&_currentRange > _rangeHit&&_isAttacked)
+                else if(!_isThrower&&_currentRange-0.20f > _rangeHit)
                 {
-                    AttackEnd();
+                    OnAttackEnd();
                     ChangeState();
                 }
 
@@ -147,7 +144,7 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
             _enemyAnimController.OnAttack(true);
         }
         
-        private void AttackEnd()
+        private void OnAttackEnd()
         {
             _isAttacked = false;
         }

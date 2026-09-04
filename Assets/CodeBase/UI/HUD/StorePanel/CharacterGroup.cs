@@ -10,7 +10,6 @@ namespace UI.HUD.StorePanel
     {
         public List<GameObject> _characters;
         public List<RuntimeAnimatorController> _characterControllers;
-        private bool _isShowed = false;
         private int _selectedIndex;
         private CharacterStore _characterStore;
         private Animator _animator;

@@ -24,12 +24,10 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
         private EnemyType _enemyType;
         private List<Character> _characterInRange = new();
 
-        private bool _isDeath;
         private bool _isStopRevival;
         private bool _canDestroyed;
         private bool _isFalled;
 
-        private readonly float _waitTime = 4f;
         private readonly float _waitExplosion = 1f;
         private WaitForSeconds _wait;
 
@@ -46,7 +44,6 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
         protected override void OnEnter()
         {
             enabled=true;
-            _isDeath = false;
             _isFalled = false;
 
             _agent.isStopped = true;
@@ -113,7 +110,6 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
             _collider.enabled = true;
             _agent.enabled = true;
             OnRevival?.Invoke(_enemy);
-            _isDeath = false;
             _agent.isStopped = false;
             StateMachine.EnterBehavior<EnemySearchTargetState>();
         }

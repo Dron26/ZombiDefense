@@ -7,10 +7,7 @@ namespace Enemies.Aliens
     public class Smoker : Enemy,IDamageable
     {
 
-        private int _levelNumber = 4;
         [SerializeField] private int _bombDamage;
-        private int _minDamage = 30;
-        [SerializeField] private int _explosionRadius = 4;
 
         public override void PushForGranade()
         {

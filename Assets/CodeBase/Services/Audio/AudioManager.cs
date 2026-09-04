@@ -15,10 +15,10 @@ namespace Services.Audio
         private bool _isMenuEnabled = false;
         public Action OnMenuEnabled;
 
-        public AudioManager(MusicChanger musicChanger,SoundChanger soundChanger)
+        public void Initialize(MusicChanger musicChanger, SoundChanger soundChanger)
         {
-            _musicChanger =musicChanger;
-            _soundChanger=soundChanger;
+            _musicChanger = musicChanger;
+            _soundChanger = soundChanger;
         }
 
         public bool GetSoundEnabled()=> _soundChanger.IsSoundEnabled;

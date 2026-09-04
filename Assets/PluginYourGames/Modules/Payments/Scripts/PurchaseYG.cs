@@ -50,7 +50,7 @@ namespace YG
         {
             if (data == null)
             {
-                 Debug.Log($"No product with ID found: {id}");
+                Debug.LogError($"No product with ID found: {id}");
                 return;
             }
 
@@ -88,7 +88,5 @@ namespace YG
         }
 
         public void BuyPurchase() => YG2.BuyPayments(id);
-        
-        public void SetId(string id) => this.id = id;
     }
 }

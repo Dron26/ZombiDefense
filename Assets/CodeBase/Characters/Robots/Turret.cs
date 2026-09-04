@@ -30,7 +30,7 @@ namespace Characters.Robots
         private bool _isTakeDamagePlay;
         private int _minHealth = 0;
         private bool _isBuyed = false;
-        public Action<Turret> OnInitialize;
+        public new Action<Turret> OnInitialize;
         public bool IsBuyed => _isBuyed;
         private RaycastHitChecker _raycastHitChecker;
         private TurretWeaponController _turretWeaponController;

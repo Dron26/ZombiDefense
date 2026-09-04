@@ -22,7 +22,6 @@ namespace Infrastructure.AIBattle
         [SerializeField] private List<ItemType> _weaponNames;
         [SerializeField] private ParticleSystem _bloodFlowing;
         [SerializeField] private Dictionary<ItemType, List<ParticleSystem>> _particleByType = new();
-        [SerializeField] private float _areaWidth = 0.1f;
         [SerializeField] private float _areaHeight = 0.1f;
         [SerializeField] private float _minParticleScale = 1f;
         [SerializeField] private float _maxParticleScale = 1f;

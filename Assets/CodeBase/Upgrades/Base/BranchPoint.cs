@@ -16,7 +16,6 @@ public class BranchPoint : MonoCache
      private Text _descriptionText;
     public Button Button;
     private Image _lockIcon;
-    private LanguageYG _languageYG;
     private Upgrade _upgrade;
     public Upgrade Upgrade => _upgrade;
     public UpgradeType GetUpgradeType => _upgradeType;
@@ -45,12 +44,11 @@ public class BranchPoint : MonoCache
         
         _upgrade.SetNewText( _descriptionText.text);
         
-        _languageYG = GetComponent<LanguageYG>();
-        _languageYG.OnSwitchLanguage+= OnChangeDescription;
+        YG2.onSwitchLang += OnChangeDescription;
         SetLock(_lock);
     }
 
-    private void OnChangeDescription()
+    private void OnChangeDescription(string _)
     {
         _upgrade.SetNewText(_descriptionText.text);
     }
@@ -63,7 +61,7 @@ public class BranchPoint : MonoCache
     
     private void OnDestroy()
     {
-        _languageYG.OnSwitchLanguage+= OnChangeDescription;
+        YG2.onSwitchLang+= OnChangeDescription;
     }
     
 }

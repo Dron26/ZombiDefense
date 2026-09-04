@@ -30,7 +30,6 @@ namespace Characters.Robots
         private bool _isGranade;
         private bool _isCanThrowGranade;
         private bool _isCarTurret=false;
-        private bool _isAimAdd=false;
         
         public Weapon GetWeapon() => _weapon;
         public bool IsSelected => _isSelected;
@@ -81,13 +80,13 @@ namespace Characters.Robots
 
         private void SetDamage(int damage) => _damage += damage;
         
-        public void SetPoint(WorkPoint workPoint)
+        public override void SetPoint(WorkPoint workPoint)
         {
             _damage= Mathf.RoundToInt(_damage * (1 + workPoint.UpPrecent / 100));
             _range= Mathf.RoundToInt(_range * (1 + workPoint.UpPrecent / 100));
         }
 
-        public void SetSelected(bool isSelected)
+        public override void SetSelected(bool isSelected)
         {
             _isSelected = isSelected;
             OnSelected?.Invoke();

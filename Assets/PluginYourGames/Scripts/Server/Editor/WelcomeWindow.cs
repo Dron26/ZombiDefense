@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using UnityEditor;
 using UnityEngine;
 using YG.EditorScr.BuildModify;
@@ -28,7 +28,7 @@ namespace YG.EditorScr
         public static void ShowWindow()
         {
             WelcomeWindow window = GetWindow<WelcomeWindow>($"Welcome to {InfoYG.NAME_PLUGIN}!");
-            window.position = new Rect(250, 150, 700, 540);
+            window.position = new Rect(100, 150, 700, 540);
             window.minSize = new Vector2(700, 540);
         }
 
@@ -137,8 +137,8 @@ namespace YG.EditorScr
                 buttonStyle.fontSize = 20;
                 if (GUILayout.Button(Langs.documentation, buttonStyle, GUILayout.Height(35), GUILayout.Width(175)))
                     DocumentationEditor.DocMenuItem();
-                if (GUILayout.Button(Langs.helpChat, buttonStyle, GUILayout.Height(35), GUILayout.Width(175)))
-                    DocumentationEditor.ChatMenuItem();
+                if (GUILayout.Button(Langs.community, buttonStyle, GUILayout.Height(35), GUILayout.Width(175)))
+                    DocumentationEditor.HelpMenuItem();
                 if (GUILayout.Button(Langs.video, buttonStyle, GUILayout.Height(35), GUILayout.Width(175)))
                     DocumentationEditor.VideoMenuItem();
 
@@ -170,7 +170,7 @@ namespace YG.EditorScr
                         if (cloudVersion > thisVersion)
                             newerVersion = true;
 
-                        if (ServerInfo.saveInfo.modules[i].critical == true)
+                        if (newerVersion && (ServerInfo.saveInfo.modules[i].critical || ModulesInstaller.IsImportantInstalledVersion(InfoYG.NAME_PLUGIN, InfoYG.VERSION_YG2, cloudVersionStr)))
                             cloudVersionStr += " critical";
 
                         break;

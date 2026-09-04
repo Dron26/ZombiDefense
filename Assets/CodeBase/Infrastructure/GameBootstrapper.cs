@@ -32,6 +32,7 @@ namespace Infrastructure
         private IGameTimerTracker _gameTimerTracker;
         private IAnalyticService _analyticService;
         private bool _isInitialized;
+        private bool _isSentAdditionalMetrics;
         private void Awake()
         {
             DontDestroyOnLoad(this);
@@ -55,7 +56,8 @@ namespace Infrastructure
 
         private void Init()
         {
-            _audioManager=new AudioManager(_musicChanger,_soundChanger);
+            _audioManager = gameObject.AddComponent<AudioManager>();
+            _audioManager.Initialize(_musicChanger, _soundChanger);
             _gameFactory = new GameFactory(new AssetProvider());
             RegisterServices(_loadingCurtain);
             _game = new Game(this, _loadingCurtain, _serviceRegister, _gameFactory);
@@ -118,8 +120,12 @@ namespace Infrastructure
             var dailyRewards = AllServices.Container.Single<ISaveLoadService>().GetGameData().RemoteConfig.DailyRewardValues;
             Debug.Log($"Ежедневные награды: {string.Join(", ", dailyRewards)}");
             
-            // Логика применения наград, например:
-            // RewardManager.Instance.SetDailyRewards(dailyRewards);
+            // вкл метрик
+            if (AllServices.Container.Single<ISaveLoadService>().GetGameData().RemoteConfig.IsSentAdditionalMetrics)
+            {
+                Debug.Log("доп аналитика вкючена");
+                _analyticService.ApplicationQuit();
+            }
         }
 
         // Симуляция флагов в Unity Editor
@@ -178,10 +184,16 @@ namespace Infrastructure
                 if (pause)
                 {
                     _gameTimerTracker.SaveSessionDuration();
-                    _analyticService.PauseGame();
+                    if (_isSentAdditionalMetrics)
+                    {
+                        _analyticService.PauseGame();
+                    }
                 }
                 else
+                if (_isSentAdditionalMetrics)
+                {
                     _analyticService.ResumeGame();
+                }
             }
         }
         

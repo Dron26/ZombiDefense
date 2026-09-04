@@ -6,7 +6,6 @@ namespace Upgrades
     public class SkillTreeZoom : MonoBehaviour
     {
         [Header("Camera Movement Settings")]
-        [SerializeField] private float moveSpeed = 500f; // Скорость перемещения камеры
         [SerializeField] private float zoomSpeed = 250f; // Скорость зума камеры
         [SerializeField] private float zoomSmoothTime = 0.2f; // Плавность изменения зума
 

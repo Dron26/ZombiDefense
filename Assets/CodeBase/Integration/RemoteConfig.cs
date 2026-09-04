@@ -21,7 +21,9 @@ public class RemoteConfig
     public float Difficulty => TryGetFloat("difficulty", out float value) ? value : 1f;
 
     public List<int> DailyRewardValues => TryParseIntList("dailyRewardValues");
-
+    
+    public bool IsSentAdditionalMetrics => TryGetBool("sentAdditionalMetrics", out bool value) && value;
+    
     #region Try Get Methods
 
     private bool TryGetBool(string key, out bool result)

@@ -32,7 +32,6 @@ namespace Infrastructure.Points
         private bool isPointToMoveTaked;
         [SerializeField] private WorkPoint _startPoint;
         private Store store;
-        private bool isMovementOver = false;
         private ICharacterHandler _characterHandler;
         private ILocationHandler _locationHandler;
         private IGameEventBroadcaster _eventBroadcaster;

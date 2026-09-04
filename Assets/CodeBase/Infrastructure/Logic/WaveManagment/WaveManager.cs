@@ -23,10 +23,8 @@ namespace Infrastructure.Logic.WaveManagment
         private EnemyFactory _enemyFactory;
         private WaveSpawner _waveSpawner;
         private int _currentFilledWave = 0;
-        private bool isWaitingForNextWave = false;
         public WaveSpawner WaveSpawner => _waveSpawner;
         private List<Enemy> enemies = new List<Enemy>();
-        private bool _isContinueGame;
         private bool _isStartedWave;
         private bool _canStartWave;
         private bool _canFillWave;
@@ -143,8 +141,6 @@ namespace Infrastructure.Logic.WaveManagment
         private void SetContinue()
         {
             _currentFilledWave = 0;
-            isWaitingForNextWave = false;
-            _isContinueGame=true;
             SetWaveData();
         }
 

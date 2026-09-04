@@ -84,7 +84,7 @@ namespace Infrastructure.Logic.WeaponManagment
             OnInitialized?.Invoke(_weapon);
         }
 
-        public void SetPoint(WorkPoint workPoint)
+        public override void SetPoint(WorkPoint workPoint)
         {
             _damage = (int) Mathf.Round((_weapon.Damage * (1+(workPoint.UpPrecent+_damagePrecent) / 100)));
             _range = Mathf.RoundToInt(_increaseRangeValue * (1 + workPoint.UpPrecent / 100f));
@@ -99,7 +99,7 @@ namespace Infrastructure.Logic.WeaponManagment
             UpdateWeaponData?.Invoke();
         }
 
-        public void SetSelected(bool isSelected)
+        public override void SetSelected(bool isSelected)
         {
             if (_radius != null)
             {

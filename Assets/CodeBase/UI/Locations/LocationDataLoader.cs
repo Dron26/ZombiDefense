@@ -4,6 +4,7 @@ using Infrastructure.AssetManagement;
 using Interface;
 using Services;
 using UnityEngine;
+using System.Collections;
 
 namespace UI.Locations
 {
@@ -11,116 +12,196 @@ namespace UI.Locations
     {
         private readonly IResourceLoadService _resourceLoadService;
         private readonly ILocationHandler _locationHandler;
+        private static Dictionary<int, LocationData> _locationDataCache;
+        private static readonly Dictionary<LocationData, LocationCache> _cacheData = new Dictionary<LocationData, LocationCache>();
 
         public LocationDataLoader()
         {
             _resourceLoadService = AllServices.Container.Single<IResourceLoadService>();
             _locationHandler = AllServices.Container.Single<ILocationHandler>();
+            if (_locationDataCache == null)
+            {
+                _locationDataCache = new Dictionary<int, LocationData>();
+            }
         }
 
         public List<LocationProgressData> LoadLocations()
         {
-            List<LocationProgressData> locations = new List<LocationProgressData>();
-            string pathLocations = AssetPaths.LocationsData;
-            
             var registry = _resourceLoadService.Load<LocationDataRegistry>("Locations/LocationDataRegistry");
+            if (registry == null || registry.Locations.Count == 0) return new List<LocationProgressData>();
 
-            int count = registry.Locations.Count;
+            var allData = LoadAllLocationData();
+            var locations = new List<LocationProgressData>();
 
-            if (count <= 0)
+            foreach (var locationRef in registry.Locations)
             {
-                Debug.LogWarning("Нет данных для загрузки локаций!");
-                return locations;
+                if (locationRef == null) continue;
+                if (!allData.ContainsKey(locationRef.Id)) continue;
+
+                var data = allData[locationRef.Id];
+                var cache = GetOrCreateCache(data);
+                var location = new LocationProgressData(
+                    data.Id,
+                    data.IsTutorial,
+                    data.IsLocked,
+                    data.IsCompleted,
+                    data.BaseReward,
+                    cache.WaveCount,
+                    cache.TotalEnemies,
+                    0,
+                    data.IsAdditional,
+                    data.UnlockedId,
+                    data.TitleRu,
+                    data.TitleEn,
+                    data.TitleTr,
+                    data.ContextRu,
+                    data.ContextEn,
+                    data.ContextTr,
+                    data.ObjectiveRu,
+                    data.ObjectiveEn,
+                    data.ObjectiveTr,
+                    data.LocationRu,
+                    data.LocationEn,
+                    data.LocationTr,
+                    data.TipRu,
+                    data.TipEn,
+                    data.TipTr
+                );
+                locations.Add(location);
             }
 
-            for (int i = 0; i < count; i++)
-            {
-                string id = i.ToString();
-                LocationData data = _resourceLoadService.Load<LocationData>($"{pathLocations}{id}");
-
-                if (data != null)
-                {
-                    int enemyCount = 0;
-                    
-                    foreach (var waveData in data.WavesContainerData.GroupWaveData)
-                    {
-                        foreach (var value in waveData.EnemyCount)
-                        {
-                            enemyCount += value;
-                        }
-                    }
-
-                    LocationProgressData location = new LocationProgressData(
-                        data.Id,
-                        data.IsTutorial,
-                        data.IsLocked,
-                        data.IsCompleted,
-                        data.BaseReward,
-                        data.WavesContainerData.GroupWaveData.Count,
-                        enemyCount,
-                        0, // CurrentWaveLevel изначально 0
-                        data.IsAdditional,
-                        data.UnlockedId,
-                        data.TitleRu,
-                        data.TitleEn,
-                        data.TitleTr,
-                        data.ContextRu,
-                        data.ContextEn,
-                        data.ContextTr,
-                        data.ObjectiveRu,
-                        data.ObjectiveEn,
-                        data.ObjectiveTr,
-                        data.LocationRu,
-                        data.LocationEn,
-                        data.LocationTr,
-                        data.TipRu,
-                        data.TipEn,
-                        data.TipTr
-                    );
-
-                    locations.Add(location);
-                }
-                else
-                {
-                    Debug.LogError($"Не удалось загрузить данные локации с ID: {id}");
-                }
-            }
-
-            
             SyncWithSaveData(locations);
-
             return locations;
+        }
+
+        private Dictionary<int, LocationData> LoadAllLocationData()
+        {
+            if (_locationDataCache.Count > 0) return _locationDataCache;
+
+            var allData = _resourceLoadService.LoadAll<LocationData>("Locations/LocationData");
+            foreach (var data in allData)
+            {
+                if (data == null) continue;
+                _locationDataCache[data.Id] = data;
+            }
+
+            return _locationDataCache;
+        }
+
+        private LocationCache GetOrCreateCache(LocationData data)
+        {
+            if (_cacheData.ContainsKey(data))
+            {
+                return _cacheData[data];
+            }
+
+            var cache = new LocationCache();
+            if (data.WavesContainerData != null && data.WavesContainerData.GroupWaveData != null)
+            {
+                cache.WaveCount = data.WavesContainerData.GroupWaveData.Count;
+                foreach (var waveData in data.WavesContainerData.GroupWaveData)
+                {
+                    if (waveData == null || waveData.EnemyCount == null) continue;
+                    foreach (var value in waveData.EnemyCount)
+                    {
+                        cache.TotalEnemies += value;
+                    }
+                }
+            }
+            _cacheData[data] = cache;
+            return cache;
+        }
+
+        public IEnumerator LoadLocationsAsync(System.Action<List<LocationProgressData>> onComplete)
+        {
+            var registry = _resourceLoadService.Load<LocationDataRegistry>("Locations/LocationDataRegistry");
+            if (registry == null || registry.Locations.Count == 0)
+            {
+                onComplete(new List<LocationProgressData>());
+                yield break;
+            }
+
+            var allData = _resourceLoadService.LoadAll<LocationData>("Locations/LocationData");
+            yield return null;
+
+            var locationDict = new Dictionary<int, LocationData>();
+            foreach (var data in allData)
+            {
+                if (data == null) continue;
+                locationDict[data.Id] = data;
+                GetOrCreateCache(data);
+            }
+
+            var locations = new List<LocationProgressData>();
+            for (int i = 0; i < registry.Locations.Count; i++)
+            {
+                var locationRef = registry.Locations[i];
+                if (locationRef == null) continue;
+                if (!locationDict.ContainsKey(locationRef.Id)) continue;
+
+                var data = locationDict[locationRef.Id];
+                var cache = GetOrCreateCache(data);
+                var location = new LocationProgressData(
+                    data.Id,
+                    data.IsTutorial,
+                    data.IsLocked,
+                    data.IsCompleted,
+                    data.BaseReward,
+                    cache.WaveCount,
+                    cache.TotalEnemies,
+                    0,
+                    data.IsAdditional,
+                    data.UnlockedId,
+                    data.TitleRu,
+                    data.TitleEn,
+                    data.TitleTr,
+                    data.ContextRu,
+                    data.ContextEn,
+                    data.ContextTr,
+                    data.ObjectiveRu,
+                    data.ObjectiveEn,
+                    data.ObjectiveTr,
+                    data.LocationRu,
+                    data.LocationEn,
+                    data.LocationTr,
+                    data.TipRu,
+                    data.TipEn,
+                    data.TipTr
+                );
+                locations.Add(location);
+
+                if (i % 10 == 0) yield return null;
+            }
+
+            SyncWithSaveData(locations);
+            onComplete(locations);
         }
 
         private void SyncWithSaveData(List<LocationProgressData> locations)
         {
-            List<int> completedLocationsId = _locationHandler.GetCompletedLocationId();
-
-            foreach (int completedId in completedLocationsId)
+            var completedIds = _locationHandler.GetCompletedLocationId();
+            foreach (var id in completedIds)
             {
-                var completedLocation = locations.FirstOrDefault(x => x.Id == completedId);
-                
-                if (completedLocation != null)
-                {
-                    completedLocation.SetCompleted(true);
-                    completedLocation.SetLock(false);
-                }
-                else
-                {
-                    Debug.LogWarning($"Не найдена завершенная локация с ID: {completedId}");
-                }
+                var location = locations.FirstOrDefault(x => x.Id == id);
+                if (location == null) continue;
+                location.SetCompleted(true);
+                location.SetLock(false);
             }
 
             for (int i = 0; i < locations.Count; i++)
             {
-                if (locations[locations[i].UnlockedId].IsCompleted)
-                {
-                    locations[i].SetLock(false);
-                }
+                var unlockedId = locations[i].UnlockedId;
+                if (unlockedId < 0 || unlockedId >= locations.Count) continue;
+                if (locations[unlockedId].IsCompleted) locations[i].SetLock(false);
             }
-            
-            // Настройка сохранения
+
             _locationHandler.SetLocationsDatas(locations);
+        }
+
+        private class LocationCache
+        {
+            public int TotalEnemies;
+            public int WaveCount;
         }
     }
 }

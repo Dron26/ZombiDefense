@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using Data.Upgrades;
 using Infrastructure.AIBattle;
@@ -31,7 +31,6 @@ namespace Characters.Humanoids.AbstractLevel
         private bool _isTakeDamagePlay;
         private int _minHealth = 0;
         private bool _isBuyed = false;
-        private bool _isWeaponInitialized = false;
         private bool _isRegenerating = false;
         private float _defencePercent = 0;
         private float _regeneratePrecent = 0;
@@ -41,7 +40,6 @@ namespace Characters.Humanoids.AbstractLevel
 
         public override void Initialize()
         {
-            _isWeaponInitialized = false;
             _currentHealth = base.CharacterData.Health;
             // _skinContainer = GetComponent<SkinContainer>();
             _skinContainer.SetSkin(CharacterData.Type);
@@ -70,11 +68,7 @@ namespace Characters.Humanoids.AbstractLevel
             Debug.Log("Controller loaded successfully: " + controller.name);
             _animator.runtimeAnimatorController = controller;
         }
-
-        private void OnWeaponInitialized(Weapon obj)
-        {
-            _isWeaponInitialized = true;
-        }
+        
 
         public override void ApplyDamage(int damage)
         {
@@ -84,10 +78,14 @@ namespace Characters.Humanoids.AbstractLevel
             Debug.Log("getDamage");
             Debug.Log(damage);
             
-            if (_currentHealth < 1)
+            
+            int currentdamage=(int) Mathf.Round(damage*(100-_defencePercent)/100);
+            _currentHealth -= Mathf.Clamp(currentdamage, _minHealth, _currentHealth);
+            
+            
+            if (_currentHealth <=0)
             {
                 _animator.SetTrigger(_playerCharacterAnimController.Die);
-                base.Die();
                 Die();
             }
             else
@@ -100,8 +98,7 @@ namespace Characters.Humanoids.AbstractLevel
 
                 //  _fxController.OnHitFX();
                 
-                int currentdamage=(int) Mathf.Round(damage*(100-_defencePercent)/100);
-                _currentHealth -= Mathf.Clamp(currentdamage, _minHealth, _currentHealth);
+               
 
                 if (!_isRegenerating&&_currentHealth < _maxHealth)
                 {
@@ -122,6 +119,7 @@ namespace Characters.Humanoids.AbstractLevel
 
         protected override  void Die()
         {
+            base.Die();
             _fxController.OnAttackFXStop();
             PlayerCharactersStateMachine stateMachine = GetComponent<PlayerCharactersStateMachine>();
             stateMachine.EnterBehavior<DieState>();
@@ -132,7 +130,7 @@ namespace Characters.Humanoids.AbstractLevel
 
         public void SetPontInfo() { }
 
-        public void IsMoving(bool isMoving)
+        public void SetMoving(bool isMoving)
         {
             base.IsMoving = isMoving;
 

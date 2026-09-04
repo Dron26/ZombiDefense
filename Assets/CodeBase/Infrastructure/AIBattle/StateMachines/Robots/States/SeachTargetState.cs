@@ -15,7 +15,6 @@ namespace Infrastructure.AIBattle.StateMachines.Robots.States
         private Entity _enemy;
         private HumanoidWeaponController _humanoidWeaponController;
         private Transform[] _enemyTransforms;
-        private bool _isSearhing;
         private Coroutine _coroutine;
         private Coroutine currentTurnCoroutine;
         
@@ -224,8 +223,6 @@ namespace Infrastructure.AIBattle.StateMachines.Robots.States
         {
             if (_coroutine != null)
                 StopCoroutine(_coroutine);
-
-            _isSearhing = false;
         }
     }
 }

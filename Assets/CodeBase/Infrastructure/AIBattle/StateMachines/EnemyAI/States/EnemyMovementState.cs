@@ -20,13 +20,12 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
         private float _throwerStoppingDistance;
         private bool _isThrower;
         private bool _isWalking;
-        private bool _isTargetSet;
 
         private const float TrackingProbability = 0.5f;
         private const float CheckDistanceInterval = 0.5f;
-
+        private WaitForSeconds _waitForSeconds = new(1.3f);
         private Coroutine _checkDistanceCoroutine;
-
+        private Coroutine _move;
         protected override void OnInitialized()
         {
             _animator = StateMachine.Enemy.Animator;
@@ -50,17 +49,21 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
         {
             enabled = true;
             _isWalking = false;
-            _isTargetSet = false;
             _checkDistanceCoroutine = StartCoroutine(CheckDistance());
         }
 
         protected override void OnExit()
         {
-            StopAllCoroutines();
             _agent.isStopped = true;
             _animator.SetBool(_enemyAnimController.Walk, false);
             enabled = false;
             _isWalking= false;
+            if (_move!= null)
+            {
+                StopCoroutine(_move);
+                _move = null;
+            }
+            
         }
 
         public void InitCharacter(Character targetCharacter)
@@ -77,16 +80,18 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
             StateMachine.EnterBehavior<EnemySearchTargetState>();
         }
 
-        private void Move()
+        private IEnumerator Move()
         {
+            yield return null;
+            
             if (_target != null && _target.IsLife())
             {
                 if (_agent.isOnNavMesh)
                 {
-                   // _agent.SetDestination(_character.transform.position);
-                    _isTargetSet = true;
-                    _agent.isStopped = false;
                     _animator.SetBool(_enemyAnimController.Walk, true);
+                    yield return _waitForSeconds;
+                    _agent.isStopped = false;
+                    _agent.speed = _enemy.Data.NavMeshSpeed;
                 }
             }
             else
@@ -125,17 +130,20 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
 
                 if (!_isWalking)
                 {
-                    _animator.SetBool(_enemyAnimController.Walk, true);
-                    _agent.speed = _enemy.Data.NavMeshSpeed;
-                    _isWalking = true;
                     
                     if (_target != null)
                     {
-                        Move();
+                        _move=StartCoroutine(Move());
+                        _isWalking = true;
                     }
                 }
 
-                _agent.SetDestination(_targetTransform.position);
+                if (_agent.isOnNavMesh)
+                {
+                    _agent.SetDestination(_targetTransform.position);
+                }
+
+                
                 yield return new WaitForSeconds(CheckDistanceInterval);
             }
 
@@ -149,7 +157,6 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
                 StopAllCoroutines();
                 _agent.isStopped = true;
                 _animator.SetBool(_enemyAnimController.Walk, false);
-                _isTargetSet = false;
                 _isWalking = false;
                 StateMachine.EnterBehavior<TState>();
             }

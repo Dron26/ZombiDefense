@@ -16,7 +16,6 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
 
         private Character _targetCharacter;
         private EnemyData _enemyData;
-        private bool _isThrowing;
         private EnemyAnimController _enemyAnimController;
         private Queue<DamageZone> _damageZonePool = new Queue<DamageZone>();
         private EnemyFXController _fxController;
@@ -82,14 +81,11 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
             }
 
             enabled = true;
-            _isThrowing = true;
             StartCoroutine(Throw());
         }
 
         protected override void OnExit()
         {
-           
-            _isThrowing = false;
             enabled = false;
         }
 

@@ -23,7 +23,7 @@ namespace CameraMain
             _movementHandler = new MovementHandler(transform, moveSpeed, minBounds, maxBounds);
         }
 
-        private void Update()
+        protected override void UpdateCustom()
         {
             _inputHandler.HandleInput();
             _movementHandler.MoveCamera(_inputHandler.MoveDirection);

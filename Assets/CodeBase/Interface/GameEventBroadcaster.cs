@@ -21,7 +21,6 @@ namespace Interface
         public event Action<Enemy> OnEnemyDeath;
         public event Action OnLastEnemyRemained;
         public event Action OnLocationCompleted;
-        public event Action OnClearSpawnData;
         public event Action OnCharacterLevelUp;
         public event Action OnMoneyEnough;
         public event Action OnActivatedSpecialTechnique;

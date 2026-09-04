@@ -4,12 +4,11 @@ using UnityEngine;
 
 namespace Interface
 {
-    public interface IResourceLoadService:IService
+    public interface IResourceLoadService : IService
     {
-        public T Load<T>(string path) 
-            where T : Object;
-
-        public List<T> LoadAll<T>(string folderPath)
-            where T : Object;
+        T Load<T>(string path) where T : Object;
+        List<T> LoadAll<T>(string path) where T : Object;
+        void ClearCache();
+        void Preload(string path);
     }
 }
