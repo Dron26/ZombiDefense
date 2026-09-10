@@ -28,7 +28,6 @@ public class GameParameters
     public bool HasPurchasedUpgrade(string key) => _purchasedUpgrades.Contains(key);
     public bool HasUnlockedUpgrade(string key) => _unlockedUpgrades.Contains(key);
 
-    // Возвращаем список строк вида {upgrade.GroupType}_{upgrade.Type}_{upgrade.Id}
     public HashSet<string> GetUnlockedUpgrades()
     {
         return new HashSet<string>(_unlockedUpgrades);

@@ -67,9 +67,14 @@ namespace Upgrades
             ShowApplyWindow(false);
         }
 
+        private void OnClickBack()
+        {
+            ShowApplyWindow(false);
+        }
+
         protected override void OnDisabled()
         {
-            _backButtonInfoPanel.onClick.RemoveListener(()=>ShowApplyWindow(false));
+            _backButtonInfoPanel.onClick.RemoveListener(OnClickBack);
             _applyButton.onClick.RemoveListener(OnClickApply);
         }
         public void SwitchState(bool isActive)
@@ -126,7 +131,7 @@ namespace Upgrades
         private void AddListener()
         {
             _eventBroadcaster.OnMoneyChanged += ChangeResurse;
-            _backButtonInfoPanel.onClick.AddListener(()=>ShowApplyWindow(false));
+            _backButtonInfoPanel.onClick.AddListener(OnClickBack);
             _applyButton.onClick.AddListener(OnClickApply);
             
             YG2.onPurchaseSuccess += SuccessPurchased;
@@ -135,7 +140,7 @@ namespace Upgrades
         private void RemoveListener()
         {
             _eventBroadcaster.OnMoneyChanged -= ChangeResurse;
-            _backButtonInfoPanel.onClick.RemoveListener(()=>ShowApplyWindow(false));
+            _backButtonInfoPanel.onClick.RemoveListener(OnClickBack);
             _applyButton.onClick.RemoveListener(OnClickApply);
             
             YG2.onPurchaseSuccess -= SuccessPurchased;

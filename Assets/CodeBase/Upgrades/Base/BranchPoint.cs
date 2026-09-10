@@ -61,7 +61,7 @@ public class BranchPoint : MonoCache
     
     private void OnDestroy()
     {
-        YG2.onSwitchLang+= OnChangeDescription;
+        YG2.onSwitchLang-= OnChangeDescription;
     }
     
 }

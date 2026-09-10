@@ -32,7 +32,7 @@ namespace Services
                 return false;
 
             RemovePurchasedUpgrade(upgradeId);
-            AllServices.Container.Single<CurrencyHandler>().AddMoney(refundAmount); // Возвращаем деньги игроку
+            AllServices.Container.Single<ICurrencyHandler>().AddMoney(refundAmount); // Возвращаем деньги игроку
             return true;
         }
 

@@ -9,7 +9,7 @@ public interface IUpgradeTree:IService
     public Upgrade GetUpgrade(UpgradeData upgradeData);
     public void SetData(List<UpgradeData> upgradeData);
     
-    public bool RefundUpgrade(string groupType, int upgradeId, int refundAmount);
+    public bool RefundUpgrade(Upgrade  upgrade, int refundAmount);
     public void SetBranch(List<UpgradeBranch> branches);
     public void UpdateBranches();
     public void UpdateUpgrade(Upgrade upgrade);

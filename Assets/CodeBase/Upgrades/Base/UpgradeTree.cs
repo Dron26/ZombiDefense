@@ -113,15 +113,14 @@ public class UpgradeTree : IUpgradeTree
         }
     }
 
-
-    public bool RefundUpgrade(string groupType, int upgradeId, int refundAmount)
+    public bool RefundUpgrade(Upgrade upgrade, int refundAmount)
     {
-        string nodeKey = $"{groupType}_{upgradeId}";
+        string nodeKey = upgrade.Id.ToString();
 
         if (_upgradeHandler.RefundUpgrade(nodeKey, refundAmount))
         {
             _saveLoadService.Save();
-            AllServices.Container.Single<GameEventBroadcaster>().InvokeOnUpgradeRefundedEvent(upgradeId);
+            AllServices.Container.Single<GameEventBroadcaster>().InvokeOnUpgradeRefundedEvent( upgrade.Id);
             return true;
         }
         return false;

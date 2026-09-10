@@ -15,6 +15,8 @@ public class Upgrade
     public bool Lock { get; private set; }
     public bool IsPurchased { get; private set; }
     public List<float> UpgradesValue;
+    public string Key =>
+        $"{GroupType}_{Type}_{Id}";
     public Upgrade(UpgradeData data)
     {
         Id = data.Id;

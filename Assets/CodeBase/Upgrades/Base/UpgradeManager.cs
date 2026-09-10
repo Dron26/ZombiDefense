@@ -70,7 +70,7 @@ namespace Upgrades.Base
 
                 if (_upgradeTree.IsPurchased(upgrade))
                 {
-                    _upgradeTree.RefundUpgrade(upgrade.GroupType.ToString(), upgrade.Id, 0);
+                    _upgradeTree.RefundUpgrade(upgrade, 0);
                 }
             }
 
