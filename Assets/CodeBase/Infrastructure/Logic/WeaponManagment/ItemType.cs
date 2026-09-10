@@ -14,6 +14,7 @@ namespace Infrastructure.Logic.WeaponManagment
         MedicalKit,
         Grenade,
         Enemy,
-        EnemyExplosion
+        EnemyExplosion,
+        Airstrike
     }
 }
