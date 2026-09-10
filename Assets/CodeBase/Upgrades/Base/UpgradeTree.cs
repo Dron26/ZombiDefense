@@ -33,7 +33,7 @@ public class UpgradeTree : IUpgradeTree
         _upgradeNodes[nodeKey].Upgrade.SetPurchased(true);;
         
         List<UpgradeNode> groupUpgrades = _upgradeNodes.Values
-            //.Where(node => node.Upgrade.GroupType == upgrade.GroupType)
+            .Where(node => node.Upgrade.GroupType == upgrade.GroupType)
             .Where(node => node.Upgrade.Type == upgrade.Type)
             .OrderBy(node => node.Upgrade.Id) 
             .ToList();
@@ -41,10 +41,8 @@ public class UpgradeTree : IUpgradeTree
         for (int i = 0; i < groupUpgrades.Count; i++)
         {
             int unlockUpgradeId = groupUpgrades[i].Upgrade.UnlockId;
-            int unlockUpgradeId2 = upgrade.UnlockId;// groupUpgrades[unlockUpgradeId].Upgrade.Id;
-           // bool isPurchase = groupUpgrades[unlockUpgradeId2].Upgrade.IsPurchased;
             
-            if ( unlockUpgradeId == unlockUpgradeId2)
+            if (unlockUpgradeId == upgrade.Id)
             {
                 groupUpgrades[i].Upgrade.SetLock(false);
                 _upgradeHandler.AddUnlockedUpgrade(  $"{groupUpgrades[i].Upgrade.GroupType}_{groupUpgrades[i].Upgrade.Id}");
