@@ -31,6 +31,8 @@ namespace UI.HUD.StorePanel
         [SerializeField] private GameObject _applyAdsMoneyWindow;
         [SerializeField] private CharacterStoreRotation _characterStoreRotation;
         [SerializeField] private Button _buttonStorePanel;
+        [SerializeField] private Button _buttonRightPanel;
+
         [SerializeField] private Button _closeButton;
         [SerializeField] private Button _applyAdsMoneyWindowButton;
         [SerializeField] private Button _closeAdsMoneyWindowButton;
@@ -52,6 +54,7 @@ namespace UI.HUD.StorePanel
         private IPauseService _pauseService;
         private int _moneyAmount;
         private WorkPointGroup _workPointGroup;
+        private bool isButtonPanelOpen = true;
         private List<Character> _characters = new();
         private SceneInitializer _sceneInitializer;
         private PlayerCharacterInitializer _characterInitializer;
@@ -69,6 +72,7 @@ namespace UI.HUD.StorePanel
         private int _priceCharacterLevelUp=1500;
         private int _priceSpecialTechnique;
         private int _precentDecreaseCostSpecialTechnique;
+        private int _decreaseCostDefensePointPercent;
         private int _maxLevel;
         private int _precentLevelUp;
 
@@ -158,8 +162,9 @@ namespace UI.HUD.StorePanel
 
         private void BuyPointUp()
         {
-            
-            int price = _priceForWorkPointUp;
+            int price = Mathf.RoundToInt(
+                _priceForWorkPointUp *
+                (100f - _decreaseCostDefensePointPercent) / 100f);
 
             if (_maxLevel> _selectedWorkPoint.Level && _wallet.IsMoneyEnough(price))
             {
@@ -182,6 +187,12 @@ namespace UI.HUD.StorePanel
 
         public void ChangeButtonStoreState(bool isActive) => _buttonStorePanel.gameObject.SetActive(isActive);
 
+        private void ChangeStateButtonPanel()
+        {
+            isButtonPanelOpen = !isButtonPanelOpen;
+            _rightButtonPanel.gameObject.SetActive(isButtonPanelOpen);
+        }
+        
         public void SwitchStorePanel()
         {
             _isPanelActive = !_isPanelActive;
@@ -225,6 +236,8 @@ namespace UI.HUD.StorePanel
             _pointUpgradePanel.OnSelectedButton += (BuyPointUp);
             _buttonStorePanel.onClick.AddListener(SwitchStorePanel);
             _closeButton.onClick.AddListener(SwitchStorePanel);
+            _buttonRightPanel.onClick.AddListener(ChangeStateButtonPanel);
+
             _applyAdsMoneyWindowButton.onClick.AddListener(ShowPanelAds);
             _closeAdsMoneyWindowButton.onClick.AddListener(ShowPanelAdsForMoney);
             _boxStore.BuyBox+=OnBuyBox;
@@ -238,13 +251,15 @@ namespace UI.HUD.StorePanel
      
         private void RemoveListener()
         {
+            _buttonRightPanel.onClick.RemoveListener(ChangeStateButtonPanel);
+
             _eventBroadcaster.OnSelectedNewPoint -= CheckPointInfo;
             _characterStore.BuyCharacter -= BuyCharacter;
             _characterStore.OnMoneyEmpty -= ShowPanelAdsForMoney;
             _pointUpgradePanel.OnSelectedButton -= (BuyPointUp);
             _boxStore.BuyBox-=OnBuyBox;
-            _specialCar.onClick.AddListener(ShowSpecialTechniquePanel);
-            _specialCarButton.onClick.AddListener(SetActiveSpecialTechnique);
+            _specialCar.onClick.RemoveListener(ShowSpecialTechniquePanel);
+            _specialCarButton.onClick.RemoveListener(SetActiveSpecialTechnique);
         }
 
         private void ShowSpecialTechniquePanel()
@@ -281,6 +296,7 @@ namespace UI.HUD.StorePanel
         {
             UpdateUpgradeValue(UpgradeGroupType.Defence, UpgradeType.IncreaseMaxLevelDefensePoint, value => _maxLevel = value);
             UpdateUpgradeValue(UpgradeGroupType.Defence, UpgradeType.IncreaseMaxLevelDefensePoint, value => _precentLevelUp = value);
+            UpdateUpgradeValue(UpgradeGroupType.Defence, UpgradeType.DecreaseCostDefensePoint, value => _decreaseCostDefensePointPercent = value);
             UpdateUpgradeValue(UpgradeGroupType.SpecialTechnique, UpgradeType.AddSpecialTechnique, value => _priceSpecialTechnique = value);
             UpdateUpgradeValue(UpgradeGroupType.SpecialTechnique, UpgradeType.DecreaseCostSpecialTechnique, value => _precentDecreaseCostSpecialTechnique = value);
 
