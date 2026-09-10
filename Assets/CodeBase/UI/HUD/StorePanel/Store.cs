@@ -73,6 +73,7 @@ namespace UI.HUD.StorePanel
         private int _priceSpecialTechnique;
         private int _precentDecreaseCostSpecialTechnique;
         private int _decreaseCostDefensePointPercent;
+        private int _restoreHealthCostPercent;
         private int _maxLevel;
         private int _precentLevelUp;
 
@@ -297,6 +298,7 @@ namespace UI.HUD.StorePanel
             UpdateUpgradeValue(UpgradeGroupType.Defence, UpgradeType.IncreaseMaxLevelDefensePoint, value => _maxLevel = value);
             UpdateUpgradeValue(UpgradeGroupType.Defence, UpgradeType.IncreaseMaxLevelDefensePoint, value => _precentLevelUp = value);
             UpdateUpgradeValue(UpgradeGroupType.Defence, UpgradeType.DecreaseCostDefensePoint, value => _decreaseCostDefensePointPercent = value);
+            UpdateUpgradeValue(UpgradeGroupType.HealthPrice, UpgradeType.RestoreHealthCost, value => _restoreHealthCostPercent = value);
             UpdateUpgradeValue(UpgradeGroupType.SpecialTechnique, UpgradeType.AddSpecialTechnique, value => _priceSpecialTechnique = value);
             UpdateUpgradeValue(UpgradeGroupType.SpecialTechnique, UpgradeType.DecreaseCostSpecialTechnique, value => _precentDecreaseCostSpecialTechnique = value);
 
@@ -333,7 +335,9 @@ namespace UI.HUD.StorePanel
         
         private void HealthRestore()
         {
-            int price = _characterInitializer.GetSelectedCharacter().Price/2;
+            int basePrice = _characterInitializer.GetSelectedCharacter().Price / 2;
+            int price = Mathf.RoundToInt(
+                basePrice * (100f - _restoreHealthCostPercent) / 100f);
             
             if ( _wallet.IsMoneyEnough(price))
             {
