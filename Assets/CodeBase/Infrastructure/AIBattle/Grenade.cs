@@ -1,6 +1,7 @@
 using System.Collections;
 using Infrastructure.AIBattle.AdditionalEquipment;
 using Infrastructure.Logic.WeaponManagment;
+using Services;
 using UnityEngine;
 
 namespace Infrastructure.AIBattle
@@ -16,6 +17,7 @@ namespace Infrastructure.AIBattle
         public ItemType Type => ItemType.Grenade;
         private float _sourceVolume;
         private float _timeBeforeExplosion;
+        private int _additionalDamage;
 
         private IEnumerator StartCountdown()
         {
@@ -36,7 +38,12 @@ namespace Infrastructure.AIBattle
 
         private void Explode()
         {
-            _explosionManager.ExecuteExplosion(transform.position, Range, Damage, _explosionEffect, _sourceVolume);
+            _explosionManager.ExecuteExplosion(
+                transform.position,
+                Range,
+                Damage + _additionalDamage,
+                _explosionEffect,
+                _sourceVolume);
             _granadeAudio.PlaySound(_explosionSound, transform.position, _sourceVolume);
             Destroy(gameObject);
         }
@@ -49,6 +56,9 @@ namespace Infrastructure.AIBattle
             _explosionSound = itemData.ActionClip;
             _explosionEffect = itemData.ExplosionEffect;
             _timeBeforeExplosion = itemData.TimeBeforeExplosion;
+            _additionalDamage = Mathf.RoundToInt(AllServices.Container
+                .Single<IUpgradeTree>()
+                .GetUpgradeValue(UpgradeGroupType.WeaponsAdditional, UpgradeType.IncreaseGrenadeDamage)[0]);
         }
     }
 }
