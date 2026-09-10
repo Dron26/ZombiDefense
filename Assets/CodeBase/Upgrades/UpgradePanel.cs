@@ -21,6 +21,7 @@ namespace Upgrades
         [SerializeField] private TextMeshProUGUI _price;
         [SerializeField] private TextMeshProUGUI _description;
         [SerializeField] private TextMeshProUGUI _resurses;
+        [SerializeField] private TextMeshProUGUI _resursesSimbol;
         [SerializeField] private Image _icon;
         [SerializeField] private GameObject _purchasePanel;
         [SerializeField] private PurchaseYG _purchaseYG;
@@ -38,6 +39,7 @@ namespace Upgrades
             _currencyHandler = AllServices.Container.Single<ICurrencyHandler>();
             _eventBroadcaster = AllServices.Container.Single<IGameEventBroadcaster>();
             AddListener();
+            _resursesSimbol.text = "$";
         }
         
         public void SetActive(Upgrade upgrade)

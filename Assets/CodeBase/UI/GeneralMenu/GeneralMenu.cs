@@ -58,11 +58,6 @@ namespace UI.GeneralMenu
             _soundSource = AllServices.Container.Single<IAudioManager>().GetSoundSource();
             _dailyRewardService=new DailyRewardService(_dailyRewardPanel);
             
-            if (AllServices.Container.Single<IAchievementsHandler>().IsLocationPassed)
-            {
-                _locationUIManager.SwitchPanelState(true);
-                SwitchMenuPanelState(false);
-            }
         }
         
         private void InitializeLocationSystem()

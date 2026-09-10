@@ -10,6 +10,7 @@ namespace Services.SaveLoad
     public class LoadSaveService:ISaveLoadService
     {
         private  IDataPersistence _dataPersistence;
+        private readonly Dictionary<string, int> _submittedLeaderboardScores = new();
         
 
         public GameData GameData;
@@ -103,10 +104,15 @@ namespace Services.SaveLoad
         
         public void SetLeaderboardScore(string leaderboardName, int value)
         {
-            if (YG2.infoYG.Leaderboards.enable)
-            {
-                YG2.SetLeaderboard(leaderboardName, value);
-            }
+            if (!YG2.infoYG.Leaderboards.enable || !YG2.player.auth)
+                return;
+
+            if (_submittedLeaderboardScores.TryGetValue(leaderboardName, out var submittedValue) &&
+                submittedValue == value)
+                return;
+
+            YG2.SetLeaderboard(leaderboardName, value);
+            _submittedLeaderboardScores[leaderboardName] = value;
         }
     }
 }
