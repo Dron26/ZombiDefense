@@ -81,7 +81,7 @@ namespace Upgrades.Base
         {
             if (_upgradeTree.CanPurchase(upgrade,_сurrencyHandler.GetCurrentMoney() ))
             {
-                _сurrencyHandler.SpendMoney(upgrade.Cost);
+                _сurrencyHandler.SpendMoney(_upgradeTree.GetUpgradeCost(upgrade));
                 _upgradeTree.PurchaseUpgrade(upgrade);
                 Debug.Log("PurchaseUpgrade");
                 Debug.Log(upgrade.GroupType.ToString()+upgrade.Type.ToString()+upgrade.Id.ToString());

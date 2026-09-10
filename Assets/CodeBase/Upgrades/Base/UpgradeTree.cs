@@ -60,12 +60,21 @@ public class UpgradeTree : IUpgradeTree
         {
             bool trueOrFalse = _upgradeNodes[nodeKey].IsAvailable(_upgradeHandler.GetUnlockedUpgrades());
             bool trueOrFalse2 = !_upgradeNodes[nodeKey].Upgrade.Lock;
-            bool trueOrFalse3 = upgrade.Cost <= playerMoney;
+            bool trueOrFalse3 = GetUpgradeCost(upgrade) <= playerMoney;
 
             return trueOrFalse && trueOrFalse2 && trueOrFalse3;
         }
         
         return false;
+    }
+
+    public int GetUpgradeCost(Upgrade upgrade)
+    {
+        float discount = GetUpgradeValue(
+            UpgradeGroupType.PriceUpdate,
+            UpgradeType.DecreasePriceUpdate)[0];
+
+        return Mathf.RoundToInt(upgrade.Cost * (100f - discount) / 100f);
     }
 
 
@@ -170,11 +179,6 @@ public class UpgradeTree : IUpgradeTree
             .Select(parts => int.Parse(parts[2]))
             .OrderBy(id => id)
             .LastOrDefault();
-
-        if (lastId == 0)
-        {
-            return new List<float> { 0 };
-        }
 
         var lastPurchasedUpgradeNode = _upgradeNodes.Values
             .FirstOrDefault(node => node.Upgrade.GroupType == groupType 

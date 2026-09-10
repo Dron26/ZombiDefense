@@ -33,11 +33,13 @@ namespace Upgrades
         [SerializeField] private Camera _menuCamera;
         private ICurrencyHandler _currencyHandler;
         private IGameEventBroadcaster _eventBroadcaster;
+        private IUpgradeTree _upgradeTree;
 
         public void Initialize()
         {
             _currencyHandler = AllServices.Container.Single<ICurrencyHandler>();
             _eventBroadcaster = AllServices.Container.Single<IGameEventBroadcaster>();
+            _upgradeTree = AllServices.Container.Single<IUpgradeTree>();
             AddListener();
             _resursesSimbol.text = "$";
         }
@@ -51,7 +53,7 @@ namespace Upgrades
             _icon.sprite = _upgrade.Icon;
             _name.text  = _upgrade.Name;
             _description.text = _upgrade.Description;
-            _price.text ="$ "+ _upgrade.Cost;
+            _price.text = "$ " + _upgradeTree.GetUpgradeCost(_upgrade);
             _applyButton.gameObject.SetActive(!_upgrade.IsPurchased);
 
             

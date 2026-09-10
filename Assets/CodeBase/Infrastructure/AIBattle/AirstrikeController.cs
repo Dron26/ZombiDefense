@@ -1,5 +1,6 @@
 using System.Linq;
 using Enemies.AbstractEntity;
+using Infrastructure.Logic.WeaponManagment;
 using Interface;
 using Services;
 using UI.HUD.StorePanel;

@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using YG;
 using YG.LanguageLegacy;
+using Interface;
+using Services;
 
 public class BranchPoint : MonoCache
 {
@@ -17,6 +19,7 @@ public class BranchPoint : MonoCache
     public Button Button;
     private Image _lockIcon;
     private Upgrade _upgrade;
+    private IUpgradeTree _upgradeTree;
     public Upgrade Upgrade => _upgrade;
     public UpgradeType GetUpgradeType => _upgradeType;
     public List<float> UpgradesValue => _upgrade.UpgradesValue;
@@ -25,6 +28,7 @@ public class BranchPoint : MonoCache
     public void Initialize(Upgrade upgrade)
     {
         _upgrade = upgrade;
+        _upgradeTree = AllServices.Container.Single<IUpgradeTree>();
         _upgradeType = _upgrade.Type;
         _id = _upgrade.Id;
         _lock = _upgrade.Lock;
@@ -36,7 +40,7 @@ public class BranchPoint : MonoCache
         Button=GetComponent<Button>();
         GetComponentInChildren<IconUpgrade>().GetComponent<Image>().sprite = _upgrade.Icon;
         _description = _upgrade.Description;
-        _price.text ="$ "+ _upgrade.Cost;
+        _price.text = "$ " + _upgradeTree.GetUpgradeCost(_upgrade);
         Button.interactable = !_lock;
         _descriptionText=GetComponent<Text>();
         _descriptionText.text = _description;
@@ -65,4 +69,3 @@ public class BranchPoint : MonoCache
     }
     
 }
-
