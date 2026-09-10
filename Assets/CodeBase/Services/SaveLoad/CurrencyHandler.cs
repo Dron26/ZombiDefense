@@ -47,6 +47,7 @@ namespace Services.SaveLoad
                 throw new ArgumentException("Amount cannot be negative.", nameof(amount));
 
             _moneyData.AllAmountMoney -= Mathf.Clamp(amount, 0, int.MaxValue);
+            _eventBroadcaster.InvokeOnMoneyChanged(_moneyData.AllAmountMoney);
             MoneyChanged?.Invoke();
         }
 

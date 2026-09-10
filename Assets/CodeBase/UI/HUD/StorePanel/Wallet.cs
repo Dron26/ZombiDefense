@@ -94,6 +94,7 @@ namespace UI.HUD.StorePanel
         private void RemoveListener()
         {
             AllServices.Container.Single<IGameEventBroadcaster>().OnEnemyDeath -= AddMoneyForKilledEnemy;
+            AllServices.Container.Single<IGameEventBroadcaster>().OnExitedLocation -= OnExitedLocation;
         }
         
         private void SetUpgrades()
