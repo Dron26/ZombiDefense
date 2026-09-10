@@ -101,7 +101,7 @@ namespace Characters.Robots
             }
             else
             {
-                UpdateUpgradeValue(UpgradeGroupType.Turrets, UpgradeType.IncreaseDamageSpecialTechnique, value => _precentAdditionalDamage = value);
+                UpdateUpgradeValue(UpgradeGroupType.Turrets, UpgradeType.IncreaseDamageTurret, value => _precentAdditionalDamage = value);
             }
             
             _damage= Mathf.RoundToInt(_damage * (1 + _precentAdditionalDamage / 100));
