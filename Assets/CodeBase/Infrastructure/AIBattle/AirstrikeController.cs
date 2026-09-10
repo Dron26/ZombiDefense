@@ -23,6 +23,7 @@ namespace Infrastructure.AIBattle
         public int Price => _price;
         public int Damage => _damage;
         public float ExplosionRadius => _explosionRadius;
+        public bool CanExecute => IsAvailable && _wallet != null && _wallet.IsMoneyEnough(_price);
 
         public void Initialize(Wallet wallet)
         {
@@ -33,11 +34,16 @@ namespace Infrastructure.AIBattle
             UpdateUpgradeValues();
         }
 
+        public void Refresh()
+        {
+            UpdateUpgradeValues();
+        }
+
         public bool TryExecute(Vector3 targetPosition)
         {
             UpdateUpgradeValues();
 
-            if (!IsAvailable || !_wallet.IsMoneyEnough(_price))
+            if (!CanExecute)
             {
                 return false;
             }
