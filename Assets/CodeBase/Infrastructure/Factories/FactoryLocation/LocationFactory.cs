@@ -1,15 +1,22 @@
 using Infrastructure.AssetManagement;
-using Infrastructure.BaseMonoCache.Code.MonoCache;
 using UnityEngine;
 
 namespace Infrastructure.Factories.FactoryLocation
 {
-    public class LocationFactory: MonoCache
+    public class LocationFactory
     {
         public GameObject Create(int Id)
         {
             string path =AssetPaths.LocationsPrefabs + Id;
-            GameObject location = Instantiate(Resources.Load<GameObject>(path));
+            GameObject locationPrefab = Resources.Load<GameObject>(path);
+
+            if (locationPrefab == null)
+            {
+                Debug.LogError($"Location prefab not found at Resources/{path}.");
+                return null;
+            }
+
+            GameObject location = Object.Instantiate(locationPrefab);
             return location;
         }
     }

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using DG.Tweening;
+using System.Collections.Generic;
 using Enemies.AbstractEntity;
 using Infrastructure.Logic.WeaponManagment;
 using Interface;
@@ -24,6 +23,7 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
         private bool _isAttacking;
         private bool _isReloading;
         private bool _isMove;
+        private Coroutine _rotateCoroutine;
 
         private List<Enemy> _enemiesInRange = new();
         private int _maxAmmo;
@@ -35,6 +35,8 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
         private float[] _damageList;
         private float _accumulationDamage;
         private ItemType _weaponType;
+
+        [SerializeField] private float _rotationSpeed = 720f;
 
         protected  void Awake()
         {
@@ -67,6 +69,7 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
 
             if (_targetEnemy == null || !_targetEnemy.IsLife())
             {
+                StopRotatingToTarget();
                 StopFX();
                 PlayerCharactersStateMachine.EnterBehavior<SearchTargetState>();
                 return;
@@ -87,12 +90,48 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
 
                 _animController.OnShoot(true);
 
-                float lookTime = (_weaponType == ItemType.Medium || _weaponType == ItemType.Flammer) ? 0.3f : 0.1f;
-                transform.DOLookAt(_targetTransform.position, lookTime);
+                StartRotatingToTarget();
 
                 if (_weaponType == ItemType.Medium || _weaponType == ItemType.Flammer)
                     _fxController.OnAttackFX();
             }
+        }
+
+        private void StartRotatingToTarget()
+        {
+            if (_rotateCoroutine == null)
+                _rotateCoroutine = StartCoroutine(RotateToTarget());
+        }
+
+        private System.Collections.IEnumerator RotateToTarget()
+        {
+            while (_targetEnemy != null && _targetTransform != null && _targetEnemy.IsLife())
+            {
+                Vector3 direction = _targetTransform.position - transform.position;
+                direction.y = 0f;
+
+                if (direction.sqrMagnitude > 0.001f)
+                {
+                    Quaternion targetRotation = Quaternion.LookRotation(direction);
+                    transform.rotation = Quaternion.RotateTowards(
+                        transform.rotation,
+                        targetRotation,
+                        _rotationSpeed * Time.deltaTime);
+                }
+
+                yield return null;
+            }
+
+            _rotateCoroutine = null;
+        }
+
+        private void StopRotatingToTarget()
+        {
+            if (_rotateCoroutine == null)
+                return;
+
+            StopCoroutine(_rotateCoroutine);
+            _rotateCoroutine = null;
         }
 
         public void FinishAnimationAttackPlay()
@@ -218,6 +257,7 @@ namespace Infrastructure.AIBattle.StateMachines.Humanoid.States
             _isReloading = false;
             _targetEnemy = null;
             _targetTransform = null;
+            StopRotatingToTarget();
             _animController.OnShoot(false);
             if (_weaponController != null)
                 _weaponController.UpdateWeaponData -= OnUpdateWeaponData;

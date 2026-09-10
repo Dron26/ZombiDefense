@@ -16,7 +16,11 @@ namespace Infrastructure.AssetManagement
             }
             
             var prefab = Resources.Load<GameObject>(path);
-            if (prefab == null) return null;
+            if (prefab == null)
+            {
+                Debug.LogError($"Failed to load GameObject at path: {path}. Check if the path is correct and the asset exists.");
+                return null;
+            }
             
             _cache[path] = prefab;
             return Object.Instantiate(prefab);
@@ -35,7 +39,12 @@ namespace Infrastructure.AssetManagement
         public Enemy LoadEnemy(string path)
         {
             var enemyPrefab = Resources.Load<Enemy>(path);
-            return enemyPrefab != null ? Object.Instantiate(enemyPrefab) : null;
+            if (enemyPrefab == null)
+            {
+                Debug.LogError($"Failed to load Enemy at path: {path}. Check if the path is correct and the asset exists.");
+                return null;
+            }
+            return Object.Instantiate(enemyPrefab);
         }
     }
 }

@@ -68,7 +68,14 @@ namespace Infrastructure.AIBattle.StateMachines.EnemyAI.States
             }
 
             
-            float time= GetComponent<EnemyAnimController>().GetAnimationClip(4).length;
+            AnimationClip deathClip = _enemy.EnemyAnimController.GetDeathAnimationClip();
+            if (deathClip == null)
+            {
+                Debug.LogError($"Death animation is not configured for enemy '{name}'.", this);
+                yield break;
+            }
+
+            float time = deathClip.length;
             _wait = new WaitForSeconds(time);
             yield return  _wait;
             

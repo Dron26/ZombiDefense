@@ -1,3 +1,4 @@
+using System;
 using Enemies;
 using Enemies.AbstractEntity;
 using Infrastructure.AssetManagement;
@@ -17,11 +18,26 @@ namespace Infrastructure.Factories.FactoryWarriors.Enemies
         {
             string pathData = AssetPaths.EnemyData + type;
             EnemyData data = Resources.Load<EnemyData>(pathData);
-            
-            string pathPrefab =AssetPaths.EnemyPrefab + type;
+
+            if (data == null)
+                throw new InvalidOperationException(
+                    $"Enemy data not found at Resources/{pathData} for enemy type {type}.");
+
+            if (data.prefab == null)
+                throw new InvalidOperationException(
+                    $"Enemy prefab is not assigned in EnemyData '{data.name}'.");
+
             GameObject prefab = Instantiate(data.prefab);
             prefab.gameObject.layer = LayerMask.NameToLayer("Character");
             Enemy enemyComponent = prefab.GetComponent<Enemy>();
+
+            if (enemyComponent == null)
+            {
+                Destroy(prefab);
+                throw new InvalidOperationException(
+                    $"Prefab '{data.prefab.name}' does not contain a component derived from Enemy.");
+            }
+
             enemyComponent.Initialize(data);
             return enemyComponent;
         }

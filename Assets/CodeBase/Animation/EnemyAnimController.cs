@@ -131,7 +131,11 @@ namespace Animation
             foreach (var animationClip in animationClips)
             {
                 int randomIndex = Random.Range(0, animationClip.Value.Length);
-                _animatorOverrideController[animationClip.Key] = animationClip.Value[randomIndex];
+                AnimationClip selectedClip = animationClip.Value[randomIndex];
+                _animatorOverrideController[animationClip.Key] = selectedClip;
+
+                if (animationClip.Key == "Death")
+                    CurrentClip = selectedClip;
             }
 
             if (_isThrower)
@@ -207,9 +211,9 @@ namespace Animation
             return string.Empty;
         }
 
-        public AnimationClip GetAnimationClip(int  id)
+        public AnimationClip GetDeathAnimationClip()
         {
-            return _animatorOverrideController.animationClips[id];
+            return CurrentClip;
         }
 
 

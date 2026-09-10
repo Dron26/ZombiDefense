@@ -18,6 +18,11 @@ public class RuntimeLogger : MonoBehaviour
             return;
         }
         Instance = this;
+        
+        if (transform.parent != null)
+        {
+            transform.SetParent(null, false);
+        }
         DontDestroyOnLoad(gameObject);
     }
 
